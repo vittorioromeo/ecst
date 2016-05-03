@@ -7,7 +7,7 @@
 namespace etp
 {
     /**
-        * @brief The FixedFunction<R(ARGS...), STORAGE_SIZE> class implements
+        * @brief The FixedFunction<R(ARGS...), storage_size> class implements
         * functional object.
         * This function is analog of 'std::function' with limited capabilities:
         *  - It supports only move semantics.
@@ -16,19 +16,36 @@ namespace etp
      * than
         * std::function.
         */
-    template <typename SIGNATURE, size_t STORAGE_SIZE = 64>
+    template <typename TSignature, std::size_t TStorageSize = 64>
     class FixedFunction;
 
-    template <typename R, typename... ARGS, size_t STORAGE_SIZE>
-    class FixedFunction<R(ARGS...), STORAGE_SIZE>
+    template <typename TR, typename... Ts, std::size_t TStorageSize>
+    class FixedFunction<TR(Ts...), TStorageSize>
     {
+    private:
+        static constexpr auto storage_size = TStorageSize;
 
-        typedef R (*func_ptr_type)(ARGS...);
+        using ret_type = TR;
+        using storage_type =
+            std::aligned_storage_t<storage_size, alignof(std::size_t)>;
+
+        using fn_ptr_type = ret_type (*)(Ts...);
+        using method_type = ret_type (*)(storage_type*, fn_ptr_type, Ts...);
+        using alloc_type = void (*)(storage_type*, void* object_ptr);
+
+        method_type _method_ptr;
+        alloc_type _alloc_ptr;
+
+        union
+        {
+            storage_type _storage;
+            fn_ptr_type _function_ptr;
+        };
 
     public:
-        FixedFunction() noexcept : m_function_ptr(nullptr),
-                                   m_method_ptr(nullptr),
-                                   m_alloc_ptr(nullptr)
+        FixedFunction() noexcept : _function_ptr{nullptr},
+                                   _method_ptr{nullptr},
+                                   _alloc_ptr{nullptr}
         {
         }
 
@@ -37,39 +54,37 @@ namespace etp
          * @param object Functor object will be stored in the internal storage
          * using move constructor. Unmovable objects are prohibited explicitly.
          */
-        template <typename FUNC>
-        FixedFunction(FUNC&& object)
+        template <typename TFFwd>
+        FixedFunction(TFFwd&& f)
             : FixedFunction()
         {
-            typedef typename std::remove_reference<FUNC>::type unref_type;
+            using unref_type = std::remove_reference_t<TFFwd>;
 
-            static_assert(sizeof(unref_type) < STORAGE_SIZE,
+            static_assert(sizeof(unref_type) < storage_size,
                 "functional object doesn't fit into internal storage");
-            static_assert(std::is_move_constructible<unref_type>::value,
+            static_assert(std::is_move_constructible<unref_type>{},
                 "Should be of movable type");
 
-            m_method_ptr = [](
-                void* object_ptr, func_ptr_type, ARGS... args) -> R
+            _method_ptr = [](
+                storage_type* s, fn_ptr_type, Ts... args) -> ret_type
             {
-                return static_cast<unref_type*>(object_ptr)
-                    ->
-                    operator()(args...);
+                return reinterpret_cast<unref_type*>(s)->operator()(args...);
             };
 
-            m_alloc_ptr = [](void* storage_ptr, void* object_ptr)
+            _alloc_ptr = [](storage_type* s, void* object_ptr)
             {
                 if(object_ptr)
                 {
                     unref_type* x_object = static_cast<unref_type*>(object_ptr);
-                    new(storage_ptr) unref_type(std::move(*x_object));
+                    new(s) unref_type(std::move(*x_object));
                 }
                 else
                 {
-                    static_cast<unref_type*>(storage_ptr)->~unref_type();
+                    reinterpret_cast<unref_type*>(s)->~unref_type();
                 }
             };
 
-            m_alloc_ptr(&m_storage, &object);
+            _alloc_ptr(&_storage, &f);
         }
 
         /**
@@ -79,8 +94,9 @@ namespace etp
         FixedFunction(RET (*func_ptr)(PARAMS...))
             : FixedFunction()
         {
-            m_function_ptr = func_ptr;
-            m_method_ptr = [](void*, func_ptr_type f_ptr, ARGS... args) -> R
+            _function_ptr = func_ptr;
+            _method_ptr = [](
+                storage_type*, fn_ptr_type f_ptr, Ts... args) -> ret_type
             {
                 return static_cast<RET (*)(PARAMS...)>(f_ptr)(args...);
             };
@@ -99,61 +115,50 @@ namespace etp
 
         ~FixedFunction() noexcept
         {
-            if(m_alloc_ptr) m_alloc_ptr(&m_storage, nullptr);
+            if(_alloc_ptr) _alloc_ptr(&_storage, nullptr);
         }
 
         /**
          * @brief operator () Execute stored functional object.
          */
-        R operator()(ARGS... args)
+        template <typename... TFwdTs>
+        auto operator()(TFwdTs&&... xs)
         {
-            assert(m_method_ptr != nullptr);
-            return m_method_ptr(&m_storage, m_function_ptr, args...);
+            assert(_method_ptr != nullptr);
+            return _method_ptr(&_storage, _function_ptr, FWD(xs)...);
         }
 
     private:
         FixedFunction& operator=(const FixedFunction&) = delete;
         FixedFunction(const FixedFunction&) = delete;
 
-        union
-        {
-            typename std::aligned_storage<STORAGE_SIZE, sizeof(size_t)>::type
-                m_storage;
-            func_ptr_type m_function_ptr;
-        };
 
-        typedef R (*method_type)(
-            void* object_ptr, func_ptr_type free_func_ptr, ARGS... args);
-        method_type m_method_ptr;
-
-        typedef void (*alloc_type)(void* storage_ptr, void* object_ptr);
-        alloc_type m_alloc_ptr;
 
         void moveFromOther(FixedFunction& o) noexcept
         {
             assert(this != &o);
 
-            if(m_alloc_ptr)
+            if(_alloc_ptr)
             {
-                m_alloc_ptr(&m_storage, nullptr);
-                m_alloc_ptr = nullptr;
+                _alloc_ptr(&_storage, nullptr);
+                _alloc_ptr = nullptr;
             }
             else
             {
-                m_function_ptr = nullptr;
+                _function_ptr = nullptr;
             }
 
-            m_method_ptr = o.m_method_ptr;
-            o.m_method_ptr = nullptr;
+            _method_ptr = o._method_ptr;
+            o._method_ptr = nullptr;
 
-            if(o.m_alloc_ptr)
+            if(o._alloc_ptr)
             {
-                m_alloc_ptr = o.m_alloc_ptr;
-                m_alloc_ptr(&m_storage, &o.m_storage);
+                _alloc_ptr = o._alloc_ptr;
+                _alloc_ptr(&_storage, &o._storage);
             }
             else
             {
-                m_function_ptr = o.m_function_ptr;
+                _function_ptr = o._function_ptr;
             }
         }
     };
