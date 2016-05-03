@@ -44,9 +44,6 @@ vrm_cmake_header_only_install_glob("${ECST_INC_DIR}" "include")
 # vrm_cmake_add_common_compiler_flags_suggest_attribute()
 
 # TODO: remove
-add_executable(particles_wrender "${ECST_SOURCE_DIR}/example/particles_wrender.cpp")
-target_link_libraries(particles_wrender pthread sfml-system sfml-graphics sfml-window)
-
 add_executable(particles "${ECST_SOURCE_DIR}/example/particles.cpp")
 target_link_libraries(particles pthread)
 
