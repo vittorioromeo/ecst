@@ -1,0 +1,16 @@
+#!/bin/bash
+
+g++ -std=c++14 \
+        -I"/home/vittorioromeo/OHWorkspace/ecs_thesis/project/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
+        -fsanitize=address \
+        -fsanitize=undefined \
+        -g \
+        -O0 \
+        -pedantic \
+        -W \
+        -Wall \
+        -Wextra \
+        -lpthread \
+        $1 -o /tmp/x.x && echo "Compiled." && /tmp/x.x "${@:2}"

@@ -1,0 +1,53 @@
+// Copyright (c) 2015-2016 Vittorio Romeo
+// License: Academic Free License ("AFL") v. 3.0
+// AFL License page: http://opensource.org/licenses/AFL-3.0
+// http://vittorioromeo.info | vittorio.romeo@outlook.com
+
+#pragma once
+
+#include <ecst/config.hpp>
+
+#define ECST_THREADING_USE_STD 1
+
+#ifdef ECST_THREADING_USE_STD
+
+#include <chrono>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
+
+ECST_NAMESPACE
+{
+    namespace this_thread = std::this_thread;
+    namespace chrono = std::chrono;
+    using std::thread;
+    using std::mutex;
+    using std::atomic;
+    using std::condition_variable;
+    using std::lock_guard;
+    using std::unique_lock;
+}
+ECST_NAMESPACE_END
+
+#else
+
+#pragma GCC system_header
+#include <boost/thread.hpp>
+#include <boost/atomic.hpp>
+#include <boost/chrono.hpp>
+
+ECST_NAMESPACE
+{
+    namespace this_thread = boost::this_thread;
+    namespace chrono = boost::chrono;
+    using boost::thread;
+    using boost::mutex;
+    using boost::atomic;
+    using boost::condition_variable;
+    using boost::lock_guard;
+    using boost::unique_lock;
+}
+ECST_NAMESPACE_END
+
+#endif

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+time clang++ -std=c++14 \
+        -I"/home/vittorioromeo/OHWorkspace/ecs_thesis/project/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
+        -W \
+        -Wall \
+        -Wextra \
+        -O2 \
+        -pedantic \
+        -DNDEBUG \
+        -lpthread \
+        -lsfml-system \
+        -lsfml-graphics \
+        -lsfml-window \
+        $1 -o /tmp/x.x && echo "Compiled." && primusrun /tmp/x.x "${@:2}"
