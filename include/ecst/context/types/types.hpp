@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <cstdint>
 #include <vrm/core/strong_typedef.hpp>
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
 
 ECST_NAMESPACE
 {

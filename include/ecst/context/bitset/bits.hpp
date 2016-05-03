@@ -14,6 +14,8 @@ ECST_CONTEXT_BITSET_NAMESPACE
 {
     namespace impl
     {
+        /// @brief Helper class that assigns a specific bit to a specific
+        /// component type.
         template <typename TSettings>
         class bits
         {

@@ -14,6 +14,8 @@
 
 ECST_CONTEXT_BITSET_NAMESPACE
 {
+    /// @brief Sets all the bits corresponding to the component types in `scl`
+    /// to `1` in `bitset`.
     template <typename TSettings, typename TSetComponentsList>
     void fill(dispatch<TSettings> & bitset, TSettings s,
         TSetComponentsList scl) noexcept
@@ -30,6 +32,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             scl);
     }
 
+    /// @brief Returns a bitset filled with `scl`'s component bits.
     template <typename TSettings, typename TSetComponentsList>
     auto make(TSettings s, TSetComponentsList scl) noexcept
     {
@@ -38,6 +41,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
         return result;
     }
 
+    /// @brief Returns a bitset matching `TSystemSignature`'s used components.
     template <typename TSystemSignature, typename TSettings>
     auto make_from_system_signature(TSettings s) noexcept
     {

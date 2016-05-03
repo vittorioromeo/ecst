@@ -26,12 +26,14 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         private:
             chunk_tuple _chunk_tuple;
 
+            /// @brief Returns a chunk by chunk ID.
             template <typename TID>
             auto& chunk_by_id(TID) noexcept
             {
                 return std::get<TID{}>(_chunk_tuple);
             }
 
+            /// @brief Returns the chunk storing `TComponent`.
             template <typename TComponent>
             auto& chunk_for() noexcept
             {
@@ -51,6 +53,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return chunk;
             }
 
+            /// @brief Executes `f` on the chunk storing `TComponent`.
             template <typename TComponent, typename TSelf,
                 typename TEntityChunkMetadata, typename TF>
             decltype(auto) chunk_fn_impl(
@@ -92,18 +95,24 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             }
 
         public:
+            /// @brief Given an "entity id" and an "entity chunk metadata",
+            /// return a reference to a component.
             template <typename TComponent, typename... Ts>
                 auto& get(Ts&&... xs) & noexcept
             {
                 return get_impl<TComponent>(*this, FWD(xs)...);
             }
 
+            /// @brief Given an "entity id" and an "entity chunk metadata",
+            /// return a const reference to a component.
             template <typename TComponent, typename... Ts>
             const auto& get(Ts&&... xs) const& noexcept
             {
                 return get_impl<TComponent>(*this, FWD(xs)...);
             }
 
+            /// @brief Given an "entity id" and an "entity chunk metadata",
+            /// creates a component and returns a reference to it.
             template <typename TComponent, typename... Ts>
                 decltype(auto) add(Ts&&... xs) & noexcept
             {
@@ -111,8 +120,5 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             }
         };
     }
-
-    template <typename TSettings>
-    using dispatch = impl::data<TSettings>;
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

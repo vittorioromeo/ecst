@@ -16,10 +16,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         namespace state_manager
         {
+            /// @brief Data type, output of `TSystemSignature`.
             template <typename TSystemSignature>
             using data_type = // .
                 signature::system::output_data_type<TSystemSignature>;
 
+            /// @brief Storage for a "system state" and its eventual output
+            /// data.
             template <typename TSettings, typename TSystemSignature>
             class state_storage : public data_type<TSystemSignature>
             {
@@ -38,7 +41,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
                 state<TSettings> _state;
 
-                void clear()
+                void clear() noexcept
                 {
                     _state.clear();
                 }

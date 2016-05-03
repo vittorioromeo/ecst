@@ -34,10 +34,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
+        /// @brief A "deferred function" is a void-returning `std::function`
+        /// that takes a "defer proxy" by reference as its only parameter.
         template <typename TSettings>
         using deferred_fn_type =
             std::function<void(context::impl::defer::proxy<TSettings>&)>;
 
+        /// @brief A "system state" is a storage class bound to a particular
+        /// subtask during system execution.
+        /// @details Contains a vector of deferred functions and a "killed
+        /// entities" sparse set.
         template <typename TSettings>
         class state : public ecst::impl::to_kill_set_wrapper<TSettings>
         {
@@ -48,7 +54,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             std::vector<my_deferred_fn_type> _deferred_fns;
 
         public:
-            void clear()
+            void clear() noexcept
             {
                 ecst::impl::to_kill_set_wrapper<TSettings>::clear();
                 _deferred_fns.clear();

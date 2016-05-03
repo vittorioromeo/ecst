@@ -11,9 +11,12 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
+        /// @brief Chunk metadata type.
+        /// @details Stored in a tuple, inside entity metadata.
         template <typename TChunk>
         using metadata = typename TChunk::metadata;
 
+        /// @brief Type of the component stored by `TChunk`.
         template <typename TChunk>
         using component = typename TChunk::component_type;
     }

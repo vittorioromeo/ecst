@@ -25,7 +25,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             TFForAllEntities&& f_for_all_entities,     // .
             TFForOtherEntities&& f_for_other_entities, // .
             TFStateGetter&& f_state_getter             // .
-            )
+            ) noexcept
         {
             return execute_data<                  // .
                 TSystemSignature,                 // .

@@ -21,6 +21,13 @@
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    /// @brief System instance.
+    /// @details Contains:
+    /// * An instance of the user-defined system type.
+    /// * A state manager.
+    /// * A sparse set of subscribed entities.
+    /// * A bitset of the used components by the system.
+    /// * A parallel executor.
     template <typename TSettings, typename TSystemSignature>
     class instance
     {
@@ -100,26 +107,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief Unsubscribes `eid` from the system.
         auto unsubscribe(entity_id eid);
 
-        auto& system() noexcept
-        {
-            return _system;
-        }
+        auto& system() noexcept;
+        const auto& system() const noexcept;
 
-        const auto& system() const noexcept
-        {
-            return _system;
-        }
-
-        const auto& bitset() const noexcept
-        {
-            return _bitset;
-        }
+        const auto& bitset() const noexcept;
 
         template <typename TBitset>
-        auto matches_bitset(const TBitset& b) const noexcept
-        {
-            return _bitset.contains(b);
-        }
+        auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
         template <                          // .
@@ -161,10 +155,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TContext, typename TF>
         void execute(TContext& ctx, TF&& f);
 
-        auto subscribed_count() const noexcept
-        {
-            return this->subscribed().size();
-        }
+        auto subscribed_count() const noexcept;
 
         auto nth_subscribed(sz_t n) noexcept;
         auto& nth_state(sz_t n) noexcept;

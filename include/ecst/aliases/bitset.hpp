@@ -13,6 +13,7 @@ ECST_NAMESPACE
 {
     namespace impl
     {
+        /// @brief Dense bitset.
         template <sz_t TN>
         using bitset = std::bitset<TN>;
     }

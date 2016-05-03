@@ -50,7 +50,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         }
     }
 
-    // TODO: use hash_map, refactor, add strategy to component signature
+    // TODO: use hash_map, refactor, add "force_container (?)" to component
+    // signature.
     template <typename TComponent, typename TSettings>
     using chunk_dispatch_type =
         mp::unwrap<decltype(impl::dispatch_tw<TComponent, TSettings>())>;

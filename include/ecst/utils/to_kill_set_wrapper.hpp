@@ -22,7 +22,7 @@ ECST_NAMESPACE
             set_type _to_kill_ids;
 
         public:
-            void clear()
+            void clear() noexcept
             {
                 _to_kill_ids.clear();
             }

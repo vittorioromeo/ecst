@@ -36,6 +36,8 @@ ECST_CONTEXT_NAMESPACE
             public:
                 proxy(context_type&, refresh_state_type&) noexcept;
 
+                // TODO: generalize system execution steps.
+
                 template <typename TF>
                 void execute_systems(TF&& f);
 

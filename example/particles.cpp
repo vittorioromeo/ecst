@@ -58,6 +58,19 @@ namespace example
 
     namespace c = example::component;
 
+    namespace ct
+    {
+        namespace sct = ecst::signature::component;
+
+        constexpr auto position = sct::tag<c::position>;
+        constexpr auto velocity = sct::tag<c::velocity>;
+        constexpr auto acceleration = sct::tag<c::acceleration>;
+        constexpr auto curve = sct::tag<c::curve>;
+        constexpr auto color = sct::tag<c::color>;
+        constexpr auto circle_shape = sct::tag<c::circle_shape>;
+        constexpr auto life = sct::tag<c::life>;
+    }
+
     namespace actions
     {
         void accelerate(ft dt, c::velocity& v, const c::acceleration& a)
@@ -119,8 +132,8 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& v = ecst::get<c::velocity>(data, eid);
-                        const auto& c = ecst::get<c::curve>(data, eid);
+                        auto& v = data.get(ct::velocity, eid);
+                        const auto& c = data.get(ct::curve, eid);
                         actions::curve(dt, v, c);
                     });
             }
@@ -152,9 +165,9 @@ namespace example
 
                 data.for_entities([this, &va, &data](auto eid)
                     {
-                        const auto& p = ecst::get<c::position>(data, eid);
-                        // const auto& c = ecst::get<c::color>(data, eid);
-                        auto& cs = ecst::get<c::circle_shape>(data, eid);
+                        const auto& p = data.get(ct::position, eid);
+                        // const auto& c = data.get(ct::color, eid);
+                        auto& cs = data.get(ct::circle_shape, eid);
 
                         // actions::update_circle(cs, p, c);
 
@@ -199,8 +212,8 @@ namespace example
 
                 data.for_entities([&](auto eid)
                     {
-                        auto& v = ecst::get<c::velocity>(data, eid);
-                        const auto& a = ecst::get<c::acceleration>(data, eid);
+                        auto& v = data.get(ct::velocity, eid);
+                        const auto& a = data.get(ct::acceleration, eid);
                         actions::accelerate(dt, v, a);
                     });
             }
@@ -224,8 +237,8 @@ namespace example
 
                 data.for_entities([&](auto eid)
                     {
-                        auto& p = ecst::get<c::position>(data, eid);
-                        const auto& v = ecst::get<c::velocity>(data, eid);
+                        auto& p = data.get(ct::position, eid);
+                        const auto& v = data.get(ct::velocity, eid);
                         actions::move(dt, p, v);
                     });
             }
@@ -244,7 +257,7 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& l = ecst::get<c::life>(data, eid);
+                        auto& l = data.get(ct::life, eid);
                         actions::hurt(dt, l);
 
                         if(l._v <= 0.f)
@@ -267,9 +280,9 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        const auto& l = ecst::get<c::life>(data, eid);
-                        // auto& c = ecst::get<c::color>(data, eid);
-                        auto& cs = ecst::get<c::circle_shape>(data, eid);
+                        const auto& l = data.get(ct::life, eid);
+                        // auto& c = data.get(ct::color, eid);
+                        auto& cs = data.get(ct::circle_shape, eid);
                         // actions::fade(c, cs, l);
 
                         (void)l;

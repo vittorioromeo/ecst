@@ -59,7 +59,6 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                             utils::execute_split_runtime(
                                 inst.subscribed_count(), per_split, split_count,
                                 run_subtask);
-                            ;
                         });
                 }
             };

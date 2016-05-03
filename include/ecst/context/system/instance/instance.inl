@@ -201,5 +201,38 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     execute_single(xsp, f);
                 })(ctx);
     }
+
+    template <typename TSettings, typename TSystemSignature>
+    auto& instance<TSettings, TSystemSignature>::system() noexcept
+    {
+        return _system;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    const auto& instance<TSettings, TSystemSignature>::system() const noexcept
+    {
+        return _system;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    const auto& instance<TSettings, TSystemSignature>::bitset() const noexcept
+    {
+        return _bitset;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TBitset>
+    auto instance<TSettings, TSystemSignature>::matches_bitset(const TBitset& b)
+        const noexcept
+    {
+        return _bitset.contains(b);
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    auto instance<TSettings, TSystemSignature>::subscribed_count()
+        const noexcept
+    {
+        return this->subscribed().size();
+    }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

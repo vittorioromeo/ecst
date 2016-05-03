@@ -46,6 +46,18 @@ namespace example
 
     namespace c = example::component;
 
+    namespace ct
+    {
+        namespace sct = ecst::signature::component;
+
+        constexpr auto position = sct::tag<c::position>;
+        constexpr auto velocity = sct::tag<c::velocity>;
+        constexpr auto acceleration = sct::tag<c::acceleration>;
+        constexpr auto counter = sct::tag<c::counter>;
+        // constexpr auto countable = sct::tag<c::countable>;
+    }
+
+
     namespace actions
     {
         void accelerate(c::velocity& v, const c::acceleration& a)
@@ -75,8 +87,8 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& v = ecst::get<c::velocity>(data, eid);
-                        const auto& a = ecst::get<c::acceleration>(data, eid);
+                        auto& v = data.get(ct::velocity, eid);
+                        const auto& a = data.get(ct::acceleration, eid);
                         actions::accelerate(v, a);
                     });
             }
@@ -89,8 +101,8 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& p = ecst::get<c::position>(data, eid);
-                        const auto& v = ecst::get<c::velocity>(data, eid);
+                        auto& p = data.get(ct::position, eid);
+                        const auto& v = data.get(ct::velocity, eid);
                         actions::move(p, v);
                     });
             }
@@ -103,7 +115,7 @@ namespace example
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& c = ecst::get<c::counter>(data, eid);
+                        auto& c = data.get(ct::counter, eid);
                         actions::count(c);
                     });
             }

@@ -17,21 +17,11 @@
 #include <ecst/settings.hpp>
 #include <ecst/context/types.hpp>
 
-ECST_NAMESPACE
-{
-    // TODO: move, add tag overload
-    template <typename TComponent, typename TExecuteData>
-    decltype(auto) ECST_PURE_FN get(TExecuteData & data, entity_id eid)
-    {
-        return data.template get<TComponent>(eid);
-    }
-}
-ECST_NAMESPACE_END
-
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
+        /// @brief "Data proxy".
         template <                       // .
             typename TSystemSignature,   // .
             typename TContext,           // .

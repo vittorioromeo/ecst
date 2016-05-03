@@ -15,6 +15,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         namespace state_manager
         {
+            // TODO: consider removing.
             /// @brief Dispatches the state manager type. (TODO)
             template <typename TSettings, typename TSystemSignature>
             using dispatch = multi_fixed<TSettings, TSystemSignature>;

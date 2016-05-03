@@ -34,7 +34,20 @@ namespace testbed
         };
     }
 
+    namespace ctags
+    {
+        constexpr auto position = // .
+            ecst::signature::component::tag<component::position>;
+
+        constexpr auto velocity = // .
+            ecst::signature::component::tag<component::velocity>;
+
+        constexpr auto acceleration = // .
+            ecst::signature::component::tag<component::acceleration>;
+    }
+
     namespace c = testbed::component;
+    namespace ct = testbed::ctags;
 
     namespace action
     {
@@ -64,8 +77,8 @@ namespace testbed
                     {
                         data.output() += 1;
 
-                        auto& p = ecst::get<c::position>(data, eid);
-                        const auto& v = ecst::get<c::velocity>(data, eid);
+                        auto& p = data.get(ct::position, eid);
+                        const auto& v = data.get(ct::velocity, eid);
 
                         action::move(p, v);
                     });
@@ -79,24 +92,12 @@ namespace testbed
             {
                 data.for_entities([&](auto eid)
                     {
-                        auto& v = ecst::get<c::velocity>(data, eid);
-                        const auto& a = ecst::get<c::acceleration>(data, eid);
+                        auto& v = data.get(ct::velocity, eid);
+                        const auto& a = data.get(ct::acceleration, eid);
                         action::accelerate(v, a);
                     });
             }
         };
-    }
-
-    namespace ctags
-    {
-        constexpr auto position = // .
-            ecst::signature::component::tag<component::position>;
-
-        constexpr auto velocity = // .
-            ecst::signature::component::tag<component::velocity>;
-
-        constexpr auto acceleration = // .
-            ecst::signature::component::tag<component::acceleration>;
     }
 
     namespace stags

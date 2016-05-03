@@ -28,6 +28,7 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
         {
             auto operator()() const noexcept
             {
+                ECST_ASSERT(ecst::hardware::status::core_count_known());
                 return ecst::hardware::status::core_count();
             }
         };

@@ -16,6 +16,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
 {
     namespace impl
     {
+        /// @brief Bitset wrapper class.
         template <typename TSettings>
         class data
         {

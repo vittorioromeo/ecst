@@ -20,6 +20,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         namespace state_manager
         {
+            /// @brief State manager with a fixed storage.
+            /// @details "State storages" are stored in an `std::array`.
             template <typename TSettings, typename TSystemSignature>
             class multi_fixed
             {
@@ -39,6 +41,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             private:
                 std::array<state_storage_type, max_subtask_count()> _ss_arr;
+
+                // Number of currently prepared (in use) states.
                 sz_t _prepared = 0;
 
             public:

@@ -6,11 +6,12 @@
 #pragma once
 
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
+#include "./data.hpp"
 
-#define ECST_THREADING_USE_STD 1
-
-#ifdef ECST_THREADING_USE_STD
-#include "./threading/std.hpp"
-#else
-#include "./threading/boost.hpp"
-#endif
+ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+{
+    template <typename TSettings>
+    using dispatch = impl::data<TSettings>;
+}
+ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
