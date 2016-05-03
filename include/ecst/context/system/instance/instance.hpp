@@ -125,8 +125,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             >
         auto make_data(                    // .
             TFEntityProvider&& f_ep,       // .
+            sz_t ep_count,                 // .
+                                           // .
             TFAllEntityProvider&& f_aep,   // .
+            sz_t ae_count,                 // .
+                                           // .
             TFOtherEntityProvider&& f_oep, // .
+            sz_t oe_count,                 // .
+                                           // .
             TContext& ctx,                 // .
             TFStateGetter&& sg             // .
             );
@@ -160,8 +166,26 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto nth_subscribed(sz_t n) noexcept;
         auto& nth_state(sz_t n) noexcept;
 
+        /// @brief Number of entities provided by `make_all_entity_provider()`.
+        auto all_entity_count() const noexcept;
+
+        /// @brief Number of entities provided by
+        /// `make_entity_range_provider()`.
+        auto entity_range_count(sz_t i_begin, sz_t i_end) const noexcept;
+
+        /// @brief Number of entities provided by
+        /// `make_other_entity_range_provider()`.
+        auto other_entity_range_count(sz_t i_begin, sz_t i_end) const noexcept;
+
+        /// @brief Returns an object that executes a function on all entities.
         auto make_all_entity_provider() noexcept;
+
+        /// @brief Returns an object that executes a function on a range subset
+        /// of entities.
         auto make_entity_range_provider(sz_t i_begin, sz_t i_end) noexcept;
+
+        /// @brief Returns an object that executes a function on all entities
+        /// except a range subset of entities.
         auto make_other_entity_range_provider(
             sz_t i_begin, sz_t i_end) noexcept;
 

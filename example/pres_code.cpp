@@ -447,7 +447,7 @@ namespace example
                     {
                         for(const auto& x : out)
                         {
-                            // Access the first particle's data.
+                            // Access the f-Dirst particle's data.
                             auto& p0 = data.get(ct::position, x._e0)._v;
                             auto& v0 = data.get(ct::velocity, x._e0)._v;
                             const auto& r0 =
@@ -470,6 +470,10 @@ namespace example
         // The vertices will then be rendered in a later step.
         struct render_colored_circle
         {
+            static constexpr float tau = 6.28f;
+            static constexpr sz_t precision = 5;
+            static constexpr float inc = tau / precision;
+
             template <typename TData>
             void process(TData& data)
             {
@@ -501,10 +505,6 @@ namespace example
                             va.emplace_back(p1, c);
                             va.emplace_back(p2, c);
                         };
-
-                        constexpr float tau = 6.28f;
-                        constexpr sz_t precision = 5;
-                        constexpr float inc = tau / precision;
 
                         // Build a circle.
                         for(sz_t i = 0; i < precision; ++i)

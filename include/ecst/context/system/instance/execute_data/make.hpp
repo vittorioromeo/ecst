@@ -21,9 +21,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             >
         auto ECST_PURE_FN make_execute_data(           // .
             TContext& context,                         // .
+                                                       // .
             TFForEntities&& f_for_entities,            // .
+            sz_t ep_count,                             // .
+                                                       // .
             TFForAllEntities&& f_for_all_entities,     // .
+            sz_t ae_count,                             // .
+                                                       // .
             TFForOtherEntities&& f_for_other_entities, // .
+            sz_t oe_count,                             // .
+                                                       // .
             TFStateGetter&& f_state_getter             // .
             ) noexcept
         {
@@ -37,9 +44,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 >                                 // .
                 {
                     context,                   // .
+                                               // .
                     FWD(f_for_entities),       // .
+                    ep_count,                  // .
+                                               // .
                     FWD(f_for_all_entities),   // .
+                    ae_count,                  // .
+                                               // .
                     FWD(f_for_other_entities), // .
+                    oe_count,                  // .
+                                               // .
                     FWD(f_state_getter)        // .
                 };
         }

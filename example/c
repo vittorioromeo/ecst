@@ -1,12 +1,12 @@
 #!/bin/bash
 
-g++ -std=c++14 \
-        -I"/home/vittorioromeo/OHWorkspace/ecs_thesis/project/include" \
+time g++ -std=c++14 \
+        -I"/home/vittorioromeo/OHWorkspace/ecst/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
         -fsanitize=undefined \
         -fsanitize=address \
-        -g3 \
+        -g \
         -O0 \
         -pedantic \
         -W \

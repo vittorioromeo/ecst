@@ -36,6 +36,28 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
+    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::all_entity_count()
+        const noexcept
+    {
+        return subscribed_count();
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::entity_range_count(
+        sz_t i_begin, sz_t i_end) const noexcept
+    {
+        return i_end - i_begin;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    auto ECST_PURE_FN instance<TSettings,
+        TSystemSignature>::other_entity_range_count(sz_t i_begin, sz_t i_end)
+        const noexcept
+    {
+        return (i_begin - 0) + (subscribed_count() - i_end);
+    }
+
+    template <typename TSettings, typename TSystemSignature>
     auto ECST_PURE_FN
     instance<TSettings, TSystemSignature>::make_all_entity_provider() noexcept
     {
@@ -92,17 +114,28 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         // Entity IDs provider functions.
         auto erp = make_entity_range_provider(i_begin, i_end);
-        auto oep = make_other_entity_range_provider(i_begin, i_end);
         auto aep = make_all_entity_provider();
+        auto oep = make_other_entity_range_provider(i_begin, i_end);
+
+        // Entity counts.
+        auto erc = entity_range_count(i_begin, i_end);
+        auto aec = all_entity_count();
+        auto oec = other_entity_range_count(i_begin, i_end);
 
         // Execution data instance.
         // The bound state instance is retrieved through`state_idx`.
         return make_data(   // .
             std::move(erp), // .
+            erc,            // .
+                            // .
             std::move(aep), // .
+            aec,            // .
+                            // .
             std::move(oep), // .
+            oec,            // .
+                            // .
             ctx,            // .
-            [this, state_idx]() -> decltype(auto)
+            [ this, state_idx ]() -> auto&
             {
                 return this->nth_state(state_idx);
             });

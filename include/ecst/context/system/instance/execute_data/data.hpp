@@ -44,6 +44,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             TFForOtherEntities _f_for_other_entities;
             TFStateGetter _f_state_getter;
 
+            sz_t _ep_count;
+            sz_t _ae_count;
+            sz_t _oe_count;
+
         public:
             template <                          // .
                 typename TFwdFForEntities,      // .
@@ -53,16 +57,26 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 >
             execute_data(                                     // .
                 TContext& context,                            // .
+                                                              // .
                 TFwdFForEntities&& f_for_entities,            // .
+                sz_t ep_count,                                // .
+                                                              // .
                 TFwdFForAllEntities&& f_for_all_entities,     // .
+                sz_t ae_count,                                // .
+                                                              // .
                 TFwdFForOtherEntities&& f_for_other_entities, // .
+                sz_t oe_count,                                // .
+                                                              // .
                 TFwdFStateGetter&& f_state_getter             // .
                 )
                 : _context(context),                                // .
                   _f_for_entities(FWD(f_for_entities)),             // .
                   _f_for_all_entities(FWD(f_for_all_entities)),     // .
                   _f_for_other_entities(FWD(f_for_other_entities)), // .
-                  _f_state_getter(FWD(f_state_getter))
+                  _f_state_getter(FWD(f_state_getter)),             // .
+                  _ep_count{ep_count},                              // .
+                  _ae_count{ae_count},                              // .
+                  _oe_count{oe_count}                               // .
             {
             }
 
@@ -92,6 +106,24 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             auto for_all_entities(TF&& f)
             {
                 return _f_for_all_entities(f);
+            }
+
+            /// @brief Count of entities of the current subtask.
+            auto entity_count() const noexcept
+            {
+                return _ep_count;
+            }
+
+            /// @brief Count of all entities in the system.
+            auto all_entity_count() const noexcept
+            {
+                return _ae_count;
+            }
+
+            /// @brief Count of entities not in the current subtask.
+            auto other_entity_count() const noexcept
+            {
+                return _oe_count;
             }
 
             template <typename TComponent>

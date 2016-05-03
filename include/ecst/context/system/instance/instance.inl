@@ -96,8 +96,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         >
     auto instance<TSettings, TSystemSignature>::make_data( // .
         TFEntityProvider && f_ep,                          // .
+        sz_t ep_count,                                     // .
+                                                           // .
         TFAllEntityProvider && f_aep,                      // .
+        sz_t ae_count,                                     // .
+                                                           // .
         TFOtherEntityProvider && f_oep,                    // .
+        sz_t oe_count,                                     // .
+                                                           // .
         TContext & ctx,                                    // .
         TFStateGetter && sg                                // .
         )
@@ -116,9 +122,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         return impl::make_execute_data<TSystemSignature> // .
             (                                            // .
                 ctx,                                     // .
+                                                         // .
                 make_entity_id_adapter(FWD(f_ep)),       // .
+                ep_count,                                // .
+                                                         // .
                 make_entity_id_adapter(FWD(f_aep)),      // .
+                ae_count,                                // .
+                                                         // .
                 make_entity_id_adapter(FWD(f_oep)),      // .
+                oe_count,                                // .
+                                                         // .
                 FWD(sg)                                  // .
                 );
     }
@@ -159,17 +172,23 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         _sm.clear_and_prepare(1);
 
-        // TODO: refactor
+        // TODO: refactor/create `single_execute_data`.
         auto data = make_data(          // .
             make_all_entity_provider(), // .
+            all_entity_count(),         // .
+                                        // .
             make_all_entity_provider(), // .
-            [](auto&&...)
-            {
-            },
+            all_entity_count(),         // .
+                                        // .
+            [](auto&&...)               // .
+            {                           // .
+            },                          // .
+            0,                          // .
+                                        // .
             ctx,
-            [this]() -> decltype(auto)
+            [this]() -> auto&
             {
-                return _sm.get(0);
+                return this->_sm.get(0);
             });
 
         f(_system, data);
@@ -229,7 +248,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    auto instance<TSettings, TSystemSignature>::subscribed_count()
+    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::subscribed_count()
         const noexcept
     {
         return this->subscribed().size();
