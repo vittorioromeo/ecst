@@ -108,11 +108,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TFStateGetter && sg                                // .
         )
     {
-        auto make_entity_id_adapter = [](auto&& f)
+        // `mutable` to allow implementations to be `mutable` as well.
+        auto make_entity_id_adapter = [](auto&& f) mutable
         {
-            return [f = FWD(f)](auto&& g)
+            return [f = FWD(f)](auto&& g) mutable
             {
-                return f([g = FWD(g)](auto id)
+                return f([g = FWD(g)](auto id) mutable
                     {
                         return g(entity_id(id));
                     });

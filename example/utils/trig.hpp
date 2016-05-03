@@ -9,6 +9,29 @@
 #include <vrm/core/type_aliases.hpp>
 #include <vrm/core/assert.hpp>
 
+// #define EXAMPLE_USE_STD_FLOOR_CEIL 1
+
+template <typename T>
+constexpr auto VRM_CORE_CONST_FN fFloor(T x) noexcept
+{
+#ifdef EXAMPLE_USE_STD_FLOOR_CEIL
+    return std::floor(x);
+#else
+    return (float)(long)x;
+#endif
+}
+
+template <typename T>
+constexpr auto VRM_CORE_CONST_FN fCeil(T x) noexcept
+{
+#ifdef EXAMPLE_USE_STD_FLOOR_CEIL
+    return std::ceil(x);
+#else
+    return (float)(long)(x + 1);
+
+#endif
+}
+
 namespace example
 {
     namespace vrmc = vrm::core;

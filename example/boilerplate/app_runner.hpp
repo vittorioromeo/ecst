@@ -38,8 +38,10 @@ namespace example
                     _window.create(sf::VideoMode(width, height), title,
                         sf::Style::Default);
 
+#ifdef EXAMPLE_LIMIT_FRAMERATE
                     _window.setVerticalSyncEnabled(true);
                     _window.setFramerateLimit(60);
+#endif
 
                     _app = std::make_unique<T>(_window, FWD(xs)...);
                 };

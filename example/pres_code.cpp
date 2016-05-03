@@ -3,6 +3,7 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
+// #define EXAMPLE_LIMIT_FRAMERATE 1
 #include "./utils/dependencies.hpp"
 
 // The following example consists in a particle simulations. All particles are
@@ -313,7 +314,7 @@ namespace example
             // From world coordinates to cell index.
             auto idx(float x) noexcept
             {
-                return (x / cell_size);
+                return x / cell_size;
             }
 
             // Returns the cell containing the position `p`.
@@ -332,14 +333,14 @@ namespace example
                 auto top = p.y - r;
                 auto bottom = p.y + r;
 
-                auto s_ix = std::floor(idx(left));
-                auto e_ix = std::ceil(idx(right));
-                auto s_iy = std::floor(idx(top));
-                auto e_iy = std::ceil(idx(bottom));
+                auto s_ix = fFloor(idx(left));
+                auto e_ix = fCeil(idx(right));
+                auto s_iy = fFloor(idx(top));
+                auto e_iy = fCeil(idx(bottom));
 
-                for(auto ix(s_ix - 1); ix <= e_ix; ++ix)
+                for(auto ix(s_ix); ix <= e_ix; ++ix)
                 {
-                    for(auto iy(s_iy - 1); iy <= e_iy; ++iy)
+                    for(auto iy(s_iy); iy <= e_iy; ++iy)
                     {
                         f(ix, iy);
                     }
