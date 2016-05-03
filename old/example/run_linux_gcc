@@ -1,0 +1,31 @@
+#!/bin/bash
+
+g++ -std=c++14 \
+        -Ofast \
+        -DNDEBUG \
+        -I"/home/vittorioromeo/OHWorkspace/ecs_thesis/project/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
+        -pedantic \
+        -W \
+        -Wall \
+        -Wextra \
+        -Wno-unused-local-typedefs \
+        -Wwrite-strings \
+        -Wundef \
+        -Wno-missing-field-initializers \
+        -Wpointer-arith \
+        -Wcast-align \
+        -Wno-unreachable-code \
+        -Wnon-virtual-dtor \
+        -Woverloaded-virtual \
+        -Wsuggest-final-types \
+        -Wsuggest-final-methods \
+        -Wsuggest-override \
+        -Wsequence-point \
+        -lpthread \
+        -g3 \
+        -lsfml-system \
+        -lsfml-graphics \
+        -lsfml-window \
+        $1 -o /tmp/x.x && /tmp/x.x "${@:2}"

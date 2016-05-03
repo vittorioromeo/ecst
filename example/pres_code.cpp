@@ -516,8 +516,8 @@ namespace example
         };
     }
 
-    // Compile-time `std::size_t` entity count.
-    constexpr auto entity_count = ecst::sz_v<50000>;
+    // Compile-time `std::size_t` entity limit.
+    constexpr auto entity_limit = ecst::sz_v<50000>;
 
     // Compile-time initial particle count.
     constexpr auto initial_particle_count = ecst::sz_v<20000>;
@@ -686,7 +686,6 @@ namespace example
         auto& cp = proxy.add_component(ct::position, eid);
         cp._v = position;
 
-
         auto& cclr = proxy.add_component(ct::color, eid);
         cclr._v = sfc(rndf(0, 255), rndf(0, 255), rndf(0, 255), 255);
 
@@ -778,7 +777,7 @@ int main()
     // Define ECST context settings.
     constexpr auto s = ecst::settings::make(            // .
         cs::multithreaded(cs::allow_inner_parallelism), // .
-        cs::fixed<entity_count>,                        // .
+        cs::fixed<entity_limit>,                        // .
         make_csl(),                                     // .
         make_ssl(),                                     // .
         cs::scheduler<ss::s_atomic_counter>             // .

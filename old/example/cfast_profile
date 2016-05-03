@@ -1,0 +1,20 @@
+#!/bin/bash
+
+g++ -std=c++14 \
+        -I"/home/vittorioromeo/OHWorkspace/ecs_thesis/project/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
+        -W \
+        -Wall \
+        -Wextra \
+        -Ofast \
+        -pedantic \
+        -DNDEBUG \
+        -lpthread \
+        -lsfml-system \
+        -lsfml-graphics \
+        -lsfml-window \
+        -g \
+        -march=native \
+        -ftime-report \
+        $1 -o /tmp/x.x && echo "Compiled." && /tmp/x.x "${@:2}"

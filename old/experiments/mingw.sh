@@ -1,0 +1,1 @@
+g++ -std=c++14 -I"C:/boost/include/boost-1_60/boost" -I"C:/OHWorkspace/vrm_pp/include" -I"C:/OHWorkspace/vrm_core/include" -I"C:/OHWorkspace/ecs_thesis/project/include" -I"C:/OHWorkspace/thread-pool-cpp/include" -lboost_system -lboost_thread -lboost_chrono -o x.exe && ./x.exe

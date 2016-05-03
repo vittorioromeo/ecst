@@ -1,0 +1,60 @@
+depenendencies  |  dependents
+----------------|-------------
+[F]             :  [end]
+[D, E]          :  [F]
+[B, C]          :  [D]
+[A]             :  [E, C, B]
+[begin]         :  [A]
+
+// TODO: how to deal with forks?
+fn expand(node n)
+{
+    if(n == begin)
+    {
+        return n;
+    }
+    else
+    {
+        return when_all(expand(dependencies(n))).then(n);
+    }
+}
+
+expand(end)
+when_all(expand(F)).then(end)
+when_all(when_all(expand(D, E)).then(F)).then(end)
+when_all(when_all(when_all(expand(B, C, A)).then(D)).then(F)).then(end)
+when_all(when_all(when_all(when_all(A).then(E, C, B)).then(D)).then(F)).then(end)
+
+
+// First pass:
+// Convert everything to `when_all(...).then(...)` notation
+when_all(F).then(end)
+when_all(D, E).then(F)
+when_all(B, C).then(D)
+when_all(A).then(E, C, B)
+when_all(begin).then(A)
+
+// Second pass:
+// Solve linear (trivial) transformations
+when_all(D, E).then(
+    when_all(F).then(end)
+)
+when_all(B, C).then(D)
+when_all(
+    when_all(begin).then(A)
+).then(E, C, B)
+
+// Third pass:
+// Solve fork/join transformations
+when_all(
+    when_all(begin).then(A)
+).then(
+    when_all(
+        E, 
+        when_all(B, C).then(D)
+    ).then(
+        when_all(F).then(end)
+    )   
+)
+
+// All tasks are only mentioned once.
