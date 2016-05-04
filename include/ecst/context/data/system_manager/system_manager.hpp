@@ -70,11 +70,8 @@ ECST_CONTEXT_NAMESPACE
             auto& instance_by_id(TID) noexcept;
 
         protected:
-            template <typename TContext, typename TF>
-            void execute_systems(TContext&, TF&& f);
-
             template <typename TContext, typename... TFs>
-            void execute_systems_overload(TContext&, TFs&&... fs);
+            void execute_systems(TContext&, TFs&&... fs);
 
         public:
             template <typename TSystem, typename TF>

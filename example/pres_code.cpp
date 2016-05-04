@@ -683,67 +683,53 @@ namespace example
     {
         ctx.step([&rt, dt](auto& proxy)
             {
-                proxy.system(st::spatial_partition).clear_cells();
-
-                // TODO: move to system_manager
-                auto adapt = [](auto st, auto&& f)
-                {
-                    using system_type = // .
-                        ecst::signature::system::unwrap_tag<decltype(st)>;
-
-                    return [&f](system_type& s, auto& executor)
-                    {
-                        executor.for_subtasks([&s, &f](auto& data)
-                            {
-                                f(s, data);
-                            });
-                    };
-                };
-
                 // TODO: rename in system_manager
-                proxy.execute_systems_overload( // .
-                    adapt(st::acceleration,
+                proxy.execute_systems( // .
+                    proxy.for_every_subtask(st::acceleration,
                         [dt](auto& s, auto& data)
                         {
                             s.process(dt, data);
                         }),
-                    adapt(st::velocity,
+                    proxy.for_every_subtask(st::velocity,
                         [dt](auto& s, auto& data)
                         {
                             s.process(dt, data);
                         }),
-                    adapt(st::keep_in_bounds,
+                    proxy.for_every_subtask(st::keep_in_bounds,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    [&proxy](s::spatial_partition& s, auto& executor)
-                    {
-                        executor.for_subtasks([&s](auto& data)
-                            {
-                                s.process(data);
-                            });
+                    proxy.detailed(st::spatial_partition,
+                        [&proxy](auto& s, auto& executor)
+                        {
+                            s.clear_cells();
 
-                        proxy.instance(st::spatial_partition)
-                            .for_outputs([](auto& s, auto& sp_vector)
+                            executor.for_subtasks([&s](auto& data)
                                 {
-                                    for(const auto& x : sp_vector)
-                                    {
-                                        s.add_sp(x);
-                                    }
+                                    s.process(data);
                                 });
-                    },
-                    adapt(st::collision,
+
+                            proxy.instance(st::spatial_partition)
+                                .for_outputs([](auto& xs, auto& sp_vector)
+                                    {
+                                        for(const auto& x : sp_vector)
+                                        {
+                                            xs.add_sp(x);
+                                        }
+                                    });
+                        }),
+                    proxy.for_every_subtask(st::collision,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    adapt(st::solve_contacts,
+                    proxy.for_every_subtask(st::solve_contacts,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    adapt(st::render_colored_circle, // .
+                    proxy.for_every_subtask(st::render_colored_circle,
                         [](auto& s, auto& data)
                         {
                             s.process(data);

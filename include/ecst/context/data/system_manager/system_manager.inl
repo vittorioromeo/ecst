@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <vrm/core/overload.hpp>
+#include <ecst/aliases.hpp>
 #include "../defer.hpp"
 #include "./system_manager.hpp"
 
@@ -77,19 +77,11 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TContext, typename TF>
-        void system_manager<TSettings>::execute_systems(
-            TContext& context, TF&& f)
-        {
-            _system_runner.execute(context, FWD(f));
-        }
-
-        template <typename TSettings>
         template <typename TContext, typename... TFs>
-        void system_manager<TSettings>::execute_systems_overload(
+        void system_manager<TSettings>::execute_systems(
             TContext& context, TFs&&... fs)
         {
-            execute_systems(context, vrmc::make_overload(FWD(fs)...));
+            _system_runner.execute(context, make_overload(FWD(fs)...));
         }
 
         template <typename TSettings>

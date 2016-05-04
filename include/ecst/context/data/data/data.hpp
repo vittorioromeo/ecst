@@ -38,9 +38,6 @@ ECST_CONTEXT_NAMESPACE
 
             refresh_state_type _refresh_state;
 
-            auto& as_system_manager() noexcept;
-            const auto& as_system_manager() const noexcept;
-
         public:
             data() = default;
             ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(data);
@@ -63,13 +60,6 @@ ECST_CONTEXT_NAMESPACE
 
             /// @brief Refreshes the context.
             void refresh();
-
-        private:
-            template <typename TF>
-            void execute_systems(TF&& f);
-
-            template <typename... TFs>
-            void execute_systems_overload(TFs&&... fs);
 
         public:
             template <typename TF>

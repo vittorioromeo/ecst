@@ -22,17 +22,11 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
-            template <typename TF>
-            void proxy<TSettings>::execute_systems(TF&& f)
-            {
-                this->context().execute_systems(FWD(f));
-            }
-
-            template <typename TSettings>
             template <typename... TFs>
-            void proxy<TSettings>::execute_systems_overload(TFs&&... fs)
+            auto proxy<TSettings>::execute_systems(TFs&&... fs)
             {
-                this->context().execute_systems_overload(FWD(fs)...);
+                return this->context().execute_systems(
+                    this->context(), FWD(fs)...);
             }
         }
     }

@@ -16,33 +16,6 @@ ECST_CONTEXT_NAMESPACE
         using handle = ecst::context::entity::impl::handle;
 
         template <typename TSettings>
-        auto& ECST_CONST_FN data<TSettings>::as_system_manager() noexcept
-        {
-            return vrmc::to_base<system_manager<settings_type>>(*this);
-        }
-
-        template <typename TSettings>
-        const auto& ECST_CONST_FN data<TSettings>::as_system_manager() const
-            noexcept
-        {
-            return vrmc::to_base<system_manager<settings_type>>(*this);
-        }
-
-        template <typename TSettings>
-        template <typename TF>
-        void data<TSettings>::execute_systems(TF&& f)
-        {
-            as_system_manager().execute_systems(*this, FWD(f));
-        }
-
-        template <typename TSettings>
-        template <typename... TFs>
-        void data<TSettings>::execute_systems_overload(TFs&&... fs)
-        {
-            as_system_manager().execute_systems_overload(*this, FWD(fs)...);
-        }
-
-        template <typename TSettings>
         template <typename TF>
         auto data<TSettings>::step(TF&& f)
         {
