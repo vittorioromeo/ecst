@@ -685,6 +685,7 @@ namespace example
             {
                 proxy.system(st::spatial_partition).clear_cells();
 
+                // TODO: move to system_manager
                 auto adapt = [](auto st, auto&& f)
                 {
                     using system_type = // .
@@ -699,6 +700,7 @@ namespace example
                     };
                 };
 
+                // TODO: rename in system_manager
                 proxy.execute_systems_overload( // .
                     adapt(st::acceleration,
                         [dt](auto& s, auto& data)
