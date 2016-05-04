@@ -49,7 +49,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 
             template <typename TSelf>
             decltype(auto) add_impl(
-                TSelf&& self, entity_id eid, const metadata&) noexcept
+                TSelf&& self, entity_id eid, metadata&) noexcept
             {
                 auto i = self.entity_id_to_index(eid);
                 return vrmc::forward_like<TSelf>(_data[i]);

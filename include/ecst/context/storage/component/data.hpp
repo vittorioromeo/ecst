@@ -62,18 +62,19 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 decltype(auto) c(self.template chunk_for<TComponent>());
                 using metadata = chunk::metadata<std::decay_t<decltype(c)>>;
 
-                return f(c, eid, std::get<metadata>(ecm));
+                auto& chunk_md = std::get<metadata>(ecm);
+                return f(c, eid, chunk_md);
             }
 
             template <typename TComponent, typename TSelf,
                 typename TEntityChunkMetadata>
             decltype(auto) get_impl(
-                TSelf&& self, entity_id eid, TEntityChunkMetadata& ecm)
+                TSelf&& self, entity_id eid, const TEntityChunkMetadata& ecm)
             {
                 return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
-                    [](auto& xc, auto&&... xs) -> decltype(auto)
+                    [](auto& xc, auto x_eid, const auto& x_md) -> decltype(auto)
                     {
-                        return xc.get(FWD(xs)...);
+                        return xc.get(x_eid, x_md);
                     });
             }
 
@@ -88,9 +89,9 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                     );
 
                 return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
-                    [](auto& zc, auto&&... xs) -> decltype(auto)
+                    [](auto& zc, auto z_eid, auto& z_md) -> decltype(auto)
                     {
-                        return zc.add(FWD(xs)...);
+                        return zc.add(z_eid, z_md);
                     });
             }
 
