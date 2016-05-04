@@ -161,7 +161,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TCounterBlocker & cb, TData & data, TF && f               // .
         )
     {
-        f(_system, data);
+        f(data);
         decrement_cv_counter_and_notify_all(cb);
     }
 
@@ -192,7 +192,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return this->_sm.get(0);
             });
 
-        f(_system, data);
+        f(data);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -205,21 +205,77 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         _parallel_executor.execute(*this, ctx, f);
     }
 
+    // TODO: docs/refactor
+    template <typename TInstance, typename TFExecution>
+    struct executor_helper
+    {
+        TInstance& _instance;
+        TFExecution _execution;
+
+        template <typename TFwdFExecution>
+        executor_helper(TInstance& instance,
+            TFwdFExecution&& execution) noexcept : _instance{instance},
+                                                   _execution(FWD(execution))
+        {
+        }
+
+        template <typename TF>
+        auto for_subtasks(TF&& f) noexcept
+        {
+            return _execution(f);
+        }
+
+        auto& instance() noexcept
+        {
+            return _instance;
+        }
+
+        const auto& instance() const noexcept
+        {
+            return _instance;
+        }
+
+        auto& system() noexcept
+        {
+            return _instance.system();
+        }
+
+        const auto& system() const noexcept
+        {
+            return _instance.system();
+        }
+    };
+
+    // TODO: docs/refactor
+    template <typename TInstance, typename... TFs>
+    auto make_executor_helper(TInstance & instance, TFs && ... fs) noexcept
+    {
+        return executor_helper<TInstance, std::decay_t<TFs>...>{
+            instance, FWD(fs)...};
+    }
+
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
         TContext & ctx, TF && f                          // .
         )
     {
-        static_if(settings::inner_parallelism_allowed<TSettings>())
-            .then([this, &f](auto& xsp)
-                {
-                    execute_in_parallel(xsp, f);
-                })
-            .else_([this, &f](auto& xsp)
-                {
-                    execute_single(xsp, f);
-                })(ctx);
+        auto execution = [this, &ctx](auto&& sb_f)
+        {
+            return static_if(settings::inner_parallelism_allowed<TSettings>())
+                .then([this, &sb_f](auto& xsp)
+                    {
+                        return this->execute_in_parallel(xsp, sb_f);
+                    })
+                .else_([this, &sb_f](auto& xsp)
+                    {
+                        return this->execute_single(xsp, sb_f);
+                    })(ctx);
+        };
+
+        // TODO: docs/refactor
+        auto eh = make_executor_helper(*this, std::move(execution));
+        f(_system, eh);
     }
 
     template <typename TSettings, typename TSystemSignature>

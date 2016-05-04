@@ -39,15 +39,10 @@
 //   (inner parallelism allowed)
 //   (depends on: Keep in bounds)
 //
-// * Spatial filler: reads the pairs produced by Spatial partition and fills
-//                   the 2D grid data structure.
-//   (inner parallelism disallowed)
-//   (depends on: Spatial partition)
-//
 // * Collision: detects collisions between particles and produces lists of
 //              contacts that will be later evaluated to solve the collisions.
 //   (inner parallelism allowed)
-//   (depends on: Spatial filler)
+//   (depends on: Spatial partition)
 //
 // * Solve contacts: reads the contacts produced by Collision and solves them
 //                   by moving particles and changing their velocities.
@@ -164,7 +159,6 @@ namespace example
     EXAMPLE_SYSTEM_TAG(velocity);
     EXAMPLE_SYSTEM_TAG(keep_in_bounds);
     EXAMPLE_SYSTEM_TAG(spatial_partition);
-    EXAMPLE_SYSTEM_TAG(spatial_filler);
     EXAMPLE_SYSTEM_TAG(collision);
     EXAMPLE_SYSTEM_TAG(solve_contacts);
     EXAMPLE_SYSTEM_TAG(render_colored_circle);
@@ -367,24 +361,6 @@ namespace example
                             {
                                 o.emplace_back(eid, cx, cy);
                             });
-                    });
-            }
-        };
-
-        // This single-threaded system fills the spatial partitioning data
-        // structure.
-        struct spatial_filler
-        {
-            template <typename TData>
-            void execute(TData& data)
-            {
-                data.for_previous_outputs(st::spatial_partition,
-                    [](auto& s, auto& sp_vector)
-                    {
-                        for(const auto& x : sp_vector)
-                        {
-                            s.add_sp(x);
-                        }
                     });
             }
         };
@@ -605,23 +581,13 @@ namespace example
                     ss::output::data<std::vector<sp_data>> // .
                     );
 
-            // Spatial partition spatial_filler system.
-            // * Singlethreaded.
-            constexpr auto ssig_spatial_filler =          // .
-                ss::make<s::spatial_filler>(              // .
-                    none,                                 // .
-                    ss::depends_on<s::spatial_partition>, // .
-                    ss::no_component_use,                 // .
-                    ss::output::none                      // .
-                    );
-
             // Collision detection system.
             // * Multithreaded.
             // * Output: `std::vector<contact>`.
             constexpr auto ssig_collision =                // .
                 ss::make<s::collision>(                    // .
                     par,                                   // .
-                    ss::depends_on<s::spatial_filler>,     // .
+                    ss::depends_on<s::spatial_partition>,  // .
                     ss::component_use(                     // .
                         ss::mutate<c::velocity>,           // .
                         ss::mutate<c::position>,           // .
@@ -665,7 +631,6 @@ namespace example
                 ssig_velocity,             // .
                 ssig_keep_in_bounds,       // .
                 ssig_spatial_partition,    // .
-                ssig_spatial_filler,       // .
                 ssig_collision,            // .
                 ssig_solve_contacts,       // .
                 ssig_render_colored_circle // .
@@ -720,39 +685,67 @@ namespace example
             {
                 proxy.system(st::spatial_partition).clear_cells();
 
+                auto adapt = [](auto st, auto&& f)
+                {
+                    using system_type = // .
+                        ecst::signature::system::unwrap_tag<decltype(st)>;
+
+                    return [&f](system_type& s, auto& executor)
+                    {
+                        executor.for_subtasks([&s, &f](auto& data)
+                            {
+                                f(s, data);
+                            });
+                    };
+                };
+
                 proxy.execute_systems_overload( // .
-                    [dt](s::acceleration& s, auto& data)
+                    adapt(st::acceleration,
+                        [dt](auto& s, auto& data)
+                        {
+                            s.process(dt, data);
+                        }),
+                    adapt(st::velocity,
+                        [dt](auto& s, auto& data)
+                        {
+                            s.process(dt, data);
+                        }),
+                    adapt(st::keep_in_bounds,
+                        [](auto& s, auto& data)
+                        {
+                            s.process(data);
+                        }),
+                    [&proxy](s::spatial_partition& s, auto& executor)
                     {
-                        s.process(dt, data);
+                        executor.for_subtasks([&s](auto& data)
+                            {
+                                s.process(data);
+                            });
+
+                        proxy.instance(st::spatial_partition)
+                            .for_outputs([](auto& s, auto& sp_vector)
+                                {
+                                    for(const auto& x : sp_vector)
+                                    {
+                                        s.add_sp(x);
+                                    }
+                                });
                     },
-                    [dt](s::velocity& s, auto& data)
-                    {
-                        s.process(dt, data);
-                    },
-                    [](s::keep_in_bounds& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::spatial_partition& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::spatial_filler& s, auto& data)
-                    {
-                        s.execute(data);
-                    },
-                    [](s::collision& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::solve_contacts& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::render_colored_circle& s, auto& data)
-                    {
-                        s.process(data);
-                    });
+                    adapt(st::collision,
+                        [](auto& s, auto& data)
+                        {
+                            s.process(data);
+                        }),
+                    adapt(st::solve_contacts,
+                        [](auto& s, auto& data)
+                        {
+                            s.process(data);
+                        }),
+                    adapt(st::render_colored_circle, // .
+                        [](auto& s, auto& data)
+                        {
+                            s.process(data);
+                        }));
 
                 proxy.for_system_outputs(st::render_colored_circle,
                     [&rt](auto&, auto& va)

@@ -50,6 +50,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
+        using this_type = instance<TSettings, TSystemSignature>;
+
         system_type _system;
         state_manager_type _sm;
         set_type _subscribed;
