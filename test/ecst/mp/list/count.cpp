@@ -101,7 +101,7 @@ constexpr void t4()
         (list::cat_unique(                       // .
             list::make(iv<0>, iv<1>, iv<2>),     // .
             list::make(iv<1>, iv<2>, iv<3>)      // .
-            )),                                  //.
+            )),                                  // .
         (list::make(iv<0>, iv<1>, iv<2>, iv<3>)) // .
         );
 }

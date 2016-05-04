@@ -6,5 +6,4 @@
 #pragma once
 
 // TODO: rewrite my own fixed function
-#pragma GCC system_header
 #include "./fixed_function/fixed_function.hpp"

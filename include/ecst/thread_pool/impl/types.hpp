@@ -15,7 +15,7 @@ namespace etp
     using ecst::sz_t;
     using ecst::movable_atomic;
 
-    using task = FixedFunction<void(), 128>;
+    using task = ecst::fixed_function<void(), 128>;
     using task_queue = moodycamel::BlockingConcurrentQueue<task>;
     using task_queue_consumer_token = moodycamel::ConsumerToken;
     using task_queue_producer_token = moodycamel::ProducerToken;

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-time clang++ -std=c++14 \
+time g++ -std=c++14 \
         -I"/home/vittorioromeo/OHWorkspace/ecst/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \

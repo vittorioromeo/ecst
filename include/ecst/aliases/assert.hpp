@@ -19,6 +19,9 @@
 /// @macro Static assertion. Does not require a message.
 #define ECST_S_ASSERT(...) VRM_CORE_STATIC_ASSERT_NM(__VA_ARGS__)
 
+/// @macro Static assertion with message.
+#define ECST_S_ASSERT_M(...) VRM_CORE_STATIC_ASSERT(__VA_ARGS__)
+
 /// @macro Statically asserts the passed variadic arguments, after wrapping them
 /// in `decltype(...){}`.
 #define ECST_S_ASSERT_DT(...) ECST_S_ASSERT(decltype(__VA_ARGS__){})
