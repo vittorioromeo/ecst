@@ -33,30 +33,11 @@ ECST_CONTEXT_NAMESPACE
                 template <typename... TFs>
                 auto execute_systems(TFs&&... fs);
 
-                // TODO:
                 template <typename TSystemTag, typename TF>
-                auto detailed(TSystemTag st, TF&& f) noexcept
-                {
-                    using system_type = // .
-                        ecst::signature::system::unwrap_tag<decltype(st)>;
-
-                    return [f = FWD(f)](system_type & s, auto& executor)
-                    {
-                        f(s, executor);
-                    };
-                }
+                auto detailed(TSystemTag st, TF&& f) noexcept;
 
                 template <typename TSystemTag, typename TF>
-                auto for_every_subtask(TSystemTag st, TF&& f) noexcept
-                {
-                    return detailed(st, [f = FWD(f)](auto& s, auto& executor)
-                        {
-                            executor.for_subtasks([&s, &f](auto& data)
-                                {
-                                    f(s, data);
-                                });
-                        });
-                }
+                auto for_every_subtask(TSystemTag st, TF&& f) noexcept;
             };
         }
     }

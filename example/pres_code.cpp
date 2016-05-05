@@ -683,7 +683,6 @@ namespace example
     {
         ctx.step([&rt, dt](auto& proxy)
             {
-                // TODO: rename in system_manager
                 proxy.execute_systems( // .
                     proxy.for_every_subtask(st::acceleration,
                         [dt](auto& s, auto& data)

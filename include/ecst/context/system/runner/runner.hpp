@@ -35,6 +35,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             _scheduler.initialize(ss);
         }
 
+        // TODO: add starting_system parameter and static assert independency
         template <             // .
             typename TContext, // .
             typename TF        // .

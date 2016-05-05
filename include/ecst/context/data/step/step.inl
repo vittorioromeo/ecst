@@ -28,6 +28,33 @@ ECST_CONTEXT_NAMESPACE
                 return this->context().execute_systems(
                     this->context(), FWD(fs)...);
             }
+
+            // TODO:
+            template <typename TSettings>
+            template <typename TSystemTag, typename TF>
+            auto proxy<TSettings>::detailed(TSystemTag, TF&& f) noexcept
+            {
+                using system_type = signature::system::unwrap_tag<TSystemTag>;
+
+                return [f = FWD(f)](system_type & s, auto& executor)
+                {
+                    f(s, executor);
+                };
+            }
+
+            template <typename TSettings>
+            template <typename TSystemTag, typename TF>
+            auto proxy<TSettings>::for_every_subtask(
+                TSystemTag st, TF&& f) noexcept
+            {
+                return detailed(st, [f = FWD(f)](auto& s, auto& executor)
+                    {
+                        executor.for_subtasks([&s, &f](auto& data)
+                            {
+                                f(s, data);
+                            });
+                    });
+            }
         }
     }
 }
