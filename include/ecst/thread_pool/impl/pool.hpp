@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <vector>
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
 #include "./types.hpp"

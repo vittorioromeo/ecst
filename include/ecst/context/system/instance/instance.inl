@@ -87,6 +87,45 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
+    template <                     // .
+        typename TFEntityProvider, // .
+        typename TContext,         // .
+        typename TFStateGetter     // .
+        >
+    auto instance<TSettings, TSystemSignature>::make_single_data( // .
+        TFEntityProvider && f_ep,                                 // .
+        sz_t ep_count,                                            // .
+                                                                  // .
+        TContext & ctx,                                           // .
+        TFStateGetter && sg                                       // .
+        )
+    {
+        // TODO: refactor, repetition
+        // `mutable` to allow implementations to be `mutable` as well.
+        auto make_entity_id_adapter = [](auto&& f) mutable
+        {
+            return [f = FWD(f)](auto&& g) mutable
+            {
+                return f([g = FWD(g)](auto id) mutable
+                    {
+                        return g(entity_id(id));
+                    });
+            };
+        };
+
+        auto ed_functions = impl::make_single_execute_data_functions( // .
+            make_entity_id_adapter(FWD(f_ep)),                        // .
+            FWD(sg)                                                   // .
+            );
+
+        return impl::make_single_execute_data<TSystemSignature>( // .
+            ctx,                                                 // .
+            std::move(ed_functions),                             // .
+            ep_count                                             // .
+            );
+    }
+
+    template <typename TSettings, typename TSystemSignature>
     template <                          // .
         typename TFEntityProvider,      // .
         typename TFAllEntityProvider,   // .
@@ -108,6 +147,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TFStateGetter && sg                                // .
         )
     {
+        // TODO: refactor, repetition
         // `mutable` to allow implementations to be `mutable` as well.
         auto make_entity_id_adapter = [](auto&& f) mutable
         {
@@ -120,21 +160,20 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             };
         };
 
-        return impl::make_execute_data<TSystemSignature> // .
-            (                                            // .
-                ctx,                                     // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_ep)),       // .
-                ep_count,                                // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_aep)),      // .
-                ae_count,                                // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_oep)),      // .
-                oe_count,                                // .
-                                                         // .
-                FWD(sg)                                  // .
-                );
+        auto ed_functions = impl::make_execute_data_functions( // .
+            make_entity_id_adapter(FWD(f_ep)),                 // .
+            make_entity_id_adapter(FWD(f_aep)),                // .
+            make_entity_id_adapter(FWD(f_oep)),                // .
+            FWD(sg)                                            // .
+            );
+
+        return impl::make_execute_data<TSystemSignature>( // .
+            ctx,                                          // .
+            std::move(ed_functions),                      // .
+            ep_count,                                     // .
+            ae_count,                                     // .
+            oe_count                                      // .
+            );
     }
 
 
@@ -171,22 +210,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                                 // .
         )
     {
+        std::cout << "essingle\n";
         _sm.clear_and_prepare(1);
 
         // TODO: refactor/create `single_execute_data`.
-        auto data = make_data(          // .
+        auto data = make_single_data(   // .
             make_all_entity_provider(), // .
             all_entity_count(),         // .
-                                        // .
-            make_all_entity_provider(), // .
-            all_entity_count(),         // .
-                                        // .
-            [](auto&&...)               // .
-            {                           // .
-            },                          // .
-            0,                          // .
-                                        // .
-            ctx,
+            ctx,                        // .
             [this]() -> auto&
             {
                 return this->_sm.get(0);
@@ -205,7 +236,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         _parallel_executor.execute(*this, ctx, f);
     }
 
-    // TODO: docs/refactor
+    // TODO: move/docs/refactor
     template <typename TInstance, typename TFExecution>
     struct executor_helper
     {
@@ -260,6 +291,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                          // .
         )
     {
+        // TODO: extract
         auto execution = [this, &ctx](auto&& sb_f)
         {
             return static_if(settings::inner_parallelism_allowed<TSettings>())
@@ -276,9 +308,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // TODO: docs/refactor
         auto eh = make_executor_helper(*this, std::move(execution));
 
+        // TODO: remove
         auto t = ecst::chrono::high_resolution_clock::now();
         std::cout << "starting...\n";
+
         f(_system, eh);
+
+        // TODO: remove
         auto tt = ecst::chrono::high_resolution_clock::now() - t;
         auto ttt = ecst::chrono::duration_cast<
             ecst::chrono::duration<float, std::milli>>(tt);

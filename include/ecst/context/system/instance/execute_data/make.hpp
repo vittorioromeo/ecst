@@ -11,51 +11,80 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
+        template <                  // .
+            typename TFForEntities, // .
+            typename TFStateGetter  // .
+            >
+        auto ECST_PURE_FN make_single_execute_data_functions( // .
+            TFForEntities&& f_for_entities,                   // .
+            TFStateGetter&& f_state_getter                    // .
+            ) noexcept
+        {
+            struct single_execute_data_functions
+            {
+                TFForEntities _f_for_entities;
+                TFStateGetter _f_state_getter;
+            };
+
+            return single_execute_data_functions{
+                FWD(f_for_entities), // .
+                FWD(f_state_getter)  // .
+            };
+        }
+
+        template <                     // .
+            typename TSystemSignature, // .
+            typename TContext,         // .
+            typename TEDFunctions,     // .
+            typename... Ts             // .
+            >
+        auto ECST_PURE_FN make_single_execute_data( // .
+            TContext& ctx, TEDFunctions&& functions, Ts&&... xs)
+        {
+            return single_execute_data<TSystemSignature, TContext,
+                TEDFunctions>(ctx, std::move(functions), FWD(xs)...);
+        }
+
         template <                       // .
-            typename TSystemSignature,   // .
-            typename TContext,           // .
             typename TFForEntities,      // .
             typename TFForAllEntities,   // .
             typename TFForOtherEntities, // .
             typename TFStateGetter       // .
             >
-        auto ECST_PURE_FN make_execute_data(           // .
-            TContext& context,                         // .
-                                                       // .
+        auto ECST_PURE_FN make_execute_data_functions( // .
             TFForEntities&& f_for_entities,            // .
-            sz_t ep_count,                             // .
-                                                       // .
             TFForAllEntities&& f_for_all_entities,     // .
-            sz_t ae_count,                             // .
-                                                       // .
             TFForOtherEntities&& f_for_other_entities, // .
-            sz_t oe_count,                             // .
-                                                       // .
             TFStateGetter&& f_state_getter             // .
             ) noexcept
         {
-            return execute_data<                  // .
-                TSystemSignature,                 // .
-                TContext,                         // .
-                std::decay_t<TFForEntities>,      // .
-                std::decay_t<TFForAllEntities>,   // .
-                std::decay_t<TFForOtherEntities>, // .
-                std::decay_t<TFStateGetter>       // .
-                >                                 // .
-                {
-                    context,                   // .
-                                               // .
-                    FWD(f_for_entities),       // .
-                    ep_count,                  // .
-                                               // .
-                    FWD(f_for_all_entities),   // .
-                    ae_count,                  // .
-                                               // .
-                    FWD(f_for_other_entities), // .
-                    oe_count,                  // .
-                                               // .
-                    FWD(f_state_getter)        // .
-                };
+            struct execute_data_functions
+            {
+                TFForEntities _f_for_entities;
+                TFForAllEntities _f_for_all_entities;
+                TFForOtherEntities _f_for_other_entities;
+                TFStateGetter _f_state_getter;
+            };
+
+            return execute_data_functions{
+                FWD(f_for_entities),       // .
+                FWD(f_for_all_entities),   // .
+                FWD(f_for_other_entities), // .
+                FWD(f_state_getter)        // .
+            };
+        }
+
+        template <                     // .
+            typename TSystemSignature, // .
+            typename TContext,         // .
+            typename TEDFunctions,     // .
+            typename... Ts             // .
+            >
+        auto ECST_PURE_FN make_execute_data( // .
+            TContext& ctx, TEDFunctions&& functions, Ts&&... xs)
+        {
+            return execute_data<TSystemSignature, TContext, TEDFunctions>(
+                ctx, std::move(functions), FWD(xs)...);
         }
     }
 }

@@ -118,6 +118,20 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
+        template <                     // .
+            typename TFEntityProvider, // .
+            typename TContext,         // .
+            typename TFStateGetter     // .
+            >
+        auto make_single_data(       // .
+            TFEntityProvider&& f_ep, // .
+            sz_t ep_count,           // .
+                                     // .
+            TContext& ctx,           // .
+            TFStateGetter&& sg       // .
+            );
+
+
         template <                          // .
             typename TFEntityProvider,      // .
             typename TFAllEntityProvider,   // .
