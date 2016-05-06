@@ -687,6 +687,7 @@ namespace example
                     proxy.for_every_subtask(st::acceleration,
                         [dt](auto& s, auto& data)
                         {
+
                             s.process(dt, data);
                         }),
                     proxy.for_every_subtask(st::velocity,

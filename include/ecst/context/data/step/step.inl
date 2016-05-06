@@ -29,7 +29,7 @@ ECST_CONTEXT_NAMESPACE
                     this->context(), FWD(fs)...);
             }
 
-            // TODO:
+            // TODO: maybe free functions?
             template <typename TSettings>
             template <typename TSystemTag, typename TF>
             auto proxy<TSettings>::detailed(TSystemTag, TF&& f) noexcept

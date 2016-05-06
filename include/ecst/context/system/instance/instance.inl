@@ -275,7 +275,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // TODO: docs/refactor
         auto eh = make_executor_helper(*this, std::move(execution));
+
+        auto t = ecst::chrono::high_resolution_clock::now();
+        std::cout << "starting...\n";
         f(_system, eh);
+        auto tt = ecst::chrono::high_resolution_clock::now() - t;
+        auto ttt = ecst::chrono::duration_cast<
+            ecst::chrono::duration<float, std::milli>>(tt);
+        std::cout << "finished: " << ttt.count() << "\n\n";
     }
 
     template <typename TSettings, typename TSystemSignature>
