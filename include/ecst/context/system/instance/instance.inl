@@ -7,6 +7,8 @@
 
 #include <ecst/hardware.hpp>
 #include "./instance.hpp"
+#include "./executor_proxy.hpp"
+#include "./data_proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -87,97 +89,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <                     // .
-        typename TFEntityProvider, // .
-        typename TContext,         // .
-        typename TFStateGetter     // .
-        >
-    auto instance<TSettings, TSystemSignature>::make_single_data( // .
-        TFEntityProvider && f_ep,                                 // .
-        sz_t ep_count,                                            // .
-                                                                  // .
-        TContext & ctx,                                           // .
-        TFStateGetter && sg                                       // .
-        )
-    {
-        // TODO: refactor, repetition
-        // `mutable` to allow implementations to be `mutable` as well.
-        auto make_entity_id_adapter = [](auto&& f) mutable
-        {
-            return [f = FWD(f)](auto&& g) mutable
-            {
-                return f([g = FWD(g)](auto id) mutable
-                    {
-                        return g(entity_id(id));
-                    });
-            };
-        };
-
-        auto ed_functions = impl::make_single_execute_data_functions( // .
-            make_entity_id_adapter(FWD(f_ep)),                        // .
-            FWD(sg)                                                   // .
-            );
-
-        return impl::make_single_execute_data<TSystemSignature>( // .
-            ctx,                                                 // .
-            std::move(ed_functions),                             // .
-            ep_count                                             // .
-            );
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    template <                          // .
-        typename TFEntityProvider,      // .
-        typename TFAllEntityProvider,   // .
-        typename TFOtherEntityProvider, // .
-        typename TContext,              // .
-        typename TFStateGetter          // .
-        >
-    auto instance<TSettings, TSystemSignature>::make_data( // .
-        TFEntityProvider && f_ep,                          // .
-        sz_t ep_count,                                     // .
-                                                           // .
-        TFAllEntityProvider && f_aep,                      // .
-        sz_t ae_count,                                     // .
-                                                           // .
-        TFOtherEntityProvider && f_oep,                    // .
-        sz_t oe_count,                                     // .
-                                                           // .
-        TContext & ctx,                                    // .
-        TFStateGetter && sg                                // .
-        )
-    {
-        // TODO: refactor, repetition
-        // `mutable` to allow implementations to be `mutable` as well.
-        auto make_entity_id_adapter = [](auto&& f) mutable
-        {
-            return [f = FWD(f)](auto&& g) mutable
-            {
-                return f([g = FWD(g)](auto id) mutable
-                    {
-                        return g(entity_id(id));
-                    });
-            };
-        };
-
-        auto ed_functions = impl::make_execute_data_functions( // .
-            make_entity_id_adapter(FWD(f_ep)),                 // .
-            make_entity_id_adapter(FWD(f_aep)),                // .
-            make_entity_id_adapter(FWD(f_oep)),                // .
-            FWD(sg)                                            // .
-            );
-
-        return impl::make_execute_data<TSystemSignature>( // .
-            ctx,                                          // .
-            std::move(ed_functions),                      // .
-            ep_count,                                     // .
-            ae_count,                                     // .
-            oe_count                                      // .
-            );
-    }
-
-
-    template <typename TSettings, typename TSystemSignature>
     template <typename TF>
     void instance<TSettings, TSystemSignature>::prepare_and_wait_n_subtasks(
         sz_t n, TF && f)
@@ -210,20 +121,22 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                                 // .
         )
     {
-        std::cout << "essingle\n";
         _sm.clear_and_prepare(1);
 
-        // TODO: refactor/create `single_execute_data`.
-        auto data = make_single_data(   // .
-            make_all_entity_provider(), // .
-            all_entity_count(),         // .
-            ctx,                        // .
-            [this]() -> auto&
-            {
-                return this->_sm.get(0);
-            });
+        // Create single-subtask data proxy.
+        auto dp = data_proxy::make_single<TSystemSignature>( // .
+            data_proxy::make_single_functions(               // .
+                make_all_entity_provider(),                  // .
+                [this]() -> auto&                            // .
+                {                                            // .
+                    return this->_sm.get(0);                 // .
+                }                                            // .
+                ),                                           // .
+            ctx,                                             // .
+            all_entity_count()                               // .
+            );
 
-        f(data);
+        f(dp);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -236,53 +149,26 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         _parallel_executor.execute(*this, ctx, f);
     }
 
-    // TODO: move/docs/refactor
-    template <typename TInstance, typename TFExecution>
-    struct executor_helper
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TContext>
+    auto instance<TSettings, TSystemSignature>::execution_dispatch(
+        TContext & ctx) noexcept
     {
-        TInstance& _instance;
-        TFExecution _execution;
-
-        template <typename TFwdFExecution>
-        executor_helper(TInstance& instance,
-            TFwdFExecution&& execution) noexcept : _instance{instance},
-                                                   _execution(FWD(execution))
-        {
-        }
-
-        template <typename TF>
-        auto for_subtasks(TF&& f) noexcept
-        {
-            return _execution(f);
-        }
-
-        auto& instance() noexcept
-        {
-            return _instance;
-        }
-
-        const auto& instance() const noexcept
-        {
-            return _instance;
-        }
-
-        auto& system() noexcept
-        {
-            return _instance.system();
-        }
-
-        const auto& system() const noexcept
-        {
-            return _instance.system();
-        }
-    };
-
-    // TODO: docs/refactor
-    template <typename TInstance, typename... TFs>
-    auto make_executor_helper(TInstance & instance, TFs && ... fs) noexcept
-    {
-        return executor_helper<TInstance, std::decay_t<TFs>...>{
-            instance, FWD(fs)...};
+        return static_if(settings::inner_parallelism_allowed<TSettings>())
+            .then([this, &ctx]
+                {
+                    return [this, &ctx](auto&& sb_f)
+                    {
+                        return this->execute_in_parallel(ctx, FWD(sb_f));
+                    };
+                })
+            .else_([this, &ctx]
+                {
+                    return [this, &ctx](auto&& sb_f)
+                    {
+                        return this->execute_single(ctx, FWD(sb_f));
+                    };
+                })();
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -291,34 +177,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                          // .
         )
     {
-        // TODO: extract
-        auto execution = [this, &ctx](auto&& sb_f)
-        {
-            return static_if(settings::inner_parallelism_allowed<TSettings>())
-                .then([this, &sb_f](auto& xsp)
-                    {
-                        return this->execute_in_parallel(xsp, sb_f);
-                    })
-                .else_([this, &sb_f](auto& xsp)
-                    {
-                        return this->execute_single(xsp, sb_f);
-                    })(ctx);
-        };
-
-        // TODO: docs/refactor
-        auto eh = make_executor_helper(*this, std::move(execution));
-
         // TODO: remove
-        auto t = ecst::chrono::high_resolution_clock::now();
-        std::cout << "starting...\n";
+        // auto t = ecst::chrono::high_resolution_clock::now();
+        // std::cout << "starting...\n";
 
+        auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
         f(_system, eh);
 
         // TODO: remove
-        auto tt = ecst::chrono::high_resolution_clock::now() - t;
-        auto ttt = ecst::chrono::duration_cast<
-            ecst::chrono::duration<float, std::milli>>(tt);
-        std::cout << "finished: " << ttt.count() << "\n\n";
+        // auto tt = ecst::chrono::high_resolution_clock::now() - t;
+        // auto ttt = ecst::chrono::duration_cast<
+        //     ecst::chrono::duration<float, std::milli>>(tt);
+        // std::cout << "finished: " << ttt.count() << "\n\n";
     }
 
     template <typename TSettings, typename TSystemSignature>

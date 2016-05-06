@@ -118,41 +118,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
-        template <                     // .
-            typename TFEntityProvider, // .
-            typename TContext,         // .
-            typename TFStateGetter     // .
-            >
-        auto make_single_data(       // .
-            TFEntityProvider&& f_ep, // .
-            sz_t ep_count,           // .
-                                     // .
-            TContext& ctx,           // .
-            TFStateGetter&& sg       // .
-            );
-
-
-        template <                          // .
-            typename TFEntityProvider,      // .
-            typename TFAllEntityProvider,   // .
-            typename TFOtherEntityProvider, // .
-            typename TContext,              // .
-            typename TFStateGetter          // .
-            >
-        auto make_data(                    // .
-            TFEntityProvider&& f_ep,       // .
-            sz_t ep_count,                 // .
-                                           // .
-            TFAllEntityProvider&& f_aep,   // .
-            sz_t ae_count,                 // .
-                                           // .
-            TFOtherEntityProvider&& f_oep, // .
-            sz_t oe_count,                 // .
-                                           // .
-            TContext& ctx,                 // .
-            TFStateGetter&& sg             // .
-            );
-
         /// @brief Clears and allocates `n` subtask states.
         template <typename TF>
         void prepare_and_wait_n_subtasks(sz_t n, TF&& f);
@@ -172,6 +137,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// `_parallel_executor`.
         template <typename TContext, typename TF>
         void execute_in_parallel(TContext& ctx, TF&& f);
+
+        // TODO:
+        template <typename TContext>
+        auto execution_dispatch(TContext&) noexcept;
 
     public:
         template <typename TContext, typename TF>
@@ -204,10 +173,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// except a range subset of entities.
         auto make_other_entity_range_provider(
             sz_t i_begin, sz_t i_end) noexcept;
-
-        template <typename TContext>
-        auto make_entity_range_data(
-            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept;
 
         template <typename TCounterBlocker, typename TContext>
         auto make_slice_executor(TCounterBlocker& cb, TContext& ctx,

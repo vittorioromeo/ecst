@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "./instance/data_proxy.hpp"
-#include "./instance/instance.hpp"
-#include "./instance/instance.inl"
-#include "./instance/instance_subtask.inl"
+#include "./impl/base.hpp"
+#include "./impl/single.hpp"
+#include "./impl/multi.hpp"
