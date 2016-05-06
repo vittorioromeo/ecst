@@ -6,9 +6,22 @@
 #pragma once
 
 #include <vrm/core/utility_macros/likely_unlikely.hpp>
+#include <ecst/config/names.hpp>
+#include <ecst/aliases/attributes.hpp>
 
-/// @brief Micro-optimization: condition likely to be true.
-#define ECST_LIKELY(...) VRM_CORE_LIKELY(__VA_ARGS__)
+// TODO: implement as functions in vrm_core as well
+ECST_NAMESPACE
+{
+    /// @brief Micro-optimization: condition likely to be true.
+    ECST_ALWAYS_INLINE auto likely(bool x) noexcept
+    {
+        return VRM_CORE_LIKELY(x);
+    }
 
-/// @brief Micro-optimization: condition unlikely to be true.
-#define ECST_UNLIKELY(...) VRM_CORE_UNLIKELY(__VA_ARGS__)
+    /// @brief Micro-optimization: condition unlikely to be true.
+    ECST_ALWAYS_INLINE auto unlikely(bool x) noexcept
+    {
+        return VRM_CORE_UNLIKELY(x);
+    }
+}
+ECST_NAMESPACE_END

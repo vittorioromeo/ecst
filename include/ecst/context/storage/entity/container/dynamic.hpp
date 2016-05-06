@@ -76,7 +76,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 
             void grow_if_required()
             {
-                if(ECST_UNLIKELY(empty_free_ids()))
+                if(unlikely(empty_free_ids()))
                 {
                     grow();
                 }

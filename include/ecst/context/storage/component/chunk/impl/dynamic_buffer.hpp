@@ -69,7 +69,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 
             void grow_if_required(sz_t i)
             {
-                if(ECST_UNLIKELY(i >= _data.size()))
+                if(unlikely(i >= _data.size()))
                 {
                     grow_to(i);
                 }
