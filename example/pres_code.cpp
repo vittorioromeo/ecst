@@ -140,29 +140,32 @@ namespace example
         // With tags:
         data.get(ct::position, eid);
     */
+}
 
-    // Component tags, in namespace `example::ct`.
-    EXAMPLE_COMPONENT_TAG(acceleration);
-    EXAMPLE_COMPONENT_TAG(velocity);
-    EXAMPLE_COMPONENT_TAG(position);
-    EXAMPLE_COMPONENT_TAG(circle);
-    EXAMPLE_COMPONENT_TAG(color);
+// Component tags, in namespace `example::ct`.
+EXAMPLE_COMPONENT_TAG(acceleration);
+EXAMPLE_COMPONENT_TAG(velocity);
+EXAMPLE_COMPONENT_TAG(position);
+EXAMPLE_COMPONENT_TAG(circle);
+EXAMPLE_COMPONENT_TAG(color);
 
-    // A macro is used to define tags to suppress "unused variable" warnings and
-    // to avoid code repetition. Essentially, it expands to:
-    /*
-        constexpr auto x = ecst::signature::component::tag<c::x>;
-    */
+// A macro is used to define tags to suppress "unused variable" warnings and
+// to avoid code repetition. Essentially, it expands to:
+/*
+    constexpr auto x = ecst::signature::component::tag<c::x>;
+*/
 
-    // System tags, in namespace `example::st`.
-    EXAMPLE_SYSTEM_TAG(acceleration);
-    EXAMPLE_SYSTEM_TAG(velocity);
-    EXAMPLE_SYSTEM_TAG(keep_in_bounds);
-    EXAMPLE_SYSTEM_TAG(spatial_partition);
-    EXAMPLE_SYSTEM_TAG(collision);
-    EXAMPLE_SYSTEM_TAG(solve_contacts);
-    EXAMPLE_SYSTEM_TAG(render_colored_circle);
+// System tags, in namespace `example::st`.
+EXAMPLE_SYSTEM_TAG(acceleration);
+EXAMPLE_SYSTEM_TAG(velocity);
+EXAMPLE_SYSTEM_TAG(keep_in_bounds);
+EXAMPLE_SYSTEM_TAG(spatial_partition);
+EXAMPLE_SYSTEM_TAG(collision);
+EXAMPLE_SYSTEM_TAG(solve_contacts);
+EXAMPLE_SYSTEM_TAG(render_colored_circle);
 
+namespace example
+{
     // System definitions.
     namespace s
     {
@@ -398,11 +401,11 @@ namespace example
                                     data.get(ct::circle, eid2)._radius;
 
                                 // Check for a circle-circle collision.
-                                auto sd = squared_distance(p0, p1);
-                                if(sd <= square(r0 + r1))
+                                auto sd = distance(p0, p1);
+                                if(sd <= r0 + r1)
                                 {
                                     // Emplace a `contact` in the output.
-                                    out.emplace_back(eid, eid2, std::sqrt(sd));
+                                    out.emplace_back(eid, eid2, sd);
                                 }
                             });
                     });
@@ -437,7 +440,7 @@ namespace example
                                 data.get(ct::circle, x._e1)._radius;
 
                             // Solve.
-                            solve_penetration(x, p0, v0, r0, p1, v1, r1);
+                            solve_penetration(x._dist, p0, v0, r0, p1, v1, r1);
                         }
                     });
             }
@@ -497,7 +500,7 @@ namespace example
     constexpr auto entity_limit = ecst::sz_v<50000>;
 
     // Compile-time initial particle count.
-    constexpr auto initial_particle_count = ecst::sz_v<20000>;
+    constexpr auto initial_particle_count = ecst::sz_v<40000>;
 
     namespace ecst_setup
     {

@@ -179,7 +179,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         // TODO: remove
         // auto t = ecst::chrono::high_resolution_clock::now();
-        // std::cout << "starting...\n";
+        // std::cout << ecst::impl::system_name<system_type> << ": ";
 
         auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
         f(_system, eh);
@@ -188,7 +188,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // auto tt = ecst::chrono::high_resolution_clock::now() - t;
         // auto ttt = ecst::chrono::duration_cast<
         //     ecst::chrono::duration<float, std::milli>>(tt);
-        // std::cout << "finished: " << ttt.count() << "\n\n";
+        // std::cout << ttt.count() << "\n";
     }
 
     template <typename TSettings, typename TSystemSignature>

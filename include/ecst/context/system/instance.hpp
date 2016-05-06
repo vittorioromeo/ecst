@@ -7,5 +7,73 @@
 
 #include "./instance/data_proxy.hpp"
 #include "./instance/instance.hpp"
+
+// TODO: move
+#include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
+
+ECST_NAMESPACE
+{
+    namespace impl
+    {
+        using name_type = const char*;
+
+        template <typename TSystem>
+        constexpr impl::name_type system_name{"unnamed system"};
+
+        template <typename TComponent>
+        constexpr impl::name_type component_name{"unnamed component"};
+    }
+}
+ECST_NAMESPACE_END
+
+#define ECST_SPECIALIZE_SYSTEM_NAME(...)                                     \
+                                                                             \
+    namespace ecst                                                           \
+    {                                                                        \
+        namespace impl                                                       \
+        {                                                                    \
+            template <>                                                      \
+            constexpr name_type system_name<__VA_ARGS__>{                    \
+                VRM_PP_TOSTR(__VA_ARGS__)};                                  \
+                                                                             \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(                \
+                ws, __LINE__, warning_suppressor)()                          \
+            {                                                                \
+                (void) ecst::impl::system_name<__VA_ARGS__>;                 \
+            }                                                                \
+        }                                                                    \
+    }                                                                        \
+                                                                             \
+    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
+    {                                                                        \
+    }
+
+
+#define ECST_SPECIALIZE_COMPONENT_NAME(...)                                  \
+                                                                             \
+    namespace ecst                                                           \
+    {                                                                        \
+        namespace impl                                                       \
+        {                                                                    \
+            template <>                                                      \
+            constexpr name_type component_name<__VA_ARGS__>{                 \
+                VRM_PP_TOSTR(__VA_ARGS__)};                                  \
+                                                                             \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(                \
+                ws, __LINE__, warning_suppressor)()                          \
+            {                                                                \
+                (void) ecst::impl::component_name<__VA_ARGS__>;              \
+            }                                                                \
+        }                                                                    \
+    }                                                                        \
+                                                                             \
+    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
+    {                                                                        \
+    }
+
+
+
+// TODO: move up
 #include "./instance/instance.inl"
 #include "./instance/instance_subtask.inl"

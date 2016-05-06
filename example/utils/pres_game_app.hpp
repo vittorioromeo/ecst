@@ -19,7 +19,7 @@ namespace example
         using this_type = game_app;
         TContext& _ctx;
 
-        float _delay;
+        float _delay{0.f};
         bool _draw_grid{false}, _kill_pls{false};
 
         void init_loops()
