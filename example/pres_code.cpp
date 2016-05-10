@@ -500,7 +500,7 @@ namespace example
     constexpr auto entity_limit = ecst::sz_v<50000>;
 
     // Compile-time initial particle count.
-    constexpr auto initial_particle_count = ecst::sz_v<40000>;
+    constexpr auto initial_particle_count = ecst::sz_v<20000>;
 
     namespace ecst_setup
     {
