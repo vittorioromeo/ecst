@@ -43,7 +43,7 @@ namespace example
                     _window.setFramerateLimit(60);
 #endif
 
-                    _app = std::make_unique<T>(_window, FWD(xs)...);
+                    _app = std::unique_ptr<T>(new T(_window, xs...));
                 };
             }
 

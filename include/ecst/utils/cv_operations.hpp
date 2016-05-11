@@ -29,6 +29,7 @@ ECST_NAMESPACE
         impl::mutex_type _mutex;
         impl::counter_type _counter;
 
+        // TODO: add memory_order parameter, relaxed should be enough for initialization
         counter_blocker(sz_t initial_count) noexcept : _counter{initial_count}
         {
         }
