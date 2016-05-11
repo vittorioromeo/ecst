@@ -7,7 +7,8 @@
 
 #include <ecst/config.hpp>
 
-
+// TODO: remove
+/*
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -33,6 +34,7 @@ namespace std
 }
 
 #define _GLIBCXX_FUTURE 1
+*/
 
 #include <chrono>
 #include <thread>

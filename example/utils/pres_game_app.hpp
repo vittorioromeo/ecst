@@ -181,8 +181,14 @@ namespace example
                 auto real_dt =
                     std::chrono::duration_cast<ft_dur>(ce - cb).count();
 
+                // TODO:
+                auto fps = 1.0 / real_dt * 1000.0;
+
                 window().setTitle(
-                    std::string{"DT: "} + std::to_string(real_dt));
+                    std::string{"DT: "} + std::to_string(real_dt) +
+                            "  |  FPS: " + std::to_string(fps));
+
+
 
                 if(!_running)
                 {
