@@ -42,7 +42,6 @@ namespace std
 #include <mutex>
 #include <condition_variable>
 
-
 ECST_NAMESPACE
 {
     namespace this_thread = std::this_thread;
