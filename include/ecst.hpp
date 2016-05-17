@@ -32,6 +32,9 @@
 // Component and system signature lists.
 #include <ecst/signature_list.hpp>
 
+// System execution function adapters.
+#include <ecst/system_execution_adapter.hpp>
+
 // Thread pool utility class.
 #include <ecst/thread_pool.hpp>
 

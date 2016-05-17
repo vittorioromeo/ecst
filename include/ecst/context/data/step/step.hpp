@@ -9,36 +9,6 @@
 #include <ecst/aliases.hpp>
 #include "../defer.hpp"
 
-ECST_NAMESPACE
-{
-    // TODO: move and
-    // * detailed_all
-    // * detailed_matching(predicate)
-    // * detailed_by_tag(tag)
-
-    namespace system_execution_adapter
-    {
-        namespace tag
-        {
-            template <typename TSystemTag, typename TF>
-            auto detailed(TSystemTag st, TF&& f) noexcept;
-
-            template <typename TSystemTag, typename TF>
-            auto for_subtasks(TSystemTag st, TF&& f) noexcept;
-        }
-
-        namespace all
-        {
-            template <typename TF>
-            auto detailed(TF&& f) noexcept;
-
-            template <typename TF>
-            auto for_subtasks(TF&& f) noexcept;
-        }
-    }
-}
-ECST_NAMESPACE_END
-
 ECST_CONTEXT_NAMESPACE
 {
     namespace impl
