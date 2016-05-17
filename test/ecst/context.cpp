@@ -175,13 +175,16 @@ TEST_MAIN()
 
     test_cs(context_settings);
 
+
+    namespace sea = ::ecst::system_execution_adapter;
+
     auto ctx = ecst::context::make(context_settings);
     ctx.step([](auto& proxy)
         {
             // TODO:
             /*
             proxy.execute_systems(
-                proxy.detailed_all([&](auto& system, auto& executor)
+                sea::all::detailed([&](auto& system, auto& executor)
                     {
                         executor.for_subtasks([&](auto&)
                             {

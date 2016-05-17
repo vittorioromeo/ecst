@@ -283,17 +283,17 @@ namespace example
                         _hs_killed.emplace_back(h);
 
                         proxy.execute_systems( // .
-                            proxy.for_every_subtask(st::s0,
+                            sea::by_tag::for_subtasks(st::s0,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);
                                 }),
-                            proxy.for_every_subtask(st::s1,
+                            sea::by_tag::for_subtasks(st::s1,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);
                                 }),
-                            proxy.for_every_subtask(st::s01,
+                            sea::by_tag::for_subtasks(st::s01,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);

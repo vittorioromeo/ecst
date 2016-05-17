@@ -684,26 +684,28 @@ namespace example
     template <typename TContext, typename TRenderTarget>
     void update_ctx(TContext& ctx, TRenderTarget& rt, ft dt)
     {
+        namespace sea = ::ecst::system_execution_adapter;
+
         ctx.step([&rt, dt](auto& proxy)
             {
                 proxy.execute_systems( // .
-                    proxy.for_every_subtask(st::acceleration,
+                    sea::tag::for_subtasks(st::acceleration,
                         [dt](auto& s, auto& data)
                         {
 
                             s.process(dt, data);
                         }),
-                    proxy.for_every_subtask(st::velocity,
+                    sea::tag::for_subtasks(st::velocity,
                         [dt](auto& s, auto& data)
                         {
                             s.process(dt, data);
                         }),
-                    proxy.for_every_subtask(st::keep_in_bounds,
+                    sea::tag::for_subtasks(st::keep_in_bounds,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    proxy.detailed(st::spatial_partition,
+                    sea::tag::detailed(st::spatial_partition,
                         [&proxy](auto& s, auto& executor)
                         {
                             s.clear_cells();
@@ -722,17 +724,17 @@ namespace example
                                         }
                                     });
                         }),
-                    proxy.for_every_subtask(st::collision,
+                    sea::tag::for_subtasks(st::collision,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    proxy.for_every_subtask(st::solve_contacts,
+                    sea::tag::for_subtasks(st::solve_contacts,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    proxy.for_every_subtask(st::render_colored_circle,
+                    sea::tag::for_subtasks(st::render_colored_circle,
                         [](auto& s, auto& data)
                         {
                             s.process(data);
