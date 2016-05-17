@@ -10,4 +10,3 @@
 #include "aliases/threading.hpp"
 #include "aliases/vrmc.hpp"
 #include "aliases/bitset.hpp"
-#include "aliases/likely_unlikely.hpp"

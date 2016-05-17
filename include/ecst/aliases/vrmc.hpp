@@ -25,5 +25,7 @@ ECST_NAMESPACE
     using vrmc::static_if;
     using vrmc::for_tuple;
     using vrmc::make_overload;
+    using vrmc::likely;
+    using vrmc::unlikely;
 }
 ECST_NAMESPACE_END
