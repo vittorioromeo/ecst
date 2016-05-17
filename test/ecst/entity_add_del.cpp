@@ -54,7 +54,7 @@ namespace example
         constexpr auto velocity = sct::tag<c::velocity>;
         constexpr auto acceleration = sct::tag<c::acceleration>;
         constexpr auto counter = sct::tag<c::counter>;
-        // constexpr auto countable = sct::tag<c::countable>;
+        constexpr auto countable = sct::tag<c::countable>;
     }
 
 
@@ -121,6 +121,21 @@ namespace example
             }
         };
     }
+
+#define SYS_TAG(x)                                                  \
+    namespace system                                                \
+    {                                                               \
+        struct x;                                                   \
+    }                                                               \
+    namespace st                                                    \
+    {                                                               \
+        constexpr auto x = ecst::signature::system::tag<system::x>; \
+    }
+
+    SYS_TAG(acceleration)
+    SYS_TAG(velocity)
+    SYS_TAG(counter)
+
 
     namespace ecst_setup
     {
@@ -201,32 +216,31 @@ namespace example
                 auto e0 = proxy.create_entity();
                 ECST_ASSERT(ctx.alive(e0));
 
-                auto& e0_c_counter =
-                    proxy.template add_component<c::counter>(e0);
+                auto& e0_c_counter = proxy.add_component(ct::counter, e0);
                 (void)e0_c_counter;
-                proxy.template add_component<c::countable>(e0);
+                proxy.add_component(ct::countable, e0);
 
-                ECST_ASSERT(!ctx.template is_in_system<s::counter>(e0));
+                ECST_ASSERT(!ctx.is_in_system(st::counter, e0));
 
                 return e0;
             });
 
         ECST_ASSERT(ctx.alive(r_e0));
-        ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+        ECST_ASSERT(ctx.is_in_system(st::counter, r_e0));
 
         ctx.step([&ctx, r_e0](auto& proxy)
             {
                 ECST_ASSERT(ctx.alive(r_e0));
-                ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+                ECST_ASSERT(ctx.is_in_system(st::counter, r_e0));
 
                 proxy.kill_entity(r_e0);
 
                 ECST_ASSERT(ctx.alive(r_e0));
-                ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+                ECST_ASSERT(ctx.is_in_system(st::counter, r_e0));
             });
 
         ECST_ASSERT(ctx.alive(r_e0) == false);
-        ECST_ASSERT(!ctx.template is_in_system<s::counter>(r_e0));
+        ECST_ASSERT(!ctx.is_in_system(st::counter, r_e0));
     };
 }
 

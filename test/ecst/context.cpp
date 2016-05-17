@@ -178,11 +178,18 @@ TEST_MAIN()
     auto ctx = ecst::context::make(context_settings);
     ctx.step([](auto& proxy)
         {
-            proxy.execute_systems([](auto& system, auto&)
-                {
-                    std::cout << "Executing...\n";
-                    system.process(15);
-                    std::cout << "...finished.\n";
-                });
+            // TODO:
+            /*
+            proxy.execute_systems(
+                proxy.detailed_all([&](auto& system, auto& executor)
+                    {
+                        executor.for_subtasks([&](auto&)
+                            {
+                                std::cout << "Executing...\n";
+                                system.process(15);
+                                std::cout << "...finished.\n";
+                            });
+                    }));
+            */
         });
 }

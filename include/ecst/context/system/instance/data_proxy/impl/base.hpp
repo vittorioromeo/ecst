@@ -98,20 +98,15 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return _ep_count;
             }
 
-            template <typename TComponent>
-            decltype(auto) get(entity_id eid) noexcept
+            template <typename TComponentTag>
+            decltype(auto) get(TComponentTag ct, entity_id eid) noexcept
             {
                 // TODO: static assert validity!!!
-                return _context.template get_component<TComponent>(eid);
-            }
-
-            template <typename TComponentTag>
-            decltype(auto) get(TComponentTag, entity_id eid) noexcept
-            {
-                using component_type =
-                    signature::component::unwrap_tag<TComponentTag>;
-
-                return get<component_type>(eid);
+                return _context.get_component(ct, eid);
+                /*
+                    using component_type =
+                        signature::component::unwrap_tag<TComponentTag>;
+                */
             }
 
             template <typename TF>
@@ -134,32 +129,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return output_data();
             }
 
-            template <typename TSystem>
-            auto& system() noexcept
-            {
-                ECST_S_ASSERT_DT(can_get_output_of<TSystem>());
-                return _context.template system<TSystem>();
-            }
-
             template <typename TSystemTag>
-            auto& system(TSystemTag) noexcept
+            auto& system(TSystemTag st) noexcept
             {
-                using system_type = signature::system::unwrap_tag<TSystemTag>;
-                return system<system_type>();
-            }
-
-            template <typename TSystem, typename TF>
-            decltype(auto) for_previous_outputs(TF&& f) noexcept
-            {
-                ECST_S_ASSERT_DT(can_get_output_of<TSystem>());
-                return _context.template for_system_outputs<TSystem>(FWD(f));
+                return _context.system(st);
             }
 
             template <typename TSystemTag, typename TF>
-            decltype(auto) for_previous_outputs(TSystemTag, TF&& f) noexcept
+            decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept
             {
                 using system_type = signature::system::unwrap_tag<TSystemTag>;
-                return for_previous_outputs<system_type>(FWD(f));
+                ECST_S_ASSERT_DT(can_get_output_of<system_type>());
+                return _context.for_system_outputs(st, FWD(f));
             }
         };
     }

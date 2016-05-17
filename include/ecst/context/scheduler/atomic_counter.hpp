@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/context/scheduler/atomic_counter/task_dependency_data.hpp>
-#include <ecst/context/scheduler/atomic_counter/task.hpp>
-#include <ecst/context/scheduler/atomic_counter/task_group.hpp>
-#include <ecst/context/scheduler/atomic_counter/utils.hpp>
-#include <ecst/context/scheduler/atomic_counter/task.inl>
-#include <ecst/context/scheduler/atomic_counter/atomic_counter.hpp>
+#include "./atomic_counter/task_dependency_data.hpp"
+#include "./atomic_counter/task.hpp"
+#include "./atomic_counter/task_group.hpp"
+#include "./atomic_counter/utils.hpp"
+#include "./atomic_counter/task.inl"
+#include "./atomic_counter/atomic_counter.hpp"

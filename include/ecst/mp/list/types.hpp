@@ -14,6 +14,9 @@ ECST_MP_LIST_NAMESPACE
 {
     namespace impl
     {
+        // TODO: abstract tuple operations away, in order to quickly replace
+        // `std::tuple` with something else if required
+
         // A `type_list` is an `std::tuple`.
         template <typename... Ts>
         using type_list = std::tuple<Ts...>;

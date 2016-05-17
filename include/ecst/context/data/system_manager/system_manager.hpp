@@ -73,18 +73,12 @@ ECST_CONTEXT_NAMESPACE
             template <typename TContext, typename... TFs>
             void execute_systems(TContext&, TFs&&... fs);
 
-        public:
+        private:
             template <typename TSystem, typename TF>
             decltype(auto) for_system_outputs(TF&& f);
 
-            template <typename TSystemTag, typename TF>
-            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
-
             template <typename TSystem, typename TAcc, typename TF>
             auto foldl_system_outputs(TAcc acc, TF&& f);
-
-            template <typename TSystemTag, typename TAcc, typename TF>
-            auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
 
             template <typename TSystem>
             auto& instance() noexcept;
@@ -92,17 +86,33 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSystem>
             const auto& instance() const noexcept;
 
-            template <typename TSystemTag>
-            auto& instance(TSystemTag) noexcept;
-
-            template <typename TSystemTag>
-            const auto& instance(TSystemTag) const noexcept;
-
             template <typename TSystem>
             auto& system() noexcept;
 
             template <typename TSystem>
             const auto& system() const noexcept;
+
+            template <typename TSystem>
+            auto is_in_system(entity_id) const noexcept;
+
+            template <typename TSystem>
+            auto count_entities_in() const noexcept;
+
+            template <typename TSystem>
+            auto any_entity_in() const noexcept;
+
+        public:
+            template <typename TSystemTag, typename TF>
+            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
+
+            template <typename TSystemTag, typename TAcc, typename TF>
+            auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
+
+            template <typename TSystemTag>
+            auto& instance(TSystemTag) noexcept;
+
+            template <typename TSystemTag>
+            const auto& instance(TSystemTag) const noexcept;
 
             template <typename TSystemTag>
             auto& system(TSystemTag) noexcept;
@@ -110,20 +120,11 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSystemTag>
             const auto& system(TSystemTag) const noexcept;
 
-            template <typename TSystem>
-            auto is_in_system(entity_id) const noexcept;
-
             template <typename TSystemTag>
             auto is_in_system(TSystemTag, entity_id) const noexcept;
 
-            template <typename TSystem>
-            auto count_entities_in() const noexcept;
-
             template <typename TSystemTag>
             auto count_entities_in(TSystemTag) const noexcept;
-
-            template <typename TSystem>
-            auto any_entity_in() const noexcept;
 
             template <typename TSystemTag>
             auto any_entity_in(TSystemTag) const noexcept;

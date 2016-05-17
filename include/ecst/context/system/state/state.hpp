@@ -34,6 +34,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
+        // TODO: abstract in order to use either std::vector<function> or
+        // function_queue behind same interface
+
         /// @brief A "deferred function" is a void-returning `std::function`
         /// that takes a "defer proxy" by reference as its only parameter.
         template <typename TSettings>

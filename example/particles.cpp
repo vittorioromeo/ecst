@@ -116,17 +116,29 @@ namespace example
         }
     }
 
+
+#define SYS_TAG(x)                                                  \
+    namespace system                                                \
+    {                                                               \
+        struct x;                                                   \
+    }                                                               \
+    namespace st                                                    \
+    {                                                               \
+        constexpr auto x = ecst::signature::system::tag<system::x>; \
+    }
+
+    SYS_TAG(acceleration)
+    SYS_TAG(velocity)
+    SYS_TAG(curve)
+    SYS_TAG(fade)
+    SYS_TAG(life)
+    SYS_TAG(render_colored_circle)
+
+
     namespace system
     {
-
-
         struct curve
         {
-            static constexpr const char* name()
-            {
-                return "curve";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -142,12 +154,6 @@ namespace example
 
         struct render_colored_circle
         {
-            static constexpr const char* name()
-            {
-                return "render_colored_circle";
-            }
-
-
             void prepare()
             {
             }
@@ -196,14 +202,8 @@ namespace example
             }
         };
 
-        class acceleration
+        struct acceleration
         {
-        public:
-            static constexpr const char* name()
-            {
-                return "acceleration";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -222,16 +222,10 @@ namespace example
 
         struct velocity
         {
-            static constexpr const char* name()
-            {
-                return "velocity";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.template for_previous_outputs<acceleration>(
-                    [](auto&, auto&&)
+                data.for_previous_outputs(st::acceleration, [](auto&, auto&&)
                     {
                     });
 
@@ -247,11 +241,6 @@ namespace example
 
         struct life
         {
-            static constexpr const char* name()
-            {
-                return "life";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -270,11 +259,6 @@ namespace example
 
         struct fade
         {
-            static constexpr const char* name()
-            {
-                return "fade";
-            }
-
             template <typename TData>
             void process(TData& data)
             {
@@ -292,6 +276,8 @@ namespace example
             }
         };
     }
+
+
 
     constexpr auto entity_count = ecst::sz_v<1000000>;
 
@@ -461,27 +447,27 @@ namespace example
         {
             auto eid = proxy.create_entity();
 
-            auto& ca = proxy.template add_component<c::acceleration>(eid);
+            auto& ca = proxy.add_component(ct::acceleration, eid);
             ca._x = rndf(-2, 2);
             ca._y = rndf(-2, 2);
 
-            auto& cv = proxy.template add_component<c::velocity>(eid);
+            auto& cv = proxy.add_component(ct::velocity, eid);
             cv._x = rndf(-5, 5);
             cv._y = rndf(-5, 5);
 
-            auto& cp = proxy.template add_component<c::position>(eid);
+            auto& cp = proxy.add_component(ct::position, eid);
             cp._x = rndf(0, 1024);
             cp._y = rndf(0, 768);
 
-            auto& ccrv = proxy.template add_component<c::curve>(eid);
+            auto& ccrv = proxy.add_component(ct::curve, eid);
             ccrv._radians = rndf(-5, 5);
 
-            proxy.template add_component<c::color>(eid);
+            proxy.add_component(ct::color, eid);
 
-            auto& ccs = proxy.template add_component<c::circle_shape>(eid);
+            auto& ccs = proxy.add_component(ct::circle_shape, eid);
             (void)ccs;
 
-            auto& cl = proxy.template add_component<c::life>(eid);
+            auto& cl = proxy.add_component(ct::life, eid);
             static int x = 0;
 
             cl._v = 10 + x;
@@ -498,38 +484,43 @@ namespace example
 
             _ctx.step([this, dt](auto& proxy)
                 {
+                    proxy.system(st::render_colored_circle).prepare();
 
-                    proxy.template system<s::render_colored_circle>().prepare();
+                    proxy.execute_systems( // .
+                        proxy.for_every_subtask(st::acceleration,
+                            [dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            }),
+                        proxy.for_every_subtask(st::velocity,
+                            [dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            }),
+                        proxy.for_every_subtask(st::curve,
+                            [dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            }),
+                        proxy.for_every_subtask(st::life,
+                            [dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            }),
+                        proxy.for_every_subtask(st::fade,
+                            [](auto& s, auto& data)
+                            {
+                                s.process(data);
+                            }),
+                        proxy.for_every_subtask(st::render_colored_circle,
+                            [this, dt](auto& s, auto& data)
+                            {
+                                s.process(0, data);
+                            }));
 
-                    proxy.execute_systems_overload( // .
-                        [dt](s::acceleration& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::velocity& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::curve& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::life& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [](s::fade& s, auto& data)
-                        {
-                            s.process(data);
-                        },
-                        [this, dt](s::render_colored_circle& s, auto& data)
-                        {
-                            s.process(0, data);
-                        });
 
 
-
-                    if(!_ctx.template any_entity_in<s::life>())
+                    if(!_ctx.any_entity_in(st::life))
                     {
                         _running = false;
                     }

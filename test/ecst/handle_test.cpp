@@ -43,6 +43,22 @@ namespace example
 
     namespace system
     {
+        struct s0;
+        struct s1;
+        struct s01;
+    }
+
+    namespace st
+    {
+        namespace sct = ecst::signature::system;
+
+        constexpr auto s0 = sct::tag<system::s0>;
+        constexpr auto s1 = sct::tag<system::s1>;
+        constexpr auto s01 = sct::tag<system::s01>;
+    }
+
+    namespace system
+    {
         struct s0
         {
             template <typename TData>
@@ -204,10 +220,10 @@ namespace example
             auto eh = proxy.create_entity_and_handle();
             TEST_ASSERT(proxy.valid_handle(eh));
 
-            auto& cc0 = proxy.template add_component<c::c0>(proxy.access(eh));
+            auto& cc0 = proxy.add_component(ct::c0, proxy.access(eh));
             cc0._v = rndi(0, 10);
 
-            auto& cc1 = proxy.template add_component<c::c1>(proxy.access(eh));
+            auto& cc1 = proxy.add_component(ct::c1, proxy.access(eh));
             cc1._v = rndi(0, 10);
 
             TEST_ASSERT(proxy.valid_handle(eh));
@@ -240,7 +256,7 @@ namespace example
                     int to_kill;
                     handle h;
 
-                    if(!_ctx.template any_entity_in<s::s0>())
+                    if(!_ctx.any_entity_in(st::s0))
                     {
                         std::cout << "finished\n";
 
@@ -266,19 +282,22 @@ namespace example
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);
 
-                        proxy.execute_systems_overload( // .
-                            [](s::s0& s, auto& data)
-                            {
-                                s.process(data);
-                            },
-                            [](s::s1& s, auto& data)
-                            {
-                                s.process(data);
-                            },
-                            [](s::s01& s, auto& data)
-                            {
-                                s.process(data);
-                            });
+                        proxy.execute_systems( // .
+                            proxy.for_every_subtask(st::s0,
+                                [](auto& s, auto& data)
+                                {
+                                    s.process(data);
+                                }),
+                            proxy.for_every_subtask(st::s1,
+                                [](auto& s, auto& data)
+                                {
+                                    s.process(data);
+                                }),
+                            proxy.for_every_subtask(st::s01,
+                                [](auto& s, auto& data)
+                                {
+                                    s.process(data);
+                                }));
                     }
                 });
         }

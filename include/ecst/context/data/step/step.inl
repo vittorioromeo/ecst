@@ -31,6 +31,16 @@ ECST_CONTEXT_NAMESPACE
 
             // TODO: maybe free functions?
             template <typename TSettings>
+            template <typename TF>
+            auto proxy<TSettings>::detailed_all(TF&& f) noexcept
+            {
+                return [f = FWD(f)](auto& s, auto& executor)
+                {
+                    f(s, executor);
+                };
+            }
+
+            template <typename TSettings>
             template <typename TSystemTag, typename TF>
             auto proxy<TSettings>::detailed(TSystemTag, TF&& f) noexcept
             {

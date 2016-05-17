@@ -12,13 +12,31 @@ ECST_CONTEXT_NAMESPACE
     template <typename TSettings>
     auto make(TSettings)
     {
+        // TODO: ?
         return impl::data<TSettings>{};
+
+        /*
+        auto result = impl::data<TSettings>{};
+        using rt = decltype(result);
+
+        struct e : rt
+        {
+            using rt::rt;
+            e(rt&& x) : rt{std::move(x)}
+            {
+            }
+        };
+
+        auto i = e{std::move(result)};
+
+        return i;
+        */
     }
 
     template <typename TSettings>
     auto make_uptr(TSettings)
     {
-        return std::make_unique<impl::data<TSettings>>();
+        return std::make_unique<decltype(make(TSettings{}))>(make(TSettings{}));
     }
 }
 ECST_CONTEXT_NAMESPACE_END

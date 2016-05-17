@@ -33,6 +33,13 @@ ECST_CONTEXT_NAMESPACE
                 template <typename... TFs>
                 auto execute_systems(TFs&&... fs);
 
+                // TODO: to global
+                // * detailed_all
+                // * detailed_matching(predicate)
+                // * detailed_by_tag(tag)
+                template <typename TF>
+                auto detailed_all(TF&& f) noexcept;
+
                 template <typename TSystemTag, typename TF>
                 auto detailed(TSystemTag st, TF&& f) noexcept;
 

@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
-#include <ecst/context/scheduler/atomic_counter/task.hpp>
+#include "./task.hpp"
 
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {

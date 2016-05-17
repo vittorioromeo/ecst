@@ -12,8 +12,8 @@
 #include <ecst/mp.hpp>
 #include <ecst/signature_list.hpp>
 #include <ecst/settings.hpp>
-#include <ecst/context/scheduler/atomic_counter/task_group.hpp>
-#include <ecst/context/scheduler/atomic_counter/utils.hpp>
+#include "./task_group.hpp"
+#include "./utils.hpp"
 
 ECST_SCHEDULER_NAMESPACE
 {
