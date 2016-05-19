@@ -18,15 +18,15 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
     auto make_chunk_tuple(TSettings s) noexcept
     {
         auto csl = settings::component_signature_list(s);
-        return mp::list::transform(
+        return bh::transform(csl,
             [](auto xe)
             {
                 auto ct = signature::component::tag_of(xe);
                 using c = signature::component::unwrap_tag<decltype(ct)>;
 
                 return mp::type_v<chunk_dispatch_type<c, TSettings>>;
-            },
-            csl);
+            }
+            );
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

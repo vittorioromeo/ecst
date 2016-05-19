@@ -19,7 +19,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         ECST_S_ASSERT_DT(is_signature_list(ssl));
         ECST_S_ASSERT_DT(signature::system::is_signature(ss));
 
-        return mp::list::find_first_index_of(ssl, ss);
+        return mp::list::index_of(ssl, ss);
     }
 
     /// @brief Given a system type `TSystem`, returns its ID.

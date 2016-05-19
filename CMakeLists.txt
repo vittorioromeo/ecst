@@ -5,6 +5,9 @@
 
 cmake_minimum_required(VERSION 3.0)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED on)
+
 # Include SSVCmake.
 list(APPEND CMAKE_MODULE_PATH
     "${CMAKE_SOURCE_DIR}/../SSVCMake/cmake/modules/"

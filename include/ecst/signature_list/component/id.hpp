@@ -12,6 +12,8 @@
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
+
+
     template <typename TComponentSignatureList, typename TComponentSignature>
     constexpr auto id_by_signature(
         TComponentSignatureList csl, TComponentSignature cs)
@@ -19,7 +21,7 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         ECST_S_ASSERT_DT(is_signature_list(csl));
         ECST_S_ASSERT_DT(signature::component::is_signature(cs));
 
-        return mp::list::find_first_index_of(csl, cs);
+        return mp::list::index_of(csl, cs);
     }
 
     template <typename TComponent, typename TComponentSignatureList>

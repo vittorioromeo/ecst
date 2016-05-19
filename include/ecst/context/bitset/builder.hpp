@@ -23,13 +23,11 @@ ECST_CONTEXT_BITSET_NAMESPACE
         ECST_S_ASSERT_DT(signature::component::is_tag_list(scl));
         auto csl = settings::component_signature_list(s);
 
-        for_tuple(
-            [&](auto ct)
+        bh::for_each(scl, [&](auto ct)
             {
                 auto id(signature_list::component::id_by_tag(csl, ct));
                 bitset.set_component_by_id(id, true);
-            },
-            scl);
+            });
     }
 
     /// @brief Returns a bitset filled with `scl`'s component bits.
@@ -48,13 +46,11 @@ ECST_CONTEXT_BITSET_NAMESPACE
         auto component_uses =
             signature::system::component_uses_type<TSystemSignature>{};
 
-        auto set_component_tags = mp::list::transform(
-            [](auto x)
+        auto set_component_tags = bh::transform(component_uses, [](auto x)
             {
                 using component_type = typename decltype(x)::component;
                 return signature::component::tag<component_type>;
-            },
-            component_uses);
+            });
 
         return make(s, set_component_tags);
     }

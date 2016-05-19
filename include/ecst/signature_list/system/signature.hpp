@@ -22,7 +22,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(is_signature_list(ssl));
             ECST_S_ASSERT_DT(signature::system::is_tag(st));
 
-            return mp::list::find_first_matching(ssl, [=](auto x_ssig)
+            return *bh::find_if(ssl, [=](auto x_ssig)
                 {
                     return mp::same_type_decay(
                         signature::system::tag_of(x_ssig), st);

@@ -41,7 +41,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         template <typename TF>
         void for_dependent_ids(TF&& f)
         {
-            for_tuple(f, TDependentIDList{});
+            bh::for_each(TDependentIDList{}, f);
         }
 
         auto dependent_tasks_count() const noexcept

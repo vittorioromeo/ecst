@@ -21,16 +21,14 @@ ECST_INNER_PARALLELISM_NAMESPACE
             ECST_ASSERT(split_count > 0);
 
             constexpr auto itr_idx_list =
-                mp::list::make_index_list(sz_v<0>, sz_v<split_count - 1>);
+                bh::make_range(sz_v<0>, sz_v<split_count - 1>);
 
-            for_tuple(
-                [&f, total, per_split](auto i_split)
+            bh::for_each(itr_idx_list, [&f, total, per_split](auto i_split)
                 {
                     auto i_begin = i_split * per_split;
                     auto i_end = (i_split + 1) * per_split;
                     f(i_split, i_begin, i_end);
-                },
-                itr_idx_list);
+                });
 
             // Builds and runs the last subtask.
             {

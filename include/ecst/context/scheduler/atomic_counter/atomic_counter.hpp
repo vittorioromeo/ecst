@@ -28,22 +28,24 @@ ECST_SCHEDULER_NAMESPACE
     class s_atomic_counter
     {
     private:
-        static constexpr auto ssl =
-            settings::system_signature_list(TSettings{});
+        static constexpr auto ssl()
+        {
+            return settings::system_signature_list(TSettings{});
+        }
 
-        impl::sac::impl::task_group_type<decltype(ssl)> _task_group;
+        impl::sac::impl::task_group_type<decltype(ssl())> _task_group;
 
         /// @brief Resets all dependency atomic counters.
         void reset() noexcept
         {
-            impl::sac::reset_task_group_from_ssl(ssl, _task_group);
+            impl::sac::reset_task_group_from_ssl(ssl(), _task_group);
         }
 
         template <typename TContext, typename TBlocker, typename TF>
         void start_execution(TContext& ctx, TBlocker& b, TF&& f)
         {
             // TODO: system parameter
-            signature_list::system::for_indepedent_ids(ssl, // .
+            signature_list::system::for_indepedent_ids(ssl(), // .
                 [this, &ctx, &b, &f](auto s_id)
                 {
                     ctx.post_in_thread_pool([this, s_id, &ctx, &b, &f]
@@ -70,7 +72,7 @@ ECST_SCHEDULER_NAMESPACE
             reset();
 
             // Aggregates the required synchronization objects.
-            counter_blocker b{mp::list::size(ssl)};
+            counter_blocker b{mp::list::size(ssl())};
 
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then

@@ -23,7 +23,7 @@ ECST_MP_NAMESPACE
     using type_ = impl::type_wrapper<T>;
 
     template <typename T>
-    constexpr type_<T> type_v{};
+    constexpr bh::type<T> type_v{};
 
     template <typename T>
     using unwrap = typename T::type;

@@ -9,6 +9,7 @@
 #include <ecst/mp/core.hpp>
 #include <ecst/mp/list/inverse_indices.hpp>
 #include <ecst/mp/list/remove.hpp>
+#include <boost/hana/ext/std/tuple.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
@@ -20,7 +21,7 @@ ECST_MP_LIST_NAMESPACE
         template <typename... Ts>
         struct list_unwrapper<type_list<Ts...>>
         {
-            using type = type_list<typename Ts::type...>;
+            using type = std::tuple<typename Ts::type...>;
         };
 
         template <typename T>

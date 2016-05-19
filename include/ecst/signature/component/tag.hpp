@@ -49,11 +49,10 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         template <typename T>
         auto is_tag_list_impl(T x)
         {
-            return mp::static_and(
-                mp::list::valid(x), mp::list::all_match(x, [](auto xe)
-                                        {
-                                            return is_tag(xe);
-                                        }));
+            return bh::all_of(x, [](auto xe)
+            {
+                return is_tag(xe);
+            });
         }
     }
 

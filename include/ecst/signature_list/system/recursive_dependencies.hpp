@@ -26,17 +26,16 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             // Recursive step implementation.
             auto step = [=](auto self, auto curr_list)
             {
-                return mp::list::cat_unique( // .
-                    curr_list,               // .
-                    mp::list::fold_l(mp::list::empty_v,
+                return bh::unique(bh::concat( // .
+                    curr_list,                // .
+                    bh::fold_left(curr_list, mp::list::empty_v,
                         [=](auto acc, auto xid)
                         {
                             auto xsig = signature_by_id(ssl, xid);
                             auto new_list = dependencies_ids_list(ssl, xsig);
 
-                            return mp::list::cat_unique(acc, self(new_list));
-                        },
-                        curr_list));
+                            return bh::unique(bh::concat(acc, self(new_list)));
+                        })));
             };
 
             // Start the recursion.

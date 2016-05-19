@@ -16,12 +16,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         template <typename TSystemSignatureList>
         auto id_list_impl(TSystemSignatureList ssl)
         {
-            return mp::list::transform(
-                [=](auto x_sig)
+            return bh::transform(ssl, [=](auto x_sig)
                 {
                     return id_by_signature(ssl, x_sig);
-                },
-                ssl);
+                });
         }
     }
 
@@ -36,7 +34,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename TF, typename TSystemSignatureList>
     constexpr auto for_ids(TF && f, TSystemSignatureList ssl)
     {
-        return for_tuple(f, id_list(ssl));
+        return bh::for_each(id_list(ssl), f);
     }
 
     namespace impl
@@ -46,12 +44,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             TSystemSignatureList ssl, TSystemSignature ss)
         {
             auto tag_list = signature::system::dependencies_as_tag_list(ss);
-            return mp::list::transform(
-                [=](auto x_tag)
+            return bh::transform(tag_list, [=](auto x_tag)
                 {
                     return id_by_tag(ssl, x_tag);
-                },
-                tag_list);
+                });
         }
     }
 
@@ -71,12 +67,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             TSystemSignatureList ssl, TSystemSignature ss)
         {
             auto tag_list = signature::system::dependencies_as_tag_list(ss);
-            return mp::list::transform(
-                [=](auto x_tag)
+            return bh::transform(tag_list, [=](auto x_tag)
                 {
                     return signature_by_tag(ssl, x_tag);
-                },
-                tag_list);
+                });
         }
     }
 

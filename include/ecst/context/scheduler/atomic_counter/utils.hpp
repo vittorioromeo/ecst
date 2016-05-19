@@ -49,14 +49,13 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             namespace ss = signature::system;
             namespace sls = signature_list::system;
 
-            return mp::list::transform(
-                [=](auto ss)
+            return bh::transform(ssl, [=](auto ss)
                 {
                     // Get the list of dependent IDs of `ss`.
                     auto dependent_ids = sls::dependent_ids_list(ssl, ss);
 
                     // Verify validity and get its type.
-                    ECST_S_ASSERT_DT(mp::list::valid(dependent_ids));
+                    // ECST_S_ASSERT_DT(mp::list::valid(dependent_ids));
                     using dep_list_type = decltype(dependent_ids);
 
                     // Use the list to compute the task type.
@@ -65,8 +64,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
                     // Wrap the task type.
                     return mp::type_v<task_type>;
-                },
-                ssl);
+                });
         }
 
         /// @brief Type of task group for a specific system signature list.

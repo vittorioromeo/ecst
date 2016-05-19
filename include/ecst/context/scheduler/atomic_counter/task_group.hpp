@@ -19,7 +19,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
     public:
         static constexpr auto task_count() noexcept
         {
-            return std::tuple_size<TTaskList>{};
+            return bh::length(TTaskList{});
         }
 
     private:
@@ -28,7 +28,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         template <typename TID>
         constexpr auto valid_id(TID id) const noexcept
         {
-            return id >= 0 && id < task_count();
+            return id >= bh::ulong_c<0> && id < task_count();
         }
 
     public:
@@ -39,7 +39,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         auto& task_by_id(TID id) noexcept
         {
             ECST_ASSERT(valid_id(id));
-            return std::get<id>(_tasks);
+            return bh::at(_tasks, id);
         }
 
         template <             // .

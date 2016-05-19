@@ -23,7 +23,7 @@ namespace example
         {
         private:
             sf::RenderWindow _window;
-            std::unique_ptr<T> _app;
+            T* _app = nullptr;
             std::function<void()> _run_fn;
 
         public:
@@ -42,8 +42,9 @@ namespace example
                     _window.setVerticalSyncEnabled(true);
                     _window.setFramerateLimit(60);
 #endif
+                    delete _app;
+                    _app = new T(_window, FWD(xs)...);
 
-                    _app = std::unique_ptr<T>(new T(_window, xs...));
                 };
             }
 

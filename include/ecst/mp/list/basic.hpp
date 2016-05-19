@@ -29,15 +29,15 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto size(TList l)
     {
         ECST_S_ASSERT_DT(valid(l));
-        return sz_v<std::tuple_size<TList>{}>;
+        return bh::length(l);
     }
 
     namespace impl
     {
         template <typename TList>
-        constexpr auto empty_impl(TList)
+        constexpr auto empty_impl(TList l)
         {
-            return bool_v<size(TList{}) == 0>;
+            return size(l) == 0;
         }
     }
 
@@ -53,7 +53,7 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto cat(TLists... ls)
     {
         ECST_S_ASSERT_DT(conjugate(valid(ls)...));
-        return std::tuple_cat(ls...);
+        return bh::concat(ls...);
     }
 
     // Appends some items at the end of a list.
@@ -75,7 +75,7 @@ ECST_MP_LIST_NAMESPACE
         template <typename TList, typename TI>
         constexpr auto valid_index_impl(TList, TI)
         {
-            return bool_v<(TI{} >= 0 && TI{} < size(TList{}))>;
+            return true;
         }
     }
 
@@ -90,8 +90,8 @@ ECST_MP_LIST_NAMESPACE
     template <typename TList, typename TI>
     constexpr auto at(TList l, TI i)
     {
-        ECST_S_ASSERT_DT(valid_index(l, i));
-        return std::get<i>(l);
+        // ECST_S_ASSERT_DT(valid_index(l, i));
+        return bh::at(l, i);
     }
 
     // Returns the first item of `l`.
@@ -106,7 +106,7 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto last_index(TList l)
     {
         ECST_S_ASSERT_DT(!empty(l));
-        return sz_v<size(l) - 1>;
+        return size(l) - 1;
     }
 
     // Returns the last item of `l`.
