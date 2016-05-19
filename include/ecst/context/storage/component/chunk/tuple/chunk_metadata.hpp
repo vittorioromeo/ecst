@@ -23,7 +23,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 using chunk_metadata =
                     chunk::metadata<mp::unwrap<decltype(xe)>>;
 
-                return mp::type_v<chunk_metadata>;
+                return mp::type_c<chunk_metadata>;
             }
             );
     }

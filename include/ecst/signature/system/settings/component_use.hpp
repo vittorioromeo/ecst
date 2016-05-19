@@ -43,28 +43,28 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename T>
     constexpr auto is_read_component_use(T)
     {
-        return mp::bool_v<impl::is_read_component_use_impl<T>{}>;
+        return impl::is_read_component_use_impl<T>{};
     }
 
     /// @brief Evaluates to true if `T` is a valid mutating component use.
     template <typename T>
     constexpr auto is_mutate_component_use(T)
     {
-        return mp::bool_v<impl::is_mutate_component_use_impl<T>{}>;
+        return impl::is_mutate_component_use_impl<T>{};
     }
 
     /// @brief Evaluates to true if `T` is a valid component use.
     template <typename T>
     constexpr auto is_component_use(T)
     {
-        return mp::bool_v<impl::is_component_use_impl<T>{}>;
+        return impl::is_component_use_impl<T>{};
     }
 
     /// @brief Evaluates to true if all `Ts...` are valid component uses.
     template <typename... Ts>
     constexpr auto are_component_uses(Ts... xs)
     {
-        return mp::conjugate(is_component_use(xs)...);
+        return mp::list::all_variadic(is_component_use(xs)...);
     }
 
     template <typename TComponent>

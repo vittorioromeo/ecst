@@ -67,7 +67,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature, typename TComponent>
     constexpr auto can_mutate()
     {
-        return mp::list::contains(                                   // .
+        return bh::contains(                                   // .
             impl::signature_component_list_type<TSystemSignature>{}, // .
             impl::mutate_impl<TComponent>{});
     }
@@ -76,7 +76,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     constexpr auto can_read()
     {
         return can_mutate<TSystemSignature, TComponent>() ||                // .
-               mp::list::contains(                                          // .
+               bh::contains(                                          // .
                    impl::signature_component_list_type<TSystemSignature>{}, // .
                    impl::read_impl<TComponent>{});
     }

@@ -22,6 +22,7 @@ namespace test
             namespace cs = ecst::settings;
             namespace ss = ecst::scheduler;
             namespace mp = ecst::mp;
+            namespace bh = ecst::bh;
 
             (void)csl;
             (void)ssl;
@@ -45,10 +46,10 @@ namespace test
             (void)l_threading;
             (void)l_storage;
 
-            return mp::list::fold_l(mp::list::empty_v,
+            return bh::fold_left(l_threading, mp::list::empty_v,
                 [=](auto xacc, auto x_threading)
                 {
-                    auto fold2 = mp::list::fold_l(mp::list::empty_v,
+                    auto fold2 = bh::fold_left(l_storage, mp::list::empty_v,
                         [=](auto yacc, auto y_storage)
                         {
                             auto zsettings = cs::make(              // .
@@ -60,12 +61,10 @@ namespace test
                                 );
 
                             return mp::list::append(yacc, zsettings);
-                        },
-                        l_storage);
+                        });
 
                     return mp::list::cat(xacc, fold2);
-                },
-                l_threading);
+                });
         }
 
         template <typename TSettings>
@@ -98,7 +97,7 @@ namespace test
 
         for(sz_t t = 0; t < times; ++t)
         {
-            vrm::core::for_tuple(
+            ecst::bh::for_each(impl::make_settings_list(ec, csl, ssl),
                 [f](auto s)
                 {
                     std::cout
@@ -115,8 +114,7 @@ namespace test
                         std::chrono::duration_cast<d_type>(time).count());
 
                     std::cout << "time: " << timeMs << "ms\n\n";
-                },
-                impl::make_settings_list(ec, csl, ssl));
+                });
         }
     }
 }

@@ -7,16 +7,17 @@
 
 #include <type_traits>
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
 
 ECST_MP_NAMESPACE
 {
     template <template <typename...> class TTemplate, typename T>
-    struct is_specialization_of : std::false_type
+    struct is_specialization_of : bh::false_
     {
     };
 
     template <template <typename...> class TTemplate, typename... Ts>
-    struct is_specialization_of<TTemplate, TTemplate<Ts...>> : std::true_type
+    struct is_specialization_of<TTemplate, TTemplate<Ts...>> : bh::true_
     {
     };
 

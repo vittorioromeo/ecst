@@ -59,7 +59,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
                 // Check if the ID of `parent` is in the list of `ss`'s
                 // depedendencies.
                 auto dl = sls::dependencies_as_id_list(ssl, ss);
-                return static_if(mp::list::contains(dl, parent_id))
+                return static_if(bh::contains(dl, parent_id))
                     .then([=](auto x_acc)
                         {
                             // If so, add `ss`'s ID to the result list.

@@ -28,12 +28,12 @@ ECST_NAMESPACE
                        bool_v<settings::has_fixed_entity_storage<TSettings>>)
                 .then([](auto ts)
                     {
-                        return mp::type_v<
+                        return mp::type_c<
                             fixed_set<settings::fixed_capacity(ts)>>;
                     })
                 .else_([](auto)
                     {
-                        return mp::type_v<dynamic_set>;
+                        return mp::type_c<dynamic_set>;
                     })(TSettings{});
         }
 

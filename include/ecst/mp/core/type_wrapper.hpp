@@ -10,20 +10,7 @@
 
 ECST_MP_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename T>
-        struct type_wrapper
-        {
-            using type = T;
-        };
-    }
-
-    template <typename T>
-    using type_ = impl::type_wrapper<T>;
-
-    template <typename T>
-    constexpr bh::type<T> type_v{};
+    using bh::type_c;
 
     template <typename T>
     using unwrap = typename T::type;

@@ -22,14 +22,14 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             return static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([](auto ts)
                     {
-                        return mp::type_v<                           // .
+                        return mp::type_c<                           // .
                             chunk::fixed_buffer<TComponent,          // .
                                 sz_t_<settings::fixed_capacity(ts)>> // .
                             >;
                     })
                 .else_([](auto)
                     {
-                        return mp::type_v<                               // .
+                        return mp::type_c<                               // .
                             chunk::dynamic_buffer<TSettings, TComponent> // .
                             >;
                     })(TSettings{});
@@ -41,7 +41,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             return static_if(std::is_empty<TComponent>{})
                 .then([]()
                     {
-                        return mp::type_v<chunk::empty<TComponent>>;
+                        return mp::type_c<chunk::empty<TComponent>>;
                     })
                 .else_([]()
                     {

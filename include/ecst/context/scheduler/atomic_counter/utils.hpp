@@ -63,12 +63,12 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                     using task_type = task<dep_data_type>;
 
                     // Wrap the task type.
-                    return mp::type_v<task_type>;
+                    return mp::type_c<task_type>;
                 });
         }
 
         /// @brief Type of task group for a specific system signature list.
-        /// @details All `type_v` wrappers are unwrapped thanks to
+        /// @details All `type_c` wrappers are unwrapped thanks to
         /// `unwrap_tuple`.
         template <typename TSSL>
         using task_group_type = task_group<              // .

@@ -24,7 +24,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 auto ct = signature::component::tag_of(xe);
                 using c = signature::component::unwrap_tag<decltype(ct)>;
 
-                return mp::type_v<chunk_dispatch_type<c, TSettings>>;
+                return mp::type_c<chunk_dispatch_type<c, TSettings>>;
             }
             );
     }

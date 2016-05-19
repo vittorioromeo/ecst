@@ -243,6 +243,8 @@ namespace example
                 TEST_ASSERT(!_ctx.valid_handle(h));
             }
 
+            namespace sea = ::ecst::system_execution_adapter;
+
             _ctx.step([this](auto& proxy)
                 {
                     /*
@@ -282,18 +284,20 @@ namespace example
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);
 
+
+
                         proxy.execute_systems( // .
-                            sea::by_tag::for_subtasks(st::s0,
+                            sea::tag::for_subtasks(st::s0,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);
                                 }),
-                            sea::by_tag::for_subtasks(st::s1,
+                            sea::tag::for_subtasks(st::s1,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);
                                 }),
-                            sea::by_tag::for_subtasks(st::s01,
+                            sea::tag::for_subtasks(st::s01,
                                 [](auto& s, auto& data)
                                 {
                                     s.process(data);

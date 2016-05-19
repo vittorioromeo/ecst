@@ -48,11 +48,17 @@ ECST_MP_LIST_NAMESPACE
         return decltype(impl::empty_impl(l)){};
     }
 
+    template <typename... Ts>
+    constexpr auto all_variadic(Ts && ... xs)
+    {
+        return bh::all(bh::make_basic_tuple(FWD(xs)...));
+    }
+
     // Concatenates multiple lists together.
     template <typename... TLists>
     constexpr auto cat(TLists... ls)
     {
-        ECST_S_ASSERT_DT(conjugate(valid(ls)...));
+        ECST_S_ASSERT_DT(all_variadic(valid(ls)...));
         return bh::concat(ls...);
     }
 

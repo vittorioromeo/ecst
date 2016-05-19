@@ -25,10 +25,10 @@ ECST_MP_LIST_NAMESPACE
         };
 
         template <typename T>
-        using unwrap_type_v_list = typename list_unwrapper<T>::type;
+        using unwrap_type_c_list = typename list_unwrapper<T>::type;
     }
 
     template <typename T>
-    using unwrap_tuple = impl::unwrap_type_v_list<T>;
+    using unwrap_tuple = impl::unwrap_type_c_list<T>;
 }
 ECST_MP_LIST_NAMESPACE_END

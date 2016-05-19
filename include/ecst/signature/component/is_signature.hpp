@@ -20,14 +20,14 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     template <typename T>
     constexpr auto is_signature(T)
     {
-        return mp::bool_v<impl::is_signature_impl<T>{}>;
+        return impl::is_signature_impl<T>{};
     }
 
     /// @brief Evaluates to true if all `Ts...` are component signatures.
     template <typename... Ts>
     constexpr auto are_signatures(Ts... xs)
     {
-        return mp::conjugate(is_signature(xs)...);
+        return mp::list::all_variadic(is_signature(xs)...);
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

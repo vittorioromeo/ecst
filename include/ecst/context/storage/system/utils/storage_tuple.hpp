@@ -22,7 +22,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         return bh::transform(ssl, [](auto ssig)
             {
                 using ssig_type = decltype(ssig);
-                return mp::type_v<
+                return mp::type_c<
                     context::system::instance<TSettings, ssig_type>>;
             });
     }

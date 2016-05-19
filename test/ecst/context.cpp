@@ -132,11 +132,14 @@ constexpr auto TEST_CONST setup_settings(TCSL csl, TSSL ssl)
     namespace cs = ecst::settings;
     namespace ss = ecst::scheduler;
 
+    constexpr auto ce_csl = decltype(csl){};
+    constexpr auto ce_ssl = decltype(ssl){};
+
     constexpr auto res = ecst::settings::make(          // .
         cs::multithreaded(cs::allow_inner_parallelism), // .
         cs::fixed<1000>,                                // .
-        csl,                                            // .
-        ssl,                                            // .
+        ce_csl,                                         // .
+        ce_ssl,                                         // .
         cs::scheduler<ss::s_atomic_counter>             // .
         );
 

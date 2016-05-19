@@ -56,7 +56,7 @@ ECST_MP_LIST_NAMESPACE
 
         // A `type_list` is an `std::tuple`.
         template <typename... Ts>
-        using type_list = bh::tuple<Ts...>;
+        using type_list = bh::basic_tuple<Ts...>;
 
         // An empty list is an empty `type_list`.
         using empty_type_list = type_list<>;
