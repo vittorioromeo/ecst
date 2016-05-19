@@ -2,7 +2,7 @@
 
 **Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library.
 
-Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016). *(The repository may still be private at the moment.)*
+Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016).
 
 ---
 
