@@ -26,7 +26,7 @@ ECST_MP_LIST_NAMESPACE
         using Pred = decltype(boost::hana::equal.to(n));
         using Pack = typename boost::hana::detail::make_pack<Haystack>::type;
         constexpr auto index = boost::hana::detail::index_if<Pred, Pack>::value;
-        return boost::hana::int_c<index>;
+        return boost::hana::size_c<index>;
     }
 
 

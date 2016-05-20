@@ -28,7 +28,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         template <typename TID>
         constexpr auto valid_id(TID id) const noexcept
         {
-            return id >= bh::ulong_c<0> && id < task_count();
+            return id >= bh::size_c<0> && id < task_count();
         }
 
     public:

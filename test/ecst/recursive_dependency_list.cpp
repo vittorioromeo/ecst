@@ -57,7 +57,7 @@ TEST_MAIN()
     constexpr auto ssl = sls::make(ssig_a, ssig_b, ssig_c);
 
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_a)) ==
-        bh::ulong_c<0>);
+        bh::size_c<0>);
 
     SA_SDT(                                               // .
         (sls::recursive_dependency_id_list(ssl, ssig_a)), // .
@@ -65,7 +65,7 @@ TEST_MAIN()
         );
 
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_b)) ==
-        bh::ulong_c<1>);
+        bh::size_c<1>);
 
     /* TODO: fix, verify
     SA_SDT(                                               // .
@@ -75,7 +75,7 @@ TEST_MAIN()
     */
 
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_c)) ==
-        bh::ulong_c<2>);
+        bh::size_c<2>);
 
     /* TODO: fix, verify
     SA_SDT(                                               // .
