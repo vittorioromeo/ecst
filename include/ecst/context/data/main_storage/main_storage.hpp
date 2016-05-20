@@ -35,9 +35,6 @@ ECST_CONTEXT_NAMESPACE
             entity_storage_type _entity_storage;
 
         public:
-            main_storage() = default;
-            ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(main_storage);
-
             auto& metadata(entity_id) noexcept;
             auto valid_handle(const handle& h) const noexcept;
 

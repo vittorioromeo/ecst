@@ -22,7 +22,7 @@ namespace test
             namespace cs = ecst::settings;
             namespace ss = ecst::scheduler;
             namespace mp = ecst::mp;
-            namespace bh = ecst::bh;
+            namespace bh = ecst::mp::bh;
 
             (void)csl;
             (void)ssl;
@@ -97,7 +97,7 @@ namespace test
 
         for(sz_t t = 0; t < times; ++t)
         {
-            ecst::bh::for_each(impl::make_settings_list(ec, csl, ssl),
+            ecst::mp::bh::for_each(impl::make_settings_list(ec, csl, ssl),
                 [f](auto s)
                 {
                     std::cout

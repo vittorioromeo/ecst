@@ -43,7 +43,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             template <typename TID>
             static constexpr auto valid_component_id(TID id) noexcept
             {
-                return id >= mp::bh::size_c<0> && id < component_count();
+                return id >= mp::sz_v<0> && id < component_count();
             }
 
             template <typename TID>
@@ -68,7 +68,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             template <typename TBit>
             static constexpr auto valid_component_bit(TBit bit) noexcept
             {
-                return bit >= mp::bh::size_c<0> && bit < component_count();
+                return bit >= mp::sz_v<0> && bit < component_count();
             }
         };
     }

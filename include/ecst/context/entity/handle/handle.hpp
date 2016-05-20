@@ -39,11 +39,11 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             handle() noexcept;
             handle(entity_id id, counter ctr) noexcept;
 
-            handle(const handle&) = default;
-            handle& operator=(const handle&) = default;
+            handle(const handle&) noexcept = default;
+            handle& operator=(const handle&) noexcept = default;
 
-            handle(handle&&) = default;
-            handle& operator=(handle&&) = default;
+            handle(handle&&) noexcept = default;
+            handle& operator=(handle&&) noexcept = default;
         };
     }
 }

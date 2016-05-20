@@ -38,11 +38,6 @@ ECST_CONTEXT_NAMESPACE
 
             refresh_state_type _refresh_state;
 
-        public:
-            data() = default;
-            ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(data);
-
-        private:
             /// @brief Executes all systems' deferred functions, sequentially.
             template <typename TRefreshState>
             void refresh_impl_execute_deferred(TRefreshState& rs);

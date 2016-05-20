@@ -17,6 +17,8 @@ struct s_c
 
 TEST_MAIN()
 {
+    using namespace ecst::mp;
+
     namespace ss = signature::system;
     namespace sls = signature_list::system;
     namespace ips = inner_parallelism::strategy;

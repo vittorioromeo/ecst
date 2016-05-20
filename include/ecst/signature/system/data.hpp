@@ -39,29 +39,25 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             using output = TOutput;
         };
 
-        // TODO:
-        template <typename T>
-        using unwrap = typename T::type;
-
         template <typename TSystemSignature> // .
         using signature_tag_type =           // .
-            typename unwrap<TSystemSignature>::tag;
+            typename mp::unwrap<TSystemSignature>::tag;
 
         template <typename TSystemSignature> // .
         using signature_parallelism_type =   // .
-            typename unwrap<TSystemSignature>::parallelism;
+            typename mp::unwrap<TSystemSignature>::parallelism;
 
         template <typename TSystemSignature>      // .
         using signature_tag_depedency_list_type = // .
-            typename unwrap<TSystemSignature>::tag_dependency_list;
+            typename mp::unwrap<TSystemSignature>::tag_dependency_list;
 
         template <typename TSystemSignature>  // .
         using signature_component_list_type = // .
-            typename unwrap<TSystemSignature>::component_list;
+            typename mp::unwrap<TSystemSignature>::component_list;
 
         template <typename TSystemSignature> // .
         using signature_output_type =        // .
-            typename unwrap<TSystemSignature>::output;
+            typename mp::unwrap<TSystemSignature>::output;
     }
 
     template <typename TSystemSignature>

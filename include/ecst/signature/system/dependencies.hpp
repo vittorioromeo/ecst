@@ -31,7 +31,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature>
     constexpr auto is_independent(TSystemSignature ss)
     {
-        return dependency_count(ss) == mp::bh::size_c<0>;
+        return dependency_count(ss) == mp::sz_v<0>;
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

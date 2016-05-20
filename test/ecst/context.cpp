@@ -184,6 +184,7 @@ TEST_MAIN()
     auto ctx = ecst::context::make(context_settings);
     ctx.step([](auto& proxy)
         {
+            (void)proxy;
             // TODO:
             /*
             proxy.execute_systems(

@@ -12,17 +12,17 @@
 
 ECST_MP_LIST_NAMESPACE
 {
+    // TODO:
     template <typename Haystack, typename Needle>
-    constexpr auto get_index_of_first_matching(Haystack&&, Needle && n)
+    constexpr auto get_index_of_first_matching(Haystack&&, Needle && n) noexcept
     {
         using Pred = decltype(bh::equal.to(n));
         using Pack = typename bh::detail::make_pack<Haystack>::type;
-        constexpr auto index = bh::detail::index_if<Pred, Pack>::value;
-        return bh::size_c<index>;
+        return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
     }
 
     template <typename Iterable, typename T>
-    constexpr auto index_of(Iterable const& iterable, T const& element)
+    constexpr auto index_of(Iterable const& iterable, T const& element) noexcept
     {
         return decltype(get_index_of_first_matching(iterable, element)){};
     }
