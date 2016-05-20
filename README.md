@@ -14,7 +14,6 @@ Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow
     mkdir ./build
     cd ./build
     cmake ..
-    
     ```
 
 *(Some examples may require [SFML](https://sfml-dev.org) to be installed.)*
