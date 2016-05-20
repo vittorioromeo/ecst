@@ -2,9 +2,22 @@
 
 **Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library.
 
-Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016). *(The repository may still be private at the moment.)*
+Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016).
 
----
+## Build instructions
+
+1. Clone the repository.
+2. Execute the `./init-repository.sh` script.
+3. Create a build directory and execute CMake:
+    ```bash
+    mkdir ./build
+    cd ./build
+    cmake ..
+    ```
+
+*(Some examples may require [SFML](https://sfml-dev.org) to be installed.)*
+
+## Code sample
 
 ```cpp
 // Include "ECST".
@@ -37,7 +50,7 @@ namespace c
 namespace ct
 {
     namespace sc = ecst::signature::component;
-    
+
     constexpr auto position = sc::tag<c::position>;
     constexpr auto velocity = sc::tag<c::velocity>;
     constexpr auto acceleration = sc::tag<c::acceleration>;
@@ -103,9 +116,9 @@ namespace ecst_setup
     {
         namespace slc = ecst::signature_list::component;
 
-        return slc::v<                                 // .
-            c::position, c::velocity, c::acceleration, // .
-            c::color, c::circle                        // .
+        return slc::v<
+            c::position, c::velocity, c::acceleration,
+            c::color, c::circle
             >;
     }
 
@@ -119,42 +132,41 @@ namespace ecst_setup
         // Inner parallelism aliases and definitions.
         namespace ips = ecst::inner_parallelism::strategy;
         namespace ipc = ecst::inner_parallelism::composer;
-        
+
         // "Split processing evenly between cores."
         constexpr auto par = ips::split_evenly_fn::v_cores();
 
         // Acceleration system.
         // * Multithreaded.
         // * No dependencies.
-        constexpr auto ssig_acceleration =    // .
-            ss::make<s::acceleration>(        // .
-                par,                          // .
-                ss::no_dependencies,          // .
-                ss::component_use(            // .
-                    ss::mutate<c::velocity>,  // .
-                    ss::read<c::acceleration> // .
-                    ),                        // .
-                ss::output::none              // .
+        constexpr auto ssig_acceleration =
+            ss::make<s::acceleration>(
+                par,
+                ss::no_dependencies,
+                ss::component_use(
+                    ss::mutate<c::velocity>,
+                    ss::read<c::acceleration>
+                    ),
+                ss::output::none
                 );
 
         // Velocity system.
         // * Multithreaded.
-        constexpr auto ssig_velocity =           // .
-            ss::make<s::velocity>(               // .
-                par,                             // .
-                ss::depends_on<s::acceleration>, // .
-                ss::component_use(               // .
-                    ss::mutate<c::position>,     // .
-                    ss::read<c::velocity>        // .
-                    ),                           // .
-                ss::output::none                 // .
+        constexpr auto ssig_velocity =
+            ss::make<s::velocity>(
+                par,
+                ss::depends_on<s::acceleration>,
+                ss::component_use(
+                    ss::mutate<c::position>,
+                    ss::read<c::velocity>
+                    ),
+                ss::output::none
                 );
 
         // Build and return the "system signature list".
-        return sls::make(              // .
-            ssig_acceleration,         // .
-            ssig_velocity
-            );
+        return sls::make(
+            ssig_acceleration,
+            ssig_velocity);
     }
 }
 
@@ -182,12 +194,12 @@ int main()
     namespace ss = ecst::scheduler;
 
     // Define ECST context settings.
-    constexpr auto s = ecst::settings::make(            // .
-        cs::multithreaded(cs::allow_inner_parallelism), // .
-        cs::dynamic,                                    // .
-        make_csl(),                                     // .
-        make_ssl(),                                     // .
-        cs::scheduler<ss::s_atomic_counter>             // .
+    constexpr auto s = ecst::settings::make(
+        cs::multithreaded(cs::allow_inner_parallelism),
+        cs::dynamic,
+        make_csl(),
+        make_ssl(),
+        cs::scheduler<ss::s_atomic_counter>
         );
 
     // Create an ECST context.
@@ -209,17 +221,17 @@ int main()
         auto dt = delta_time();
 
         ctx.step([dt](auto& proxy)
-        {
-            proxy.execute_systems_overload( // .
-                [dt](s::acceleration& s, auto& data)
-                {
-                    s.process(dt, data);
-                },
-                [dt](s::velocity& s, auto& data)
-                {
-                    s.process(dt, data);
-                });
-        });
+            {
+                proxy.execute_systems_overload(
+                    [dt](s::acceleration& s, auto& data)
+                    {
+                        s.process(dt, data);
+                    },
+                    [dt](s::velocity& s, auto& data)
+                    {
+                        s.process(dt, data);
+                    });
+            });
     }
 }
 ```
