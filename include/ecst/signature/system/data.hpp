@@ -39,25 +39,29 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             using output = TOutput;
         };
 
+        // TODO:
+        template <typename T>
+        using unwrap = typename T::type;
+
         template <typename TSystemSignature> // .
         using signature_tag_type =           // .
-            typename TSystemSignature::tag;
+            typename unwrap<TSystemSignature>::tag;
 
         template <typename TSystemSignature> // .
         using signature_parallelism_type =   // .
-            typename TSystemSignature::parallelism;
+            typename unwrap<TSystemSignature>::parallelism;
 
         template <typename TSystemSignature>      // .
         using signature_tag_depedency_list_type = // .
-            typename TSystemSignature::tag_dependency_list;
+            typename unwrap<TSystemSignature>::tag_dependency_list;
 
         template <typename TSystemSignature>  // .
         using signature_component_list_type = // .
-            typename TSystemSignature::component_list;
+            typename unwrap<TSystemSignature>::component_list;
 
         template <typename TSystemSignature> // .
         using signature_output_type =        // .
-            typename TSystemSignature::output;
+            typename unwrap<TSystemSignature>::output;
     }
 
     template <typename TSystemSignature>
@@ -67,7 +71,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature, typename TComponent>
     constexpr auto can_mutate()
     {
-        return bh::contains(                                   // .
+        return bh::contains(                                         // .
             impl::signature_component_list_type<TSystemSignature>{}, // .
             impl::mutate_impl<TComponent>{});
     }
@@ -76,7 +80,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     constexpr auto can_read()
     {
         return can_mutate<TSystemSignature, TComponent>() ||                // .
-               bh::contains(                                          // .
+               bh::contains(                                                // .
                    impl::signature_component_list_type<TSystemSignature>{}, // .
                    impl::read_impl<TComponent>{});
     }

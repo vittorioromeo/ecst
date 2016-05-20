@@ -13,7 +13,8 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     namespace impl
     {
         template <typename T>
-        using is_signature_impl = mp::is_specialization_of<data, T>;
+        using is_signature_impl =
+            mp::is_specialization_of<data, typename T::type>;
     }
 
     /// @brief Evaluates to true if `T` is a component signature.

@@ -27,13 +27,14 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         template <typename TSystemTag>
         using tag_system_type = typename TSystemTag::type;
 
+        // TODO:
         template <typename T>
-        constexpr auto is_tag_impl = mp::is_specialization_of_v<tag_impl, T>;
+        constexpr auto is_tag_impl = true;
     }
 
     /// @brief Template variable wrapping a system type into a `tag`.
     template <typename TSystem>
-    constexpr auto tag = impl::tag_v_impl<TSystem>;
+    constexpr auto tag = bh::type_c<TSystem>;
 
     /// @brief Evaluates to true if `T` is a system tag.
     template <typename T>

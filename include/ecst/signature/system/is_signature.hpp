@@ -14,7 +14,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     namespace impl
     {
         template <typename T>
-        using is_signature_impl = mp::is_specialization_of<impl::data, T>;
+        using is_signature_impl =
+            mp::is_specialization_of<impl::data, typename T::type>;
     }
 
     /// @brief Evaluates to true if `T` is a system signature.

@@ -21,9 +21,14 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             using tag = TComponentTag;
         };
 
+        // TODO:
+        template <typename T>
+        using unwrap = typename T::type;
+
+
         /// @brief Alias for the tag type inside `TComponentSignature`.
         template <typename TComponentSignature>
-        using signature_tag_type = typename TComponentSignature::tag;
+        using signature_tag_type = typename unwrap<TComponentSignature>::tag;
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

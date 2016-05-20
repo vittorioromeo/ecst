@@ -29,24 +29,10 @@ ECST_MP_LIST_NAMESPACE
         return boost::hana::size_c<index>;
     }
 
-
-    template <typename Iterable, typename T>
-    constexpr auto index_of_impl(Iterable const& iterable, T const& element)
-    {
-        return get_index_of_first_matching(
-            bh::transform(iterable,
-                [](auto x)
-                {
-                    return bh::type_c<std::decay_t<decltype(x)>>;
-                }),
-            bh::type_c<std::decay_t<decltype(element)>>);
-    }
-
-
     template <typename Iterable, typename T>
     constexpr auto index_of(Iterable const& iterable, T const& element)
     {
-        return decltype(index_of_impl(iterable, element)){};
+        return decltype(get_index_of_first_matching(iterable, element)){};
     }
 
     namespace impl

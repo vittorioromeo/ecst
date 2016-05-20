@@ -29,13 +29,14 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         template <typename TComponentTag>
         using tag_component_type = typename TComponentTag::type;
 
+        // TODO:
         template <typename T>
-        constexpr auto is_tag_impl = mp::is_specialization_of_v<tag_impl, T>;
+        constexpr auto is_tag_impl = true;
     }
 
     /// @brief Template variable wrapping a component type into a `tag`.
     template <typename TComponent>
-    constexpr auto tag = impl::tag_v_impl<TComponent>;
+    constexpr auto tag = bh::type_c<TComponent>;
 
     /// @brief Evaluates to true if `T` is a component tag.
     template <typename T>
