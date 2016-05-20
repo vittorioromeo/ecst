@@ -16,7 +16,7 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         template <typename T>
         auto is_signature_list_impl()
         {
-            return bh::all_of(T{}, [](auto sx)
+            return mp::bh::all_of(T{}, [](auto sx)
                 {
                     return signature::component::is_signature(sx);
                 });

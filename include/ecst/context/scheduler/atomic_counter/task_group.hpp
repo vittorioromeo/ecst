@@ -19,7 +19,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
     public:
         static constexpr auto task_count() noexcept
         {
-            return bh::length(TTaskList{});
+            return mp::bh::length(TTaskList{});
         }
 
     private:
@@ -28,7 +28,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         template <typename TID>
         constexpr auto valid_id(TID id) const noexcept
         {
-            return id >= bh::size_c<0> && id < task_count();
+            return id >= mp::bh::size_c<0> && id < task_count();
         }
 
     public:
@@ -39,7 +39,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         auto& task_by_id(TID id) noexcept
         {
             ECST_ASSERT(valid_id(id));
-            return bh::at(_tasks, id);
+            return mp::bh::at(_tasks, id);
         }
 
         template <             // .

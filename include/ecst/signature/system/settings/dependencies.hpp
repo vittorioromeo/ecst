@@ -53,7 +53,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         template <typename T, typename TCurrentSystemTag>
         auto is_tag_dependency_list_impl()
         {
-            return bh::all_of(T{}, [](auto xt)
+            return mp::bh::all_of(T{}, [](auto xt)
                 {
                     return is_tag(xt);
                 });

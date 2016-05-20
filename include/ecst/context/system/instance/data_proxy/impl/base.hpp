@@ -67,9 +67,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 constexpr auto sig =
                     signature_list::system::signature_by_type<TSystem>(ssl);
 
-                return bool_v<( // .
-                    signature_list::system::has_dependency_recursive(
-                        ssl, TSystemSignature{}, sig))>;
+                return signature_list::system::has_dependency_recursive(
+                    ssl, TSystemSignature{}, sig);
             }
 
         public:

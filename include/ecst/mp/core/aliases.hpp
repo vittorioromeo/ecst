@@ -11,30 +11,24 @@
 #include <vrm/core/type_aliases.hpp>
 #include <vrm/core/y_combinator.hpp>
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
 #include <boost/hana.hpp>
-#include <boost/hana/experimental/types.hpp>
 
-namespace ecst
-{
-    namespace bh = boost::hana;
-}
 ECST_MP_NAMESPACE
 {
+    namespace bh = boost::hana;
     namespace vrmc = vrm::core;
 
-    using vrmc::bool_;
-    using vrmc::bool_v;
-    using vrmc::sz_t;
-    using vrmc::sz_t_;
+    using ecst::sz_t;
+    using ecst::sz_t_;
 
     template <std::size_t TX>
-    constexpr boost::hana::size_t<TX> sz_v{};
+    constexpr bh::size_t<TX> sz_v{};
 
 
-    using vrmc::int_;
-    using vrmc::int_v;
-    using vrmc::static_if;
-    using vrmc::apply;
+    using ecst::int_;
+    using ecst::int_v;
+    using ecst::static_if;
 
     template <typename TF>
     constexpr auto y_combinator(TF && f) noexcept

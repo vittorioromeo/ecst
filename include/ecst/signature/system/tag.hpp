@@ -29,18 +29,18 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         // TODO:
         template <typename T>
-        constexpr auto is_tag_impl = true;
+        constexpr auto is_tag_impl = mp::bh::true_c;
     }
 
     /// @brief Template variable wrapping a system type into a `tag`.
     template <typename TSystem>
-    constexpr auto tag = bh::type_c<TSystem>;
+    constexpr auto tag = mp::bh::type_c<TSystem>;
 
     /// @brief Evaluates to true if `T` is a system tag.
     template <typename T>
     constexpr auto is_tag(T)
     {
-        return mp::bool_v<impl::is_tag_impl<T>>;
+        return impl::is_tag_impl<T>;
     }
 
     namespace impl
@@ -48,7 +48,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         template <typename T>
         auto is_tag_list_impl(T x)
         {
-            return bh::all_of(x, [](auto xe)
+            return mp::bh::all_of(x, [](auto xe)
                 {
                     return is_tag(xe);
                 });

@@ -73,7 +73,7 @@ ECST_MP_NAMESPACE
     template <typename T>
     constexpr auto is_null(T) noexcept
     {
-        return bool_v<same_type_decay(T{}, null_v)>;
+        return same_type_decay(T{}, null_v);
     }
 }
 ECST_MP_NAMESPACE_END

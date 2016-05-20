@@ -19,7 +19,7 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "entity storage: ";
 
-            static_if(bool_v<settings::has_fixed_entity_storage<TSettings>>)
+            static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([&oss](auto ts)
                     {
                         oss << "fixed (capacity: "
@@ -40,7 +40,7 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "multithreading: ";
 
-            static_if(bool_v<settings::inner_parallelism_allowed<TSettings>()>)
+            static_if(settings::inner_parallelism_allowed<TSettings>())
                 .then([&oss](auto)
                     {
                         oss << "allows inner parallelism";

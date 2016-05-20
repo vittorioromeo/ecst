@@ -19,6 +19,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         template <typename TL0, typename TL1>
         auto unique_cat(TL0 l0, TL1 l1)
         {
+            using namespace mp;
+
             return bh::concat(
                 bh::unique(bh::sort(l0)), bh::unique(bh::sort(l1)));
         }
@@ -36,7 +38,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             {
                 return unique_cat( // .
                     curr_list,     // .
-                    bh::fold_left(curr_list, mp::list::empty_v,
+                    mp::bh::fold_left(curr_list, mp::list::empty_v,
                         [=](auto acc, auto xid)
                         {
                             auto xsig = signature_by_id(ssl, xid);
@@ -69,7 +71,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         {
             auto ds_id = id_by_signature(ssl, ds);
 
-            return bh::contains(recursive_dependency_id_list(ssl, ss), ds_id);
+            return mp::bh::contains(
+                recursive_dependency_id_list(ssl, ss), ds_id);
         }
     }
 

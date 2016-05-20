@@ -27,13 +27,13 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         TOutput                 // .
         )
     {
-        return bh::type<impl::data< // .
-            TTag,                   // .
-            TParallelizability,     // .
-            TTagDependencyList,     // .
-            TComponentUseList,      // .
-            TOutput                 // .
-            >>{};
+        return mp::bh::type_c<impl::data< // .
+            TTag,                         // .
+            TParallelizability,           // .
+            TTagDependencyList,           // .
+            TComponentUseList,            // .
+            TOutput                       // .
+            >>;
     }
 
     template <                       // .

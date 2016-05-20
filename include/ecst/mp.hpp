@@ -5,15 +5,5 @@
 
 #pragma once
 
-// TODO:
-#include <boost/hana.hpp>
-#include <boost/hana/experimental/types.hpp>
-
-namespace ecst
-{
-    namespace bh = boost::hana;
-}
-
 #include <ecst/mp/core.hpp>
-#include <ecst/mp/minmax.hpp>
 #include <ecst/mp/list.hpp>

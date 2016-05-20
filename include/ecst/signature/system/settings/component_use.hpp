@@ -7,6 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/mp/core.hpp>
 #include <ecst/mp/list.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
@@ -27,16 +28,16 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         template <typename T>
         using is_read_component_use_impl =
-            mp::bool_<mp::is_specialization_of_v<read_impl, T>>;
+            mp::is_specialization_of<read_impl, T>;
 
         template <typename T>
         using is_mutate_component_use_impl =
-            mp::bool_<mp::is_specialization_of_v<mutate_impl, T>>;
+            mp::is_specialization_of<mutate_impl, T>;
 
         template <typename T>
         using is_component_use_impl =
-            mp::bool_<is_read_component_use_impl<T>{} ||
-                      is_mutate_component_use_impl<T>{}>;
+            mp::bh::bool_<is_read_component_use_impl<T>{} ||
+                          is_mutate_component_use_impl<T>{}>;
     }
 
     /// @brief Evaluates to true if `T` is a valid read-only component use.

@@ -24,8 +24,7 @@ ECST_NAMESPACE
         template <typename TSettings>
         auto dispatch_set_type() noexcept
         {
-            return static_if(
-                       bool_v<settings::has_fixed_entity_storage<TSettings>>)
+            return static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([](auto ts)
                     {
                         return mp::type_c<

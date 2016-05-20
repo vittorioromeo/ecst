@@ -21,14 +21,14 @@ ECST_MP_NAMESPACE
             is_specialization_of<mp::list::impl::type_list, std::decay_t<T>>;
 #else
         template <typename T>
-        using is_list_impl = bool_<true>;
+        using is_list_impl = bh::true_;
 #endif
     }
 
     template <typename T>
     constexpr auto is_list(T)
     {
-        return bool_v<impl::is_list_impl<T>{}>;
+        return impl::is_list_impl<T>{};
     }
 }
 ECST_MP_NAMESPACE_END

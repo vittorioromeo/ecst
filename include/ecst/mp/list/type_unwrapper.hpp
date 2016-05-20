@@ -7,8 +7,6 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
-#include <ecst/mp/list/inverse_indices.hpp>
-#include <ecst/mp/list/remove.hpp>
 #include <boost/hana/ext/std/tuple.hpp>
 
 ECST_MP_LIST_NAMESPACE

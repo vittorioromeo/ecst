@@ -9,24 +9,16 @@
 #include <utility>
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
-#include <boost/hana.hpp>
-#include <boost/hana/experimental/types.hpp>
-
-
-namespace ecst
-{
-    namespace bh = boost::hana;
-}
 
 ECST_MP_LIST_NAMESPACE
 {
     template <typename Haystack, typename Needle>
     constexpr auto get_index_of_first_matching(Haystack&&, Needle && n)
     {
-        using Pred = decltype(boost::hana::equal.to(n));
-        using Pack = typename boost::hana::detail::make_pack<Haystack>::type;
-        constexpr auto index = boost::hana::detail::index_if<Pred, Pack>::value;
-        return boost::hana::size_c<index>;
+        using Pred = decltype(bh::equal.to(n));
+        using Pack = typename bh::detail::make_pack<Haystack>::type;
+        constexpr auto index = bh::detail::index_if<Pred, Pack>::value;
+        return bh::size_c<index>;
     }
 
     template <typename Iterable, typename T>
