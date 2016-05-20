@@ -12,10 +12,10 @@ ECST_CONTEXT_NAMESPACE
     template <typename TSettings>
     auto make(TSettings)
     {
+#if 1
         // TODO: ?
         return impl::data<TSettings>{};
-
-        /*
+#else
         auto result = impl::data<TSettings>{};
         using rt = decltype(result);
 
@@ -30,7 +30,7 @@ ECST_CONTEXT_NAMESPACE
         auto i = e{std::move(result)};
 
         return i;
-        */
+#endif
     }
 
     template <typename TSettings>

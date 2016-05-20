@@ -23,6 +23,8 @@ namespace example
         {
         private:
             sf::RenderWindow _window;
+
+            // TODO: use unique_ptr if compiler stops crashing...
             T* _app = nullptr;
             std::function<void()> _run_fn;
 
@@ -48,9 +50,14 @@ namespace example
                 };
             }
 
+            ~app_runner()
+            {
+                delete _app;
+            }
+
             inline auto& app() noexcept
             {
-                ECST_ASSERT_OP(_app.get(), !=, nullptr);
+                ECST_ASSERT_OP(_app, !=, nullptr);
                 return *_app;
             }
 

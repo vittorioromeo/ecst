@@ -21,10 +21,13 @@ ECST_CONTEXT_BITSET_NAMESPACE
         class bits
         {
         private:
-            static constexpr auto my_settings = TSettings{};
+            static constexpr auto my_settings()
+            {
+                return TSettings{};
+            }
             static constexpr auto my_csl()
             {
-                return settings::component_signature_list(my_settings);
+                return settings::component_signature_list(my_settings());
             }
 
         public:

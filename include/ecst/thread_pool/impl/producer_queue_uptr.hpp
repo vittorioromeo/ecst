@@ -15,6 +15,7 @@ namespace etp
     class producer_queue_uptr
     {
     private:
+        // TODO: avoidable unique_ptr?
         std::unique_ptr<task_queue> _queue;
         task_queue_producer_token _ptok;
 
@@ -24,23 +25,6 @@ namespace etp
         {
         }
 
-        // Prevent copies.
-        producer_queue_uptr(const producer_queue_uptr&) = delete;
-        producer_queue_uptr& operator=(const producer_queue_uptr&) = delete;
-
-        producer_queue_uptr(producer_queue_uptr&& rhs) noexcept
-            : _queue{std::move(rhs._queue)},
-              _ptok{*_queue}
-        {
-        }
-
-        producer_queue_uptr& operator=(producer_queue_uptr&& rhs) noexcept
-        {
-            _queue = std::move(rhs._queue);
-            _ptok = task_queue_producer_token(*_queue);
-
-            return *this;
-        }
 
         auto& ptok() noexcept
         {

@@ -211,8 +211,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TBitset>
-    auto instance<TSettings, TSystemSignature>::matches_bitset(const TBitset& b)
-        const noexcept
+    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::matches_bitset(
+        const TBitset& b) const noexcept
     {
         return _bitset.contains(b);
     }

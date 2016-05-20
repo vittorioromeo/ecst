@@ -5,6 +5,7 @@
 
 // #define EXAMPLE_LIMIT_FRAMERATE 1
 #include "./utils/dependencies.hpp"
+#include <vrm/pp.hpp>
 
 // The following example consists in a particle simulations. All particles are
 // massless and collide with each other in a perfectly inelastic way. The
@@ -58,9 +59,9 @@ namespace example
 {
     // Boundaries of the simulation.
     constexpr auto left_bound = 0;
-    constexpr auto right_bound = 1024;
+    constexpr auto right_bound = 1440;
     constexpr auto top_bound = 0;
-    constexpr auto bottom_bound = 768;
+    constexpr auto bottom_bound = 900;
 
     // Data of a collision contact.
     struct contact
@@ -497,10 +498,10 @@ namespace example
     }
 
     // Compile-time `std::size_t` entity limit.
-    constexpr auto entity_limit = ecst::sz_v<50000>;
+    constexpr auto entity_limit = ecst::sz_v<65536>;
 
     // Compile-time initial particle count.
-    constexpr auto initial_particle_count = ecst::sz_v<20000>;
+    constexpr auto initial_particle_count = ecst::sz_v<50000>;
 
     namespace ecst_setup
     {
@@ -628,8 +629,29 @@ namespace example
                     ss::output::data<std::vector<sf::Vertex>> // .
                     );
 
-            // Build and return the "system signature list".
-            return sls::make(              // .
+// TODO:
+
+#define ERASED(x)                                                         \
+    using VRM_PP_CAT(VRM_PP_EXPAND(x), _tt) = decltype(VRM_PP_EXPAND(x)); \
+    struct VRM_PP_CAT(e_, VRM_PP_EXPAND(x), _tt) : VRM_PP_CAT(x, _tt)     \
+    {                                                                     \
+    };                                                                    \
+    constexpr VRM_PP_CAT(e_, VRM_PP_EXPAND(x), _tt)                       \
+        VRM_PP_CAT(erased_, VRM_PP_EXPAND(x));
+
+
+#define MAKE_ERASED_SLS_STEP0_BODY(i, d, a) ERASED(VRM_PP_EXPAND(a));
+#define MAKE_ERASED_SLS_STEP1_BODY(i, d, a) \
+    VRM_PP_CAT(erased_, VRM_PP_EXPAND(a)) VRM_PP_COMMA_IF(i)
+
+#define MAKE_ERASED_SLS(...)                                     \
+    VRM_PP_FOREACH_REVERSE(                                      \
+        MAKE_ERASED_SLS_STEP0_BODY, VRM_PP_EMPTY(), __VA_ARGS__) \
+    return sls::make(VRM_PP_FOREACH_REVERSE(                     \
+        MAKE_ERASED_SLS_STEP1_BODY, VRM_PP_EMPTY(), __VA_ARGS__))
+
+
+            MAKE_ERASED_SLS(               // .
                 ssig_acceleration,         // .
                 ssig_velocity,             // .
                 ssig_keep_in_bounds,       // .
@@ -638,6 +660,22 @@ namespace example
                 ssig_solve_contacts,       // .
                 ssig_render_colored_circle // .
                 );
+
+            /*
+
+
+                        // Build and return the "system signature list".
+                        return sls::make(                     // .
+                            ssig_acceleration,         // .
+                            ssig_velocity,             // .
+                            ssig_keep_in_bounds,       // .
+                            ssig_spatial_partition,    // .
+                            ssig_collision,            // .
+                            ssig_solve_contacts,       // .
+                            ssig_render_colored_circle // .
+                            );
+
+                            */
         }
     }
 
@@ -770,8 +808,15 @@ int main()
         cs::scheduler<ss::s_atomic_counter>             // .
         );
 
+    using ssss = decltype(s);
+    struct hs : public decltype(s)
+    {
+        using ssss::ssss;
+    };
+
     // Create an ECST context.
-    auto ctx = ecst::context::make_uptr(s);
+    auto ctx = ecst::context::make_uptr(hs{});
+
 
     // Run the simulation.
     run_simulation(*ctx);

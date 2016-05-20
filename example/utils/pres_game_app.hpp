@@ -220,7 +220,7 @@ namespace example
     {
         boilerplate::app_runner<
             game_app<std::remove_reference_t<decltype(ctx)>>> x{
-            "Particle ECST test", 1024, 768, ctx};
+            "Particle ECST test", 1440, 900, ctx};
 
         x.run();
     }

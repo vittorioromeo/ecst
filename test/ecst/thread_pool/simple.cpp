@@ -4,7 +4,7 @@ using namespace vrm::core;
 
 TEST_MAIN()
 {
-    int x = 0;
+    std::atomic<int> x{0};
 
     ecst::thread_pool pool;
     pool.post([&x]
@@ -17,5 +17,5 @@ TEST_MAIN()
         ecst::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    TEST_ASSERT_OP(x, ==, 100);
+    TEST_ASSERT_NS(x == 100);
 }

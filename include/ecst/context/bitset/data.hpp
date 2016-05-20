@@ -66,7 +66,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             }
 
             template <typename TBitset>
-            auto contains(const TBitset& b) const noexcept
+            auto ECST_PURE_FN contains(const TBitset& b) const noexcept
             {
                 return (_bitset & b._bitset) == _bitset;
             }
