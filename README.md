@@ -10,9 +10,11 @@ Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow
 2. Execute the `./init-repository.sh` script.
 3. Create a build directory and execute CMake:
     ```bash
+
     mkdir ./build
     cd ./build
     cmake ..
+    
     ```
 
 *(Some examples may require [SFML](https://sfml-dev.org) to be installed.)*
