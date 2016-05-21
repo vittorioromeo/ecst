@@ -284,8 +284,15 @@ namespace example
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);
 
+                        proxy.execute_systems( // .
+                            sea::all().for_subtasks([i = 0](
+                                auto& s, auto& data) mutable
+                                {
+                                    ++i;
+                                    s.process(data);
+                                }));
 
-
+                        /*
                         proxy.execute_systems( // .
                             sea::tag::for_subtasks(st::s0,
                                 [](auto& s, auto& data)
@@ -302,6 +309,7 @@ namespace example
                                 {
                                     s.process(data);
                                 }));
+                        */
                     }
                 });
         }

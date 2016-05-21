@@ -81,7 +81,8 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::execute_systems(
             TContext& context, TFs&&... fs)
         {
-            _system_runner.execute(context, make_overload(FWD(fs)...));
+            auto os = make_overload(FWD(fs)...);
+            _system_runner.execute(context, os);
         }
 
         template <typename TSettings>

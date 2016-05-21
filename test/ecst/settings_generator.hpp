@@ -60,10 +60,10 @@ namespace test
                                 cs::scheduler<ss::s_atomic_counter> // .
                                 );
 
-                            return mp::list::append(yacc, zsettings);
+                            return mp::bh::append(yacc, zsettings);
                         });
 
-                    return mp::list::cat(xacc, fold2);
+                    return mp::bh::concat(xacc, fold2);
                 });
         }
 

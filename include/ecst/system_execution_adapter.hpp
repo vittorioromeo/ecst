@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./system_execution_adapter/all.hpp"
-#include "./system_execution_adapter/tag.hpp"
+#include "./system_execution_adapter/impl.hpp"
+#include "./system_execution_adapter/interface.hpp"

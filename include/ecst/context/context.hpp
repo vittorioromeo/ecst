@@ -5,11 +5,6 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/thread_pool.hpp>
-#include <ecst/signature_list.hpp>
-#include <ecst/settings.hpp>
 #include "./bitset.hpp"
 #include "./scheduler.hpp"
 #include "./system.hpp"

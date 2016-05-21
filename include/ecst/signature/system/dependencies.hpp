@@ -24,7 +24,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature>
     constexpr auto dependency_count(TSystemSignature ss)
     {
-        return mp::list::size(dependencies_as_tag_list(ss));
+        return mp::bh::size(dependencies_as_tag_list(ss));
     }
 
     /// @brief Returns `true` if `ss` is independent.

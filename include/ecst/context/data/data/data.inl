@@ -28,13 +28,13 @@ ECST_CONTEXT_NAMESPACE
             // Execute user-defined step.
             using f_return_type = decltype(f(step_proxy));
             return static_if(std::is_same<f_return_type, void>{})
-                .then([this, &step_proxy](auto&& xf)
+                .then([this, &step_proxy](auto&& xf) mutable
                     {
                         // Do not return anything if `xf` returns void.
                         xf(step_proxy);
                         this->refresh();
                     })
-                .else_([this, &step_proxy](auto&& xf)
+                .else_([this, &step_proxy](auto&& xf) mutable
                     {
                         auto res = xf(step_proxy);
                         this->refresh();

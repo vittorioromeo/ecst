@@ -46,6 +46,8 @@ ECST_NAMESPACE
     template <typename TSet, typename T>
     void add_range_in_set_reverse(TSet & set, T i_begin, T i_end)
     {
+        // TODO: could be unchecked
+
         for(T i(i_end - 1); i > i_begin; --i)
         {
             set.add(i);
@@ -57,6 +59,8 @@ ECST_NAMESPACE
     template <typename TSet, typename T>
     void add_range_in_set_forward(TSet & set, T i_begin, T i_end)
     {
+        // TODO: could be unchecked
+
         for(T i(i_begin); i < i_end; ++i)
         {
             set.add(i);

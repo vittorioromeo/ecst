@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/signature/system/tag.hpp>
-#include <ecst/signature/system/settings.hpp>
-#include <ecst/signature/system/is_signature.hpp>
-#include <ecst/signature/system/data.hpp>
-#include <ecst/signature/system/make.hpp>
-#include <ecst/signature/system/tag_of.hpp>
-#include <ecst/signature/system/dependencies.hpp>
+#include "./system/tag.hpp"
+#include "./system/settings.hpp"
+#include "./system/is_signature.hpp"
+#include "./system/data.hpp"
+#include "./system/make.hpp"
+#include "./system/tag_of.hpp"
+#include "./system/dependencies.hpp"

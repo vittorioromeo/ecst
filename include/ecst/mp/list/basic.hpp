@@ -6,7 +6,6 @@
 #pragma once
 
 #include <ecst/mp/list/types.hpp>
-#include <ecst/mp/list/is_list.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
@@ -17,110 +16,28 @@ ECST_MP_LIST_NAMESPACE
         return v<Ts...>;
     }
 
-    /// @brief Returns true if `l` is a valid list.
-    template <typename TList>
-    constexpr auto valid(TList l)
-    {
-        return is_list(l);
-    }
-
-    // Returns the size of a list.
-    template <typename TList>
-    constexpr auto size(TList l)
-    {
-        ECST_S_ASSERT_DT(valid(l));
-        return bh::length(l);
-    }
-
-    namespace impl
-    {
-        template <typename TList>
-        constexpr auto empty_impl(TList l)
-        {
-            return size(l) == 0;
-        }
-    }
-
-    // Returns whether a list is empty or not.
-    template <typename TList>
-    constexpr auto empty(TList l)
-    {
-        return decltype(impl::empty_impl(l)){};
-    }
-
+    // Executes `bh::all` on all `xs...`.
     template <typename... Ts>
     constexpr auto all_variadic(Ts && ... xs)
     {
         return bh::all(bh::make_basic_tuple(FWD(xs)...));
     }
 
-    // Concatenates multiple lists together.
-    template <typename... TLists>
-    constexpr auto cat(TLists... ls)
+    // Concats `l0` and `l1`, after calling `bh::sort` and `bh::unique`.
+    template <typename TL0, typename TL1>
+    auto unique_cat(TL0 && l0, TL1 && l1)
     {
-        ECST_S_ASSERT_DT(all_variadic(valid(ls)...));
-        return bh::concat(ls...);
+        using namespace mp;
+        return bh::unique(bh::sort(bh::concat(l0, l1)));
     }
 
-    // Appends some items at the end of a list.
-    template <typename TList, typename... Ts>
-    constexpr auto append(TList l, Ts... xs)
+    // Returns the index of `x` in `l`.
+    template <typename TList, typename T>
+    constexpr auto index_of(TList&&, T && x) noexcept
     {
-        return cat(l, make(xs...));
-    }
-
-    // Prepends some items at the end of a list.
-    template <typename TList, typename... Ts>
-    constexpr auto prepend(TList l, Ts... xs)
-    {
-        return cat(make(xs...), l);
-    }
-
-    namespace impl
-    {
-        template <typename TList, typename TI>
-        constexpr auto valid_index_impl(TList, TI)
-        {
-            // TODO:
-            return true;
-        }
-    }
-
-    // Returns true if `i` is a valid index for `l`.
-    template <typename TList, typename TI>
-    constexpr auto valid_index(TList l, TI i)
-    {
-        return decltype(impl::valid_index_impl(l, i)){};
-    }
-
-    // Returns the `i`-th item of a list.
-    template <typename TList, typename TI>
-    constexpr auto at(TList l, TI i)
-    {
-        // ECST_S_ASSERT_DT(valid_index(l, i));
-        return bh::at(l, i);
-    }
-
-    // Returns the first item of `l`.
-    template <typename TList>
-    constexpr auto head(TList l)
-    {
-        return at(l, sz_v<0>);
-    }
-
-    // Returns the last valid index of `l`.
-    template <typename TList>
-    constexpr auto last_index(TList l)
-    {
-        ECST_S_ASSERT_DT(!empty(l));
-        return size(l) - 1;
-    }
-
-    // Returns the last item of `l`.
-    template <typename TList>
-    constexpr auto tail(TList l)
-    {
-        return at(l, last_index(l));
+        using Pred = decltype(bh::equal.to(x));
+        using Pack = typename bh::detail::make_pack<TList>::type;
+        return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
     }
 }
 ECST_MP_LIST_NAMESPACE_END

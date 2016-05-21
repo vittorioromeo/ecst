@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <ecst/mp/core/aliases.hpp>
-#include <ecst/mp/core/is_specialization_of.hpp>
-#include <ecst/mp/core/type_wrapper.hpp>
-#include <ecst/mp/core/comparers.hpp>
+#include "./core/aliases.hpp"
+#include "./core/is_specialization_of.hpp"
+#include "./core/type_wrapper.hpp"
+#include "./core/comparers.hpp"

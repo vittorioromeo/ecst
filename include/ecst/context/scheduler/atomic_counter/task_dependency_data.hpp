@@ -46,7 +46,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
         auto dependent_tasks_count() const noexcept
         {
-            return mp::list::size(TDependentIDList{});
+            return mp::bh::size(TDependentIDList{});
         }
     };
 }

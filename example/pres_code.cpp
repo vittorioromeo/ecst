@@ -724,59 +724,40 @@ namespace example
     {
         namespace sea = ::ecst::system_execution_adapter;
 
-        ctx.step([&rt, dt](auto& proxy)
+        auto ft_tags = sea::t(st::acceleration, st::velocity);
+        auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
+            st::solve_contacts, st::render_colored_circle);
+
+        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
             {
                 proxy.execute_systems( // .
-                    sea::tag::for_subtasks(st::acceleration,
-                        [dt](auto& s, auto& data)
-                        {
-
-                            s.process(dt, data);
-                        }),
-                    sea::tag::for_subtasks(st::velocity,
-                        [dt](auto& s, auto& data)
+                    ft_tags.for_subtasks([dt](auto& s, auto& data)
                         {
                             s.process(dt, data);
                         }),
-                    sea::tag::for_subtasks(st::keep_in_bounds,
-                        [](auto& s, auto& data)
+                    nonft_tags.for_subtasks([](auto& s, auto& data)
                         {
                             s.process(data);
                         }),
-                    sea::tag::detailed(st::spatial_partition,
-                        [&proxy](auto& s, auto& executor)
-                        {
-                            s.clear_cells();
+                    sea::t(st::spatial_partition)
+                        .detailed_instance([&proxy](auto& i, auto& executor)
+                            {
+                                auto& s(i.system());
+                                s.clear_cells();
 
-                            executor.for_subtasks([&s](auto& data)
-                                {
-                                    s.process(data);
-                                });
+                                executor.for_subtasks([&s](auto& data)
+                                    {
+                                        s.process(data);
+                                    });
 
-                            proxy.instance(st::spatial_partition)
-                                .for_outputs([](auto& xs, auto& sp_vector)
+                                i.for_outputs([](auto& xs, auto& sp_vector)
                                     {
                                         for(const auto& x : sp_vector)
                                         {
                                             xs.add_sp(x);
                                         }
                                     });
-                        }),
-                    sea::tag::for_subtasks(st::collision,
-                        [](auto& s, auto& data)
-                        {
-                            s.process(data);
-                        }),
-                    sea::tag::for_subtasks(st::solve_contacts,
-                        [](auto& s, auto& data)
-                        {
-                            s.process(data);
-                        }),
-                    sea::tag::for_subtasks(st::render_colored_circle,
-                        [](auto& s, auto& data)
-                        {
-                            s.process(data);
-                        }));
+                            }));
 
                 proxy.for_system_outputs(st::render_colored_circle,
                     [&rt](auto&, auto& va)

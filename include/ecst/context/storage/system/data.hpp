@@ -48,7 +48,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         public:
             auto system_count() const noexcept
             {
-                return mp::list::size(ssl_type{});
+                return mp::bh::size(ssl_type{});
             }
 
             template <typename TSystem>

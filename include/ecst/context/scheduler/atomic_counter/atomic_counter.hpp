@@ -72,13 +72,13 @@ ECST_SCHEDULER_NAMESPACE
             reset();
 
             // Aggregates the required synchronization objects.
-            counter_blocker b{mp::list::size(ssl())};
+            counter_blocker b{mp::bh::size(ssl())};
 
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
             execute_and_wait_until_counter_zero(b,
-                [ this, &ctx, &b, f = FWD(f) ]
+                [ this, &ctx, &b, f = FWD(f) ]() mutable
                 {
                     this->start_execution(ctx, b, f);
                 });

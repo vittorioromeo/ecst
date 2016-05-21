@@ -15,16 +15,6 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     // TODO: refactor/beautify
     namespace impl
     {
-        // TODO:
-        template <typename TL0, typename TL1>
-        auto unique_cat(TL0 l0, TL1 l1)
-        {
-            using namespace mp;
-
-            return bh::concat(
-                bh::unique(bh::sort(l0)), bh::unique(bh::sort(l1)));
-        }
-
         template <typename TSystemSignatureList, typename TSystemSignature>
         auto recursive_dependency_id_list_impl(
             TSystemSignatureList ssl, TSystemSignature ss)
@@ -36,15 +26,15 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             // Recursive step implementation.
             auto step = [=](auto self, auto curr_list)
             {
-                return unique_cat( // .
-                    curr_list,     // .
+                return mp::list::unique_cat( // .
+                    curr_list,               // .
                     mp::bh::fold_left(curr_list, mp::list::empty_v,
                         [=](auto acc, auto xid)
                         {
                             auto xsig = signature_by_id(ssl, xid);
                             auto new_list = dependencies_ids_list(ssl, xsig);
 
-                            return unique_cat(acc, self(new_list));
+                            return mp::list::unique_cat(acc, self(new_list));
                         }));
             };
 

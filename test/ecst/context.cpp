@@ -184,11 +184,8 @@ TEST_MAIN()
     auto ctx = ecst::context::make(context_settings);
     ctx.step([](auto& proxy)
         {
-            (void)proxy;
-            // TODO:
-            /*
             proxy.execute_systems(
-                sea::all::detailed([&](auto& system, auto& executor)
+                sea::all().detailed([&](auto& system, auto& executor)
                     {
                         executor.for_subtasks([&](auto&)
                             {
@@ -197,6 +194,5 @@ TEST_MAIN()
                                 std::cout << "...finished.\n";
                             });
                     }));
-            */
         });
 }

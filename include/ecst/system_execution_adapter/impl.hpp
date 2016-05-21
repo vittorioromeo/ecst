@@ -5,5 +5,4 @@
 
 #pragma once
 
-#include "./all/all.hpp"
-#include "./all/all.inl"
+#include "./impl/predicate_holder.hpp"

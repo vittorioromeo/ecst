@@ -5,7 +5,5 @@
 
 #pragma once
 
-#include "./component/is_signature_list.hpp"
-#include "./component/make.hpp"
-#include "./component/signature.hpp"
-#include "./component/id.hpp"
+#include "./predicate_holder/predicate_holder.hpp"
+#include "./predicate_holder/predicate_holder.inl"

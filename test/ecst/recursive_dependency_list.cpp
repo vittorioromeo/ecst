@@ -58,6 +58,8 @@ TEST_MAIN()
     // Define system signature list
     constexpr auto ssl = sls::make(ssig_a, ssig_b, ssig_c);
 
+
+
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_a)) ==
         bh::size_c<0>);
 
@@ -66,25 +68,25 @@ TEST_MAIN()
         (mp::list::empty_v)                               // .
         );
 
+
+
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_b)) ==
         bh::size_c<1>);
 
-    /* TODO: fix, verify
     SA_SDT(                                               // .
         (sls::recursive_dependency_id_list(ssl, ssig_b)), // .
-        (mp::list::v<mp::sz_t_<0>>)                       // .
+        (mp::list::v<bh::size_t<0>>)                      // .
         );
-    */
+
+
 
     SA(bh::length(sls::recursive_dependency_id_list(ssl, ssig_c)) ==
         bh::size_c<2>);
 
-    /* TODO: fix, verify
     SA_SDT(                                               // .
         (sls::recursive_dependency_id_list(ssl, ssig_c)), // .
-        (mp::list::v<mp::sz_t_<1>, mp::sz_t_<0>>)         // .
+        (mp::list::v<bh::size_t<0>, bh::size_t<1>>)       // .
         );
-    */
 
     /*
     SA_SDT( // .

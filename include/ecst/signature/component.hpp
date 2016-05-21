@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/signature/component/tag.hpp>
-#include <ecst/signature/component/data.hpp>
-#include <ecst/signature/component/is_signature.hpp>
-#include <ecst/signature/component/make.hpp>
-#include <ecst/signature/component/tag_of.hpp>
+#include "./component/tag.hpp"
+#include "./component/data.hpp"
+#include "./component/is_signature.hpp"
+#include "./component/make.hpp"
+#include "./component/tag_of.hpp"

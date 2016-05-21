@@ -182,7 +182,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // std::cout << ecst::impl::system_name<system_type> << ": ";
 
         auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
-        f(_system, eh);
+        f(*this, eh);
 
         // TODO: remove
         // auto tt = ecst::chrono::high_resolution_clock::now() - t;

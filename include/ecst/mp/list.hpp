@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <ecst/mp/list/types.hpp>
-#include <ecst/mp/list/is_list.hpp>
-#include <ecst/mp/list/basic.hpp>
-#include <ecst/mp/list/type_unwrapper.hpp>
+#include "./list/types.hpp"
+#include "./list/basic.hpp"
+#include "./list/type_unwrapper.hpp"

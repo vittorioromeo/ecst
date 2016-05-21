@@ -25,7 +25,6 @@ namespace etp
         {
         }
 
-
         auto& ptok() noexcept
         {
             return _ptok;

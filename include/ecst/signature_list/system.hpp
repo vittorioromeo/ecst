@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/signature_list/system/is_signature_list.hpp>
-#include <ecst/signature_list/system/make.hpp>
-#include <ecst/signature_list/system/signature.hpp>
-#include <ecst/signature_list/system/id.hpp>
-#include <ecst/signature_list/system/id_list.hpp>
-#include <ecst/signature_list/system/dependents.hpp>
-#include <ecst/signature_list/system/recursive_dependencies.hpp>
+#include "./system/is_signature_list.hpp"
+#include "./system/make.hpp"
+#include "./system/signature.hpp"
+#include "./system/id.hpp"
+#include "./system/id_list.hpp"
+#include "./system/dependents.hpp"
+#include "./system/recursive_dependencies.hpp"

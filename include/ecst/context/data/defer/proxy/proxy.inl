@@ -95,7 +95,6 @@ ECST_CONTEXT_NAMESPACE
             void proxy<TSettings>::remove_component(
                 TComponentTag ct, entity_id eid) noexcept
             {
-
                 // Un-set component bit and clear chunk metadata.
                 _context.remove_component(ct, eid);
 

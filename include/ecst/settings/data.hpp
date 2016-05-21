@@ -112,7 +112,7 @@ ECST_SETTINGS_NAMESPACE
     template <typename TSettings>
     constexpr auto system_count()
     {
-        return mp::list::size(system_signature_list(TSettings{}));
+        return mp::bh::size(system_signature_list(TSettings{}));
     }
 
     template <typename TSettings>

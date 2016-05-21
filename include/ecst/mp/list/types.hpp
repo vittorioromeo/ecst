@@ -5,34 +5,14 @@
 
 #pragma once
 
-#include <tuple>
-#include <utility>
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
-    // TODO:
-    template <typename Haystack, typename Needle>
-    constexpr auto get_index_of_first_matching(Haystack&&, Needle && n) noexcept
-    {
-        using Pred = decltype(bh::equal.to(n));
-        using Pack = typename bh::detail::make_pack<Haystack>::type;
-        return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
-    }
-
-    template <typename Iterable, typename T>
-    constexpr auto index_of(Iterable const& iterable, T const& element) noexcept
-    {
-        return decltype(get_index_of_first_matching(iterable, element)){};
-    }
-
     namespace impl
     {
-        // TODO: abstract tuple operations away, in order to quickly replace
-        // `std::tuple` with something else if required
-
-        // A `type_list` is an `std::tuple`.
+        // A `type_list` is an `bh::basic_tuple`.
         template <typename... Ts>
         using type_list = bh::basic_tuple<Ts...>;
 
