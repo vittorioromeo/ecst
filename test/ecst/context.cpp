@@ -97,13 +97,13 @@ constexpr auto TEST_CONST setup_systems()
     constexpr auto ssig_render = ss::make_by_tag( // .
         stag_render,                              // .
         ips::none::v(),                           // .
-        ss::depends_on<                           // .
-            s_movement                            // .
-            >,                                    // .
-        ss::component_use(                        // .
-            ss::read<c_physics>                   // .
-            ),                                    // .
-        ss::output::none                          // .
+
+        // TODO: clang crashes here:
+        ss::depends_on<s_movement>, // .
+        ss::component_use(          // .
+            ss::read<c_physics>     // .
+            ),                      // .
+        ss::output::none            // .
         );
 
     // Define render system signature
