@@ -99,6 +99,7 @@ constexpr auto TEST_CONST setup_systems()
         ips::none::v(),                           // .
 
         // TODO: clang crashes here:
+        // ss::depends_on<s_movement>, // .
         mp::bh::make_basic_tuple(stag_movement), // .
         ss::component_use(                       // .
             ss::read<c_physics>                  // .
@@ -110,9 +111,7 @@ constexpr auto TEST_CONST setup_systems()
     constexpr auto ssig_collreact = ss::make_by_tag( // .
         stag_collreact,                              // .
         ips::none::v(),                              // .
-        ss::depends_on<                              // .
-            s_movement                               // .
-            >,                                       // .
+        mp::bh::make_basic_tuple(stag_movement),     // .
         ss::component_use(                           // .
             ss::read<c_physics>                      // .
             ),                                       // .
