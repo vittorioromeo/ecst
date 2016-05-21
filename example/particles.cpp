@@ -489,36 +489,21 @@ namespace example
                     proxy.system(st::render_colored_circle).prepare();
 
                     proxy.execute_systems( // .
-                        sea::tag::for_subtasks(st::acceleration,
-                            [dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            }),
-                        sea::tag::for_subtasks(st::velocity,
-                            [dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            }),
-                        sea::tag::for_subtasks(st::curve,
-                            [dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            }),
-                        sea::tag::for_subtasks(st::life,
-                            [dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            }),
-                        sea::tag::for_subtasks(st::fade,
-                            [](auto& s, auto& data)
+                        sea::t(
+                            st::acceleration, st::velocity, st::curve, st::life)
+                            .for_subtasks([dt](auto& s, auto& data)
+                                {
+                                    s.process(dt, data);
+                                }),
+                        sea::t(st::fade).for_subtasks([](auto& s, auto& data)
                             {
                                 s.process(data);
                             }),
-                        sea::tag::for_subtasks(st::render_colored_circle,
-                            [this, dt](auto& s, auto& data)
-                            {
-                                s.process(0, data);
-                            }));
+                        sea::t(st::render_colored_circle)
+                            .for_subtasks([this, dt](auto& s, auto& data)
+                                {
+                                    s.process(0, data);
+                                }));
 
                     if(!_ctx.any_entity_in(st::life))
                     {
