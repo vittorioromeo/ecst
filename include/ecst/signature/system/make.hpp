@@ -7,11 +7,13 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/system/data.hpp>
-#include <ecst/signature/system/settings.hpp>
+#include "./data.hpp"
+#include "./settings.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
+    // TODO: builder pattern?
+
     template <                       // .
         typename TTag,               // .
         typename TParallelizability, // .
@@ -19,12 +21,12 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         typename TComponentUseList,  // .
         typename TOutput             // .
         >
-    constexpr auto make_by_tag( // .
-        TTag,                   // .
-        TParallelizability,     // .
-        TTagDependencyList,     // .
-        TComponentUseList,      // .
-        TOutput                 // .
+    constexpr auto make(    // .
+        TTag,               // .
+        TParallelizability, // .
+        TTagDependencyList, // .
+        TComponentUseList,  // .
+        TOutput             // .
         )
     {
         return mp::bh::type_c<impl::data< // .
@@ -34,28 +36,6 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             TComponentUseList,            // .
             TOutput                       // .
             >>;
-    }
-
-    template <                       // .
-        typename T,                  // .
-        typename TParallelizability, // .
-        typename TTagDependencyList, // .
-        typename TComponentUseList,  // .
-        typename TOutput             // .
-        >
-    constexpr auto make(    // .
-        TParallelizability, // .
-        TTagDependencyList, // .
-        TComponentUseList,  // .
-        TOutput             // .
-        )
-    {
-        return make_by_tag(tag<T>, // .
-            TParallelizability{},  // .
-            TTagDependencyList{},  // .
-            TComponentUseList{},   // .
-            TOutput{}              // .
-            );
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

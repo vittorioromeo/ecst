@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include <ecst/signature/system/settings/component_use.hpp>
-#include <ecst/signature/system/settings/dependencies.hpp>
-#include <ecst/signature/system/settings/output.hpp>
+#include "./settings/component_use.hpp"
+#include "./settings/dependencies.hpp"
+#include "./settings/output.hpp"

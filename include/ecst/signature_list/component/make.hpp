@@ -11,15 +11,27 @@
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
-    template <typename... TComponentSignatures>
-    constexpr auto make(TComponentSignatures... css)
+    // TODO: rename
+    namespace impl
     {
-        ECST_S_ASSERT_DT(signature::component::are_signatures(css...));
+        template <typename... TComponentSignatures>
+        constexpr auto make(TComponentSignatures... css)
+        {
+            ECST_S_ASSERT_DT(signature::component::are_signatures(css...));
 
-        return mp::list::make(css...);
+            return mp::list::make(css...);
+        }
+
+        template <typename... TComponents>
+        constexpr auto v = make(signature::component::make<TComponents>()...);
     }
 
-    template <typename... TComponents>
-    constexpr auto v = make(signature::component::make<TComponents>()...);
+    template <typename... TComponentTags>
+    constexpr auto make(TComponentTags... cts)
+    {
+        // TODO: add storage type options
+        ECST_S_ASSERT_DT(signature::component::are_tags(cts...));
+        return impl::make(signature::component::make_by_tag(cts)...);
+    }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

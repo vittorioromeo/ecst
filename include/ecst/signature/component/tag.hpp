@@ -45,6 +45,13 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         return impl::is_tag_impl<T>;
     }
 
+    // TODO: docs, refactor
+    template <typename... Ts>
+    constexpr auto are_tags(Ts... xs)
+    {
+        return mp::list::all_variadic(is_tag(xs)...);
+    }
+
     namespace impl
     {
         template <typename T>

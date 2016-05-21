@@ -11,42 +11,14 @@
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename... TSystemTags>
-        constexpr auto depends_on_impl(TSystemTags... sts)
-        {
-            return mp::list::make(sts...);
-        }
-    }
-
     template <typename... TSystemTags>
-    constexpr auto depends_on_by_tags(TSystemTags... sts)
+    constexpr auto depends_on(TSystemTags... sts) noexcept
     {
-        return impl::depends_on_impl(sts...);
+        // TODO: asserts, checks, uniqueness
+        return mp::list::make(sts...);
     }
 
-    namespace impl
-    {
-        template <typename... TSystems>
-        constexpr auto depends_on_impl()
-        {
-            return depends_on_by_tags(tag<TSystems>...);
-        }
-    }
-
-    template <typename... TSystems>
-    constexpr auto depends_on = impl::depends_on_impl<TSystems...>();
-
-    namespace impl
-    {
-        constexpr auto no_dependencies_impl()
-        {
-            return impl::depends_on_impl();
-        }
-    }
-
-    constexpr auto no_dependencies = impl::no_dependencies_impl();
+    constexpr auto no_dependencies = depends_on();
 
     namespace impl
     {

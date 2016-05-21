@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/mp/core.hpp>
 #include <ecst/mp/list.hpp>
+#include <ecst/signature/component.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -68,11 +69,26 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         return mp::list::all_variadic(is_component_use(xs)...);
     }
 
-    template <typename TComponent>
-    constexpr impl::read_impl<TComponent> read{};
+    // TODO: variadic
+    template <typename TComponentTag>
+    constexpr auto read(TComponentTag) noexcept
+    {
+        // TODO: asserts, etc
+        return impl::read_impl<                             // .
+            signature::component::unwrap_tag<TComponentTag> // .
+            >{};
+    }
 
-    template <typename TComponent>
-    constexpr impl::mutate_impl<TComponent> mutate{};
+    // TODO: variadic
+    template <typename TComponentTag>
+    constexpr auto mutate(TComponentTag) noexcept
+    {
+        // TODO: rename to write?
+        // TODO: asserts, etc
+        return impl::mutate_impl<                           // .
+            signature::component::unwrap_tag<TComponentTag> // .
+            >{};
+    }
 
     template <typename... TSystemComponents>
     constexpr auto component_use(TSystemComponents... scs)
