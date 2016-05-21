@@ -31,7 +31,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         template <typename... TSystems>
         constexpr auto depends_on_impl()
         {
-            return mp::bh::basic_tuple<decltype(tag<TSystems>)...>{};
+            return depends_on_by_tags(tag<TSystems>...);
         }
     }
 
