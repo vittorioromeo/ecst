@@ -99,11 +99,11 @@ constexpr auto TEST_CONST setup_systems()
         ips::none::v(),                           // .
 
         // TODO: clang crashes here:
-        ss::depends_on<s_movement>, // .
-        ss::component_use(          // .
-            ss::read<c_physics>     // .
-            ),                      // .
-        ss::output::none            // .
+        mp::bh::make_basic_tuple(stag_movement), // .
+        ss::component_use(                       // .
+            ss::read<c_physics>                  // .
+            ),                                   // .
+        ss::output::none                         // .
         );
 
     // Define render system signature
