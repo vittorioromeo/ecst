@@ -14,11 +14,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     /// @brief Builds a system signature list from a variadic amount of system
     /// signatures.
     template <typename... TSystemSignatures>
-    constexpr auto make(TSystemSignatures...)
+    constexpr auto make(TSystemSignatures... sss)
     {
-        // TODO:
-        // ECST_S_ASSERT_DT(signature::system::are_signatures(sss...));
-        return mp::list::make(mp::bh::type_c<TSystemSignatures>...);
+        ECST_S_ASSERT_DT(signature::system::valid(sss...));
+        return mp::list::make(mp::type_c<TSystemSignatures>...);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

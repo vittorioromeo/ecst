@@ -36,7 +36,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
         auto p = [sts...](auto& system) mutable
         {
             // Tag of the system currently being analyzed.
-            auto system_tag = signature::system::tag<
+            auto system_tag = tag::system::v<
                 std::remove_reference_t<decltype(system)>>;
 
             // Is the current tag contained in the set of passed tags?

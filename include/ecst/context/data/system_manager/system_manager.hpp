@@ -39,7 +39,7 @@ ECST_CONTEXT_NAMESPACE
                 context::storage::system::dispatch<settings_type>;
 
             template <typename T>
-            using system_from_tag = signature::system::unwrap_tag<T>;
+            using system_from_tag = tag::system::unwrap<T>;
 
         private:
             thread_pool _thread_pool;

@@ -13,17 +13,21 @@
 // TODO: move
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
-    // TODO: builder pattern?
-
     // TODO: inl, cleanup
     template <typename TSystemTag>
-    constexpr auto make(TSystemTag st)
+    constexpr auto make(TSystemTag)
     {
         constexpr auto default_parallelism =
             ecst::inner_parallelism::strategy::none::v();
 
-        return impl::make_impl(st, default_parallelism, mp::list::empty_v,
-            mp::list::empty_v, mp::list::empty_v, output::none);
+        using default_parallelism_type = // .
+            std::remove_const_t<decltype(default_parallelism)>;
+
+        using default_output_type = // .
+            std::remove_const_t<decltype(no_output)>;
+
+        return impl::data<TSystemTag, default_parallelism_type, mp::list::t<>,
+            mp::list::t<>, mp::list::t<>, default_output_type>{};
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

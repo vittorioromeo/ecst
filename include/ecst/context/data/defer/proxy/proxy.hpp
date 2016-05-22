@@ -42,10 +42,10 @@ ECST_CONTEXT_NAMESPACE
                 refresh_state_type& _refresh_state;
 
                 template <typename T>
-                using component_from_tag = signature::component::unwrap_tag<T>;
+                using component_from_tag = tag::component::unwrap<T>;
 
                 template <typename T>
-                using system_from_tag = signature::system::unwrap_tag<T>;
+                using system_from_tag = tag::system::unwrap<T>;
 
             protected:
                 auto& context() noexcept;

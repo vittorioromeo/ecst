@@ -103,10 +103,10 @@ namespace testbed
     namespace stags
     {
         constexpr auto movement = // .
-            ecst::signature::system::tag<system::movement>;
+            ecst::tag::system::v<system::movement>;
 
         constexpr auto acceleration = // .
-            ecst::signature::system::tag<system::acceleration>;
+            ecst::tag::system::v<system::acceleration>;
     }
 
     namespace ecst_setup
@@ -147,7 +147,7 @@ namespace testbed
                         ss::mutate<c::position>,     // .
                         ss::read<c::velocity>        // .
                         ),                           // .
-                    ss::output::data<int>            // .
+                    ss::output<int>            // .
                     );
 
             return sls::make(      // .

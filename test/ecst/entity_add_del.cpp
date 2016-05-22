@@ -129,7 +129,7 @@ namespace example
     }                                                               \
     namespace st                                                    \
     {                                                               \
-        constexpr auto x = ecst::signature::system::tag<system::x>; \
+        constexpr auto x = ecst::tag::system::v<system::x>; \
     }
 
     SYS_TAG(acceleration)

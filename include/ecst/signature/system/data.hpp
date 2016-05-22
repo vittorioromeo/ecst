@@ -8,32 +8,38 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/mp/list.hpp>
-#include "./tag.hpp"
-#include "./settings.hpp"
-
-// TODO: cleanup
+#include <ecst/tag/system.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
     namespace impl
     {
-        template <                           // .
-            typename TTag,                   // .
-            typename TParallelizability,     // .
-            typename TTagDependencyList,     // .
-            typename TReadComponentTagList,  // .
-            typename TWriteComponentTagList, // .
-            typename TOutput                 // .
-            >
-        constexpr auto make_impl(   // .
-            TTag,                   // .
-            TParallelizability,     // .
-            TTagDependencyList,     // .
-            TReadComponentTagList,  // .
-            TWriteComponentTagList, // .
-            TOutput                 // .
-            );
+        /// @brief Empty struct representing the lack of an output.
+        struct empty_output_type
+        {
+        };
 
+        /// @brief Tag type for the system output.
+        template <typename T>
+        struct output_impl : mp::bh::type<T>
+        {
+        };
+
+        /// @brief Evaluates to true if `T` is a valid wrapped output type.
+        template <typename T>
+        constexpr auto is_valid_output =
+            mp::is_specialization_of_v<output_impl, T>;
+    }
+
+    /// @brief Wrapper for the system's output type `T`.
+    template <typename T>
+    constexpr impl::output_impl<T> output{};
+
+    /// @brief Wrapper for the system's empty output type.
+    constexpr auto no_output = output<impl::empty_output_type>;
+
+    namespace impl
+    {
         template <                           // .
             typename TTag,                   // .
             typename TParallelism,           // .
@@ -42,17 +48,32 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             typename TWriteComponentTagList, // .
             typename TOutput                 // .
             >
-        class data
+        struct data
         {
-            // ECST_S_ASSERT_DT(is_tag(TTag{}));
+            // Assert system tag validity.
+            ECST_S_ASSERT_DT(tag::system::valid(TTag{}));
 
             // TODO:
             // ECST_S_ASSERT(parallelism::is_valid<TParallelism>);
 
-            // ECST_S_ASSERT(is_tag_dependency_list<TTagDependencyList, TTag>);
-            // ECST_S_ASSERT(output::is_valid<TOutput>);
+            // Assert dependency list validity.
+            ECST_S_ASSERT_DT(tag::system::is_valid(TTagDependencyList{}));
 
-        public:
+            // Assert read component list validity.
+            ECST_S_ASSERT_DT(
+                tag::component::is_valid(TReadComponentTagList{}));
+
+            // Assert write component list validity.
+            ECST_S_ASSERT_DT(
+                tag::component::is_valid(TWriteComponentTagList{}));
+
+            // Assert that no component tags are shared between the write and
+            // read lists.
+            ECST_S_ASSERT_DT(!mp::list::any_common_element(
+                TReadComponentTagList{}, TWriteComponentTagList{}));
+
+            ECST_S_ASSERT_DT(impl::is_valid_output<TOutput>);
+
             using tag_type = TTag;
             using parallelism_type = TParallelism;
             using tag_dependency_list_type = TTagDependencyList;
@@ -60,148 +81,96 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             using write_component_tag_list_type = TWriteComponentTagList;
             using output_type = TOutput;
 
-        private:
-        public:
-            // TODO: checks/assertions
             template <typename TNewParallelism>
-            constexpr auto parallelism(TNewParallelism np) noexcept
+            constexpr auto parallelism(TNewParallelism) noexcept
             {
-                return make_impl(tag_type{}, np, tag_dependency_list_type{},
-                    read_component_tag_list_type{},
-                    write_component_tag_list_type{}, output_type{});
+                return data<tag_type, TNewParallelism, tag_dependency_list_type,
+                    read_component_tag_list_type, write_component_tag_list_type,
+                    output_type>{};
             }
 
             template <typename... TSystemTags>
-            constexpr auto dependencies(TSystemTags... sts) noexcept
+            constexpr auto dependencies(TSystemTags...) noexcept
             {
-                return make_impl(tag_type{}, parallelism_type{},
-                    mp::list::make(sts...), read_component_tag_list_type{},
-                    write_component_tag_list_type{}, output_type{});
+                return data<tag_type, parallelism_type,
+                    mp::list::t<TSystemTags...>, read_component_tag_list_type,
+                    write_component_tag_list_type, output_type>{};
             }
 
             template <typename... TComponentTags>
-            constexpr auto read(TComponentTags... cts) noexcept
+            constexpr auto read(TComponentTags...) noexcept
             {
-                return make_impl(tag_type{}, parallelism_type{},
-                    tag_dependency_list_type{}, mp::list::make(cts...),
-                    write_component_tag_list_type{}, output_type{});
+                return data<tag_type, parallelism_type,
+                    tag_dependency_list_type, mp::list::t<TComponentTags...>,
+                    write_component_tag_list_type, output_type>{};
             }
 
             template <typename... TComponentTags>
-            constexpr auto write(TComponentTags... cts) noexcept
+            constexpr auto write(TComponentTags...) noexcept
             {
-                return make_impl(tag_type{}, parallelism_type{},
-                    tag_dependency_list_type{}, read_component_tag_list_type{},
-                    mp::list::make(cts...), output_type{});
+                return data<tag_type, parallelism_type,
+                    tag_dependency_list_type, read_component_tag_list_type,
+                    mp::list::t<TComponentTags...>, output_type>{};
             }
 
             template <typename TWrappedOutput>
-            constexpr auto output(TWrappedOutput wo) noexcept
+            constexpr auto output(TWrappedOutput) noexcept
             {
-                return make_impl(tag_type{}, parallelism_type{},
-                    tag_dependency_list_type{}, read_component_tag_list_type{},
-                    write_component_tag_list_type{}, wo);
+                return data<tag_type, parallelism_type,
+                    tag_dependency_list_type, read_component_tag_list_type,
+                    write_component_tag_list_type, TWrappedOutput>{};
             }
         };
-
-
-        template <                           // .
-            typename TTag,                   // .
-            typename TParallelizability,     // .
-            typename TTagDependencyList,     // .
-            typename TReadComponentTagList,  // .
-            typename TWriteComponentTagList, // .
-            typename TOutput                 // .
-            >
-        constexpr auto make_impl(   // .
-            TTag,                   // .
-            TParallelizability,     // .
-            TTagDependencyList,     // .
-            TReadComponentTagList,  // .
-            TWriteComponentTagList, // .
-            TOutput                 // .
-            )
-        {
-            return data<                // .
-                TTag,                   // .
-                TParallelizability,     // .
-                TTagDependencyList,     // .
-                TReadComponentTagList,  // .
-                TWriteComponentTagList, // .
-                TOutput                 // .
-                >{};
-        }
-
-        template <typename TSystemSignature> // .
-        using signature_tag_type =           // .
-            typename mp::unwrap<TSystemSignature>::tag_type;
-
-        template <typename TSystemSignature> // .
-        using signature_parallelism_type =   // .
-            typename mp::unwrap<TSystemSignature>::parallelism_type;
-
-        template <typename TSystemSignature>      // .
-        using signature_tag_depedency_list_type = // .
-            typename mp::unwrap<TSystemSignature>::tag_dependency_list_type;
-
-        template <typename TSystemSignature>           // .
-        using signature_read_component_tag_list_type = // .
-            typename mp::unwrap<TSystemSignature>::read_component_tag_list_type;
-
-        template <typename TSystemSignature>            // .
-        using signature_write_component_tag_list_type = // .
-            typename mp::unwrap<
-                TSystemSignature>::write_component_tag_list_type;
-
-        template <typename TSystemSignature> // .
-        using signature_output_type =        // .
-            typename mp::unwrap<TSystemSignature>::output_type;
     }
 
-    template <typename TSystemSignature>
-    using parallelism_policy =
-        impl::signature_parallelism_type<TSystemSignature>;
+    template <typename TSystemSignature> // .
+    using tag_type =                     // .
+        typename mp::unwrap<TSystemSignature>::tag_type;
 
-    template <typename TSystemSignature, typename TComponent>
-    constexpr auto can_write()
+    template <typename TSystemSignature> // .
+    using parallelism_type =             // .
+        typename mp::unwrap<TSystemSignature>::parallelism_type;
+
+    template <typename TSystemSignature> // .
+    using tag_depedency_list_type =      // .
+        typename mp::unwrap<TSystemSignature>::tag_dependency_list_type;
+
+    template <typename TSystemSignature> // .
+    using read_component_tag_list_type = // .
+        typename mp::unwrap<TSystemSignature>::read_component_tag_list_type;
+
+    template <typename TSystemSignature>  // .
+    using write_component_tag_list_type = // .
+        typename mp::unwrap<TSystemSignature>::write_component_tag_list_type;
+
+    template <typename TSystemSignature> // .
+    using output_type =                  // .
+        typename mp::unwrap<TSystemSignature>::output_type;
+
+    // TODO: use
+    template <typename TSystemSignature, typename TComponentTag>
+    constexpr auto can_write(TComponentTag ct)
     {
-        return mp::bh::contains( // .
-            impl::signature_write_component_tag_list_type<
-                TSystemSignature>{}, // .
-            impl::mutate_impl<TComponent>{});
+        return mp::bh::contains(                               // .
+            write_component_tag_list_type<TSystemSignature>{}, // .
+            ct);
     }
 
-    template <typename TSystemSignature, typename TComponent>
-    constexpr auto can_read()
+    // TODO: use
+    template <typename TSystemSignature, typename TComponentTag>
+    constexpr auto can_read(TComponentTag ct)
     {
-        return can_write<TSystemSignature, TComponent>() || // .
-               mp::bh::contains(                            // .
-                   impl::signature_read_component_tag_list_type<
-                       TSystemSignature>{}, // .
-                   impl::read_impl<TComponent>{});
+        return can_write<TSystemSignature>(ct) ||                    // .
+               mp::bh::contains(                                     // .
+                   read_component_tag_list_type<TSystemSignature>{}, // .
+                   ct);
     }
 
     template <typename TSystemSignature>
     constexpr auto has_data_output()
     {
-        return output::is_data<impl::signature_output_type<TSystemSignature>>;
+        return !std::is_same<output_type<TSystemSignature>,
+            impl::output_impl<impl::empty_output_type>>{};
     }
-
-    template <typename TSystemSignature>
-    using output_data_type =
-        typename impl::signature_output_type<TSystemSignature>::type;
-
-    template <typename TSystemSignature>
-    using read_component_tag_list_type =
-        impl::signature_read_component_tag_list_type<TSystemSignature>;
-
-    template <typename TSystemSignature>
-    using write_component_tag_list_type =
-        impl::signature_write_component_tag_list_type<TSystemSignature>;
-
-
-    template <typename TSystemSignature>
-    using tag_dependency_list_type =
-        impl::signature_tag_depedency_list_type<TSystemSignature>;
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

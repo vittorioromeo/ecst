@@ -20,6 +20,10 @@ ECST_MP_LIST_NAMESPACE
         using empty_type_list = type_list<>;
     }
 
+    // Type of `type_list<Ts...>`.
+    template <typename... Ts>
+    using t = impl::type_list<Ts...>;
+
     // Variable template for `type_list`.
     template <typename... Ts>
     constexpr impl::type_list<Ts...> v{};

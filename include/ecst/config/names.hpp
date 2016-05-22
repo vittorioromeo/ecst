@@ -9,6 +9,7 @@
 #include "./names/mp.hpp"
 #include "./names/debug.hpp"
 #include "./names/hardware.hpp"
+#include "./names/tag.hpp"
 #include "./names/signature.hpp"
 #include "./names/signature_list.hpp"
 #include "./names/system_ids_context.hpp"

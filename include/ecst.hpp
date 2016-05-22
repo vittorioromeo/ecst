@@ -27,6 +27,9 @@
 #include <ecst/inner_parallelism.hpp>
 
 // Component and system signatures.
+#include <ecst/tag.hpp>
+
+// Component and system signatures.
 #include <ecst/signature.hpp>
 
 // Component and system signature lists.

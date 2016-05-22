@@ -11,9 +11,19 @@
 
 ECST_MP_NAMESPACE
 {
+    // Bring hana's `type_c` into the `mp` namespace.
     using bh::type_c;
 
+    /// @brief Returns the inner type wrapped by a `type_c`.
     template <typename T>
     using unwrap = typename T::type;
+
+    /// @brief Returns a default-constructed instance of the inner type wrapped
+    /// by a `type_c`.
+    template <typename T>
+    constexpr auto unwrapped(T) noexcept
+    {
+        return unwrap<T>{};
+    }
 }
 ECST_MP_NAMESPACE_END

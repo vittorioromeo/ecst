@@ -14,21 +14,14 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     namespace impl
     {
         template <typename T>
-        using is_signature_impl = mp::is_specialization_of<impl::data, T>;
-    }
-
-    /// @brief Evaluates to true if `T` is a system signature.
-    template <typename T>
-    constexpr auto is_signature(T)
-    {
-        return impl::is_signature_impl<T>{};
+        using valid_impl = mp::is_specialization_of<impl::data, T>;
     }
 
     /// @brief Evaluates to true if all `Ts...` are system signatures.
     template <typename... Ts>
-    constexpr auto are_signatures(Ts... xs)
+    constexpr auto valid(Ts...) noexcept
     {
-        return mp::list::all_variadic(is_signature(xs)...);
+        return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

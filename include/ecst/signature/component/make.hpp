@@ -7,6 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/signature/component/data.hpp>
+#include <ecst/tag/component.hpp>
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
@@ -21,7 +22,7 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     template <typename TComponent>
     constexpr auto make()
     {
-        return make_by_tag(tag<TComponent>);
+        return make_by_tag(tag::component::v<TComponent>);
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

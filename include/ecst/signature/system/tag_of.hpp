@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/signature/system/tag.hpp>
-#include <ecst/signature/system/is_signature.hpp>
+#include <ecst/tag/system.hpp>
+#include <ecst/signature/system/valid.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -15,10 +15,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature>
     constexpr auto tag_of(TSystemSignature ss)
     {
-        // TODO:
-        (void)ss;
-        // ECST_S_ASSERT_DT(is_signature(ss));
-        return impl::signature_tag_type<TSystemSignature>{};
+        ECST_S_ASSERT_DT(valid(mp::unwrapped(ss)));
+        return tag_type<TSystemSignature>{};
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

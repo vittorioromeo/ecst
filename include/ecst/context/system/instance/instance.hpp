@@ -32,10 +32,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     class instance
     {
     private:
-        using system_tag_type =
-            signature::system::impl::signature_tag_type<TSystemSignature>;
+        using system_tag_type = signature::system::tag_type<TSystemSignature>;
 
-        using system_type = signature::system::unwrap_tag<system_tag_type>;
+        using system_type = tag::system::unwrap<system_tag_type>;
 
         using bitset_type = bitset::dispatch<TSettings>;
 
@@ -45,7 +44,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using set_type = dispatch_set<TSettings>;
 
         using parallel_parameters_type = // .
-            signature::system::parallelism_policy<TSystemSignature>;
+            signature::system::parallelism_type<TSystemSignature>;
 
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;

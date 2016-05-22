@@ -37,11 +37,11 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 signature_list::system::signature_by_type<TSystem>(ssl_type{}));
 
             template <typename TSystem>
-            using system_tag_for = signature::system::impl::signature_tag_type<
-                system_signature_for<TSystem>>;
+            using system_tag_for =
+                signature::system::tag_type<system_signature_for<TSystem>>;
 
             template <typename TSystemTag>
-            using tag_to_system = signature::system::unwrap_tag<TSystemTag>;
+            using tag_to_system = tag::system::unwrap<TSystemTag>;
 
             storage_type _storage;
 
@@ -81,8 +81,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             auto& system_by_signature(TSystemSignature) noexcept
             {
                 return system_by_tag(
-                    signature::system::impl::signature_tag_type<
-                        TSystemSignature>{});
+                    signature::system::tag_type<TSystemSignature>{});
             }
 
             template <typename TF>

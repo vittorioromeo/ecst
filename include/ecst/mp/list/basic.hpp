@@ -39,5 +39,20 @@ ECST_MP_LIST_NAMESPACE
         using Pack = typename bh::detail::make_pack<TList>::type;
         return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
     }
+
+    // Converts two lists to sets and returns their intersection.
+    template <typename TL0, typename TL1>
+    constexpr auto list_to_set_intersection(TL0 && l0, TL1 && l1) noexcept
+    {
+        return mp::bh::intersection(
+            mp::bh::to_set(FWD(l0)), mp::bh::to_set(FWD(l1)));
+    }
+
+    // Returns true if `l0` and `l1` have at least one element in common.
+    template <typename TL0, typename TL1>
+    constexpr auto any_common_element(TL0 && l0, TL1 && l1) noexcept
+    {
+        return list_to_set_intersection(FWD(l0), FWD(l1)) != mp::bh::make_set();
+    }
 }
 ECST_MP_LIST_NAMESPACE_END

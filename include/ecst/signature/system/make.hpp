@@ -8,12 +8,9 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include "./data.hpp"
-#include "./settings.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
-    // TODO: builder pattern?
-
     // TODO: inl, cleanup
     template <typename TSystemTag>
     constexpr auto make(TSystemTag st);

@@ -104,7 +104,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return _context.get_component(ct, eid);
                 /*
                     using component_type =
-                        signature::component::unwrap_tag<TComponentTag>;
+                        tag::component::unwrap<TComponentTag>;
                 */
             }
 
@@ -137,7 +137,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TSystemTag, typename TF>
             decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept
             {
-                using system_type = signature::system::unwrap_tag<TSystemTag>;
+                using system_type = tag::system::unwrap<TSystemTag>;
                 ECST_S_ASSERT_DT(can_get_output_of<system_type>());
                 return _context.for_system_outputs(st, FWD(f));
             }

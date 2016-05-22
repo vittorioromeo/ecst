@@ -557,23 +557,23 @@ namespace example
             // Spatial partition system.
             // * Multithreaded.
             // * Output: `std::vector<sp_data>`.
-            constexpr auto ssig_spatial_partition =                  // .
-                ss::make(st::spatial_partition)                      // .
-                    .parallelism(par)                                // .
-                    .dependencies(st::keep_in_bounds)                // .
-                    .read(ct::position, ct::circle)                  // .
-                    .output(ss::output::data<std::vector<sp_data>>); // .
+            constexpr auto ssig_spatial_partition =            // .
+                ss::make(st::spatial_partition)                // .
+                    .parallelism(par)                          // .
+                    .dependencies(st::keep_in_bounds)          // .
+                    .read(ct::position, ct::circle)            // .
+                    .output(ss::output<std::vector<sp_data>>); // .
 
             // Collision detection system.
             // * Multithreaded.
             // * Output: `std::vector<contact>`.
-            constexpr auto ssig_collision =                          // .
-                ss::make(st::collision)                              // .
-                    .parallelism(par)                                // .
-                    .dependencies(st::spatial_partition)             // .
-                    .read(ct::circle)                                // .
-                    .write(ct::position, ct::velocity)               // .
-                    .output(ss::output::data<std::vector<contact>>); // .
+            constexpr auto ssig_collision =                    // .
+                ss::make(st::collision)                        // .
+                    .parallelism(par)                          // .
+                    .dependencies(st::spatial_partition)       // .
+                    .read(ct::circle)                          // .
+                    .write(ct::position, ct::velocity)         // .
+                    .output(ss::output<std::vector<contact>>); // .
 
             // Solve contacts system.
             // * Singlethreaded.
@@ -587,12 +587,12 @@ namespace example
             // Render colored circle system.
             // * Multithreaded.
             // * Output: `std::vector<sf::Vertex>`.
-            constexpr auto ssig_render_colored_circle =                 // .
-                ss::make(st::render_colored_circle)                     // .
-                    .parallelism(par)                                   // .
-                    .dependencies(st::solve_contacts)                   // .
-                    .read(ct::circle, ct::position, ct::color)          // .
-                    .output(ss::output::data<std::vector<sf::Vertex>>); // .
+            constexpr auto ssig_render_colored_circle =           // .
+                ss::make(st::render_colored_circle)               // .
+                    .parallelism(par)                             // .
+                    .dependencies(st::solve_contacts)             // .
+                    .read(ct::circle, ct::position, ct::color)    // .
+                    .output(ss::output<std::vector<sf::Vertex>>); // .
 
 // TODO:
 
@@ -618,7 +618,7 @@ namespace example
     return sls::make(VRM_PP_FOREACH_REVERSE(                     \
         MAKE_ERASED_SLS_STEP1_BODY, VRM_PP_EMPTY(), __VA_ARGS__))
 
-
+#if 0
             MAKE_ERASED_SLS(               // .
                 ssig_acceleration,         // .
                 ssig_velocity,             // .
@@ -628,22 +628,22 @@ namespace example
                 ssig_solve_contacts,       // .
                 ssig_render_colored_circle // .
                 );
+#else
 
-            /*
 
 
-                        // Build and return the "system signature list".
-                        return sls::make(                     // .
-                            ssig_acceleration,         // .
-                            ssig_velocity,             // .
-                            ssig_keep_in_bounds,       // .
-                            ssig_spatial_partition,    // .
-                            ssig_collision,            // .
-                            ssig_solve_contacts,       // .
-                            ssig_render_colored_circle // .
-                            );
+            // Build and return the "system signature list".
+            return sls::make(              // .
+                ssig_acceleration,         // .
+                ssig_velocity,             // .
+                ssig_keep_in_bounds,       // .
+                ssig_spatial_partition,    // .
+                ssig_collision,            // .
+                ssig_solve_contacts,       // .
+                ssig_render_colored_circle // .
+                );
 
-                            */
+#endif
         }
     }
 

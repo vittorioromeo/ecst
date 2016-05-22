@@ -5,8 +5,7 @@
 
 #pragma once
 
-#include "./component/tag.hpp"
 #include "./component/data.hpp"
-#include "./component/is_signature.hpp"
+#include "./component/valid.hpp"
 #include "./component/make.hpp"
 #include "./component/tag_of.hpp"

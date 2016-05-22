@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include "./settings/component_use.hpp"
-#include "./settings/dependencies.hpp"
-#include "./settings/output.hpp"
+#include "./tag/tag.hpp"
+#include "./tag/component.hpp"
+#include "./tag/system.hpp"

@@ -13,24 +13,24 @@
     }
 */
 
-#define EXAMPLE_COMPONENT_TAG(x)                                      \
-                                                                      \
-    namespace example                                                 \
-    {                                                                 \
-        namespace c                                                   \
-        {                                                             \
-            struct x;                                                 \
-        }                                                             \
-        namespace ct                                                  \
-        {                                                             \
-            constexpr auto x = ecst::signature::component::tag<c::x>; \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(         \
-                x, __LINE__, warning_suppressor)()                    \
-            {                                                         \
-                (void) x;                                             \
-            }                                                         \
-        }                                                             \
-    }                                                                 \
+#define EXAMPLE_COMPONENT_TAG(x)                              \
+                                                              \
+    namespace example                                         \
+    {                                                         \
+        namespace c                                           \
+        {                                                     \
+            struct x;                                         \
+        }                                                     \
+        namespace ct                                          \
+        {                                                     \
+            constexpr auto x = ecst::tag::component::v<c::x>; \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+                x, __LINE__, warning_suppressor)()            \
+            {                                                 \
+                (void) x;                                     \
+            }                                                 \
+        }                                                     \
+    }                                                         \
     ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
 
 #define EXAMPLE_SYSTEM_TAG(x)                                      \
@@ -43,7 +43,7 @@
         }                                                          \
         namespace st                                               \
         {                                                          \
-            constexpr auto x = ecst::signature::system::tag<s::x>; \
+            constexpr auto x = ecst::tag::system::v<s::x>; \
             void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(      \
                 x, __LINE__, warning_suppressor)()                 \
             {                                                      \

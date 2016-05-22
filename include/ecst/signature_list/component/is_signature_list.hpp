@@ -14,19 +14,19 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     namespace impl
     {
         template <typename T>
-        auto is_signature_list_impl()
+        auto valid_impl()
         {
             return mp::bh::all_of(T{}, [](auto sx)
                 {
-                    return signature::component::is_signature(sx);
+                    return signature::component::valid(sx);
                 });
         }
     }
 
     template <typename T>
-    constexpr auto is_signature_list(T)
+    constexpr auto valid(T)
     {
-        return decltype(impl::is_signature_list_impl<T>()){};
+        return decltype(impl::valid_impl<T>()){};
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

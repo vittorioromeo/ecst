@@ -29,7 +29,7 @@ ECST_CONTEXT_NAMESPACE
                 context::storage::entity::dispatch<settings_type>;
 
             template <typename T>
-            using component_from_tag = signature::component::unwrap_tag<T>;
+            using component_from_tag = tag::component::unwrap<T>;
 
             component_storage_type _component_storage;
             entity_storage_type _entity_storage;

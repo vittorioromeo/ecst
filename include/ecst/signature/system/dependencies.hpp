@@ -9,7 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/signature/system/data.hpp>
-#include <ecst/signature/system/is_signature.hpp>
+#include <ecst/signature/system/valid.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -18,8 +18,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     {
         // TODO:
         (void)ss;
-        // ECST_S_ASSERT_DT(is_signature(ss));
-        return impl::signature_tag_depedency_list_type<TSystemSignature>{};
+        // ECST_S_ASSERT_DT(valid(ss));
+        return tag_depedency_list_type<TSystemSignature>{};
     }
 
     /// @brief Returns the number of dependencies of `ss`.

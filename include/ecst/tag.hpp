@@ -5,6 +5,5 @@
 
 #pragma once
 
-#include "./signature/signature.hpp"
-#include "./signature/component.hpp"
-#include "./signature/system.hpp"
+#include "./tag/component.hpp"
+#include "./tag/system.hpp"

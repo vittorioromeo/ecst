@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/context/types.hpp>
 #include <ecst/settings.hpp>
+#include <ecst/tag.hpp>
 #include "./bits.hpp"
 #include "./data.hpp"
 
@@ -20,7 +21,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
     void fill(dispatch<TSettings> & bitset, TSettings s,
         TSetComponentsList scl) noexcept
     {
-        ECST_S_ASSERT_DT(signature::component::is_tag_list(scl));
+        ECST_S_ASSERT_DT(tag::component::is_valid(scl));
         auto csl = settings::component_signature_list(s);
 
         mp::bh::for_each(scl, [&](auto ct)

@@ -124,7 +124,7 @@ namespace example
     }                                                               \
     namespace st                                                    \
     {                                                               \
-        constexpr auto x = ecst::signature::system::tag<system::x>; \
+        constexpr auto x = ecst::tag::system::v<system::x>; \
     }
 
     SYS_TAG(acceleration)
@@ -358,7 +358,7 @@ namespace example
                         ss::read<c::position>,          // .
                         ss::read<c::color>              // .
                         ),                              // .
-                    ss::output::data<std::vector<int>>  // .
+                    ss::output<std::vector<int>>  // .
                     );
 
             constexpr auto ssig_life =      // .

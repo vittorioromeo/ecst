@@ -19,7 +19,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @brief Data type, output of `TSystemSignature`.
             template <typename TSystemSignature>
             using data_type = // .
-                signature::system::output_data_type<TSystemSignature>;
+                typename signature::system::output_type<TSystemSignature>::type;
 
             /// @brief Storage for a "system state" and its eventual output
             /// data.
