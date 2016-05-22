@@ -5,6 +5,8 @@
 
 // #define EXAMPLE_LIMIT_FRAMERATE 1
 #include "./utils/dependencies.hpp"
+
+// TODO:
 #include <vrm/pp.hpp>
 
 // The following example consists in a particle simulations. All particles are
@@ -749,24 +751,14 @@ int main()
     namespace ss = ecst::scheduler;
 
     // Define ECST context settings.
-    constexpr auto s = ecst::settings::make(            // .
-        cs::multithreaded(cs::allow_inner_parallelism), // .
-        cs::fixed<entity_limit>,                        // .
-        make_csl(),                                     // .
-        make_ssl(),                                     // .
-        cs::scheduler<ss::s_atomic_counter>             // .
-        );
+    constexpr auto s =                        // .
+        ecst::settings::make()                // .
+            .allow_inner_parallelism()        // .
+            .fixed_entity_limit(entity_limit) // .
+            .component_signatures(make_csl()) // .
+            .system_signatures(make_ssl())    // .
+            .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
-    // TODO: desired settings syntax
-    /*
-    constexpr auto s_desired =                      // .
-        ecst::settings::make()                      // .
-            .threading(cs::allow_inner_parallelism) // .
-            .fixed_entity_limit(entity_limit)       // .
-            .components_signatures(make_csl())      // .
-            .system_signatures(make_ssl())          // .
-            .scheduler(ss::s_atomic_counter);
-    */
 
     using ssss = decltype(s);
     struct hs : public ssss

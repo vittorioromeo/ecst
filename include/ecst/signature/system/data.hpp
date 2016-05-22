@@ -12,6 +12,20 @@
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
+    // TODO: cleanup
+
+    namespace impl
+    {
+        namespace keys
+        {
+            constexpr auto parallelism = sz_v<0>;
+            constexpr auto dependencies = sz_v<1>;
+            constexpr auto read_components = sz_v<2>;
+            constexpr auto write_components = sz_v<3>;
+            constexpr auto output = sz_v<4>;
+        }
+    }
+
     namespace impl
     {
         /// @brief Empty struct representing the lack of an output.
@@ -40,16 +54,23 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
     namespace impl
     {
-        template <                           // .
-            typename TTag,                   // .
-            typename TParallelism,           // .
-            typename TTagDependencyList,     // .
-            typename TReadComponentTagList,  // .
-            typename TWriteComponentTagList, // .
-            typename TOutput                 // .
-            >
-        struct data
+        template <typename TTag, typename TOptions>
+        class data
         {
+        public:
+// TODO:
+#define TEMP(x) mp::list::option_type<TOptions, decltype(x)>
+
+            using tag_type = TTag;
+            using parallelism_type = TEMP(keys::parallelism);
+            using tag_dependency_list_type = TEMP(keys::dependencies);
+            using read_component_tag_list_type = TEMP(keys::read_components);
+            using write_component_tag_list_type = TEMP(keys::write_components);
+            using output_type = TEMP(keys::output);
+
+#undef TEMP
+
+
             // Assert system tag validity.
             ECST_S_ASSERT_DT(tag::system::valid(TTag{}));
 
@@ -57,68 +78,65 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             // ECST_S_ASSERT(parallelism::is_valid<TParallelism>);
 
             // Assert dependency list validity.
-            ECST_S_ASSERT_DT(tag::system::is_valid(TTagDependencyList{}));
+            ECST_S_ASSERT_DT(tag::system::is_valid(tag_dependency_list_type{}));
 
             // Assert read component list validity.
             ECST_S_ASSERT_DT(
-                tag::component::is_valid(TReadComponentTagList{}));
+                tag::component::is_valid(read_component_tag_list_type{}));
 
             // Assert write component list validity.
             ECST_S_ASSERT_DT(
-                tag::component::is_valid(TWriteComponentTagList{}));
+                tag::component::is_valid(write_component_tag_list_type{}));
 
             // Assert that no component tags are shared between the write and
             // read lists.
-            ECST_S_ASSERT_DT(!mp::list::any_common_element(
-                TReadComponentTagList{}, TWriteComponentTagList{}));
+            ECST_S_ASSERT_DT(!mp::list::any_common_element( // .
+                read_component_tag_list_type{},
+                write_component_tag_list_type{}));
 
-            ECST_S_ASSERT_DT(impl::is_valid_output<TOutput>);
+            // TODO: does not work for some reason
+            ECST_S_ASSERT_DT(impl::is_valid_output<output_type>);
 
-            using tag_type = TTag;
-            using parallelism_type = TParallelism;
-            using tag_dependency_list_type = TTagDependencyList;
-            using read_component_tag_list_type = TReadComponentTagList;
-            using write_component_tag_list_type = TWriteComponentTagList;
-            using output_type = TOutput;
-
-            template <typename TNewParallelism>
-            constexpr auto parallelism(TNewParallelism) noexcept
+        private:
+            template <typename TKey, typename T>
+            constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
-                return data<tag_type, TNewParallelism, tag_dependency_list_type,
-                    read_component_tag_list_type, write_component_tag_list_type,
-                    output_type>{};
+                auto new_options =
+                    mp::list::set_option(TOptions{}, key, FWD(x));
+                return data<TTag, decltype(new_options)>{};
+            }
+
+        public:
+            template <typename TNewParallelism>
+            constexpr auto parallelism(TNewParallelism new_parallelism) noexcept
+            {
+                return change_self(keys::parallelism, new_parallelism);
             }
 
             template <typename... TSystemTags>
-            constexpr auto dependencies(TSystemTags...) noexcept
+            constexpr auto dependencies(TSystemTags... sts) noexcept
             {
-                return data<tag_type, parallelism_type,
-                    mp::list::t<TSystemTags...>, read_component_tag_list_type,
-                    write_component_tag_list_type, output_type>{};
+                return change_self(keys::dependencies, mp::list::make(sts...));
             }
 
             template <typename... TComponentTags>
-            constexpr auto read(TComponentTags...) noexcept
+            constexpr auto read(TComponentTags... cts) noexcept
             {
-                return data<tag_type, parallelism_type,
-                    tag_dependency_list_type, mp::list::t<TComponentTags...>,
-                    write_component_tag_list_type, output_type>{};
+                return change_self(
+                    keys::read_components, mp::list::make(cts...));
             }
 
             template <typename... TComponentTags>
-            constexpr auto write(TComponentTags...) noexcept
+            constexpr auto write(TComponentTags... cts) noexcept
             {
-                return data<tag_type, parallelism_type,
-                    tag_dependency_list_type, read_component_tag_list_type,
-                    mp::list::t<TComponentTags...>, output_type>{};
+                return change_self(
+                    keys::write_components, mp::list::make(cts...));
             }
 
-            template <typename TWrappedOutput>
-            constexpr auto output(TWrappedOutput) noexcept
+            template <typename TNewOutput>
+            constexpr auto output(TNewOutput new_output) noexcept
             {
-                return data<tag_type, parallelism_type,
-                    tag_dependency_list_type, read_component_tag_list_type,
-                    write_component_tag_list_type, TWrappedOutput>{};
+                return change_self(keys::output, new_output);
             }
         };
     }
