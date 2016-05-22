@@ -757,6 +757,17 @@ int main()
         cs::scheduler<ss::s_atomic_counter>             // .
         );
 
+    // TODO: desired settings syntax
+    /*
+    constexpr auto s_desired =                      // .
+        ecst::settings::make()                      // .
+            .threading(cs::allow_inner_parallelism) // .
+            .fixed_entity_limit(entity_limit)       // .
+            .components_signatures(make_csl())      // .
+            .system_signatures(make_ssl())          // .
+            .scheduler(ss::s_atomic_counter);
+    */
+
     using ssss = decltype(s);
     struct hs : public ssss
     {
