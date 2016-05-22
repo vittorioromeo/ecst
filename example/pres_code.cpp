@@ -530,115 +530,69 @@ namespace example
             // Acceleration system.
             // * Multithreaded.
             // * No dependencies.
-            constexpr auto ssig_acceleration = ss::make( // .
-                st::acceleration,                        // .
-                par,                                     // .
-                ss::no_dependencies,                     // .
-                ss::component_use(                       // .
-                    ss::mutate(ct::velocity),            // .
-                    ss::read(ct::acceleration)           // .
-                    ),                                   // .
-                ss::output::none                         // .
-                );
+            constexpr auto ssig_acceleration = // .
+                ss::make(st::acceleration)     // .
+                    .parallelism(par)          // .
+                    .read(ct::acceleration)    // .
+                    .write(ct::velocity);      // .
 
             // Velocity system.
             // * Multithreaded.
-            constexpr auto ssig_velocity = ss::make( // .
-                st::velocity,                        // .
-                par,                                 // .
-                ss::depends_on(st::acceleration),    // .
-                ss::component_use(                   // .
-                    ss::mutate(ct::position),        // .
-                    ss::read(ct::velocity)           // .
-                    ),                               // .
-                ss::output::none                     // .
-                );
-
+            constexpr auto ssig_velocity =          // .
+                ss::make(st::velocity)              // .
+                    .parallelism(par)               // .
+                    .dependencies(st::acceleration) // .
+                    .read(ct::velocity)             // .
+                    .write(ct::position);           // .
 
             // Keep in bounds system.
             // * Multithreaded.
-            constexpr auto ssig_keep_in_bounds = ss::make( // .
-                st::keep_in_bounds,                        // .
-                par,                                       // .
-                ss::depends_on(st::velocity),              // .
-                ss::component_use(                         // .
-                    ss::mutate(ct::velocity),              // .
-                    ss::mutate(ct::position),              // .
-                    ss::read(ct::circle)                   // .
-                    ),                                     // .
-                ss::output::none                           // .
-                );
+            constexpr auto ssig_keep_in_bounds =        // .
+                ss::make(st::keep_in_bounds)            // .
+                    .parallelism(par)                   // .
+                    .dependencies(st::velocity)         // .
+                    .read(ct::circle)                   // .
+                    .write(ct::velocity, ct::position); // .
 
             // Spatial partition system.
             // * Multithreaded.
             // * Output: `std::vector<sp_data>`.
-            constexpr auto ssig_spatial_partition = ss::make( // .
-                st::spatial_partition,                        // .
-                par,                                          // .
-                ss::depends_on(st::keep_in_bounds),           // .
-                ss::component_use(                            // .
-                    ss::read(ct::position),                   // .
-                    ss::read(ct::circle)                      // .
-                    ),                                        // .
-                ss::output::data<std::vector<sp_data>>        // .
-                );
+            constexpr auto ssig_spatial_partition =                  // .
+                ss::make(st::spatial_partition)                      // .
+                    .parallelism(par)                                // .
+                    .dependencies(st::keep_in_bounds)                // .
+                    .read(ct::position, ct::circle)                  // .
+                    .output(ss::output::data<std::vector<sp_data>>); // .
 
             // Collision detection system.
             // * Multithreaded.
             // * Output: `std::vector<contact>`.
-            constexpr auto ssig_collision = ss::make(  // .
-                st::collision,                         // .
-                par,                                   // .
-                ss::depends_on(st::spatial_partition), // .
-                ss::component_use(                     // .
-                    ss::mutate(ct::velocity),          // .
-                    ss::mutate(ct::position),          // .
-                    ss::read(ct::circle)               // .
-                    ),                                 // .
-                ss::output::data<std::vector<contact>> // .
-                );
+            constexpr auto ssig_collision =                          // .
+                ss::make(st::collision)                              // .
+                    .parallelism(par)                                // .
+                    .dependencies(st::spatial_partition)             // .
+                    .read(ct::circle)                                // .
+                    .write(ct::position, ct::velocity)               // .
+                    .output(ss::output::data<std::vector<contact>>); // .
 
             // Solve contacts system.
             // * Singlethreaded.
-            constexpr auto ssig_solve_contacts = ss::make( // .
-                st::solve_contacts,                        // .
-                none,                                      // .
-                ss::depends_on(st::collision),             // .
-                ss::component_use(                         // .
-                    ss::mutate(ct::velocity),              // .
-                    ss::mutate(ct::position),              // .
-                    ss::read(ct::circle)                   // .
-                    ),                                     // .
-                ss::output::none                           // .
-                );
+            constexpr auto ssig_solve_contacts =        // .
+                ss::make(st::solve_contacts)            // .
+                    .parallelism(none)                  // .
+                    .dependencies(st::collision)        // .
+                    .read(ct::circle)                   // .
+                    .write(ct::velocity, ct::position); // .
 
             // Render colored circle system.
             // * Multithreaded.
             // * Output: `std::vector<sf::Vertex>`.
-            constexpr auto ssig_render_colored_circle = ss::make( // .
-                st::render_colored_circle,                        // .
-                par,                                              // .
-                ss::depends_on(st::solve_contacts),               // .
-                ss::component_use(                                // .
-                    ss::read(ct::circle),                         // .
-                    ss::read(ct::position),                       // .
-                    ss::read(ct::color)                           // .
-                    ),                                            // .
-                ss::output::data<std::vector<sf::Vertex>>         // .
-                );
-
-/*
-// TODO: desired
-// * order independent
-// * sensible defaults
-constexpr auto ssig_render_colored_circle =        // .
-    ss::make(st::render_colored_circle)            // .
-        .parallelism(par)                          // .
-        .dependencies(st::solve_contacts)          // .
-        .read(ct::circle, ct::position, ct::color) // .
-        .output(ss::data<std::vector<sf::Vertex>>) // .
-        .commit_or_maybe_unnecessary();
-*/
+            constexpr auto ssig_render_colored_circle =                 // .
+                ss::make(st::render_colored_circle)                     // .
+                    .parallelism(par)                                   // .
+                    .dependencies(st::solve_contacts)                   // .
+                    .read(ct::circle, ct::position, ct::color)          // .
+                    .output(ss::output::data<std::vector<sf::Vertex>>); // .
 
 // TODO:
 
@@ -806,7 +760,6 @@ int main()
     using ssss = decltype(s);
     struct hs : public ssss
     {
-
     };
 
     // Create an ECST context.

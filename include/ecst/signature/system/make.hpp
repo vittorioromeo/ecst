@@ -14,28 +14,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
     // TODO: builder pattern?
 
-    template <                       // .
-        typename TTag,               // .
-        typename TParallelizability, // .
-        typename TTagDependencyList, // .
-        typename TComponentUseList,  // .
-        typename TOutput             // .
-        >
-    constexpr auto make(    // .
-        TTag,               // .
-        TParallelizability, // .
-        TTagDependencyList, // .
-        TComponentUseList,  // .
-        TOutput             // .
-        )
-    {
-        return mp::bh::type_c<impl::data< // .
-            TTag,                         // .
-            TParallelizability,           // .
-            TTagDependencyList,           // .
-            TComponentUseList,            // .
-            TOutput                       // .
-            >>;
-    }
+    // TODO: inl, cleanup
+    template <typename TSystemTag>
+    constexpr auto make(TSystemTag st);
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

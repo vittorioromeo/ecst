@@ -19,8 +19,9 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         constexpr auto signature_by_tag_impl(
             TSystemSignatureList ssl, TSystemTag st)
         {
-            ECST_S_ASSERT_DT(is_signature_list(ssl));
-            ECST_S_ASSERT_DT(signature::system::is_tag(st));
+            // TODO:
+            // ECST_S_ASSERT_DT(is_signature_list(ssl));
+            // ECST_S_ASSERT_DT(signature::system::is_tag(st));
 
             return *mp::bh::find_if(ssl, [=](auto x_ssig)
                 {

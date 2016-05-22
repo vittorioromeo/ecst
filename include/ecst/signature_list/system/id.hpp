@@ -16,8 +16,9 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto id_by_signature(
         TSystemSignatureList ssl, TSystemSignature ss)
     {
-        ECST_S_ASSERT_DT(is_signature_list(ssl));
-        ECST_S_ASSERT_DT(signature::system::is_signature(ss));
+        // TODO:
+        // ECST_S_ASSERT_DT(is_signature_list(ssl));
+        // ECST_S_ASSERT_DT(signature::system::is_signature(ss));
 
         return mp::list::index_of(ssl, ss);
     }

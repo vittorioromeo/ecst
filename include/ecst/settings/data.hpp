@@ -23,13 +23,14 @@ ECST_SETTINGS_NAMESPACE
             >
         struct data
         {
-            ECST_S_ASSERT(threading::is<TMultithreading>);
-            ECST_S_ASSERT(is_entity_storage<TEntityStorage>);
-            ECST_S_ASSERT(signature_list::component::is_signature_list(
-                TComponentSignatureList{}));
-            ECST_S_ASSERT(signature_list::system::is_signature_list(
-                TSystemSignatureList{}));
-            ECST_S_ASSERT(refresh_parallelism::is<TRefreshParallelism>);
+            // TODO:
+            // ECST_S_ASSERT(threading::is<TMultithreading>);
+            // ECST_S_ASSERT(is_entity_storage<TEntityStorage>);
+            // ECST_S_ASSERT(signature_list::component::is_signature_list(
+            //     TComponentSignatureList{}));
+            // ECST_S_ASSERT(signature_list::system::is_signature_list(
+            //     TSystemSignatureList{}));
+            // ECST_S_ASSERT(refresh_parallelism::is<TRefreshParallelism>);
 
             // TODO: is_scheduler
 

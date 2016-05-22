@@ -43,16 +43,17 @@ ECST_CONTEXT_BITSET_NAMESPACE
     template <typename TSystemSignature, typename TSettings>
     auto make_from_system_signature(TSettings s) noexcept
     {
-        auto component_uses =
-            signature::system::component_uses_type<TSystemSignature>{};
+        auto read_component_tag_list =
+            signature::system::read_component_tag_list_type<TSystemSignature>{};
 
-        auto set_component_tags = mp::bh::transform(component_uses, [](auto x)
-            {
-                using component_type = typename decltype(x)::component;
-                return signature::component::tag<component_type>;
-            });
+        auto write_component_tag_list =
+            signature::system::write_component_tag_list_type<
+                TSystemSignature>{};
 
-        return make(s, set_component_tags);
+        auto all_component_tag_list =
+            mp::bh::concat(read_component_tag_list, write_component_tag_list);
+
+        return make(s, all_component_tag_list);
     }
 }
 ECST_CONTEXT_BITSET_NAMESPACE_END

@@ -15,7 +15,9 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature>
     constexpr auto tag_of(TSystemSignature ss)
     {
-        ECST_S_ASSERT_DT(is_signature(ss));
+        // TODO:
+        (void)ss;
+        // ECST_S_ASSERT_DT(is_signature(ss));
         return impl::signature_tag_type<TSystemSignature>{};
     }
 }
