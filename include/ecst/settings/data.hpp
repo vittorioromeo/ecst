@@ -28,7 +28,8 @@ ECST_SETTINGS_NAMESPACE
 
     namespace impl
     {
-
+        // TODO: prevent the same option from being set twice, add boolean flag
+        // to map values
 
         template <typename TOptions>
         class data
