@@ -527,31 +527,32 @@ namespace example
             namespace ips = ecst::inner_parallelism::strategy;
             namespace ipc = ecst::inner_parallelism::composer;
             constexpr auto none = ips::none::v();
-            constexpr auto par = ips::split_evenly_fn::v_cores();
+            constexpr auto split_evenly_per_core =
+                ips::split_evenly_fn::v_cores();
 
             // Acceleration system.
             // * Multithreaded.
             // * No dependencies.
-            constexpr auto ssig_acceleration = // .
-                ss::make(st::acceleration)     // .
-                    .parallelism(par)          // .
-                    .read(ct::acceleration)    // .
-                    .write(ct::velocity);      // .
+            constexpr auto ssig_acceleration =          // .
+                ss::make(st::acceleration)              // .
+                    .parallelism(split_evenly_per_core) // .
+                    .read(ct::acceleration)             // .
+                    .write(ct::velocity);               // .
 
             // Velocity system.
             // * Multithreaded.
-            constexpr auto ssig_velocity =          // .
-                ss::make(st::velocity)              // .
-                    .parallelism(par)               // .
-                    .dependencies(st::acceleration) // .
-                    .read(ct::velocity)             // .
-                    .write(ct::position);           // .
+            constexpr auto ssig_velocity =              // .
+                ss::make(st::velocity)                  // .
+                    .parallelism(split_evenly_per_core) // .
+                    .dependencies(st::acceleration)     // .
+                    .read(ct::velocity)                 // .
+                    .write(ct::position);               // .
 
             // Keep in bounds system.
             // * Multithreaded.
             constexpr auto ssig_keep_in_bounds =        // .
                 ss::make(st::keep_in_bounds)            // .
-                    .parallelism(par)                   // .
+                    .parallelism(split_evenly_per_core) // .
                     .dependencies(st::velocity)         // .
                     .read(ct::circle)                   // .
                     .write(ct::velocity, ct::position); // .
@@ -561,7 +562,7 @@ namespace example
             // * Output: `std::vector<sp_data>`.
             constexpr auto ssig_spatial_partition =            // .
                 ss::make(st::spatial_partition)                // .
-                    .parallelism(par)                          // .
+                    .parallelism(split_evenly_per_core)        // .
                     .dependencies(st::keep_in_bounds)          // .
                     .read(ct::position, ct::circle)            // .
                     .output(ss::output<std::vector<sp_data>>); // .
@@ -571,7 +572,7 @@ namespace example
             // * Output: `std::vector<contact>`.
             constexpr auto ssig_collision =                    // .
                 ss::make(st::collision)                        // .
-                    .parallelism(par)                          // .
+                    .parallelism(split_evenly_per_core)        // .
                     .dependencies(st::spatial_partition)       // .
                     .read(ct::circle)                          // .
                     .write(ct::position, ct::velocity)         // .
@@ -591,7 +592,7 @@ namespace example
             // * Output: `std::vector<sf::Vertex>`.
             constexpr auto ssig_render_colored_circle =           // .
                 ss::make(st::render_colored_circle)               // .
-                    .parallelism(par)                             // .
+                    .parallelism(split_evenly_per_core)           // .
                     .dependencies(st::solve_contacts)             // .
                     .read(ct::circle, ct::position, ct::color)    // .
                     .output(ss::output<std::vector<sf::Vertex>>); // .
