@@ -30,7 +30,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
         constexpr auto set(const TKey& key, T&& x) noexcept
         {
             // Prevent setting same setting twice.
-            ECST_S_ASSERT_DT(bh::second(bh::at_key(map(), key)) == bh::false_c);
+            // ECST_S_ASSERT_DT(bh::second(bh::at_key(map(), key)) == bh::false_c);
 
             auto new_map = bh::insert(bh::erase_key(map(), key),
                 bh::make_pair(key, bh::make_pair(FWD(x), bh::true_c)));

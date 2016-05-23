@@ -167,39 +167,11 @@ EXAMPLE_SYSTEM_TAG(collision);
 EXAMPLE_SYSTEM_TAG(solve_contacts);
 EXAMPLE_SYSTEM_TAG(render_colored_circle);
 
-// TODO:
-EXAMPLE_SYSTEM_TAG(ts0);
-EXAMPLE_SYSTEM_TAG(ts1);
-EXAMPLE_SYSTEM_TAG(ts2);
-
 namespace example
 {
     // System definitions.
     namespace s
     {
-        // TODO:
-        struct ts0
-        {
-            void xd()
-            {
-                std::cout << "TS0\n";
-            }
-        };
-        struct ts1
-        {
-            void xd()
-            {
-                std::cout << "TS1\n";
-            }
-        };
-        struct ts2
-        {
-            void xd()
-            {
-                std::cout << "TS2\n";
-            }
-        };
-
         // Systems are simple classes as well, that do not need to satisfy any
         // particular interface. They can store data and have any method the
         // user desires.
@@ -625,10 +597,6 @@ namespace example
                     .read(ct::circle, ct::position, ct::color)    // .
                     .output(ss::output<std::vector<sf::Vertex>>); // .
 
-            constexpr auto ssig_ts0 = ss::make(st::ts0);
-            constexpr auto ssig_ts1 = ss::make(st::ts1).dependencies(st::ts0);
-            constexpr auto ssig_ts2 = ss::make(st::ts2).dependencies(st::ts1);
-
 // TODO:
 
 #define ERASED(x)                                                         \
@@ -668,9 +636,7 @@ namespace example
 
 
             // Build and return the "system signature list".
-            return sls::make( // .
-                ssig_ts0, ssig_ts1, ssig_ts2,
-
+            return sls::make(              // .
                 ssig_acceleration,         // .
                 ssig_velocity,             // .
                 ssig_keep_in_bounds,       // .
@@ -735,12 +701,6 @@ namespace example
 
         ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
             {
-                proxy.execute_systems_from(st::ts0)(
-                    sea::all().for_subtasks([](auto& s, auto&)
-                        {
-                            s.xd();
-                        }));
-
                 proxy.execute_systems_from(st::acceleration)(
                     ft_tags.for_subtasks([dt](auto& s, auto& data)
                         {
