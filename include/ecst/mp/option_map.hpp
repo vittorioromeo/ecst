@@ -5,6 +5,4 @@
 
 #pragma once
 
-#include "./mp/core.hpp"
-#include "./mp/list.hpp"
-#include "./mp/option_map.hpp"
+#include "./option_map/basic.hpp"

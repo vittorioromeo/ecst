@@ -7,50 +7,14 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/mp/list.hpp>
+#include <ecst/mp.hpp>
 #include <ecst/tag/system.hpp>
+#include "./impl/keys.hpp"
+#include "./impl/output_wrapper.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
     // TODO: cleanup
-
-    namespace impl
-    {
-        namespace keys
-        {
-            constexpr auto parallelism = sz_v<0>;
-            constexpr auto dependencies = sz_v<1>;
-            constexpr auto read_components = sz_v<2>;
-            constexpr auto write_components = sz_v<3>;
-            constexpr auto output = sz_v<4>;
-        }
-    }
-
-    namespace impl
-    {
-        /// @brief Empty struct representing the lack of an output.
-        struct empty_output_type
-        {
-        };
-
-        /// @brief Tag type for the system output.
-        template <typename T>
-        struct output_impl : mp::bh::type<T>
-        {
-        };
-
-        /// @brief Evaluates to true if `T` is a valid wrapped output type.
-        template <typename T>
-        constexpr auto is_valid_output =
-            mp::is_specialization_of_v<output_impl, T>;
-    }
-
-    /// @brief Wrapper for the system's output type `T`.
-    template <typename T>
-    constexpr impl::output_impl<T> output{};
-
-    /// @brief Wrapper for the system's empty output type.
-    constexpr auto no_output = output<impl::empty_output_type>;
 
     namespace impl
     {
@@ -59,7 +23,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         {
         public:
 // TODO:
-#define TEMP(x) mp::list::option_type<TOptions, decltype(x)>
+#define TEMP(x) mp::option_map::type_of<TOptions, decltype(x)>
 
             using tag_type = TTag;
             using parallelism_type = TEMP(keys::parallelism);
@@ -101,9 +65,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             template <typename TKey, typename T>
             constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
-                auto new_options =
-                    mp::list::set_option(TOptions{}, key, FWD(x));
-                return data<TTag, decltype(new_options)>{};
+                auto new_options = TOptions{}.set(key, FWD(x));
+                return data<TTag, std::decay_t<decltype(new_options)>>{};
             }
 
         public:

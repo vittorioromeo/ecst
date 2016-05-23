@@ -20,21 +20,17 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         using namespace mp;
         using namespace signature::system::impl;
 
-        constexpr auto default_options = bh::make_map( // .
+        constexpr auto default_options = // .
+            mp::option_map::make()       // .
+                .add(keys::parallelism,
+                    inner_parallelism::strategy::none::v())     // .
+                .add(keys::dependencies, mp::list::empty_v)     // .
+                .add(keys::read_components, mp::list::empty_v)  // .
+                .add(keys::write_components, mp::list::empty_v) // .
+                .add(keys::output, no_output);                  // .
 
-            bh::make_pair(
-                keys::parallelism, inner_parallelism::strategy::none::v()), // .
-
-            bh::make_pair(keys::dependencies, mp::list::empty_v), // .
-
-            bh::make_pair(keys::read_components, mp::list::empty_v), // .
-
-            bh::make_pair(keys::write_components, mp::list::empty_v), // .
-
-            bh::make_pair(keys::output, no_output) // .
-            );
-
-        return impl::data<TSystemTag, decltype(default_options)>{};
+        return impl::data<TSystemTag,
+            std::decay_t<decltype(default_options)>>{};
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

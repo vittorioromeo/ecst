@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <ecst/config/names/mp/mp.hpp>
-#include <ecst/config/names/mp/list.hpp>
-#include <ecst/config/names/mp/pair.hpp>
-#include <ecst/config/names/mp/map.hpp>
+#include "./mp/mp.hpp"
+#include "./mp/list.hpp"
+#include "./mp/option_map.hpp"

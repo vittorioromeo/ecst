@@ -54,32 +54,5 @@ ECST_MP_LIST_NAMESPACE
     {
         return list_to_set_intersection(FWD(l0), FWD(l1)) != mp::bh::make_set();
     }
-
-    // TODO: move to another file & namespace
-    // mp::option_map ?
-
-    // TODO: docs, optimize
-    template <typename TMap, typename TKey, typename T>
-    auto set_option_impl(const TMap& m, const TKey& key, T&& x) noexcept
-    {
-        return mp::bh::to_map(mp::bh::replace_if(mp::bh::to_tuple(m),
-            [&key](const auto& kv)
-            {
-                return mp::same_type_decay(mp::bh::first(kv), key);
-            },
-            mp::bh::make_pair(key, x)));
-    }
-
-    // TODO: docs, optimize
-    template <typename TMap, typename TKey, typename T>
-    constexpr auto set_option(const TMap& m, const TKey& key, T&& x) noexcept
-    {
-        return decltype(set_option_impl(m, key, x)){};
-    }
-
-    // TODO: docs, optimize
-    template <typename TMap, typename TKey>
-    using option_type = std::remove_const_t<
-        std::remove_reference_t<decltype(mp::bh::at_key(TMap{}, TKey{}))>>;
 }
 ECST_MP_LIST_NAMESPACE_END

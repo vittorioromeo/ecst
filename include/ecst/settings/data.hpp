@@ -8,23 +8,11 @@
 #include <ecst/config.hpp>
 #include <ecst/signature_list.hpp>
 #include "./data_settings.hpp"
+#include "./impl/keys.hpp"
 
 ECST_SETTINGS_NAMESPACE
 {
     // TODO: cleanup
-
-    namespace impl
-    {
-        namespace keys
-        {
-            constexpr auto threading = sz_v<0>;
-            constexpr auto entity_storage = sz_v<1>;
-            constexpr auto component_signature_list = sz_v<2>;
-            constexpr auto system_signature_list = sz_v<3>;
-            constexpr auto scheduler = sz_v<4>;
-            constexpr auto refresh_parallelism = sz_v<5>;
-        }
-    }
 
     namespace impl
     {
@@ -36,7 +24,7 @@ ECST_SETTINGS_NAMESPACE
         {
         public:
 // TODO:
-#define TEMP(x) mp::list::option_type<TOptions, decltype(x)>
+#define TEMP(x) mp::option_map::type_of<TOptions, decltype(x)>
 
             using multithreading = TEMP(keys::threading);
             using entity_storage = TEMP(keys::entity_storage);
@@ -67,9 +55,8 @@ ECST_SETTINGS_NAMESPACE
             template <typename TKey, typename T>
             constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
-                auto new_options =
-                    mp::list::set_option(TOptions{}, key, FWD(x));
-                return data<decltype(new_options)>{};
+                auto new_options = TOptions{}.set(key, FWD(x));
+                return data<std::decay_t<decltype(new_options)>>{};
             }
 
         public:
