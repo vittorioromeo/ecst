@@ -56,8 +56,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto parent_id = sls::id_by_signature(ssl, parent);
 
             // Build a list of dependent IDs.
-            return mp::bh::fold_left(ssl, mp::list::empty_v,
-                [=](auto acc, auto ss)
+            return mp::bh::fold_right(ssl, mp::list::empty_v,
+                [=](auto ss, auto acc)
                 {
                     // Check if the ID of `parent` is in the list of `ss`'s
                     // depedendencies.
@@ -85,8 +85,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         return decltype(impl::dependent_ids_list_impl(ssl, parent)){};
     }
 
-
-
+    // TODO: remove
+    /*
     /// @brief Returns the set of independent system signatures.
     template <typename TSystemSignatureList>
     constexpr auto independent_signature_list(TSystemSignatureList ssl)
@@ -113,5 +113,6 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         mp::bh::for_each(independent_ids_list(ssl), FWD(f));
     }
+    */
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

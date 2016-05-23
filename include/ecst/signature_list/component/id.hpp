@@ -12,11 +12,9 @@
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
-
-
     template <typename TComponentSignatureList, typename TComponentSignature>
     constexpr auto id_by_signature(
-        TComponentSignatureList csl, TComponentSignature cs)
+        TComponentSignatureList csl, TComponentSignature cs) noexcept
     {
         ECST_S_ASSERT_DT(valid(csl));
         ECST_S_ASSERT_DT(signature::component::valid(cs));
@@ -25,13 +23,14 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     }
 
     template <typename TComponent, typename TComponentSignatureList>
-    constexpr auto id_by_type(TComponentSignatureList csl)
+    constexpr auto id_by_type(TComponentSignatureList csl) noexcept
     {
         return id_by_signature(csl, signature_by_type<TComponent>(csl));
     }
 
     template <typename TComponentSignatureList, typename TComponentTag>
-    constexpr auto id_by_tag(TComponentSignatureList csl, TComponentTag ct)
+    constexpr auto id_by_tag(
+        TComponentSignatureList csl, TComponentTag ct) noexcept
     {
         return id_by_signature(csl, signature_by_tag(csl, ct));
     }

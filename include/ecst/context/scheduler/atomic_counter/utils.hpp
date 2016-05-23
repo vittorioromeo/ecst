@@ -53,9 +53,6 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                 {
                     // Get the list of dependent IDs of `ss`.
                     auto dependent_ids = sls::dependent_ids_list(ssl, ss);
-
-                    // Verify validity and get its type.
-                    // ECST_S_ASSERT_DT(mp::list::valid(dependent_ids));
                     using dep_list_type = decltype(dependent_ids);
 
                     // Use the list to compute the task type.

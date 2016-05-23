@@ -58,15 +58,6 @@ ECST_SCHEDULER_NAMESPACE
         }
 
     public:
-        s_atomic_counter() = default;
-        ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(s_atomic_counter);
-
-        template <typename TSystemStorage>
-        void initialize(TSystemStorage&)
-        {
-            reset();
-        }
-
         template <typename TContext, typename TSystemTag, typename TF>
         void execute(TContext& ctx, TSystemTag st, TF&& f)
         {
@@ -77,7 +68,6 @@ ECST_SCHEDULER_NAMESPACE
             constexpr auto chain_size(
                 signature_list::system::chain_size(ssl(), st));
 
-            std::cout << "chainsz: " << chain_size << std::endl;
             counter_blocker b(chain_size);
 
             // Starts every independent task and waits until the remaining tasks

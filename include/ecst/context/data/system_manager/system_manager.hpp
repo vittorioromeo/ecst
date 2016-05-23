@@ -20,8 +20,7 @@ ECST_CONTEXT_NAMESPACE
     namespace impl
     {
         /// @brief Class managing systems and threads.
-        /// @details Contains a thread pool, a system runner and a system
-        /// storage.
+        /// @details Contains a thread pool, and a system storage.
         template <typename TSettings>
         class system_manager
         {
@@ -32,24 +31,21 @@ ECST_CONTEXT_NAMESPACE
             using settings_type = TSettings;
             using thread_pool = ecst::thread_pool;
 
-            using system_runner_type = // .
-                context::system::runner<settings_type>;
-
             using system_storage_type = // .
                 context::storage::system::dispatch<settings_type>;
+
+            using scheduler_type = // .
+                typename settings::impl::ctx_scheduler<
+                    settings_type>::template instantiate<settings_type>;
 
             template <typename T>
             using system_from_tag = tag::system::unwrap<T>;
 
         private:
             thread_pool _thread_pool;
-            system_runner_type _system_runner;
             system_storage_type _system_storage;
 
         public:
-            system_manager();
-            ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(system_manager);
-
             /// @brief Executes `f` on all systems, sequentially.
             template <typename TF>
             void for_systems_sequential(TF&& f);

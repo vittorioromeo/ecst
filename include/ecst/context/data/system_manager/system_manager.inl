@@ -15,11 +15,6 @@ ECST_CONTEXT_NAMESPACE
     {
         using handle = ecst::context::entity::impl::handle;
 
-        template <typename TSettings>
-        system_manager<TSettings>::system_manager()
-        {
-            _system_runner.initialize(_system_storage);
-        }
 
         template <typename TSettings>
         template <typename TF>
@@ -92,8 +87,9 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::execute_systems(
             TContext& context, TSystemTag st, TFs&&... fs)
         {
+            scheduler_type s;
             auto os = make_overload(FWD(fs)...);
-            _system_runner.execute(context, st, os);
+            s.execute(context, st, os);
         }
 
         template <typename TSettings>

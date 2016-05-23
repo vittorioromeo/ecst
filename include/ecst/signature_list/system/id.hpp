@@ -17,7 +17,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         TSystemSignatureList ssl, TSystemSignature ss)
     {
         ECST_S_ASSERT_DT(valid(ssl));
-        // ECST_S_ASSERT_DT(signature::system::valid(ss));
+        ECST_S_ASSERT_DT(signature::system::valid(mp::unwrapped(ss)));
 
         return mp::list::index_of(ssl, ss);
     }
