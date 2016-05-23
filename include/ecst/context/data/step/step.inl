@@ -22,11 +22,11 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
-            template <typename... TFs>
-            auto proxy<TSettings>::execute_systems(TFs&&... fs)
+            template <typename TSystemTag>
+            auto proxy<TSettings>::execute_systems_from(TSystemTag st)
             {
-                return this->context().execute_systems(
-                    this->context(), FWD(fs)...);
+                return this->context().execute_systems_from(
+                    this->context(), st);
             }
         }
     }

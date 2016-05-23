@@ -70,10 +70,14 @@ ECST_CONTEXT_NAMESPACE
             auto& instance_by_id(TID) noexcept;
 
         protected:
-            template <typename TContext, typename... TFs>
-            void execute_systems(TContext&, TFs&&... fs);
+            template <typename TContext, typename TSystemTag>
+            auto execute_systems_from(
+                TContext& context, TSystemTag st) noexcept;
 
         private:
+            template <typename TContext, typename TSystemTag, typename... TFs>
+            void execute_systems(TContext&, TSystemTag st, TFs&&... fs);
+
             template <typename TSystem, typename TF>
             decltype(auto) for_system_outputs(TF&& f);
 

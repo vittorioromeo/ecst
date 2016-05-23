@@ -77,12 +77,23 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TContext, typename... TFs>
+        template <typename TContext, typename TSystemTag>
+        auto system_manager<TSettings>::execute_systems_from(
+            TContext& context, TSystemTag st) noexcept
+        {
+            return [this, &context, st](auto&&... fns)
+            {
+                this->execute_systems(context, st, FWD(fns)...);
+            };
+        }
+
+        template <typename TSettings>
+        template <typename TContext, typename TSystemTag, typename... TFs>
         void system_manager<TSettings>::execute_systems(
-            TContext& context, TFs&&... fs)
+            TContext& context, TSystemTag st, TFs&&... fs)
         {
             auto os = make_overload(FWD(fs)...);
-            _system_runner.execute(context, os);
+            _system_runner.execute(context, st, os);
         }
 
         template <typename TSettings>

@@ -46,10 +46,10 @@ namespace test
             (void)l_threading;
             (void)l_storage;
 
-            return bh::fold_left(l_threading, mp::list::empty_v,
+            return bh::fold_right(l_threading, mp::list::empty_v,
                 [=](auto xacc, auto x_threading)
                 {
-                    auto fold2 = bh::fold_left(l_storage, mp::list::empty_v,
+                    auto fold2 = bh::fold_right(l_storage, mp::list::empty_v,
                         [=](auto yacc, auto y_storage)
                         {
                             auto zsettings = cs::make(              // .

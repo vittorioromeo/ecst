@@ -35,14 +35,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             _scheduler.initialize(ss);
         }
 
-        // TODO: add starting_system parameter and static assert independency
-        template <             // .
-            typename TContext, // .
-            typename TF        // .
-            >
-        void execute(TContext& sp, TF&& f)
+        // TODO: static_assert independency
+        template <typename TContext, typename TSystemTag, typename TF>
+        void execute(TContext& sp, TSystemTag st, TF&& f)
         {
-            _scheduler.execute(sp, FWD(f));
+            _scheduler.execute(sp, st, FWD(f));
         }
     };
 }

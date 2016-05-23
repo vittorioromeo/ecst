@@ -25,10 +25,9 @@ ECST_MP_LIST_NAMESPACE
 
     // Concats `l0` and `l1`, after calling `bh::sort` and `bh::unique`.
     template <typename TL0, typename TL1>
-    auto unique_cat(TL0 && l0, TL1 && l1)
+    constexpr auto unique_cat(TL0 && l0, TL1 && l1)
     {
-        using namespace mp;
-        return bh::unique(bh::sort(bh::concat(l0, l1)));
+        return bh::unique(bh::sort(bh::concat(FWD(l0), FWD(l1))));
     }
 
     // Returns the index of `x` in `l`.
@@ -44,15 +43,14 @@ ECST_MP_LIST_NAMESPACE
     template <typename TL0, typename TL1>
     constexpr auto list_to_set_intersection(TL0 && l0, TL1 && l1) noexcept
     {
-        return mp::bh::intersection(
-            mp::bh::to_set(FWD(l0)), mp::bh::to_set(FWD(l1)));
+        return bh::intersection(bh::to_set(FWD(l0)), bh::to_set(FWD(l1)));
     }
 
     // Returns true if `l0` and `l1` have at least one element in common.
     template <typename TL0, typename TL1>
     constexpr auto any_common_element(TL0 && l0, TL1 && l1) noexcept
     {
-        return list_to_set_intersection(FWD(l0), FWD(l1)) != mp::bh::make_set();
+        return list_to_set_intersection(FWD(l0), FWD(l1)) != bh::make_set();
     }
 }
 ECST_MP_LIST_NAMESPACE_END

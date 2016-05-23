@@ -41,18 +41,19 @@ ECST_SCHEDULER_NAMESPACE
             impl::sac::reset_task_group_from_ssl(ssl(), _task_group);
         }
 
-        template <typename TContext, typename TBlocker, typename TF>
-        void start_execution(TContext& ctx, TBlocker& b, TF&& f)
+        template <typename TContext, typename TSystemTag, typename TBlocker,
+            typename TF>
+        void start_execution(TContext& ctx, TSystemTag st, TBlocker& b, TF&& f)
         {
-            // TODO: system parameter
-            signature_list::system::for_indepedent_ids(ssl(), // .
-                [this, &ctx, &b, &f](auto s_id)
+            // Execution can only be started from independent systems.
+            auto ss = signature_list::system::signature_by_tag(ssl(), st);
+            ECST_S_ASSERT_DT(signature::system::is_independent(ss));
+
+            auto sid = signature_list::system::id_by_tag(ssl(), st);
+
+            ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]
                 {
-                    ctx.post_in_thread_pool([this, s_id, &ctx, &b, &f]
-                        {
-                            this->_task_group.start_from_task_id(
-                                b, s_id, ctx, f);
-                        });
+                    this->_task_group.start_from_task_id(b, sid, ctx, f);
                 });
         }
 
@@ -66,21 +67,26 @@ ECST_SCHEDULER_NAMESPACE
             reset();
         }
 
-        template <typename TContext, typename TF>
-        void execute(TContext& ctx, TF&& f)
+        template <typename TContext, typename TSystemTag, typename TF>
+        void execute(TContext& ctx, TSystemTag st, TF&& f)
         {
             reset();
 
+            // TODO: count systems starting from st
             // Aggregates the required synchronization objects.
-            counter_blocker b{mp::bh::size(ssl())};
+            constexpr auto chain_size(
+                signature_list::system::chain_size(ssl(), st));
+
+            std::cout << "chainsz: " << chain_size << std::endl;
+            counter_blocker b(chain_size);
 
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
             execute_and_wait_until_counter_zero(b,
-                [ this, &ctx, &b, f = FWD(f) ]() mutable
+                [ this, &ctx, &b, st, f = FWD(f) ]() mutable
                 {
-                    this->start_execution(ctx, b, f);
+                    this->start_execution(ctx, st, b, f);
                 });
         }
     };

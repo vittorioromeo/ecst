@@ -32,6 +32,8 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         // Get system instance from task ID.
         auto& s_instance(ctx.instance_by_id(my_id));
 
+        std::cout << "running: " << my_id << std::endl;
+
         // Execute processing function on system context.
         s_instance.execute(ctx, f);
 
@@ -43,6 +45,8 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             {
                 // ...retrieve the corresponding task.
                 auto& dt = tg.task_by_id(id);
+
+                std::cout << "checking: " << id << std::endl;
 
                 // Then, inform the task that one of its dependencies (the
                 // current task) has been executed.
