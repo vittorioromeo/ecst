@@ -58,7 +58,6 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 read_component_tag_list_type{},
                 write_component_tag_list_type{}));
 
-            // TODO: does not work for some reason
             ECST_S_ASSERT_DT(impl::is_valid_output<output_type>);
 
         private:

@@ -48,28 +48,24 @@ struct s_collreact
     }
 };
 
+// Define component tags
+constexpr auto ctag_physics = tag::component::v<c_physics>;
+constexpr auto ctag_draw = tag::component::v<c_draw>;
+constexpr auto ctag_collision = tag::component::v<c_collision>;
 
 constexpr auto TEST_CONST setup_components()
 {
     namespace sc = signature::component;
     namespace slc = signature_list::component;
 
-    // Define component tags
-    constexpr auto ctag_physics = sc::tag<c_physics>;
-    constexpr auto ctag_draw = sc::tag<c_draw>;
-    constexpr auto ctag_collision = sc::tag<c_collision>;
-
-    // Define component signatures
-    constexpr auto csig_physics = sc::make_by_tag(ctag_physics);
-    constexpr auto csig_draw = sc::make_by_tag(ctag_draw);
-    constexpr auto csig_collision = sc::make_by_tag(ctag_collision);
-
     // Define component signature list
-    constexpr auto component_siglist = // .
-        slc::make(csig_physics, csig_draw, csig_collision);
-
-    return component_siglist;
+    return slc::make(ctag_physics, ctag_draw, ctag_collision);
 }
+
+// Define system tags
+constexpr auto stag_movement = tag::system::v<s_movement>;
+constexpr auto stag_render = tag::system::v<s_render>;
+constexpr auto stag_collreact = tag::system::v<s_collreact>;
 
 constexpr auto TEST_CONST setup_systems()
 {
@@ -77,46 +73,26 @@ constexpr auto TEST_CONST setup_systems()
     namespace sls = signature_list::system;
     namespace ips = inner_parallelism::strategy;
 
-    // Define system tags
-    constexpr auto stag_movement = ss::tag<s_movement>;
-    constexpr auto stag_render = ss::tag<s_render>;
-    constexpr auto stag_collreact = ss::tag<s_collreact>;
-
     // Define movement system signature
-    constexpr auto ssig_movement = ss::make_by_tag( // .
-        stag_movement,                              // .
-        ips::none::v(),                             // .
-        ss::no_dependencies,                        // .
-        ss::component_use(                          // .
-            ss::mutate<c_physics>                   // .
-            ),                                      // .
-        ss::output::none                            // .
-        );
+    constexpr auto ssig_movement =       // .
+        ss::make(stag_movement)          // .
+            .parallelism(ips::none::v()) // .
+            .write(ctag_physics);        // .
 
     // Define render system signature
-    constexpr auto ssig_render = ss::make_by_tag( // .
-        stag_render,                              // .
-        ips::none::v(),                           // .
+    constexpr auto ssig_render =         // .
+        ss::make(stag_render)            // .
+            .parallelism(ips::none::v()) // .
+            .dependencies(stag_movement) // .
+            .read(ctag_physics);         // .
 
-        // TODO: clang crashes here:
-        // ss::depends_on<s_movement>, // .
-        mp::bh::make_basic_tuple(stag_movement), // .
-        ss::component_use(                       // .
-            ss::read<c_physics>                  // .
-            ),                                   // .
-        ss::output::none                         // .
-        );
 
     // Define render system signature
-    constexpr auto ssig_collreact = ss::make_by_tag( // .
-        stag_collreact,                              // .
-        ips::none::v(),                              // .
-        mp::bh::make_basic_tuple(stag_movement),     // .
-        ss::component_use(                           // .
-            ss::read<c_physics>                      // .
-            ),                                       // .
-        ss::output::none                             // .
-        );
+    constexpr auto ssig_collreact =      // .
+        ss::make(stag_collreact)         // .
+            .parallelism(ips::none::v()) // .
+            .dependencies(stag_movement) // .
+            .read(ctag_physics);         // .
 
     // Define system signature list
     constexpr auto system_siglist = // .
@@ -134,13 +110,13 @@ constexpr auto TEST_CONST setup_settings(TCSL csl, TSSL ssl)
     constexpr auto ce_csl = decltype(csl){};
     constexpr auto ce_ssl = decltype(ssl){};
 
-    constexpr auto res = ecst::settings::make(          // .
-        cs::multithreaded(cs::allow_inner_parallelism), // .
-        cs::fixed<1000>,                                // .
-        ce_csl,                                         // .
-        ce_ssl,                                         // .
-        cs::scheduler<ss::s_atomic_counter>             // .
-        );
+    constexpr auto res =                          // .
+        ecst::settings::make()                    // .
+            .allow_inner_parallelism()            // .
+            .fixed_entity_limit(ecst::sz_v<1000>) // .
+            .component_signatures(ce_csl)         // .
+            .system_signatures(ce_ssl)            // .
+            .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     return res;
 }
@@ -183,7 +159,7 @@ TEST_MAIN()
     auto ctx = ecst::context::make(context_settings);
     ctx.step([](auto& proxy)
         {
-            proxy.execute_systems(
+            proxy.execute_systems_from(stag_movement)(
                 sea::all().detailed([&](auto& system, auto& executor)
                     {
                         executor.for_subtasks([&](auto&)
