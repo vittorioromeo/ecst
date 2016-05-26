@@ -11,7 +11,7 @@
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
-    // TODO: inl, cleanup
+    /// @brief Given a system tag `st`, creates a default system signature.
     template <typename TSystemTag>
     constexpr auto make(TSystemTag st);
 }

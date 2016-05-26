@@ -47,10 +47,16 @@ ECST_MP_OPTION_MAP_NAMESPACE
 
     public:
         template <typename TKey>
-        constexpr auto type_at(const TKey& key) noexcept
+        constexpr auto type_at(const TKey& key) const noexcept
         {
             return bh::type_c<
                 std::decay_t<decltype(bh::first(bh::at_key(_map, key)))>>;
+        }
+
+        template <typename TKey>
+        constexpr auto at(const TKey& key) const noexcept
+        {
+            return bh::first(bh::at_key(_map, key));
         }
 
         template <typename TKey, typename T>

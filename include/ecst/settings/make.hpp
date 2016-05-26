@@ -10,7 +10,7 @@
 
 ECST_SETTINGS_NAMESPACE
 {
-    // TODO: move, inl
+    /// @brief Creates default settings for an `ecst::context`.
     constexpr auto make();
 }
 ECST_SETTINGS_NAMESPACE_END

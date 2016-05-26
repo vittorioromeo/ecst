@@ -46,3 +46,7 @@
 
 // Context/manager class.
 #include <ecst/context.hpp>
+
+// Implementation of make functions (default settings).
+#include <ecst/make_inl.hpp>
+

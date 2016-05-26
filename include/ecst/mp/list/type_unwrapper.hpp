@@ -11,7 +11,6 @@
 
 ECST_MP_LIST_NAMESPACE
 {
-    // TODO:
     namespace impl
     {
         template <typename T>
@@ -22,12 +21,10 @@ ECST_MP_LIST_NAMESPACE
         {
             using type = std::tuple<typename Ts::type...>;
         };
-
-        template <typename T>
-        using unwrap_type_c_list = typename list_unwrapper<T>::type;
     }
 
+    /// @brief Unwraps a `type_list<type_c<xs>...>` into an `std::tuple<xs...>`.
     template <typename T>
-    using unwrap_tuple = impl::unwrap_type_c_list<T>;
+    using unwrap_tuple = typename impl::list_unwrapper<T>::type;
 }
 ECST_MP_LIST_NAMESPACE_END

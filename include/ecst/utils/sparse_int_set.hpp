@@ -27,8 +27,8 @@ ECST_NAMESPACE
             return static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([](auto ts)
                     {
-                        return mp::type_c<
-                            fixed_set<settings::fixed_capacity(ts)>>;
+                        return mp::type_c<fixed_set<settings::fixed_capacity(
+                            decltype(ts){})>>;
                     })
                 .else_([](auto)
                     {

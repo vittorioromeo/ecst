@@ -22,9 +22,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             return static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([](auto ts)
                     {
-                        return mp::type_c<                           // .
-                            chunk::fixed_buffer<TComponent,          // .
-                                sz_t_<settings::fixed_capacity(ts)>> // .
+                        return mp::type_c<                  // .
+                            chunk::fixed_buffer<TComponent, // .
+                                sz_t_<settings::fixed_capacity(
+                                    decltype(ts){})>> // .
                             >;
                     })
                 .else_([](auto)

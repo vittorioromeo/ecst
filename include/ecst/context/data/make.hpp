@@ -12,25 +12,7 @@ ECST_CONTEXT_NAMESPACE
     template <typename TSettings>
     auto make(TSettings)
     {
-#if 1
-        // TODO: ?
         return impl::data<TSettings>{};
-#else
-        auto result = impl::data<TSettings>{};
-        using rt = decltype(result);
-
-        struct e : rt
-        {
-            using rt::rt;
-            e(rt&& x) : rt{std::move(x)}
-            {
-            }
-        };
-
-        auto i = e{std::move(result)};
-
-        return i;
-#endif
     }
 
     template <typename TSettings>

@@ -23,11 +23,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @brief State manager with a fixed storage.
             /// @details "State storages" are stored in an `std::array`.
             template <typename TSettings, typename TSystemSignature>
-            class multi_fixed
+            class data
             {
-            private:
-                static constexpr auto max_subtasks = 16;
-
             public:
                 using settings_type = TSettings;
                 using system_signature_type = TSystemSignature;
@@ -36,7 +33,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
                 static constexpr auto max_subtask_count() noexcept
                 {
-                    return max_subtasks;
+                    return 16;
                 }
 
             private:
@@ -46,8 +43,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 sz_t _prepared = 0;
 
             public:
-                multi_fixed() = default;
-                ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(multi_fixed);
+                data() = default;
+                ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(data);
 
                 void clear_and_prepare(sz_t n) noexcept
                 {

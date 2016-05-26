@@ -19,15 +19,14 @@ ECST_SETTINGS_NAMESPACE
         template <typename TOptions>
         class data
         {
+        private:
+            TOptions _map;
+
         public:
 // TODO:
 #define TEMP(x) mp::option_map::type_of<TOptions, decltype(x)>
 
-            using multithreading = TEMP(keys::threading);
             using entity_storage = TEMP(keys::entity_storage);
-            using system_signature_list = TEMP(keys::system_signature_list);
-            using component_signature_list = TEMP(
-                keys::component_signature_list);
             using scheduler_type = TEMP(keys::scheduler);
             using refresh_parallelism = TEMP(keys::refresh_parallelism);
 
@@ -36,11 +35,6 @@ ECST_SETTINGS_NAMESPACE
             // ECST_S_ASSERT(threading::is<TMultithreading>);
             // ECST_S_ASSERT(is_entity_storage<TEntityStorage>);
 
-            ECST_S_ASSERT(
-                signature_list::component::valid(component_signature_list{}));
-
-            ECST_S_ASSERT(
-                signature_list::system::valid(system_signature_list{}));
 
             // ECST_S_ASSERT(refresh_parallelism::is<TRefreshParallelism>);
 
@@ -52,11 +46,35 @@ ECST_SETTINGS_NAMESPACE
             template <typename TKey, typename T>
             constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
-                auto new_options = TOptions{}.set(key, FWD(x));
+                auto new_options = _map.set(key, FWD(x));
                 return data<std::decay_t<decltype(new_options)>>{};
             }
 
         public:
+            // TODO: private
+            constexpr auto get_threading() noexcept
+            {
+                return _map.at(keys::threading);
+            }
+
+            constexpr auto get_csl() noexcept
+            {
+                auto result = _map.at(keys::component_signature_list);
+                constexpr auto ce_result = decltype(result){};
+                ECST_S_ASSERT(signature_list::component::valid(ce_result));
+                return ce_result;
+            }
+
+            constexpr auto get_ssl() noexcept
+            {
+                auto result = _map.at(keys::system_signature_list);
+                constexpr auto ce_result = std::decay_t<decltype(result)>{};
+                ECST_S_ASSERT(signature_list::system::valid(ce_result));
+                return ce_result;
+            }
+
+
+
             constexpr auto allow_inner_parallelism() noexcept
             {
                 return change_self(
@@ -110,27 +128,19 @@ ECST_SETTINGS_NAMESPACE
         };
 
         template <typename TSettings>
-        using ctx_system_signature_list =
-            typename TSettings::system_signature_list;
-
-        template <typename TSettings>
-        using ctx_component_signature_list =
-            typename TSettings::component_signature_list;
-
-        template <typename TSettings>
         using ctx_scheduler = typename TSettings::scheduler_type;
     }
 
     template <typename TSettings>
-    constexpr auto system_signature_list(TSettings)
+    constexpr auto system_signature_list(TSettings s)
     {
-        return impl::ctx_system_signature_list<TSettings>{};
+        return s.get_ssl();
     }
 
     template <typename TSettings>
-    constexpr auto component_signature_list(TSettings)
+    constexpr auto component_signature_list(TSettings s)
     {
-        return impl::ctx_component_signature_list<TSettings>{};
+        return s.get_csl();
     }
 
     template <typename TSettings>
@@ -170,10 +180,6 @@ ECST_SETTINGS_NAMESPACE
     }
 
     template <typename TSettings>
-    using multithreading = // .
-        typename TSettings::multithreading;
-
-    template <typename TSettings>
     using refresh_parallelism = // .
         typename TSettings::refresh_parallelism;
 
@@ -184,10 +190,10 @@ ECST_SETTINGS_NAMESPACE
     }
 
     template <typename TSettings>
-    constexpr auto inner_parallelism_allowed()
+    constexpr auto inner_parallelism_allowed(TSettings s)
     {
-        return mp::bh::bool_c<settings::multithreading<TSettings>{} ==
-                              impl::v_allow_inner_parallelism>;
+        return mp::bh::equal(
+            s.get_threading(), impl::v_allow_inner_parallelism);
     }
 
     template <typename TSettings>

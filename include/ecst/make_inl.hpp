@@ -5,4 +5,5 @@
 
 #pragma once
 
-#include "./scheduler/atomic_counter.hpp"
+#include "./make_inl/settings_make.inl"
+#include "./make_inl/signature_system_make.inl"

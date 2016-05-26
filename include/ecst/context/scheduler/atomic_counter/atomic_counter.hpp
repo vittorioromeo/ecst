@@ -63,7 +63,6 @@ ECST_SCHEDULER_NAMESPACE
         {
             reset();
 
-            // TODO: count systems starting from st
             // Aggregates the required synchronization objects.
             constexpr auto chain_size(
                 signature_list::system::chain_size(ssl(), st));

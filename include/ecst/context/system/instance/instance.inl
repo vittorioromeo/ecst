@@ -13,6 +13,20 @@
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     template <typename TSettings, typename TSystemSignature>
+    ECST_ALWAYS_INLINE auto& ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::subscribed() noexcept
+    {
+        return _subscribed;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    ECST_ALWAYS_INLINE const auto& ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::subscribed() const noexcept
+    {
+        return _subscribed;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
         : _bitset{
               bitset::make_from_system_signature<TSystemSignature>(TSettings{})}
@@ -154,7 +168,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto instance<TSettings, TSystemSignature>::execution_dispatch(
         TContext & ctx) noexcept
     {
-        return static_if(settings::inner_parallelism_allowed<TSettings>())
+        return static_if(settings::inner_parallelism_allowed(TSettings{}))
             .then([this, &ctx]
                 {
                     return [this, &ctx](auto&& sb_f)

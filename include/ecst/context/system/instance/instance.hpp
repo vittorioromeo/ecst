@@ -39,7 +39,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using bitset_type = bitset::dispatch<TSettings>;
 
         using state_manager_type = // .
-            impl::state_manager::dispatch<TSettings, TSystemSignature>;
+            impl::state_manager::data<TSettings, TSystemSignature>;
 
         using set_type = dispatch_set<TSettings>;
 
@@ -58,15 +58,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         parallel_executor_type _parallel_executor;
 
     public:
-        ECST_ALWAYS_INLINE auto& ECST_PURE_FN subscribed() noexcept
-        {
-            return _subscribed;
-        }
-
-        ECST_ALWAYS_INLINE const auto& ECST_PURE_FN subscribed() const noexcept
-        {
-            return _subscribed;
-        }
+        auto& subscribed() noexcept;
+        const auto& subscribed() const noexcept;
 
     public:
         static constexpr auto system_id() noexcept
@@ -101,7 +94,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         /// @brief Returns `true` if `eid` is subscribed to the system.
         auto is_subscribed(entity_id eid) const noexcept;
-
 
         /// @brief Subscribes `eid` to the system. (unchecked)
         auto unchecked_subscribe(entity_id eid);
@@ -144,7 +136,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TContext, typename TF>
         void execute_in_parallel(TContext& ctx, TF&& f);
 
-        // TODO:
+        /// @brief Returns an execution function that, when called with a
+        /// user-defined processing function, either invokes a single-threaded
+        /// execution or a multi-threaded execution.
         template <typename TContext>
         auto execution_dispatch(TContext&) noexcept;
 

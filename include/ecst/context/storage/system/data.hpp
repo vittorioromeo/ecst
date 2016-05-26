@@ -23,7 +23,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         {
         private:
             using ssl_type =
-                settings::impl::ctx_system_signature_list<TSettings>;
+                decltype(settings::system_signature_list(TSettings{}));
 
             using storage_type = mp::list::unwrap_tuple<
                 system_storage_tuple_type<TSettings, ssl_type>>;
