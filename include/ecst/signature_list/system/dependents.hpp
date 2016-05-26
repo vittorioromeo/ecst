@@ -84,35 +84,5 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return decltype(impl::dependent_ids_list_impl(ssl, parent)){};
     }
-
-    // TODO: remove
-    /*
-    /// @brief Returns the set of independent system signatures.
-    template <typename TSystemSignatureList>
-    constexpr auto independent_signature_list(TSystemSignatureList ssl)
-    {
-        return mp::bh::filter(ssl, [](auto sx)
-            {
-                return signature::system::is_independent(sx);
-            });
-    }
-
-    /// @brief Returns the set of independent system IDs.
-    template <typename TSystemSignatureList>
-    constexpr auto independent_ids_list(TSystemSignatureList ssl)
-    {
-        return mp::bh::transform(independent_signature_list(ssl), [ssl](auto x)
-            {
-                return signature_list::system::id_by_signature(ssl, x);
-            });
-    }
-
-    /// @brief Executes `f` on every independent system ID in `ssl`.
-    template <typename TSystemSignatureList, typename TF>
-    void for_indepedent_ids(TSystemSignatureList ssl, TF && f)
-    {
-        mp::bh::for_each(independent_ids_list(ssl), FWD(f));
-    }
-    */
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
