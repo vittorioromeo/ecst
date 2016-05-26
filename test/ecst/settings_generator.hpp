@@ -29,36 +29,32 @@ namespace test
 
             // List of threading policies.
             constexpr auto l_threading = mp::list::make( // .
-                cs::multithreaded(                       // .
-                    cs::allow_inner_parallelism          // .
-                    ),                                   // .
-                cs::multithreaded(                       // .
-                    cs::disallow_inner_parallelism       // .
-                    )                                    // .
-                );
+                ecst::settings::impl::v_allow_inner_parallelism,
+                ecst::settings::impl::v_disallow_inner_parallelism);
 
             // List of storage policies.
             constexpr auto l_storage = mp::list::make( // .
-                cs::dynamic<500>,                      // .
-                cs::fixed<decltype(ec){}>              // .
-                );
+                ecst::settings::fixed<decltype(ec){}>,
+                ecst::settings::dynamic<500>);
 
             (void)l_threading;
             (void)l_storage;
 
             return bh::fold_right(l_threading, mp::list::empty_v,
-                [=](auto xacc, auto x_threading)
+                [=](auto x_threading, auto xacc)
                 {
                     auto fold2 = bh::fold_right(l_storage, mp::list::empty_v,
-                        [=](auto yacc, auto y_storage)
+                        [=](auto y_storage, auto yacc)
                         {
-                            auto zsettings = cs::make(              // .
-                                x_threading,                        // .
-                                y_storage,                          // .
-                                csl,                                // .
-                                ssl,                                // .
-                                cs::scheduler<ss::s_atomic_counter> // .
-                                );
+                            auto zsettings =                    // .
+                                cs::make()                      // .
+                                    .set_threading(x_threading) // .
+                                    .set_storage(y_storage)     // .
+                                    .component_signatures(csl)  // .
+                                    .system_signatures(ssl)     // .
+                                    .scheduler(
+                                        cs::scheduler<ss::s_atomic_counter>);
+
 
                             return mp::bh::append(yacc, zsettings);
                         });

@@ -40,7 +40,7 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "multithreading: ";
 
-            static_if(settings::inner_parallelism_allowed<TSettings>())
+            static_if(settings::inner_parallelism_allowed(TSettings{}))
                 .then([&oss](auto)
                     {
                         oss << "allows inner parallelism";

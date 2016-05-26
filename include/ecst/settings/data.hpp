@@ -51,6 +51,19 @@ ECST_SETTINGS_NAMESPACE
             }
 
         public:
+            template <typename T>
+            constexpr auto set_threading(T&& x)
+            {
+                return change_self(keys::threading, FWD(x));
+            }
+
+            template <typename T>
+            constexpr auto set_storage(T&& x)
+            {
+                return change_self(keys::entity_storage, FWD(x));
+            }
+
+
             // TODO: private
             constexpr auto get_threading() noexcept
             {
@@ -77,14 +90,12 @@ ECST_SETTINGS_NAMESPACE
 
             constexpr auto allow_inner_parallelism() noexcept
             {
-                return change_self(
-                    keys::threading, impl::v_allow_inner_parallelism);
+                return set_threading(impl::v_allow_inner_parallelism);
             }
 
             constexpr auto disallow_inner_parallelism() noexcept
             {
-                return change_self(
-                    keys::threading, impl::v_disallow_inner_parallelism);
+                return set_threading(impl::v_disallow_inner_parallelism);
             }
 
             constexpr auto singlethreaded() noexcept
@@ -95,15 +106,13 @@ ECST_SETTINGS_NAMESPACE
             template <typename TCapacity>
             constexpr auto fixed_entity_limit(TCapacity) noexcept
             {
-                return change_self(
-                    keys::entity_storage, impl::fixed_impl<TCapacity>{});
+                return set_storage(impl::fixed_impl<TCapacity>{});
             }
 
             template <typename TInitialCapacity>
             constexpr auto dynamic_entity_limit(TInitialCapacity) noexcept
             {
-                return change_self(keys::entity_storage,
-                    impl::dynamic_impl<TInitialCapacity>{});
+                return set_storage(impl::dynamic_impl<TInitialCapacity>{});
             }
 
             template <typename TNewComponentSignatureList>

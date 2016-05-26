@@ -60,15 +60,15 @@ namespace example
 
     namespace ct
     {
-        namespace sct = ecst::signature::component;
+        using namespace ecst;
 
-        constexpr auto position = sct::tag<c::position>;
-        constexpr auto velocity = sct::tag<c::velocity>;
-        constexpr auto acceleration = sct::tag<c::acceleration>;
-        constexpr auto curve = sct::tag<c::curve>;
-        constexpr auto color = sct::tag<c::color>;
-        constexpr auto circle_shape = sct::tag<c::circle_shape>;
-        constexpr auto life = sct::tag<c::life>;
+        constexpr auto position = tag::component::v<c::position>;
+        constexpr auto velocity = tag::component::v<c::velocity>;
+        constexpr auto acceleration = tag::component::v<c::acceleration>;
+        constexpr auto curve = tag::component::v<c::curve>;
+        constexpr auto color = tag::component::v<c::color>;
+        constexpr auto circle_shape = tag::component::v<c::circle_shape>;
+        constexpr auto life = tag::component::v<c::life>;
     }
 
     namespace actions
@@ -117,13 +117,13 @@ namespace example
     }
 
 
-#define SYS_TAG(x)                                                  \
-    namespace system                                                \
-    {                                                               \
-        struct x;                                                   \
-    }                                                               \
-    namespace st                                                    \
-    {                                                               \
+#define SYS_TAG(x)                                          \
+    namespace system                                        \
+    {                                                       \
+        struct x;                                           \
+    }                                                       \
+    namespace st                                            \
+    {                                                       \
         constexpr auto x = ecst::tag::system::v<system::x>; \
     }
 
@@ -288,11 +288,11 @@ namespace example
             namespace c = example::component;
             namespace slc = ecst::signature_list::component;
 
-            return slc::v<                                 // .
-                c::position, c::velocity, c::acceleration, // .
-                c::curve, c::color,                        // .
-                c::circle_shape, c::life                   // .
-                >;
+            return slc::make(                                 // .
+                ct::position, ct::velocity, ct::acceleration, // .
+                ct::curve, ct::color,                         // .
+                ct::circle_shape, ct::life                    // .
+                );
         }
 
         constexpr auto make_ssl()
@@ -316,73 +316,45 @@ namespace example
 
             (void)test_p2;
 
-            constexpr auto ssig_acceleration =    // .
-                ss::make<s::acceleration>(        // .
-                    test_p,                       // .
-                    ss::no_dependencies,          // .
-                    ss::component_use(            // .
-                        ss::mutate<c::velocity>,  // .
-                        ss::read<c::acceleration> // .
-                        ),                        // .
-                    ss::output::none              // .
-                    );
+            constexpr auto ssig_acceleration = // .
+                ss::make(st::acceleration)     // .
+                    .parallelism(test_p)       // .
+                    .read(ct::acceleration)    // .
+                    .write(ct::velocity);      // .
 
-            constexpr auto ssig_curve =              // .
-                ss::make<s::curve>(                  // .
-                    test_p,                          // .
-                    ss::depends_on<s::acceleration>, // .
-                    ss::component_use(               // .
-                        ss::mutate<c::velocity>,     // .
-                        ss::read<c::curve>           // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
+            constexpr auto ssig_curve =             // .
+                ss::make(st::curve)                 // .
+                    .dependencies(st::acceleration) // .
+                    .parallelism(test_p)            // .
+                    .read(ct::curve)                // .
+                    .write(ct::velocity);           // .
 
-            constexpr auto ssig_velocity =       // .
-                ss::make<s::velocity>(           // .
-                    test_p,                      // .
-                    ss::depends_on<s::curve>,    // .
-                    ss::component_use(           // .
-                        ss::mutate<c::position>, // .
-                        ss::read<c::velocity>    // .
-                        ),                       // .
-                    ss::output::none             // .
-                    );
+            constexpr auto ssig_velocity =   // .
+                ss::make(st::velocity)       // .
+                    .parallelism(test_p)     // .
+                    .dependencies(st::curve) // .
+                    .read(ct::velocity)      // .
+                    .write(ct::position);    // .
 
-            constexpr auto ssig_render_colored_circle = // .
-                ss::make<s::render_colored_circle>(     // .
-                    test_p,                             // .
-                    ss::depends_on<s::velocity>,        // .
-                    ss::component_use(                  // .
-                        ss::mutate<c::circle_shape>,    // .
-                        ss::read<c::position>,          // .
-                        ss::read<c::color>              // .
-                        ),                              // .
-                    ss::output<std::vector<int>>  // .
-                    );
+            constexpr auto ssig_render_colored_circle =    // .
+                ss::make(st::render_colored_circle)        // .
+                    .parallelism(test_p)                   // .
+                    .dependencies(st::velocity)            // .
+                    .read(ct::position, ct::color)         // .
+                    .write(ct::circle_shape)               // .
+                    .output(ss::output<std::vector<int>>); // .
 
-            constexpr auto ssig_life =      // .
-                ss::make<s::life>(          // .
-                    test_p,                 // .
-                    ss::no_dependencies,    // .
-                    ss::component_use(      // .
-                        ss::mutate<c::life> // .
-                        ),                  // .
-                    ss::output::none        // .
-                    );
+            constexpr auto ssig_life =   // .
+                ss::make(st::life)       // .
+                    .parallelism(test_p) // .
+                    .write(ct::life);    // .
 
-            constexpr auto ssig_fade =               // .
-                ss::make<s::fade>(                   // .
-                    test_p,                          // .
-                    ss::depends_on<s::life>,         // .
-                    ss::component_use(               // .
-                        ss::mutate<c::color>,        // .
-                        ss::mutate<c::circle_shape>, // .
-                        ss::read<c::life>            // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
-
+            constexpr auto ssig_fade =                   // .
+                ss::make(st::fade)                       // .
+                    .parallelism(test_p)                 // .
+                    .dependencies(st::life)              // .
+                    .read(ct::life)                      // .
+                    .write(ct::color, ct::circle_shape); // .
 
             return sls::make(               // .
                 ssig_acceleration,          // .
@@ -488,7 +460,7 @@ namespace example
                 {
                     proxy.system(st::render_colored_circle).prepare();
 
-                    proxy.execute_systems( // .
+                    proxy.execute_systems_from(st::acceleration)( // .
                         sea::t(
                             st::acceleration, st::velocity, st::curve, st::life)
                             .for_subtasks([dt](auto& s, auto& data)

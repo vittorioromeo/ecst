@@ -124,8 +124,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     [ this, state_idx ]() -> auto&                    // .
                     {                                                 // .
                         return this->nth_state(state_idx);            // .
-                    }                                                 // .
-                    ),                                                // .
+                    }),                                               // .
                 ctx,                                                  // .
                 entity_range_count(i_begin, i_end),                   // .
                 all_entity_count(),                                   // .
