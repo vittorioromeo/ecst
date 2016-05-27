@@ -99,28 +99,15 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             impl::recursive_dependents_id_list_impl(ssl, parent_list)){};
     }
 
-    namespace impl
-    {
-        template <typename TSystemSignatureList, typename TStartSystemTagList>
-        auto chain_size_impl(TSystemSignatureList ssl, TStartSystemTagList sstl)
-        {
-            auto signature_list = mp::bh::transform(sstl, [ssl](auto x)
-                {
-                    return signature_by_tag(ssl, x);
-                });
-
-            return sz_v<mp::bh::size(
-                recursive_dependents_id_list(ssl, decltype(signature_list){}))>;
-        }
-    }
-
     /// @brief Returns the number of unique systems that recursively depend on
     /// `st`.
     template <typename TSystemSignatureList, typename TStartSystemTagList>
     constexpr auto chain_size(
         TSystemSignatureList ssl, TStartSystemTagList sstl)
     {
-        return decltype(impl::chain_size_impl(ssl, sstl)){};
+        ECST_S_ASSERT(tag::system::is_list(sstl));
+        return mp::bh::size(recursive_dependents_id_list(
+            ssl, signature_list_from_tag_list(ssl, sstl)));
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

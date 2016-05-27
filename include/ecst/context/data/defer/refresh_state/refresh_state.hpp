@@ -28,10 +28,16 @@ ECST_CONTEXT_NAMESPACE
             public:
                 void clear() noexcept;
 
-                void add_to_match(entity_id eid);
+                void add_to_match(entity_id eid) // .
+                    noexcept(noexcept(           // .
+                        _to_match_ids.add(eid)   // .
+                        ));
 
                 template <typename TF>
-                void for_to_match(TF&& f);
+                void for_to_match(TF&& f)              // .
+                    noexcept(noexcept(                 // .
+                        _to_match_ids.for_each(FWD(f)) // .
+                        ));
             };
         }
     }

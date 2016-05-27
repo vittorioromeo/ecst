@@ -73,17 +73,15 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto get_csl() noexcept
             {
                 auto result = _map.at(keys::component_signature_list);
-                constexpr auto ce_result = decltype(result){};
-                ECST_S_ASSERT(signature_list::component::valid(ce_result));
-                return ce_result;
+                ECST_S_ASSERT_DT(signature_list::component::valid(result));
+                return decltype(result){};
             }
 
             constexpr auto get_ssl() noexcept
             {
                 auto result = _map.at(keys::system_signature_list);
-                constexpr auto ce_result = std::decay_t<decltype(result)>{};
-                ECST_S_ASSERT(signature_list::system::valid(ce_result));
-                return ce_result;
+                ECST_S_ASSERT_DT(signature_list::system::valid(result));
+                return decltype(result){};
             }
 
 

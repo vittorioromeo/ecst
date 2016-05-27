@@ -21,6 +21,25 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
                     return id_by_signature(ssl, x_sig);
                 });
         }
+
+        // TODO: move
+        template <typename TSystemSignatureList, typename TSystemTagList>
+        auto signature_list_from_tag_list_impl(
+            TSystemSignatureList ssl, TSystemTagList stl) noexcept
+        {
+            return mp::bh::transform(stl, [ssl](auto st)
+                {
+                    return signature_by_tag(ssl, st);
+                });
+        }
+    }
+
+    // TODO: move, docs
+    template <typename TSystemSignatureList, typename TSystemTagList>
+    constexpr auto signature_list_from_tag_list(
+        TSystemSignatureList ssl, TSystemTagList stl) noexcept
+    {
+        return decltype(impl::signature_list_from_tag_list_impl(ssl, stl)){};
     }
 
     /// @brief Returns the list of system IDs inside a system signature list.
@@ -60,27 +79,14 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         return decltype(impl::dependencies_as_id_list_impl(ssl, ss)){};
     }
 
-    namespace impl
-    {
-        template <typename TSystemSignature, typename TSystemSignatureList>
-        constexpr auto dependencies_of_impl(
-            TSystemSignatureList ssl, TSystemSignature ss)
-        {
-            auto tag_list = signature::system::dependencies_as_tag_list(ss);
-            return mp::bh::transform(tag_list, [=](auto x_tag)
-                {
-                    return signature_by_tag(ssl, x_tag);
-                });
-        }
-    }
-
     /// @brief Given a signature list and a signature, returns the list of the
     /// signature's dependencies, as IDs.
     template <typename TSystemSignature, typename TSystemSignatureList>
     constexpr auto dependencies_of(
         TSystemSignatureList ssl, TSystemSignature ss)
     {
-        return decltype(impl::dependencies_of_impl(ssl, ss)){};
+        constexpr auto tl = signature::system::dependencies_as_tag_list(ss);
+        return signature_list_from_tag_list(ssl, tl);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

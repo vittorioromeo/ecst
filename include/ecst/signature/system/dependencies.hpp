@@ -8,8 +8,8 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/system/data.hpp>
-#include <ecst/signature/system/valid.hpp>
+#include "./data.hpp"
+#include "./valid.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -27,11 +27,19 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         return mp::bh::size(dependencies_as_tag_list(ss));
     }
 
-    /// @brief Returns `true` if `ss` is independent.
-    template <typename TSystemSignature>
-    constexpr auto is_independent(TSystemSignature ss)
+    namespace impl
     {
-        return dependency_count(ss) == mp::sz_v<0>;
+        struct independent_t
+        {
+            template <typename TSystemSignature>
+            constexpr auto operator()(TSystemSignature ss) const noexcept
+            {
+                return dependency_count(ss) == mp::sz_v<0>;
+            }
+        };
     }
+
+    /// @brief Returns `true` if `ss` is independent.
+    constexpr impl::independent_t indepedent{};
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

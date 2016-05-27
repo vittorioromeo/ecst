@@ -14,15 +14,19 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     namespace impl
     {
         template <typename T>
-        using valid_impl =
-            mp::is_specialization_of<data, typename T::type>;
+        using valid_impl = mp::is_specialization_of<data, typename T::type>;
+
+        struct valid_t
+        {
+            template <typename... Ts>
+            constexpr auto operator()(Ts...) const noexcept
+            {
+                return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
+            }
+        };
     }
 
     /// @brief Evaluates to true if all `Ts...` are component signatures.
-    template <typename... Ts>
-    constexpr auto valid(Ts...) noexcept
-    {
-        return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
-    }
+    constexpr impl::valid_t valid{};
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

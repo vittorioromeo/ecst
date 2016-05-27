@@ -18,7 +18,7 @@ ECST_CONTEXT_NAMESPACE
     template <typename TSettings>
     auto make_uptr(TSettings)
     {
-        return std::make_unique<decltype(make(TSettings{}))>(make(TSettings{}));
+        return std::make_unique(make(TSettings{}));
     }
 }
 ECST_CONTEXT_NAMESPACE_END

@@ -15,8 +15,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         using namespace mp;
         using namespace signature::system::impl;
 
-        constexpr auto default_options = // .
-            mp::option_map::make()       // .
+        constexpr auto d_opts =    // .
+            mp::option_map::make() // .
                 .add(keys::parallelism,
                     inner_parallelism::strategy::none::v())     // .
                 .add(keys::dependencies, mp::list::empty_v)     // .
@@ -24,8 +24,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 .add(keys::write_components, mp::list::empty_v) // .
                 .add(keys::output, no_output);                  // .
 
-        return impl::data<TSystemTag,
-            std::decay_t<decltype(default_options)>>{};
+        return impl::data<TSystemTag, std::decay_t<decltype(d_opts)>>{};
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

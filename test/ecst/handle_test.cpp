@@ -319,7 +319,7 @@ int main()
 
     auto test_impl = [&](auto& ctx)
     {
-        using ct = std::remove_reference_t<decltype(ctx)>;
+        using ct = std::decay_t<decltype(ctx)>;
         game_app<ct> a{ctx};
         (void)a;
     };

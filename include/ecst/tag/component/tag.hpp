@@ -26,24 +26,35 @@ ECST_TAG_COMPONENT_NAMESPACE
     template <typename TComponent>
     constexpr auto v = impl::tag_impl<TComponent>{};
 
-    /// @brief Evaluates to true if all `xs...` are component tags.
-    template <typename... Ts>
-    constexpr auto valid(Ts... xs) noexcept
+    /// @brief Returns a tag from a component reference.
+    template <typename TComponent>
+    constexpr auto make(TComponent && ) noexcept
     {
-        return mp::list::all_variadic(impl::is_tag_impl<decltype(xs)>...);
+        return v<std::decay_t<TComponent>>;
     }
 
-    /// @brief Evaluates to true if `T` is a list of tags.
-    template <typename T>
-    constexpr auto is_valid(T x)
+    namespace impl
     {
-        return mp::bh::all_of(x, [](auto xe)
+        struct valid_t
+        {
+            template <typename... Ts>
+            constexpr auto operator()(Ts...) const noexcept
             {
-                return valid(xe);
-            });
+                return mp::list::all_variadic(is_tag_impl<Ts>...);
+            }
+        };
     }
 
-    template <typename TTag>
-    using unwrap = mp::unwrap<TTag>;
+    /// @brief Evaluates to true if all `xs...` are component tags.
+    constexpr impl::valid_t valid{};
+
+    /// @brief Evaluates to true if `T` is a list of component tags.
+    template <typename T>
+    constexpr auto is_list(T x) noexcept
+    {
+        return mp::bh::all_of(x, valid);
+    }
+
+    using mp::unwrap;
 }
 ECST_TAG_COMPONENT_NAMESPACE_END

@@ -26,25 +26,35 @@ ECST_TAG_SYSTEM_NAMESPACE
     template <typename TSystem>
     constexpr auto v = impl::tag_impl<TSystem>{};
 
-    /// @brief Evaluates to true if all `xs...` are component tags.
-    template <typename... Ts>
-    constexpr auto valid(Ts... xs) noexcept
+    /// @brief Returns a tag from a system reference.
+    template <typename TSystem>
+    constexpr auto make(TSystem && ) noexcept
     {
-        return mp::list::all_variadic(impl::is_tag_impl<decltype(xs)>...);
+        return v<std::decay_t<TSystem>>;
     }
 
-    /// @brief Evaluates to true if `T` is a list of tags.
-    template <typename T>
-    constexpr auto is_valid(T x)
+    namespace impl
     {
-        return mp::bh::all_of(x, [](auto xe)
+        struct valid_t
+        {
+            template <typename... Ts>
+            constexpr auto operator()(Ts...) const noexcept
             {
-                return valid(xe);
-            });
+                return mp::list::all_variadic(is_tag_impl<Ts>...);
+            }
+        };
     }
 
-    /// @brief Alias for the system type inside a system tag.
-    template <typename TTag>
-    using unwrap = mp::unwrap<TTag>;
+    /// @brief Evaluates to true if all `xs...` are system tags.
+    constexpr impl::valid_t valid{};
+
+    /// @brief Evaluates to true if `T` is a list of system tags.
+    template <typename T>
+    constexpr auto is_list(T x) noexcept
+    {
+        return mp::bh::all_of(x, valid);
+    }
+
+    using mp::unwrap;
 }
 ECST_TAG_SYSTEM_NAMESPACE_END

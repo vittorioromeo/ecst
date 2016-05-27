@@ -15,7 +15,6 @@ ECST_CONTEXT_NAMESPACE
     {
         using handle = ecst::context::entity::impl::handle;
 
-
         template <typename TSettings>
         template <typename TF>
         void system_manager<TSettings>::for_systems_sequential(TF&& f)
@@ -89,7 +88,10 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::execute_systems(
             TContext& context, TStartSystemTagList sstl, TFs&&... fs)
         {
+            ECST_S_ASSERT(tag::system::is_list(sstl));
+
             // TODO: store instance in system_manager for stateful schedulers?
+            // scheduler_type must be movable in that case
             scheduler_type s;
 
             auto os = make_overload(FWD(fs)...);

@@ -11,22 +11,10 @@
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename T>
-        auto valid_impl(const T& l) noexcept
-        {
-            return mp::bh::all_of(l, [](auto sx)
-                {
-                    return signature::component::valid(sx);
-                });
-        }
-    }
-
     template <typename T>
-    constexpr auto valid(const T& l) noexcept
+    constexpr auto valid(T && x) noexcept
     {
-        return decltype(impl::valid_impl(FWD(l))){};
+        return mp::bh::all_of(x, signature::component::valid);
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

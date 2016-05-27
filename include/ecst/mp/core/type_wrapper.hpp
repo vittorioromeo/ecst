@@ -23,21 +23,31 @@ ECST_MP_NAMESPACE
         // TODO: docs, test
         template <typename T>
         using is_wrapped = std::is_base_of<bh::basic_type<T>, T>;
+
+        struct unwrapped_t
+        {
+            template <typename T>
+            constexpr auto operator()(T) const noexcept
+            {
+                return unwrap<T>{};
+            }
+        };
+
+        struct wrap_t
+        {
+            template <typename T>
+            constexpr auto operator()(T) const noexcept
+            {
+                return bh::type_c<T>;
+            }
+        };
     }
 
     /// @brief Returns a default-constructed instance of the inner type wrapped
     /// by a `type_c`.
-    template <typename T>
-    constexpr auto unwrapped(T) noexcept
-    {
-        return unwrap<T>{};
-    }
+    constexpr impl::unwrapped_t unwrapped{};
 
     // TODO: docs
-    template <typename T>
-    constexpr auto wrap(T) noexcept
-    {
-        return bh::type_c<T>;
-    }
+    constexpr impl::wrap_t wrap{};
 }
 ECST_MP_NAMESPACE_END

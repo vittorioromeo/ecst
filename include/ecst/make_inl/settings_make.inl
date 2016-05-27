@@ -14,7 +14,7 @@ ECST_SETTINGS_NAMESPACE
         using namespace mp;
         using namespace settings::impl;
 
-        constexpr auto dopts =                                   // .
+        constexpr auto d_opts =                                  // .
             mp::option_map::make()                               // .
                 .add(keys::threading, v_allow_inner_parallelism) // .
                 .add(keys::entity_storage,
@@ -27,7 +27,7 @@ ECST_SETTINGS_NAMESPACE
                 .add(keys::refresh_parallelism,
                     impl::refresh_parallelism::enabled{}); // .
 
-        return impl::data<std::decay_t<decltype(dopts)>>{};
+        return impl::data<std::decay_t<decltype(d_opts)>>{};
     }
 }
 ECST_SETTINGS_NAMESPACE_END

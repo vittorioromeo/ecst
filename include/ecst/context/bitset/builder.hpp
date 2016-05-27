@@ -21,7 +21,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
     void fill(dispatch<TSettings> & bitset, TSettings s,
         TSetComponentsList scl) noexcept
     {
-        ECST_S_ASSERT_DT(tag::component::is_valid(scl));
+        ECST_S_ASSERT_DT(tag::component::is_list(scl));
         auto csl = settings::component_signature_list(s);
 
         mp::bh::for_each(scl, [&](auto ct)

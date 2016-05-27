@@ -21,14 +21,20 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
-            void refresh_state<TSettings>::add_to_match(entity_id eid)
+            void refresh_state<TSettings>::add_to_match(entity_id eid) // .
+                noexcept(noexcept(                                     // .
+                    _to_match_ids.add(eid)                             // .
+                    ))
             {
                 _to_match_ids.add(eid);
             }
 
             template <typename TSettings>
             template <typename TF>
-            void refresh_state<TSettings>::for_to_match(TF&& f)
+            void refresh_state<TSettings>::for_to_match(TF&& f) // .
+                noexcept(noexcept(                              // .
+                    _to_match_ids.for_each(FWD(f))              // .
+                    ))
             {
                 _to_match_ids.for_each(FWD(f));
             }

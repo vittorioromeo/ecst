@@ -218,8 +218,7 @@ namespace example
     template <typename TContext>
     void run_simulation(TContext& ctx)
     {
-        boilerplate::app_runner<
-            game_app<std::remove_reference_t<decltype(ctx)>>> x{
+        boilerplate::app_runner<game_app<std::decay_t<decltype(ctx)>>> x{
             "Particle ECST test", 1440, 900, ctx};
 
         x.run();

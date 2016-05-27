@@ -42,15 +42,15 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             // ECST_S_ASSERT(parallelism::is_valid<TParallelism>);
 
             // Assert dependency list validity.
-            ECST_S_ASSERT_DT(tag::system::is_valid(tag_dependency_list_type{}));
+            ECST_S_ASSERT_DT(tag::system::is_list(tag_dependency_list_type{}));
 
             // Assert read component list validity.
             ECST_S_ASSERT_DT(
-                tag::component::is_valid(read_component_tag_list_type{}));
+                tag::component::is_list(read_component_tag_list_type{}));
 
             // Assert write component list validity.
             ECST_S_ASSERT_DT(
-                tag::component::is_valid(write_component_tag_list_type{}));
+                tag::component::is_list(write_component_tag_list_type{}));
 
             // Assert that no component tags are shared between the write and
             // read lists.

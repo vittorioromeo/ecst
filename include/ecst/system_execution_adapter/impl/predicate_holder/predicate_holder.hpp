@@ -19,13 +19,12 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
         {
         private:
             template <typename TInstance>
-            using predicate_result = decltype(             // .
-                std::declval<TPredicate>()(                // .
-                    std::declval<                          // .
-                        std::remove_reference_t<TInstance> // .
-                        >()                                // .
-                        .system()                          // .
-                    )                                      // .
+            using predicate_result = decltype(     // .
+                std::declval<TPredicate>()(        // .
+                    std::declval<                  // .
+                        std::decay_t<TInstance>>() // .
+                        .system()                  // .
+                    )                              // .
                 );
 
             template <typename TPredicateResult>

@@ -7,8 +7,8 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature_list/system/id.hpp>
-#include <ecst/signature_list/system/id_list.hpp>
+#include "./id.hpp"
+#include "./id_list.hpp"
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -17,6 +17,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto tag_list_to_signature_list(
         TSystemSignatureList ssl, TSystemTagList stl)
     {
+        ECST_S_ASSERT_DT(tag::system::is_list(stl));
+
         return mp::bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::signature_by_tag(ssl, x);
@@ -28,6 +30,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto tag_list_to_id_list(
         TSystemSignatureList ssl, TSystemTagList stl)
     {
+        ECST_S_ASSERT_DT(tag::system::is_list(stl));
+
         return mp::bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::id_by_tag(ssl, x);

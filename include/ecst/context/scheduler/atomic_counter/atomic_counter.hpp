@@ -46,17 +46,16 @@ ECST_SCHEDULER_NAMESPACE
         void start_execution(
             TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF&& f)
         {
+            namespace sls = signature_list::system;
+
+            // Execution can only be started from independent systems.
+            ECST_S_ASSERT(tag::system::is_list(sstl));
+            ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
+
             mp::bh::for_each(sstl,
                 [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
                 {
-                    // Execution can only be started from independent systems.
-                    auto ss = signature_list::system::signature_by_tag(
-                        this->ssl(), st);
-
-                    ECST_S_ASSERT_DT(signature::system::is_independent(ss));
-
-                    auto sid =
-                        signature_list::system::id_by_tag(this->ssl(), st);
+                    auto sid = sls::id_by_tag(this->ssl(), st);
 
                     ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]() mutable
                         {
@@ -70,6 +69,8 @@ ECST_SCHEDULER_NAMESPACE
         template <typename TContext, typename TStartSystemTagList, typename TF>
         void execute(TContext& ctx, TStartSystemTagList sstl, TF&& f)
         {
+            ECST_S_ASSERT(tag::system::is_list(sstl));
+
             reset();
 
             // Aggregates the required synchronization objects.
