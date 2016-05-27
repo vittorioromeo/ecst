@@ -38,7 +38,7 @@ ECST_MP_NAMESPACE
             template <typename T>
             constexpr auto operator()(T) const noexcept
             {
-                return bh::type_c<T>;
+                return type_c<T>;
             }
         };
     }
@@ -47,7 +47,7 @@ ECST_MP_NAMESPACE
     /// by a `type_c`.
     constexpr impl::unwrapped_t unwrapped{};
 
-    // TODO: docs
+    /// @brief Returns a `type_c` wrapping the passed parameter.
     constexpr impl::wrap_t wrap{};
 }
 ECST_MP_NAMESPACE_END

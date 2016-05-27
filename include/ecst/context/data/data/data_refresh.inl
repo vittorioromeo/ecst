@@ -106,8 +106,6 @@ ECST_CONTEXT_NAMESPACE
                                 << "E:\t" << ebs.str() << "\n"; // .
                                 );
 
-                            // TODO: possible optimization opportunity?
-                            //       sparse_set::set(x, on/off)?
                             // Check if the bitset matches the system.
                             if(system.matches_bitset(ebs))
                             {

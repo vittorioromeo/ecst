@@ -77,7 +77,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         }
 
         template <typename TStartNodeList, typename TSSL>
-        auto bf_traversal_impl(TStartNodeList&& snl, TSSL ssl) noexcept
+        auto execute(TStartNodeList&& snl, TSSL ssl) noexcept
         {
             using namespace mp;
             namespace btfc = bf_traversal;

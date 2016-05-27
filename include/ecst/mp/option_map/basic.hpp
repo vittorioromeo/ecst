@@ -6,84 +6,59 @@
 #pragma once
 
 #include <ecst/mp/list.hpp>
+#include "./replace.hpp"
 
 ECST_MP_OPTION_MAP_NAMESPACE
 {
-    // TODO:
     namespace impl
     {
-        template <typename NewPair>
-        struct replace_helper_t
+        template <typename TMap>
+        class data
         {
-            NewPair const& new_pair;
+        private:
+            TMap _map;
 
-            template <typename Pair>
-            constexpr decltype(auto) operator()(Pair&& p) const
+        public:
+            template <typename TKey>
+            constexpr auto type_at(const TKey& key) const noexcept
             {
-                return bh::if_(bh::equal(bh::first(new_pair), bh::first(p)),
-                    new_pair, FWD(p));
+                return type_c<
+                    std::decay_t<decltype(bh::first(bh::at_key(_map, key)))>>;
+            }
+
+            template <typename TKey>
+            constexpr auto at(const TKey& key) const noexcept
+            {
+                return bh::first(bh::at_key(_map, key));
+            }
+
+            template <typename TKey, typename T>
+            constexpr auto add(const TKey& key, T&& x) noexcept
+            {
+                auto new_map = bh::insert(_map,
+                    bh::make_pair(key, bh::make_pair(FWD(x), bh::false_c)));
+
+                return data<std::decay_t<decltype(new_map)>>{};
+            }
+
+            template <typename TKey, typename T>
+            constexpr auto set(const TKey& key, T&& x) noexcept
+            {
+                // Prevent setting same setting twice.
+                ECST_S_ASSERT_DT(
+                    bh::second(bh::at_key(_map, key)) == bh::false_c);
+
+                auto new_map = impl::replace(_map,
+                    bh::make_pair(key, bh::make_pair(FWD(x), bh::true_c)));
+
+                return data<std::decay_t<decltype(new_map)>>{};
             }
         };
-
-        struct replace_t
-        {
-            template <typename Map, typename NewPair>
-            constexpr auto operator()(Map&& m, NewPair&& new_pair) const
-            {
-                return bh::unpack(
-                    FWD(m), bh::on(bh::make_map,
-                                replace_helper_t<NewPair>{FWD(new_pair)}));
-            }
-        };
-
-        constexpr replace_t replace{};
     }
-
-    template <typename TMap>
-    class option_map_impl
-    {
-    private:
-        TMap _map;
-
-    public:
-        template <typename TKey>
-        constexpr auto type_at(const TKey& key) const noexcept
-        {
-            return bh::type_c<
-                std::decay_t<decltype(bh::first(bh::at_key(_map, key)))>>;
-        }
-
-        template <typename TKey>
-        constexpr auto at(const TKey& key) const noexcept
-        {
-            return bh::first(bh::at_key(_map, key));
-        }
-
-        template <typename TKey, typename T>
-        constexpr auto add(const TKey& key, T&& x) noexcept
-        {
-            auto new_map = bh::insert(
-                _map, bh::make_pair(key, bh::make_pair(FWD(x), bh::false_c)));
-
-            return option_map_impl<std::decay_t<decltype(new_map)>>{};
-        }
-
-        template <typename TKey, typename T>
-        constexpr auto set(const TKey& key, T&& x) noexcept
-        {
-            // Prevent setting same setting twice.
-            ECST_S_ASSERT_DT(bh::second(bh::at_key(_map, key)) == bh::false_c);
-
-            auto new_map = impl::replace(
-                _map, bh::make_pair(key, bh::make_pair(FWD(x), bh::true_c)));
-
-            return option_map_impl<std::decay_t<decltype(new_map)>>{};
-        }
-    };
 
     constexpr auto make() noexcept
     {
-        return option_map_impl<std::decay_t<decltype(bh::make_map())>>{};
+        return impl::data<std::decay_t<decltype(bh::make_map())>>{};
     }
 
     // TODO: docs, optimize

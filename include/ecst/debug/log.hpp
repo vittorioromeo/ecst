@@ -9,9 +9,6 @@
 #define ECST_DEBUG 1
 #endif
 
-// TODO:
-#define DEBUG_PRINT(x) std::cout << #x << ": " << x << "\n";
-
 #include "./log/elog.hpp"
 #include "./log/impl.hpp"
 #include "./log/interface.hpp"

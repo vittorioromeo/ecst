@@ -168,21 +168,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto instance<TSettings, TSystemSignature>::execution_dispatch(
         TContext & ctx) noexcept
     {
-        return static_if(settings::inner_parallelism_allowed(TSettings{}))
-            .then([this, &ctx]
-                {
-                    return [this, &ctx](auto&& sb_f)
+        return [this, &ctx](auto&& f)
+        {
+            return static_if(settings::inner_parallelism_allowed(TSettings{}))
+                .then([this, &ctx](auto&& xf)
                     {
-                        return this->execute_in_parallel(ctx, FWD(sb_f));
-                    };
-                })
-            .else_([this, &ctx]
-                {
-                    return [this, &ctx](auto&& sb_f)
+                        return this->execute_in_parallel(ctx, FWD(xf));
+                    })
+                .else_([this, &ctx](auto&& xf)
                     {
-                        return this->execute_single(ctx, FWD(sb_f));
-                    };
-                })();
+                        return this->execute_single(ctx, FWD(xf));
+                    })(FWD(f));
+        };
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -191,18 +188,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                          // .
         )
     {
-        // TODO: remove
-        // auto t = ecst::chrono::high_resolution_clock::now();
-        // std::cout << ecst::impl::system_name<system_type> << ": ";
-
         auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
         f(*this, eh);
-
-        // TODO: remove
-        // auto tt = ecst::chrono::high_resolution_clock::now() - t;
-        // auto ttt = ecst::chrono::duration_cast<
-        //     ecst::chrono::duration<float, std::milli>>(tt);
-        // std::cout << ttt.count() << "\n";
     }
 
     template <typename TSettings, typename TSystemSignature>

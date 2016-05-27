@@ -6,7 +6,9 @@
 #pragma once
 
 #include "./utils/sparse_int_set.hpp"
-#include "./utils/operation_macros.hpp"
+#include "./utils/macros.hpp"
+#include "./utils/scope_guard.hpp"
+#include "./utils/specialized_names.hpp"
 #include "./utils/to_kill_set_wrapper.hpp"
 #include "./utils/movable_atomic.hpp"
 #include "./utils/cv_operations.hpp"

@@ -13,40 +13,33 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
     namespace impl
     {
-        template <typename TSystemSignatureList>
-        auto id_list_impl(TSystemSignatureList ssl)
+        template <typename TSystemSignatureList,
+            typename TPickedSystemSignatureList>
+        auto id_list_impl(
+            TSystemSignatureList ssl, TPickedSystemSignatureList pssl)
         {
-            return bh::transform(ssl, [=](auto x_sig)
+            return bh::transform(pssl, [ssl](auto x_sig)
                 {
                     return id_by_signature(ssl, x_sig);
                 });
         }
-
-        // TODO: move
-        template <typename TSystemSignatureList, typename TSystemTagList>
-        auto signature_list_from_tag_list_impl(
-            TSystemSignatureList ssl, TSystemTagList stl) noexcept
-        {
-            return bh::transform(stl, [ssl](auto st)
-                {
-                    return signature_by_tag(ssl, st);
-                });
-        }
     }
 
-    // TODO: move, docs
-    template <typename TSystemSignatureList, typename TSystemTagList>
-    constexpr auto signature_list_from_tag_list(
-        TSystemSignatureList ssl, TSystemTagList stl) noexcept
+    /// @brief Returns the list of `pssl` system IDs inside a system signature
+    /// list from `ssl`.
+    template <typename TSystemSignatureList,
+        typename TPickedSystemSignatureList>
+    constexpr auto id_list(
+        TSystemSignatureList ssl, TPickedSystemSignatureList pssl)
     {
-        return decltype(impl::signature_list_from_tag_list_impl(ssl, stl)){};
+        return decltype(impl::id_list_impl(ssl, pssl)){};
     }
 
-    /// @brief Returns the list of system IDs inside a system signature list.
+    /// @brief Returns the list of system IDs from a system signature list.
     template <typename TSystemSignatureList>
     constexpr auto id_list(TSystemSignatureList ssl)
     {
-        return decltype(impl::id_list_impl(ssl)){};
+        return id_list(ssl, ssl);
     }
 
     /// @brief Executes `f` on every system ID inside `ssl`.

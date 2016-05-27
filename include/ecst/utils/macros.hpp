@@ -15,3 +15,16 @@
                                                        \
     name(name&&) = default;                            \
     name& operator=(name&&) = default
+
+/// @brief Defines an unused struct with an unique name, that requires an
+/// user-provided semicolon to compile.
+#define ECST_IMPL_SEMICOLON_SUPPRESSOR()                                     \
+    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
+    {                                                                        \
+    }
+
+/// @brief Defines an unused function with an unique name. The body must be
+/// provided by the user.
+#define ECST_IMPL_UNUSED_FN(...)                      \
+    auto VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+        ws, __LINE__, warning_suppressor, __VA_ARGS__)()

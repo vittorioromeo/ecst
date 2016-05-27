@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <vrm/core/y_combinator.hpp>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <boost/hana.hpp>
@@ -27,11 +26,5 @@ ECST_MP_NAMESPACE
     using ecst::int_;
     using ecst::int_v;
     using ecst::static_if;
-
-    template <typename TF>
-    constexpr auto y_combinator(TF && f) noexcept
-    {
-        return vrmc::y_combinator(FWD(f));
-    }
 }
 ECST_MP_NAMESPACE_END

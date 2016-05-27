@@ -33,6 +33,8 @@ namespace example
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
     }
 
+    // TODO: BUG: fix!
+
     namespace s
     {
         struct s0
@@ -47,6 +49,7 @@ namespace example
 
                         data.defer([eid](auto& proxy)
                             {
+                                // std::cout << "sub c0\n";
                                 auto& val = proxy.get_component(ct::c0, eid)._v;
                                 --val;
                             });
@@ -66,6 +69,7 @@ namespace example
 
                         data.defer([eid](auto& proxy)
                             {
+                                // std::cout << "sub c1\n";
                                 auto& val = proxy.get_component(ct::c1, eid)._v;
                                 --val;
                             });

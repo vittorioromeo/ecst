@@ -40,11 +40,11 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         auto dispatch_tw() noexcept
         {
             return static_if(std::is_empty<TComponent>{})
-                .then([]()
+                .then([]
                     {
                         return mp::type_c<chunk::empty<TComponent>>;
                     })
-                .else_([]()
+                .else_([]
                     {
                         return dispatch_normal<TComponent, TSettings>();
                     })();

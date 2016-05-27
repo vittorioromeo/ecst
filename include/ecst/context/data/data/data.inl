@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <vrm/core/overload.hpp>
+#include <ecst/utils.hpp>
 #include "../defer.hpp"
 #include "./data.hpp"
 
@@ -19,6 +19,12 @@ ECST_CONTEXT_NAMESPACE
         template <typename TF>
         auto data<TSettings>::step(TF&& f)
         {
+            // Ensure `refresh()` is called after executing `f`.
+            ECST_SCOPE_GUARD([this]
+                {
+                    this->refresh();
+                });
+
             // Clear refresh state.
             _refresh_state.clear();
 
@@ -26,20 +32,7 @@ ECST_CONTEXT_NAMESPACE
             step_proxy_type step_proxy{*this, _refresh_state};
 
             // Execute user-defined step.
-            using f_return_type = decltype(f(step_proxy));
-            return static_if(std::is_same<f_return_type, void>{})
-                .then([this, &step_proxy](auto&& xf) mutable
-                    {
-                        // Do not return anything if `xf` returns void.
-                        xf(step_proxy);
-                        this->refresh();
-                    })
-                .else_([this, &step_proxy](auto&& xf) mutable
-                    {
-                        auto res = xf(step_proxy);
-                        this->refresh();
-                        return res;
-                    })(FWD(f));
+            return f(step_proxy);
         }
     }
 }
