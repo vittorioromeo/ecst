@@ -60,8 +60,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto parent_id = sls::id_by_signature(ssl, parent);
 
             // Build a list of dependent IDs.
-            return bh::fold_right(ssl, mp::list::empty_v,
-                [=](auto ss, auto acc)
+            return bh::fold_right(ssl, mp::list::empty_v, [=](auto ss, auto acc)
                 {
                     // Check if the ID of `parent` is in the list of `ss`'s
                     // depedendencies.

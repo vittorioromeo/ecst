@@ -131,7 +131,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature, typename TComponentTag>
     constexpr auto can_write(TComponentTag ct)
     {
-        return bh::contains(                               // .
+        return bh::contains(                                   // .
             write_component_tag_list_type<TSystemSignature>{}, // .
             ct);
     }
@@ -141,7 +141,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     constexpr auto can_read(TComponentTag ct)
     {
         return can_write<TSystemSignature>(ct) ||                    // .
-               bh::contains(                                     // .
+               bh::contains(                                         // .
                    read_component_tag_list_type<TSystemSignature>{}, // .
                    ct);
     }

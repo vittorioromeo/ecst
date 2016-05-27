@@ -37,13 +37,13 @@ namespace testbed
     namespace ctags
     {
         constexpr auto position = // .
-            ecst::tag::component::vcomponent::position>;
+            ecst::tag::component::vcomponent::position > ;
 
         constexpr auto velocity = // .
-            ecst::tag::component::vcomponent::velocity>;
+            ecst::tag::component::vcomponent::velocity > ;
 
         constexpr auto acceleration = // .
-            ecst::tag::component::vcomponent::acceleration>;
+            ecst::tag::component::vcomponent::acceleration > ;
     }
 
     namespace c = testbed::component;
@@ -147,7 +147,7 @@ namespace testbed
                         ss::mutate<c::position>,     // .
                         ss::read<c::velocity>        // .
                         ),                           // .
-                    ss::output<int>            // .
+                    ss::output<int>                  // .
                     );
 
             return sls::make(      // .

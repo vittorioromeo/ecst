@@ -103,8 +103,7 @@ namespace etp
 
         ~FixedFunction()
         {
-            if(m_alloc_ptr)
-                m_alloc_ptr(&m_storage, nullptr);
+            if(m_alloc_ptr) m_alloc_ptr(&m_storage, nullptr);
         }
 
         /**
@@ -113,8 +112,7 @@ namespace etp
          */
         R operator()(ARGS... args)
         {
-            if(!m_method_ptr)
-                throw std::runtime_error("call of empty functor");
+            if(!m_method_ptr) throw std::runtime_error("call of empty functor");
             return m_method_ptr(&m_storage, m_function_ptr, args...);
         }
 
@@ -138,8 +136,7 @@ namespace etp
 
         void moveFromOther(FixedFunction& o)
         {
-            if(this == &o)
-                return;
+            if(this == &o) return;
 
             if(m_alloc_ptr)
             {

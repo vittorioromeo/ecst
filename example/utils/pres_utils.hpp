@@ -33,24 +33,24 @@
     }                                                         \
     ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
 
-#define EXAMPLE_SYSTEM_TAG(x)                                      \
-                                                                   \
-    namespace example                                              \
-    {                                                              \
-        namespace s                                                \
-        {                                                          \
-            struct x;                                              \
-        }                                                          \
-        namespace st                                               \
-        {                                                          \
-            constexpr auto x = ecst::tag::system::v<s::x>; \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(      \
-                x, __LINE__, warning_suppressor)()                 \
-            {                                                      \
-                (void) x;                                          \
-            }                                                      \
-        }                                                          \
-    }                                                              \
+#define EXAMPLE_SYSTEM_TAG(x)                                 \
+                                                              \
+    namespace example                                         \
+    {                                                         \
+        namespace s                                           \
+        {                                                     \
+            struct x;                                         \
+        }                                                     \
+        namespace st                                          \
+        {                                                     \
+            constexpr auto x = ecst::tag::system::v<s::x>;    \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+                x, __LINE__, warning_suppressor)()            \
+            {                                                 \
+                (void) x;                                     \
+            }                                                 \
+        }                                                     \
+    }                                                         \
     ECST_SPECIALIZE_SYSTEM_NAME(example::s::x)
 
 namespace example

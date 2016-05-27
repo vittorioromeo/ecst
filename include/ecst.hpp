@@ -49,4 +49,3 @@
 
 // Implementation of make functions (default settings).
 #include <ecst/make_inl.hpp>
-

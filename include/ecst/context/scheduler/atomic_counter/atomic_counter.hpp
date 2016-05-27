@@ -52,8 +52,7 @@ ECST_SCHEDULER_NAMESPACE
             ECST_S_ASSERT(tag::system::is_list(sstl));
             ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
 
-            bh::for_each(sstl,
-                [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
+            bh::for_each(sstl, [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
                 {
                     auto sid = sls::id_by_tag(this->ssl(), st);
 

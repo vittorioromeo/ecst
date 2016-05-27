@@ -199,8 +199,7 @@ ECST_SETTINGS_NAMESPACE
     template <typename TSettings>
     constexpr auto inner_parallelism_allowed(TSettings s)
     {
-        return bh::equal(
-            s.get_threading(), impl::v_allow_inner_parallelism);
+        return bh::equal(s.get_threading(), impl::v_allow_inner_parallelism);
     }
 
     template <typename TSettings>

@@ -28,7 +28,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto step = [=](auto self, auto curr_list)
             {
                 return bh::concat( // .
-                    curr_list,         // .
+                    curr_list,     // .
                     bh::fold_right(curr_list, mp::list::empty_v,
                         [=](auto xid, auto acc)
                         {
@@ -40,8 +40,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             };
 
             // Start the recursion.
-            return bh::unique(
-                bh::sort(bh::fix(step)(dependencies_list)));
+            return bh::unique(bh::sort(bh::fix(step)(dependencies_list)));
         }
 
         template <typename TSystemSignatureList,
@@ -76,8 +75,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         {
             auto ds_id = id_by_signature(ssl, ds);
 
-            return bh::contains(
-                recursive_dependency_id_list(ssl, ss), ds_id);
+            return bh::contains(recursive_dependency_id_list(ssl, ss), ds_id);
         }
     }
 
