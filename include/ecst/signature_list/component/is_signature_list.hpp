@@ -14,7 +14,7 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     template <typename T>
     constexpr auto valid(T && x) noexcept
     {
-        return mp::bh::all_of(x, signature::component::valid);
+        return bh::all_of(x, signature::component::valid);
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

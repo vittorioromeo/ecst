@@ -30,7 +30,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             template <typename TID>
             auto& chunk_by_id(TID) noexcept
             {
-                return mp::bh::at(_chunk_tuple, TID{});
+                return bh::at(_chunk_tuple, TID{});
             }
 
             /// @brief Returns the chunk storing `TComponent`.

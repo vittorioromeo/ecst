@@ -19,7 +19,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return mp::bh::transform(stl, [ssl](auto x)
+        return bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::signature_by_tag(ssl, x);
             });
@@ -32,7 +32,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return mp::bh::transform(stl, [ssl](auto x)
+        return bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::id_by_tag(ssl, x);
             });
@@ -60,18 +60,18 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto parent_id = sls::id_by_signature(ssl, parent);
 
             // Build a list of dependent IDs.
-            return mp::bh::fold_right(ssl, mp::list::empty_v,
+            return bh::fold_right(ssl, mp::list::empty_v,
                 [=](auto ss, auto acc)
                 {
                     // Check if the ID of `parent` is in the list of `ss`'s
                     // depedendencies.
                     auto dl = sls::dependencies_as_id_list(ssl, ss);
-                    return static_if(mp::bh::contains(dl, parent_id))
+                    return static_if(bh::contains(dl, parent_id))
                         .then([=](auto x_acc)
                             {
                                 // If so, add `ss`'s ID to the result list.
                                 auto ss_id = sls::id_by_signature(ssl, ss);
-                                return mp::bh::append(x_acc, ss_id);
+                                return bh::append(x_acc, ss_id);
                             })
                         .else_([=](auto x_acc)
                             {

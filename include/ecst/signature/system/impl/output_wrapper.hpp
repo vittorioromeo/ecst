@@ -21,7 +21,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         /// @brief Tag type for the system output.
         template <typename T>
-        struct output_impl : mp::bh::type<T>
+        struct output_impl : bh::type<T>
         {
         };
 

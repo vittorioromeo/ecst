@@ -22,7 +22,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(valid(ssl));
             ECST_S_ASSERT_DT(tag::system::valid(st));
 
-            return *mp::bh::find_if(ssl, [=](auto x_ssig)
+            return *bh::find_if(ssl, [=](auto x_ssig)
                 {
                     return mp::same_type_decay(
                         signature::system::tag_of(x_ssig), st);
@@ -48,7 +48,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename TSystemSignatureList, typename TID>
     constexpr auto signature_by_id(TSystemSignatureList ssl, TID id)
     {
-        return mp::bh::at(ssl, id);
+        return bh::at(ssl, id);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

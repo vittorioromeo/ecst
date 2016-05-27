@@ -193,13 +193,13 @@ ECST_SETTINGS_NAMESPACE
     template <typename TSettings>
     constexpr auto system_count()
     {
-        return mp::bh::size(system_signature_list(TSettings{}));
+        return bh::size(system_signature_list(TSettings{}));
     }
 
     template <typename TSettings>
     constexpr auto inner_parallelism_allowed(TSettings s)
     {
-        return mp::bh::equal(
+        return bh::equal(
             s.get_threading(), impl::v_allow_inner_parallelism);
     }
 

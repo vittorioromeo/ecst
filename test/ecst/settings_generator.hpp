@@ -23,7 +23,7 @@ namespace test
             namespace cs = ecst::settings;
             namespace ss = ecst::scheduler;
             namespace mp = ecst::mp;
-            namespace bh = ecst::mp::bh;
+            namespace bh = ecst::bh;
 
             (void)csl;
             (void)ssl;
@@ -57,10 +57,10 @@ namespace test
                                         cs::scheduler<ss::s_atomic_counter>);
 
 
-                            return mp::bh::append(yacc, zsettings);
+                            return bh::append(yacc, zsettings);
                         });
 
-                    return mp::bh::concat(xacc, fold2);
+                    return bh::concat(xacc, fold2);
                 });
         }
 
@@ -94,7 +94,7 @@ namespace test
 
         for(sz_t t = 0; t < times; ++t)
         {
-            ecst::mp::bh::for_each(impl::make_settings_list(ec, csl, ssl),
+            ecst::bh::for_each(impl::make_settings_list(ec, csl, ssl),
                 [f](auto s)
                 {
                     std::cout

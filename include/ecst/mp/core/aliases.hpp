@@ -10,10 +10,14 @@
 #include <ecst/aliases.hpp>
 #include <boost/hana.hpp>
 
-ECST_MP_NAMESPACE
+ECST_NAMESPACE
 {
     namespace bh = boost::hana;
+}
+ECST_NAMESPACE_END
 
+ECST_MP_NAMESPACE
+{
     using ecst::sz_t;
     using ecst::sz_t_;
 

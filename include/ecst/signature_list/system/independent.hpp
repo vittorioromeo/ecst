@@ -15,7 +15,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename TSystemSignatureList>
     constexpr auto independent(TSystemSignatureList ssl) noexcept
     {
-        return mp::bh::all_of(ssl, signature::system::indepedent);
+        return bh::all_of(ssl, signature::system::indepedent);
     }
 
     template <typename TSystemSignatureList, typename TSystemTagList>

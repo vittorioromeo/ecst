@@ -23,13 +23,6 @@ ECST_MP_LIST_NAMESPACE
         return bh::all(bh::make_basic_tuple(FWD(xs)...));
     }
 
-    // Concats `l0` and `l1`, after calling `bh::sort` and `bh::unique`.
-    template <typename TL0, typename TL1>
-    constexpr auto unique_cat(TL0 && l0, TL1 && l1)
-    {
-        return bh::unique(bh::sort(bh::concat(FWD(l0), FWD(l1))));
-    }
-
     // Returns the index of `x` in `l`.
     template <typename TList, typename T>
     constexpr auto index_of(TList&&, T && x) noexcept

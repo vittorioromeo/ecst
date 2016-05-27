@@ -48,7 +48,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         public:
             auto system_count() const noexcept
             {
-                return mp::bh::size(ssl_type{});
+                return bh::size(ssl_type{});
             }
 
             template <typename TSystem>
@@ -87,7 +87,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             template <typename TF>
             void for_systems(TF&& f)
             {
-                mp::bh::for_each(_storage, f);
+                bh::for_each(_storage, f);
             }
         };
     }

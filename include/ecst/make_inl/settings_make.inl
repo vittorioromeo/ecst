@@ -18,7 +18,7 @@ ECST_SETTINGS_NAMESPACE
             mp::option_map::make()                               // .
                 .add(keys::threading, v_allow_inner_parallelism) // .
                 .add(keys::entity_storage,
-                    dynamic_impl<mp::bh::size_t<1000>>{})               // .
+                    dynamic_impl<bh::size_t<1000>>{})               // .
                 .add(keys::component_signature_list, mp::list::empty_v) // .
                 .add(keys::system_signature_list, mp::list::empty_v)    // .
                 .add(keys::scheduler,

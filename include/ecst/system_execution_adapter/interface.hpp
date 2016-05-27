@@ -24,7 +24,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
     /// @brief Prepares to execute a function on all systems.
     constexpr auto all() noexcept
     {
-        return matching(mp::bh::always(mp::bh::true_c));
+        return matching(bh::always(bh::true_c));
     }
 
     /// @brief Prepares to execute a function only on the systems matching the
@@ -39,7 +39,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
             auto system_tag = tag::system::make(system);
 
             // Is the current tag contained in the set of passed tags?
-            return mp::bh::contains(mp::bh::make_set(sts...), system_tag);
+            return bh::contains(bh::make_set(sts...), system_tag);
         };
 
         return matching(p);

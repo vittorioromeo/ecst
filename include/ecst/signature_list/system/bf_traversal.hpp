@@ -46,19 +46,19 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         }
 
         template <typename TBFTContext>
-        constexpr auto is_queue_empty(TBFTContext&& c)
+        constexpr auto is_queue_empty(TBFTContext&& c) noexcept
         {
             return bh::is_empty(queue(FWD(c)));
         }
 
         template <typename TBFTContext>
-        constexpr auto top_node(TBFTContext&& c)
+        constexpr auto top_node(TBFTContext&& c) noexcept
         {
             return bh::front(queue(FWD(c)));
         }
 
         template <typename TBFTContext, typename TSSL>
-        auto step_forward(TBFTContext&& c, TSSL ssl)
+        auto step_forward(TBFTContext&& c, TSSL ssl) noexcept
         {
             auto node = top_node(c);
             auto popped_queue = bh::remove_at(queue(c), mp::sz_v<0>);
@@ -77,12 +77,11 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         }
 
         template <typename TStartNodeList, typename TSSL>
-        auto bf_traversal_impl(TStartNodeList&& snl, TSSL ssl)
+        auto bf_traversal_impl(TStartNodeList&& snl, TSSL ssl) noexcept
         {
             using namespace mp;
             namespace btfc = bf_traversal;
 
-            // TODO: is this a fold?
             auto step = [=](auto self, auto&& ctx)
             {
                 return static_if(btfc::is_queue_empty(ctx))
@@ -98,7 +97,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
                         })(FWD(ctx));
             };
 
-            return vrmc::y_combinator(step)(btfc::make(FWD(snl)));
+            return bh::fix(step)(btfc::make(FWD(snl)));
         }
     }
 }

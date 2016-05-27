@@ -14,7 +14,7 @@ ECST_TAG_SYSTEM_NAMESPACE
     {
         /// @brief Type-wrapping structure holding a system type.
         template <typename TSystem>
-        struct tag_impl : public mp::bh::type<TSystem>
+        struct tag_impl : public bh::type<TSystem>
         {
         };
 
@@ -52,7 +52,7 @@ ECST_TAG_SYSTEM_NAMESPACE
     template <typename T>
     constexpr auto is_list(T x) noexcept
     {
-        return mp::bh::all_of(x, valid);
+        return bh::all_of(x, valid);
     }
 
     using mp::unwrap;

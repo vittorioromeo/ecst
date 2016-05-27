@@ -27,20 +27,21 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             // Recursive step implementation.
             auto step = [=](auto self, auto curr_list)
             {
-                return mp::list::unique_cat( // .
-                    curr_list,               // .
-                    mp::bh::fold_right(curr_list, mp::list::empty_v,
+                return bh::concat( // .
+                    curr_list,         // .
+                    bh::fold_right(curr_list, mp::list::empty_v,
                         [=](auto xid, auto acc)
                         {
                             auto xsig = signature_by_id(ssl, xid);
                             auto new_list = dependencies_ids_list(ssl, xsig);
 
-                            return mp::list::unique_cat(acc, self(new_list));
+                            return bh::concat(acc, self(new_list));
                         }));
             };
 
             // Start the recursion.
-            return vrmc::y_combinator(step)(dependencies_list);
+            return bh::unique(
+                bh::sort(bh::fix(step)(dependencies_list)));
         }
 
         template <typename TSystemSignatureList,
@@ -48,7 +49,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         auto recursive_dependents_id_list_impl(
             TSystemSignatureList ssl, TStartSystemSignatureList parent_list)
         {
-            auto parent_ids_list = mp::bh::transform(parent_list, [ssl](auto x)
+            auto parent_ids_list = bh::transform(parent_list, [ssl](auto x)
                 {
                     return id_by_signature(ssl, x);
                 });
@@ -75,7 +76,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         {
             auto ds_id = id_by_signature(ssl, ds);
 
-            return mp::bh::contains(
+            return bh::contains(
                 recursive_dependency_id_list(ssl, ss), ds_id);
         }
     }
@@ -106,7 +107,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         TSystemSignatureList ssl, TStartSystemTagList sstl)
     {
         ECST_S_ASSERT(tag::system::is_list(sstl));
-        return mp::bh::size(recursive_dependents_id_list(
+        return bh::size(recursive_dependents_id_list(
             ssl, signature_list_from_tag_list(ssl, sstl)));
     }
 }

@@ -19,7 +19,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
     public:
         static constexpr auto task_count() noexcept
         {
-            return mp::bh::length(TTaskList{});
+            return bh::length(TTaskList{});
         }
 
     private:
@@ -39,7 +39,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         auto& task_by_id(TID id) noexcept
         {
             ECST_ASSERT(valid_id(id));
-            return mp::bh::at(_tasks, id);
+            return bh::at(_tasks, id);
         }
 
         template <             // .

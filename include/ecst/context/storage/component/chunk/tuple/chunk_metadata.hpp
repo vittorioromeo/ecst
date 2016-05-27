@@ -17,7 +17,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
     template <typename TChunkTuple>
     auto make_chunk_metadata_tuple(TChunkTuple ct) noexcept
     {
-        return mp::bh::transform(ct, [](auto xe)
+        return bh::transform(ct, [](auto xe)
             {
                 using chunk_metadata =
                     chunk::metadata<mp::unwrap<decltype(xe)>>;

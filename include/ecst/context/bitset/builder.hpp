@@ -24,7 +24,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
         ECST_S_ASSERT_DT(tag::component::is_list(scl));
         auto csl = settings::component_signature_list(s);
 
-        mp::bh::for_each(scl, [&](auto ct)
+        bh::for_each(scl, [&](auto ct)
             {
                 auto id(signature_list::component::id_by_tag(csl, ct));
                 bitset.set_component_by_id(id, true);
@@ -52,7 +52,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
                 TSystemSignature>{};
 
         auto all_component_tag_list =
-            mp::bh::concat(read_component_tag_list, write_component_tag_list);
+            bh::concat(read_component_tag_list, write_component_tag_list);
 
         return make(s, all_component_tag_list);
     }

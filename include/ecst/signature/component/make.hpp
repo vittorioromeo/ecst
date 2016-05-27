@@ -15,7 +15,7 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     template <typename TComponentTag>
     constexpr auto make_by_tag(TComponentTag)
     {
-        return mp::bh::type<impl::data<TComponentTag>>{};
+        return bh::type<impl::data<TComponentTag>>{};
     }
 
     /// @brief Creates a component signature from a component type.

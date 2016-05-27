@@ -33,7 +33,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
         public:
             static constexpr auto component_count() noexcept
             {
-                return mp::bh::size(my_csl());
+                return bh::size(my_csl());
             }
 
             static constexpr auto total_count() noexcept

@@ -14,7 +14,7 @@ ECST_TAG_COMPONENT_NAMESPACE
     {
         /// @brief Type-wrapping structure holding a component type.
         template <typename TComponent>
-        struct tag_impl : public mp::bh::type<TComponent>
+        struct tag_impl : public bh::type<TComponent>
         {
         };
 
@@ -52,7 +52,7 @@ ECST_TAG_COMPONENT_NAMESPACE
     template <typename T>
     constexpr auto is_list(T x) noexcept
     {
-        return mp::bh::all_of(x, valid);
+        return bh::all_of(x, valid);
     }
 
     using mp::unwrap;

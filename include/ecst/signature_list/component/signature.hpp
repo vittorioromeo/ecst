@@ -22,7 +22,7 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
             ECST_S_ASSERT_DT(valid(csl));
             ECST_S_ASSERT_DT(tag::component::valid(ct));
 
-            return *mp::bh::find_if(csl, [=](auto x_csig)
+            return *bh::find_if(csl, [=](auto x_csig)
                 {
                     return mp::same_type_decay(
                         signature::component::tag_of(x_csig), ct);
