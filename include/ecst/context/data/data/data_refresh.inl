@@ -54,6 +54,9 @@ ECST_CONTEXT_NAMESPACE
                                     {
                                         rs.add_to_kill(entity_id{eid});
                                     });
+
+                                // Clear deferred functions and to-kill sets.
+                                state._state.clear();
                             });
                     });
             }
@@ -128,7 +131,7 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        void data<TSettings>::refresh_impl()
+        void data<TSettings>::refresh()
         {
             // Execute deferred functions, filling up the refresh state and
             // allocating memory if necessary.
@@ -139,12 +142,6 @@ ECST_CONTEXT_NAMESPACE
 
             // Match all modified and new entities to systems.
             refresh_impl_match_entities(_refresh_state);
-        }
-
-        template <typename TSettings>
-        void data<TSettings>::refresh()
-        {
-            refresh_impl();
         }
     }
 }

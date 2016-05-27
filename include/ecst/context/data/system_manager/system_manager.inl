@@ -94,7 +94,7 @@ ECST_CONTEXT_NAMESPACE
             // scheduler_type must be movable in that case
             scheduler_type s;
 
-            auto os = bh::overload(FWD(fs)...);
+            auto os = bh::overload_linearly(FWD(fs)...);
             s.execute(context, sstl, os);
         }
 

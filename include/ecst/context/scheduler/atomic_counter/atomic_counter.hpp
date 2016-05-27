@@ -72,10 +72,12 @@ ECST_SCHEDULER_NAMESPACE
 
             reset();
 
-            // Aggregates the required synchronization objects.
+            // Number of unique nodes traversed starting from every node in
+            // `sstl`.
             constexpr auto chain_size(
                 signature_list::system::chain_size(ssl(), sstl));
 
+            // Aggregates the required synchronization objects.
             counter_blocker b(chain_size);
 
             // Starts every independent task and waits until the remaining tasks

@@ -33,8 +33,6 @@ namespace example
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
     }
 
-    // TODO: BUG: fix!
-
     namespace s
     {
         struct s0

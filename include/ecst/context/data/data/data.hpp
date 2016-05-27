@@ -50,9 +50,6 @@ ECST_CONTEXT_NAMESPACE
             template <typename TRefreshState>
             void refresh_impl_match_entities(TRefreshState& rs);
 
-            /// @brief Creates a refresh state and executes refresh steps.
-            void refresh_impl();
-
             /// @brief Refreshes the context.
             void refresh();
 
