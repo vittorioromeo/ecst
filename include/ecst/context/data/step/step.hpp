@@ -30,8 +30,8 @@ ECST_CONTEXT_NAMESPACE
             public:
                 proxy(context_type&, refresh_state_type&) noexcept;
 
-                template <typename TSystemTag>
-                auto execute_systems_from(TSystemTag st);
+                template <typename... TStartSystemTags>
+                auto execute_systems_from(TStartSystemTags... st);
             };
         }
     }

@@ -41,31 +41,40 @@ ECST_SCHEDULER_NAMESPACE
             impl::sac::reset_task_group_from_ssl(ssl(), _task_group);
         }
 
-        template <typename TContext, typename TSystemTag, typename TBlocker,
-            typename TF>
-        void start_execution(TContext& ctx, TSystemTag st, TBlocker& b, TF&& f)
+        template <typename TContext, typename TStartSystemTagList,
+            typename TBlocker, typename TF>
+        void start_execution(
+            TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF&& f)
         {
-            // Execution can only be started from independent systems.
-            auto ss = signature_list::system::signature_by_tag(ssl(), st);
-            ECST_S_ASSERT_DT(signature::system::is_independent(ss));
-
-            auto sid = signature_list::system::id_by_tag(ssl(), st);
-
-            ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]
+            mp::bh::for_each(sstl,
+                [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
                 {
-                    this->_task_group.start_from_task_id(b, sid, ctx, f);
+                    // Execution can only be started from independent systems.
+                    auto ss = signature_list::system::signature_by_tag(
+                        this->ssl(), st);
+
+                    ECST_S_ASSERT_DT(signature::system::is_independent(ss));
+
+                    auto sid =
+                        signature_list::system::id_by_tag(this->ssl(), st);
+
+                    ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]() mutable
+                        {
+                            this->_task_group.start_from_task_id(
+                                b, sid, ctx, f);
+                        });
                 });
         }
 
     public:
-        template <typename TContext, typename TSystemTag, typename TF>
-        void execute(TContext& ctx, TSystemTag st, TF&& f)
+        template <typename TContext, typename TStartSystemTagList, typename TF>
+        void execute(TContext& ctx, TStartSystemTagList sstl, TF&& f)
         {
             reset();
 
             // Aggregates the required synchronization objects.
             constexpr auto chain_size(
-                signature_list::system::chain_size(ssl(), st));
+                signature_list::system::chain_size(ssl(), sstl));
 
             counter_blocker b(chain_size);
 
@@ -73,9 +82,9 @@ ECST_SCHEDULER_NAMESPACE
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
             execute_and_wait_until_counter_zero(b,
-                [ this, &ctx, &b, st, f = FWD(f) ]() mutable
+                [ this, &ctx, &b, sstl, f = FWD(f) ]() mutable
                 {
-                    this->start_execution(ctx, st, b, f);
+                    this->start_execution(ctx, sstl, b, f);
                 });
         }
     };

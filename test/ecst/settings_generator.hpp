@@ -11,6 +11,7 @@
 #include <ecst/mp.hpp>
 #include <ecst/settings.hpp>
 #include <ecst/context.hpp>
+#include "../utils/test_utils.hpp"
 
 namespace test
 {

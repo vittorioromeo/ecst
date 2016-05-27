@@ -13,9 +13,9 @@ struct fake_component1
 
 TEST_MAIN()
 {
-    auto c0t = signature::component::tag<fake_component0>;
+    auto c0t = tag::component::v<fake_component0>;
     (void)c0t;
 
-    auto c1t = signature::component::tag<fake_component1>;
+    auto c1t = tag::component::v<fake_component1>;
     (void)c1t;
 }

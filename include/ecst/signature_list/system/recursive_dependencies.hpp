@@ -43,12 +43,17 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             return vrmc::y_combinator(step)(dependencies_list);
         }
 
-        template <typename TSystemSignatureList, typename TSystemSignature>
+        template <typename TSystemSignatureList,
+            typename TStartSystemSignatureList>
         auto recursive_dependents_id_list_impl(
-            TSystemSignatureList ssl, TSystemSignature parent)
+            TSystemSignatureList ssl, TStartSystemSignatureList parent_list)
         {
-            return bf_traversal::bf_traversal_impl(
-                id_by_signature(ssl, parent), ssl);
+            auto parent_ids_list = mp::bh::transform(parent_list, [ssl](auto x)
+                {
+                    return id_by_signature(ssl, x);
+                });
+
+            return bf_traversal::bf_traversal_impl(parent_ids_list, ssl);
         }
     }
 
@@ -86,19 +91,36 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     }
 
     /// @brief Returns the set of dependent IDs of `parent`.
-    template <typename TSystemSignatureList, typename TSystemSignature>
+    template <typename TSystemSignatureList, typename TStartSystemSignatureList>
     constexpr auto recursive_dependents_id_list(
-        TSystemSignatureList ssl, TSystemSignature parent)
+        TSystemSignatureList ssl, TStartSystemSignatureList parent_list)
     {
-        return decltype(impl::recursive_dependents_id_list_impl(ssl, parent)){};
+        return decltype(
+            impl::recursive_dependents_id_list_impl(ssl, parent_list)){};
     }
 
-    /// @brief Returns the number of systems that depend on `st`.
-    template <typename TSystemSignatureList, typename TSystemTag>
-    constexpr auto chain_size(TSystemSignatureList ssl, TSystemTag st)
+    namespace impl
     {
-        return sz_v<mp::bh::size(
-            recursive_dependents_id_list(ssl, signature_by_tag(ssl, st)))>;
+        template <typename TSystemSignatureList, typename TStartSystemTagList>
+        auto chain_size_impl(TSystemSignatureList ssl, TStartSystemTagList sstl)
+        {
+            auto signature_list = mp::bh::transform(sstl, [ssl](auto x)
+                {
+                    return signature_by_tag(ssl, x);
+                });
+
+            return sz_v<mp::bh::size(
+                recursive_dependents_id_list(ssl, decltype(signature_list){}))>;
+        }
+    }
+
+    /// @brief Returns the number of unique systems that recursively depend on
+    /// `st`.
+    template <typename TSystemSignatureList, typename TStartSystemTagList>
+    constexpr auto chain_size(
+        TSystemSignatureList ssl, TStartSystemTagList sstl)
+    {
+        return decltype(impl::chain_size_impl(ssl, sstl)){};
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

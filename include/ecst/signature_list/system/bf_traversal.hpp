@@ -15,10 +15,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         using namespace mp;
 
-        template <typename TStartNode>
-        constexpr auto make(TStartNode&& sn) noexcept
+        template <typename TStartNodeList>
+        constexpr auto make(TStartNodeList&& snl) noexcept
         {
-            return bh::make_pair(list::make(FWD(sn)), list::empty_v);
+            return bh::make_pair(FWD(snl), list::empty_v);
         }
 
         template <typename TBFTContext>
@@ -76,29 +76,29 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             return bh::make_pair(new_queue, new_visited);
         }
 
-        template <typename TStartNode, typename TSSL>
-        auto bf_traversal_impl(TStartNode&& sn, TSSL ssl)
+        template <typename TStartNodeList, typename TSSL>
+        auto bf_traversal_impl(TStartNodeList&& snl, TSSL ssl)
         {
             using namespace mp;
             namespace btfc = bf_traversal;
 
             // TODO: is this a fold?
-            auto step = [=](auto self, auto ctx)
+            auto step = [=](auto self, auto&& ctx)
             {
                 return static_if(btfc::is_queue_empty(ctx))
                     .then([=](auto)
                         {
                             return list::empty_v;
                         })
-                    .else_([=](auto x_ctx)
+                    .else_([=](auto&& x_ctx)
                         {
                             return bh::append(
-                                self(btfc::step_forward(x_ctx, ssl)),
-                                btfc::top_node(x_ctx));
-                        })(ctx);
+                                self(btfc::step_forward(FWD(x_ctx), ssl)),
+                                btfc::top_node(FWD(x_ctx)));
+                        })(FWD(ctx));
             };
 
-            return vrmc::y_combinator(step)(btfc::make(FWD(sn)));
+            return vrmc::y_combinator(step)(btfc::make(FWD(snl)));
         }
     }
 }

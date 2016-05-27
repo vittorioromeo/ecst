@@ -37,8 +37,8 @@ namespace example
     {
         namespace sct = ecst::signature::component;
 
-        constexpr auto c0 = sct::tag<c::c0>;
-        constexpr auto c1 = sct::tag<c::c1>;
+        constexpr auto c0 = ecst::tag::component::v<c::c0>;
+        constexpr auto c1 = ecst::tag::component::v<c::c1>;
     }
 
     namespace system
@@ -52,9 +52,9 @@ namespace example
     {
         namespace sct = ecst::signature::system;
 
-        constexpr auto s0 = sct::tag<system::s0>;
-        constexpr auto s1 = sct::tag<system::s1>;
-        constexpr auto s01 = sct::tag<system::s01>;
+        constexpr auto s0 = ecst::tag::system::v<system::s0>;
+        constexpr auto s1 = ecst::tag::system::v<system::s1>;
+        constexpr auto s01 = ecst::tag::system::v<system::s01>;
     }
 
     namespace system
@@ -67,8 +67,7 @@ namespace example
                 data.for_entities([&](auto eid)
                     {
                         auto& cc0 = data.get(ct::c0, eid);
-
-                        (void)cc0;
+                        ++cc0._v;
                     });
             }
         };
@@ -81,8 +80,7 @@ namespace example
                 data.for_entities([&](auto eid)
                     {
                         auto& cc1 = data.get(ct::c1, eid);
-
-                        (void)cc1;
+                        ++cc1._v;
                     });
             }
         };
@@ -113,9 +111,7 @@ namespace example
             namespace c = example::component;
             namespace slc = ecst::signature_list::component;
 
-            return slc::v<   // .
-                c::c0, c::c1 // .
-                >;
+            return slc::make(ct::c0, ct::c1);
         }
 
         constexpr auto make_ssl()
@@ -135,36 +131,20 @@ namespace example
                     ips::split_evenly::v(sz_v<8>)       // .
                     );
 
-            constexpr auto ssig_s0 =      // .
-                ss::make<s::s0>(          // .
-                    test_p,               // .
-                    ss::no_dependencies,  // .
-                    ss::component_use(    // .
-                        ss::mutate<c::c0> // .
-                        ),                // .
-                    ss::output::none      // .
-                    );
+            constexpr auto ssig_s0 =     // .
+                ss::make(st::s0)         // .
+                    .parallelism(test_p) // .
+                    .write(ct::c0);      // .
 
-            constexpr auto ssig_s1 =      // .
-                ss::make<s::s1>(          // .
-                    test_p,               // .
-                    ss::no_dependencies,  // .
-                    ss::component_use(    // .
-                        ss::mutate<c::c1> // .
-                        ),                // .
-                    ss::output::none      // .
-                    );
+            constexpr auto ssig_s1 =     // .
+                ss::make(st::s1)         // .
+                    .parallelism(test_p) // .
+                    .write(ct::c1);      // .
 
-            constexpr auto ssig_s01 =      // .
-                ss::make<s::s01>(          // .
-                    test_p,                // .
-                    ss::no_dependencies,   // .
-                    ss::component_use(     // .
-                        ss::mutate<c::c0>, // .
-                        ss::mutate<c::c1>  // .
-                        ),                 // .
-                    ss::output::none       // .
-                    );
+            constexpr auto ssig_s01 =       // .
+                ss::make(st::s01)           // .
+                    .parallelism(test_p)    // .
+                    .write(ct::c0, ct::c1); // .
 
             return sls::make( // .
                 ssig_s0,      // .
@@ -284,32 +264,14 @@ namespace example
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);
 
-                        proxy.execute_systems( // .
+                        proxy.execute_systems_from(
+                            st::s0, st::s1, st::s01)( // .
                             sea::all().for_subtasks([i = 0](
                                 auto& s, auto& data) mutable
                                 {
                                     ++i;
                                     s.process(data);
                                 }));
-
-                        /*
-                        proxy.execute_systems( // .
-                            sea::tag::for_subtasks(st::s0,
-                                [](auto& s, auto& data)
-                                {
-                                    s.process(data);
-                                }),
-                            sea::tag::for_subtasks(st::s1,
-                                [](auto& s, auto& data)
-                                {
-                                    s.process(data);
-                                }),
-                            sea::tag::for_subtasks(st::s01,
-                                [](auto& s, auto& data)
-                                {
-                                    s.process(data);
-                                }));
-                        */
                     }
                 });
         }

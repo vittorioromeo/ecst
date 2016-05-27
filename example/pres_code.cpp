@@ -155,7 +155,7 @@ EXAMPLE_COMPONENT_TAG(color);
 // A macro is used to define tags to suppress "unused variable" warnings and
 // to avoid code repetition. Essentially, it expands to:
 /*
-    constexpr auto x = ecst::signature::component::tag<c::x>;
+    constexpr auto x = ecst::tag::component::vc::x>;
 */
 
 // System tags, in namespace `example::st`.

@@ -13,10 +13,10 @@ struct fake_component1
 
 TEST_MAIN()
 {
-    constexpr auto c0t = signature::component::tag<fake_component0>;
+    constexpr auto c0t = tag::component::v<fake_component0>;
     (void)c0t;
 
-    constexpr auto c1t = signature::component::tag<fake_component1>;
+    constexpr auto c1t = tag::component::v<fake_component1>;
     (void)c1t;
 
     constexpr auto c0_signature = signature::component::make_by_tag(c0t);

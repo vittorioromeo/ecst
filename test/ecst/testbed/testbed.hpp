@@ -37,13 +37,13 @@ namespace testbed
     namespace ctags
     {
         constexpr auto position = // .
-            ecst::signature::component::tag<component::position>;
+            ecst::tag::component::vcomponent::position>;
 
         constexpr auto velocity = // .
-            ecst::signature::component::tag<component::velocity>;
+            ecst::tag::component::vcomponent::velocity>;
 
         constexpr auto acceleration = // .
-            ecst::signature::component::tag<component::acceleration>;
+            ecst::tag::component::vcomponent::acceleration>;
     }
 
     namespace c = testbed::component;

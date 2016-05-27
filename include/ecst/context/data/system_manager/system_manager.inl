@@ -72,24 +72,28 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TContext, typename TSystemTag>
+        template <typename TContext, typename... TStartSystemTags>
         auto system_manager<TSettings>::execute_systems_from(
-            TContext& context, TSystemTag st) noexcept
+            TContext& context, TStartSystemTags... sts) noexcept
         {
-            return [this, &context, st](auto&&... fns)
+            auto sstl = mp::list::make(sts...);
+            return [this, &context, sstl](auto&&... fns)
             {
-                this->execute_systems(context, st, FWD(fns)...);
+                this->execute_systems(context, sstl, FWD(fns)...);
             };
         }
 
         template <typename TSettings>
-        template <typename TContext, typename TSystemTag, typename... TFs>
+        template <typename TContext, typename TStartSystemTagList,
+            typename... TFs>
         void system_manager<TSettings>::execute_systems(
-            TContext& context, TSystemTag st, TFs&&... fs)
+            TContext& context, TStartSystemTagList sstl, TFs&&... fs)
         {
+            // TODO: store instance in system_manager for stateful schedulers?
             scheduler_type s;
+
             auto os = make_overload(FWD(fs)...);
-            s.execute(context, st, os);
+            s.execute(context, sstl, os);
         }
 
         template <typename TSettings>
