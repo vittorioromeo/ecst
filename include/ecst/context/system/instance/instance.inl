@@ -12,6 +12,22 @@
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    namespace impl
+    {
+        template <typename TSettings, typename TSystemSignature>
+        auto& instance_base<TSettings, TSystemSignature>::system() noexcept
+        {
+            return _system;
+        }
+
+        template <typename TSettings, typename TSystemSignature>
+        const auto& instance_base<TSettings, TSystemSignature>::system() const
+            noexcept
+        {
+            return _system;
+        }
+    }
+
     template <typename TSettings, typename TSystemSignature>
     ECST_ALWAYS_INLINE auto& ECST_PURE_FN
     instance<TSettings, TSystemSignature>::subscribed() noexcept
@@ -62,7 +78,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         return for_states([this, &f](auto& state)
             {
-                f(_system, state.as_data());
+                f(this->system(), state.as_data());
             });
     }
 
@@ -190,18 +206,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
         f(*this, eh);
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    auto& instance<TSettings, TSystemSignature>::system() noexcept
-    {
-        return _system;
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    const auto& instance<TSettings, TSystemSignature>::system() const noexcept
-    {
-        return _system;
     }
 
     template <typename TSettings, typename TSystemSignature>

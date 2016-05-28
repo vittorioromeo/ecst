@@ -21,6 +21,32 @@
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    namespace impl
+    {
+        template <typename TSettings, typename TSystemSignature>
+        class instance_base
+        {
+        protected:
+            using system_tag_type =
+                signature::system::tag_type<TSystemSignature>;
+
+            using system_type = tag::system::unwrap<system_tag_type>;
+
+        private:
+            system_type _system;
+
+        public:
+            /// @brief Returns a reference to the stored system instance.
+            auto& system() noexcept;
+
+            /// @brief Returns a const reference to the stored system instance.
+            const auto& system() const noexcept;
+        };
+
+        // TODO: component-only systems with no knowledge of entities for SIMD
+        // operations (?)
+    }
+
     /// @brief System instance.
     /// @details Contains:
     /// * An instance of the user-defined system type.
@@ -29,12 +55,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     /// * A bitset of the used components by the system.
     /// * A parallel executor.
     template <typename TSettings, typename TSystemSignature>
-    class instance
+    class instance : public impl::instance_base<TSettings, TSystemSignature>
     {
     private:
-        using system_tag_type = signature::system::tag_type<TSystemSignature>;
-
-        using system_type = tag::system::unwrap<system_tag_type>;
+        using base_type = impl::instance_base<TSettings, TSystemSignature>;
+        using system_tag_type = typename base_type::system_tag_type;
+        using system_type = typename base_type::system_type;
 
         using bitset_type = bitset::dispatch<TSettings>;
 
@@ -51,7 +77,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         using this_type = instance<TSettings, TSystemSignature>;
 
-        system_type _system;
         state_manager_type _sm;
         set_type _subscribed;
         bitset_type _bitset;
@@ -107,8 +132,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief Unsubscribes `eid` from the system.
         auto unsubscribe(entity_id eid);
 
-        auto& system() noexcept;
-        const auto& system() const noexcept;
 
         const auto& bitset() const noexcept;
 
