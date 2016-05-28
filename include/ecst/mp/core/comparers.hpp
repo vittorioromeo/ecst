@@ -25,13 +25,13 @@ ECST_MP_NAMESPACE
         };
 
         // `constexpr` callable returning whether or not two objects have the
-        // same type, after applying `std::decay_t` to both of them.
+        // same type, after applying `decay_t` to both of them.
         struct same_type_decay
         {
             template <typename T0, typename T1>
             constexpr auto operator()(T0, T1) const noexcept
             {
-                return same_type{}(std::decay_t<T1>{}, std::decay_t<T0>{});
+                return same_type{}(decay_t<T1>{}, decay_t<T0>{});
             }
         };
     }

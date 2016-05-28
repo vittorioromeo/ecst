@@ -47,7 +47,7 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
                 auto new_options = _map.set(key, FWD(x));
-                return data<std::decay_t<decltype(new_options)>>{};
+                return data<ECST_DECAY_DECLTYPE(new_options)>{};
             }
 
         public:

@@ -30,7 +30,7 @@ ECST_TAG_COMPONENT_NAMESPACE
     template <typename TComponent>
     constexpr auto make(TComponent && ) noexcept
     {
-        return v<std::decay_t<TComponent>>;
+        return v<decay_t<TComponent>>;
     }
 
     namespace impl

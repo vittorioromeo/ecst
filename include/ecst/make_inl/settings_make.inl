@@ -27,7 +27,7 @@ ECST_SETTINGS_NAMESPACE
                 .add(keys::refresh_parallelism,
                     impl::refresh_parallelism::enabled{}); // .
 
-        return impl::data<std::decay_t<decltype(d_opts)>>{};
+        return impl::data<ECST_DECAY_DECLTYPE(d_opts)>{};
     }
 }
 ECST_SETTINGS_NAMESPACE_END

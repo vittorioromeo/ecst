@@ -30,7 +30,7 @@ ECST_TAG_SYSTEM_NAMESPACE
     template <typename TSystem>
     constexpr auto make(TSystem && ) noexcept
     {
-        return v<std::decay_t<TSystem>>;
+        return v<decay_t<TSystem>>;
     }
 
     namespace impl

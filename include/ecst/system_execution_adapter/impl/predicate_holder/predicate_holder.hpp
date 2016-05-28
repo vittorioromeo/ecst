@@ -22,7 +22,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
             using predicate_result = decltype(     // .
                 std::declval<TPredicate>()(        // .
                     std::declval<                  // .
-                        std::decay_t<TInstance>>() // .
+                        decay_t<TInstance>>() // .
                         .system()                  // .
                     )                              // .
                 );

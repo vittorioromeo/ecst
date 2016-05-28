@@ -37,7 +37,7 @@ ECST_NAMESPACE
         auto make_scope_guard(TF&& f) // .
             noexcept(std::is_nothrow_move_constructible<TF>{})
         {
-            return scope_guard<std::decay_t<decltype(f)>>{std::move(f)};
+            return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
         }
     }
 }

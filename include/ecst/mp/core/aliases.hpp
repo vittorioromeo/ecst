@@ -7,13 +7,6 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <boost/hana.hpp>
-
-ECST_NAMESPACE
-{
-    namespace bh = boost::hana;
-}
-ECST_NAMESPACE_END
 
 ECST_MP_NAMESPACE
 {

@@ -15,7 +15,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TInstance, typename... TFs>
         auto make(TInstance& instance, TFs&&... fs) noexcept
         {
-            return data<TInstance, std::decay_t<TFs>...>{instance, FWD(fs)...};
+            return data<TInstance, decay_t<TFs>...>{instance, FWD(fs)...};
         }
     }
 }

@@ -45,8 +45,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 
                 auto& chunk = chunk_by_id(id);
 
-                using component =
-                    chunk::component<std::decay_t<decltype(chunk)>>;
+                using component = chunk::component<ECST_DECAY_DECLTYPE(chunk)>;
 
                 ECST_S_ASSERT(std::is_same<component, TComponent>{});
 
@@ -60,7 +59,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 TSelf&& self, entity_id eid, TEntityChunkMetadata& ecm, TF&& f)
             {
                 decltype(auto) c(self.template chunk_for<TComponent>());
-                using metadata = chunk::metadata<std::decay_t<decltype(c)>>;
+                using metadata = chunk::metadata<ECST_DECAY_DECLTYPE(c)>;
 
                 auto& chunk_md = std::get<metadata>(ecm);
                 return f(c, eid, chunk_md);

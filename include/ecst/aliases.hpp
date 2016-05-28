@@ -9,4 +9,5 @@
 #include "./aliases/attributes.hpp"
 #include "./aliases/threading.hpp"
 #include "./aliases/vrmc.hpp"
+#include "./aliases/hana.hpp"
 #include "./aliases/bitset.hpp"

@@ -65,7 +65,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             constexpr auto change_self(const TKey& key, T&& x) noexcept
             {
                 auto new_options = TOptions{}.set(key, FWD(x));
-                return data<TTag, std::decay_t<decltype(new_options)>>{};
+                return data<TTag, ECST_DECAY_DECLTYPE(new_options)>{};
             }
 
         public:

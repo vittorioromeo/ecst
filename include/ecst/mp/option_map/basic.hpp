@@ -22,8 +22,8 @@ ECST_MP_OPTION_MAP_NAMESPACE
             template <typename TKey>
             constexpr auto type_at(const TKey& key) const noexcept
             {
-                return type_c<
-                    std::decay_t<decltype(bh::first(bh::at_key(_map, key)))>>;
+                return type_c<ECST_DECAY_DECLTYPE(
+                    bh::first(bh::at_key(_map, key)))>;
             }
 
             template <typename TKey>
@@ -38,7 +38,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
                 auto new_map = bh::insert(_map,
                     bh::make_pair(key, bh::make_pair(FWD(x), bh::false_c)));
 
-                return data<std::decay_t<decltype(new_map)>>{};
+                return data<ECST_DECAY_DECLTYPE(new_map)>{};
             }
 
             template <typename TKey, typename T>
@@ -51,14 +51,14 @@ ECST_MP_OPTION_MAP_NAMESPACE
                 auto new_map = impl::replace(_map,
                     bh::make_pair(key, bh::make_pair(FWD(x), bh::true_c)));
 
-                return data<std::decay_t<decltype(new_map)>>{};
+                return data<ECST_DECAY_DECLTYPE(new_map)>{};
             }
         };
     }
 
     constexpr auto make() noexcept
     {
-        return impl::data<std::decay_t<decltype(bh::make_map())>>{};
+        return impl::data<ECST_DECAY_DECLTYPE(bh::make_map())>{};
     }
 
     // TODO: docs, optimize

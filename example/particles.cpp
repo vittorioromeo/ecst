@@ -512,7 +512,7 @@ int main()
 
     auto test_impl = [&](auto& ctx)
     {
-        using ct = std::decay_t<decltype(ctx)>;
+        using ct = ECST_DECAY_DECLTYPE(ctx);
         game_app<ct> a{ctx};
         (void)a;
     };

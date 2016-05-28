@@ -24,7 +24,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 .add(keys::write_components, mp::list::empty_v) // .
                 .add(keys::output, no_output);                  // .
 
-        return impl::data<TSystemTag, std::decay_t<decltype(d_opts)>>{};
+        return impl::data<TSystemTag, ECST_DECAY_DECLTYPE(d_opts)>{};
     }
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END
