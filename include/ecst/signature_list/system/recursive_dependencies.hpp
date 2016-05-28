@@ -72,6 +72,5 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return decltype(impl::has_dependency_recursive_impl(ssl, ss, ds)){};
     }
-
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

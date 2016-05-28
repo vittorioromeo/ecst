@@ -130,9 +130,8 @@ namespace moodycamel
         static_assert(sizeof(unsigned long) == sizeof(std::uint32_t),
             "Expected size of unsigned long to be 32 bits on Windows");
         typedef std::uint32_t thread_id_t;
-        static const thread_id_t invalid_thread_id =
-            0; // See
-               // http://blogs.msdn.com/b/oldnewthing/archive/2004/02/23/78395.aspx
+        static const thread_id_t invalid_thread_id = 0; // See
+        // http://blogs.msdn.com/b/oldnewthing/archive/2004/02/23/78395.aspx
         static const thread_id_t invalid_thread_id2 =
             0xFFFFFFFFU; // Not technically guaranteed to be invalid, but is
                          // never used in practice. Note that all Win32 thread
@@ -305,15 +304,15 @@ namespace moodycamel
 #define MOODYCAMEL_CPP11_THREAD_LOCAL_SUPPORTED
 #else
 //// VS2013 doesn't support `thread_local`, and MinGW-w64 w/ POSIX threading has
-///a crippling bug: http://sourceforge.net/p/mingw-w64/bugs/445
+/// a crippling bug: http://sourceforge.net/p/mingw-w64/bugs/445
 //// g++ <=4.7 doesn't support thread_local either.
 //// Finally, iOS/ARM doesn't have support for it either.
 //#if (!defined(_MSC_VER) || _MSC_VER >= 1900) && (!defined(__MINGW32__) &&
-//!defined(__MINGW64__) || !defined(__WINPTHREADS_VERSION)) &&
+//! defined(__MINGW64__) || !defined(__WINPTHREADS_VERSION)) &&
 //(!defined(__GNUC__) || __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 8))
 //&& (!defined(__APPLE__) || !TARGET_OS_IPHONE)
 //// Assume `thread_local` is fully supported in all other C++11
-///compilers/runtimes
+/// compilers/runtimes
 //#define MOODYCAMEL_CPP11_THREAD_LOCAL_SUPPORTED
 //#endif
 #endif
@@ -1167,8 +1166,8 @@ namespace moodycamel
                 {
                     auto prev = hash->prev;
                     if(prev != nullptr)
-                    { // The last hash is part of this object and was not
-                      // allocated dynamically
+                    {   // The last hash is part of this object and was not
+                        // allocated dynamically
                         for(size_t i = 0; i != hash->capacity; ++i)
                         {
                             hash->entries[i].~ImplicitProducerKVP();
@@ -1906,8 +1905,8 @@ namespace moodycamel
         // free list is destroyed), and fairly
         // speedy under low contention.
         template <typename N> // N must inherit FreeListNode or have the same
-                              // fields (and initialization of them)
-                              struct FreeList
+        // fields (and initialization of them)
+        struct FreeList
         {
             FreeList() : freeListHead(nullptr)
             {
@@ -2834,13 +2833,12 @@ namespace moodycamel
                         // Wasn't anything to dequeue after all; make the
                         // effective dequeue count eventually consistent
                         this->dequeueOvercommit.fetch_add(1,
-                            std::
-                                memory_order_release); // Release so that the
-                                                       // fetch_add on
-                                                       // dequeueOptimisticCount
-                                                       // is guaranteed to
-                                                       // happen before this
-                                                       // write
+                            std::memory_order_release); // Release so that the
+                                                        // fetch_add on
+                        // dequeueOptimisticCount
+                        // is guaranteed to
+                        // happen before this
+                        // write
                     }
                 }
 
@@ -4831,8 +4829,8 @@ namespace moodycamel
                 // Look for the id in this hash
                 auto index = hashedId;
                 while(true)
-                { // Not an infinite loop because at least one slot is free in
-                  // the hash table
+                {   // Not an infinite loop because at least one slot is free in
+                    // the hash table
                     index &= hash->capacity - 1;
 
                     auto probedKey = hash->entries[index].key.load(
