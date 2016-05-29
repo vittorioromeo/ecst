@@ -61,9 +61,9 @@ ECST_DEBUG_NAMESPACE
         }
 
         /* 00 */ constexpr auto entity = off;
-        /* 01 */ constexpr auto component = off;
+        /* 01 */ constexpr auto component = on<1>;
         /* 02 */ constexpr auto entity_memory = off;
-        /* 03 */ constexpr auto component_memory = off;
+        /* 03 */ constexpr auto component_memory = on<3>;
         /* 04 */ constexpr auto thread_pool = off;
         /* 05 */ constexpr auto instance = off;
         /* 06 */ constexpr auto instance_parallelism = on<6>;

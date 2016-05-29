@@ -12,6 +12,8 @@
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
+    // TODO:
+    /*
     /// @brief Returns the tag type stored inside a component signature.
     template <typename TComponentSignature>
     constexpr auto tag_of(TComponentSignature cs) noexcept
@@ -19,5 +21,6 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         ECST_S_ASSERT_DT(valid(cs));
         return impl::tag_type<TComponentSignature>{};
     }
+    */
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

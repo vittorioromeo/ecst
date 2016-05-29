@@ -19,13 +19,13 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         constexpr auto signature_by_tag_impl(
             TComponentSignatureList csl, TComponentTag ct)
         {
-            ECST_S_ASSERT_DT(valid(csl));
+            // TODO: needs unwrap
+            // ECST_S_ASSERT_DT(valid(csl));
             ECST_S_ASSERT_DT(tag::component::valid(ct));
 
-            return *bh::find_if(csl, [=](auto x_csig)
+            return *bh::find_if(csl, [ct](auto cs)
                 {
-                    return mp::same_type_decay(
-                        signature::component::tag_of(x_csig), ct);
+                    return mp::unwrapped(cs).has(ct);
                 });
         }
     }
@@ -35,12 +35,6 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         TComponentSignatureList csl, TComponentTag ct)
     {
         return decltype(impl::signature_by_tag_impl(csl, ct)){};
-    }
-
-    template <typename TComponent, typename TComponentSignatureList>
-    constexpr auto signature_by_type(TComponentSignatureList csl)
-    {
-        return signature_by_tag(csl, tag::component::v<TComponent>);
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

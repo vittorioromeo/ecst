@@ -16,19 +16,51 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
-        template <typename TSettings, typename TComponent>
+        namespace impl
+        {
+            template <typename TComponentTagList>
+            auto make_component_tuple_type_impl(TComponentTagList ctl)
+            {
+                return bh::transform(ctl, [](auto ct)
+                    {
+                        return mp::type_c<                                  // .
+                            tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)> // .
+                            >;
+                    });
+            }
+
+            template <typename TComponentTagList>
+            constexpr auto make_component_tuple_type(TComponentTagList ctl)
+            {
+                return decltype(make_component_tuple_type_impl(ctl)){};
+            }
+
+            // TODO: use bh tuple
+            template <typename TComponentTagList>
+            using component_tuple_type =
+                mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
+                    make_component_tuple_type(TComponentTagList{}))>;
+        }
+
+        template <typename TSettings, typename TComponentTagList>
         class dynamic_buffer
         {
         public:
+            using component_tag_list_type = TComponentTagList;
+
+        private:
+            using component_tuple_type =
+                impl::component_tuple_type<TComponentTagList>;
+
+        public:
             using settings_type = TSettings;
-            using component_type = TComponent;
 
             struct metadata
             {
             };
 
         private:
-            std::vector<TComponent> _data;
+            std::vector<component_tuple_type> _data;
 
             auto valid_index(sz_t i) const noexcept
             {
@@ -61,9 +93,9 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                     debug::lo_component_memory() // .
                         << "New occupied memory by dynamic component buffer " // .
                            "chunk: " // .
-                        << (_data.capacity() * sizeof(TComponent)) / 1024.f /
-                               1024.f // .
-                        << "MB\n";    // .
+                        << (_data.capacity() * sizeof(component_tuple_type)) /
+                               1024.f / 1024.f // .
+                        << "MB\n";             // .
                     );
             }
 
@@ -75,14 +107,18 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 }
             }
 
-            template <typename TSelf>
-            decltype(auto) get_impl(
-                TSelf&& self, entity_id eid, const metadata&) noexcept
+            template <typename TComponentTag, typename TSelf>
+            decltype(auto) get_impl(TComponentTag ct, TSelf&& self,
+                entity_id eid, const metadata&) noexcept
             {
+                using component_type =
+                    tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
+
                 auto i = self.entity_id_to_index(eid);
                 ECST_ASSERT(self.valid_index(i));
 
-                return vrmc::forward_like<TSelf>(_data[i]);
+                return vrmc::forward_like<TSelf>(
+                    std::get<component_type>(_data[i]));
             }
 
         public:
@@ -91,23 +127,24 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 grow_to(settings::initial_capacity(settings_type{}));
             }
 
-            template <typename... Ts>
-                auto& get(Ts&&... xs) & noexcept
+            template <typename TComponentTag, typename... Ts>
+                auto& get(TComponentTag ct, Ts&&... xs) & noexcept
             {
-                return get_impl(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
-            template <typename... Ts>
-            const auto& get(Ts&&... xs) const& noexcept
+            template <typename TComponentTag, typename... Ts>
+            const auto& get(TComponentTag ct, Ts&&... xs) const& noexcept
             {
-                return get_impl(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
-            auto& add(entity_id eid, metadata& m)
+            template <typename TComponentTag>
+            auto& add(TComponentTag ct, entity_id eid, metadata& m)
             {
                 auto i = entity_id_to_index(eid);
                 grow_if_required(i);
-                return get(eid, m);
+                return get(ct, eid, m);
             }
         };
     }

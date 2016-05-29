@@ -17,12 +17,13 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     template <typename TSettings>
     using chunk_tuple_type =                  // .
-        mp::list::unwrap_tuple<               // .
+        mp::list::unwrap_bh_tuple<            // .
             decltype(                         // .
                 make_chunk_tuple(TSettings{}) // .
                 )                             // .
             >;
 
+    // TODO: use bh tuple
     template <typename TSettings>
     using chunk_metadata_tuple_type =                                    // .
         mp::list::unwrap_tuple<                                          // .

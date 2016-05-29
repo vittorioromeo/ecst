@@ -16,6 +16,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace impl
     {
+        /*
         template <typename TComponent, typename TSettings>
         auto dispatch_normal() noexcept
         {
@@ -53,8 +54,13 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 
     // TODO: use hash_map, refactor, add "force_container (?)" to component
     // signature.
-    template <typename TComponent, typename TSettings>
-    using chunk_dispatch_type =
-        mp::unwrap<decltype(impl::dispatch_tw<TComponent, TSettings>())>;
+
+    */
+    }
+
+    template <typename TSettings, typename TComponentSignature>
+    using chunk_dispatch_type = ECST_DECAY_DECLTYPE(                  // .
+        TComponentSignature{}.template make_storage_type<TSettings>() // .
+        );
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

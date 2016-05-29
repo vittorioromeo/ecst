@@ -23,6 +23,46 @@ ECST_MP_LIST_NAMESPACE
         return bh::all(bh::make_basic_tuple(FWD(xs)...));
     }
 
+    // TODO: please
+    template <typename TTuple, typename TPredicate>
+    constexpr auto index_of_first_matching(
+        TTuple && t, TPredicate && p) noexcept
+    {
+        using p_type = ECST_DECAY_DECLTYPE(p);
+
+        auto res = bh::fold_left(t, bh::make_pair(sz_v<0>, bh::false_c),
+            [](auto&& acc, auto&& x)
+            {
+                return static_if(bh::second(acc))
+                    .then([](auto&& xacc, auto&&)
+                        {
+                            return xacc;
+                        })
+                    .else_([](auto&& xacc, auto&& xx)
+                        {
+                            return static_if(bh::bool_c<           // .
+                                                 decltype(p(xx)){} // .
+                                                 >)
+                                .then([](auto&& yacc)
+                                    {
+                                        return bh::make_pair(
+                                            bh::first(decltype(yacc){}),
+                                            bh::true_c);
+                                    })
+                                .else_([](auto&& yacc)
+                                    {
+                                        return bh::make_pair(
+                                            sz_v<bh::first(decltype(yacc){}) +
+                                                 sz_v<1>>,
+                                            bh::false_c);
+
+                                    })(FWD(xacc));
+                        })(FWD(acc), FWD(x));
+            });
+
+        return bh::first(decltype(res){});
+    }
+
     // Returns the index of `x` in `l`.
     template <typename TList, typename T>
     constexpr auto index_of(TList&&, T && x) noexcept

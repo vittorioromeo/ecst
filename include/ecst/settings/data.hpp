@@ -6,7 +6,9 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/signature_list.hpp>
+#include <ecst/mp.hpp>
+// TODO:
+// #include <ecst/signature_list.hpp>
 #include "./data_settings.hpp"
 #include "./impl/keys.hpp"
 
@@ -73,14 +75,14 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto get_csl() noexcept
             {
                 auto result = _map.at(keys::component_signature_list);
-                ECST_S_ASSERT_DT(signature_list::component::valid(result));
+                //   ECST_S_ASSERT_DT(signature_list::component::valid(result));
                 return decltype(result){};
             }
 
             constexpr auto get_ssl() noexcept
             {
                 auto result = _map.at(keys::system_signature_list);
-                ECST_S_ASSERT_DT(signature_list::system::valid(result));
+                //    ECST_S_ASSERT_DT(signature_list::system::valid(result));
                 return decltype(result){};
             }
 

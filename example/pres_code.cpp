@@ -507,10 +507,52 @@ namespace example
         // Builds and returns a "component signature list".
         constexpr auto make_csl()
         {
+            namespace cs = ecst::signature::component;
+            namespace csl = ecst::signature_list::component;
+
+#if 0
+            constexpr auto csig_physics0 = // .
+                cs::make(ct::acceleration) // .
+                    .contiguous_buffer();
+
+            constexpr auto csig_physics1 = // .
+                cs::make(ct::velocity)     // .
+                    .contiguous_buffer();
+
+            constexpr auto csig_physics2 = // .
+                cs::make(ct::position)     // .
+                    .contiguous_buffer();
+#else
+            constexpr auto csig_physics =                              // .
+                cs::make(ct::position, ct::velocity, ct::acceleration) // .
+                    .contiguous_buffer();
+#endif
+            constexpr auto csig_color = // .
+                cs::make(ct::color)     // .
+                    .contiguous_buffer();
+
+            constexpr auto csig_circle = // .
+                cs::make(ct::circle)     // .
+                    .contiguous_buffer();
+
+            return csl::make( // .
+#if 0
+                csig_physics0, // .
+                csig_physics1, // .
+                csig_physics2, // .
+#else
+                csig_physics, // .
+#endif
+                csig_color, // .
+                csig_circle // .
+                );
+
+            /*
             return ecst::signature_list::component::make(     // .
                 ct::position, ct::velocity, ct::acceleration, // .
                 ct::color, ct::circle                         // .
                 );
+            */
         }
 
         // Builds and returns a "system signature list".
@@ -658,8 +700,7 @@ namespace example
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
-        ctx.step(
-            [&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
+        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
             {
                 proxy.execute_systems_from(st::acceleration)(
                     ft_tags.for_subtasks([dt](auto& s, auto& data)
@@ -712,10 +753,11 @@ int main()
     namespace ss = ecst::scheduler;
 
     // Define ECST context settings.
-    constexpr auto s =                        // .
-        ecst::settings::make()                // .
-            .allow_inner_parallelism()        // .
-            .fixed_entity_limit(entity_limit) // .
+    constexpr auto s =                          // .
+        ecst::settings::make()                  // .
+            .allow_inner_parallelism()          // .
+            .dynamic_entity_limit(entity_limit) // .
+            // .fixed_entity_limit(entity_limit) // .
             .component_signatures(make_csl()) // .
             .system_signatures(make_ssl())    // .
             .scheduler(cs::scheduler<ss::s_atomic_counter>);

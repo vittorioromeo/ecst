@@ -6,23 +6,24 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/signature/component/data.hpp>
-#include <ecst/tag/component.hpp>
+#include <ecst/mp.hpp>
+#include "./data.hpp"
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
-    /// @brief Creates a component signature from a tag.
-    template <typename TComponentTag>
-    constexpr auto make_by_tag(TComponentTag)
+    template <typename... TComponentTags>
+    constexpr auto make(TComponentTags... cts)
     {
-        return bh::type<impl::data<TComponentTag>>{};
-    }
+        auto ct_list = mp::list::make(cts...);
 
-    /// @brief Creates a component signature from a component type.
-    template <typename TComponent>
-    constexpr auto make()
-    {
-        return make_by_tag(tag::component::v<TComponent>);
+        constexpr auto d_opts =    // .
+            mp::option_map::make() // .
+                .add(impl::keys::storage, impl::contiguous_buffer_maker);
+
+        return impl::data<                // .
+            ECST_DECAY_DECLTYPE(ct_list), // .
+            ECST_DECAY_DECLTYPE(d_opts)   // .
+            >{};
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

@@ -16,6 +16,42 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace impl
     {
+        /*
+        namespace impl
+        {
+            template <typename TComponent, typename TChunkTuple>
+            auto getidx_impl()
+            {
+                auto wt = bh::transform(std::declval<TChunkTuple>(), [](auto& c)
+                    {
+                        return mp::wrap(c);
+                    });
+
+                auto idx = mp::list::index_of_first_matching(wt, [](auto& wc)
+                    {
+                        using chunk_type = mp::unwrap<ECST_DECAY_DECLTYPE(wc)>;
+
+                        using chunk_component_tag_list_type = // .
+                            typename chunk_type::component_tag_list_type;
+
+                        return bh::contains(                 // .
+                            chunk_component_tag_list_type{}, // .
+                            tag::component::v<TComponent>);
+                    });
+
+                return idx;
+            }
+        }
+
+        template <typename TComponent, typename TChunkTuple>
+        constexpr auto getidx()
+        {
+            return decltype(impl::getidx_impl<TComponent, TChunkTuple>()){};
+        }
+*/
+
+        // TODO: cleanup
+
         template <typename TSettings>
         class data
         {
@@ -37,19 +73,20 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             template <typename TComponent>
             auto& chunk_for() noexcept
             {
-                constexpr auto csl =
-                    settings::component_signature_list(TSettings{});
+                auto idx =
+                    mp::list::index_of_first_matching(_chunk_tuple, [](auto& c)
+                        {
+                            using chunk_type = ECST_DECAY_DECLTYPE(c);
 
-                constexpr auto id =
-                    signature_list::component::id_by_type<TComponent>(csl);
+                            using chunk_component_tag_list_type = // .
+                                typename chunk_type::component_tag_list_type;
 
-                auto& chunk = chunk_by_id(id);
+                            return bh::contains(                 // .
+                                chunk_component_tag_list_type{}, // .
+                                tag::component::v<TComponent>);
+                        });
 
-                using component = chunk::component<ECST_DECAY_DECLTYPE(chunk)>;
-
-                ECST_S_ASSERT(std::is_same<component, TComponent>{});
-
-                return chunk;
+                return bh::at(_chunk_tuple, idx);
             }
 
             /// @brief Executes `f` on the chunk storing `TComponent`.
@@ -73,7 +110,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
                     [](auto& xc, auto x_eid, const auto& x_md) -> decltype(auto)
                     {
-                        return xc.get(x_eid, x_md);
+                        return xc.get(
+                            tag::component::v<TComponent>, x_eid, x_md);
                     });
             }
 
@@ -90,7 +128,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
                     [](auto& zc, auto z_eid, auto& z_md) -> decltype(auto)
                     {
-                        return zc.add(z_eid, z_md);
+                        return zc.add(
+                            tag::component::v<TComponent>, z_eid, z_md);
                     });
             }
 
