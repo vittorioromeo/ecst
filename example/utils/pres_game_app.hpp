@@ -89,28 +89,10 @@ namespace example
                     sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
                     _delay = 0.06f;
-                    _ctx.step(
-                        [&](auto& proxy)
+                    _ctx.step([&](auto& proxy)
                         {
                             mk_particle(proxy, mpos, rndf(1, 4));
-                        },
-
-                        ecst::refresh_event::on_subscribe(st::acceleration,
-                            [](auto&, auto id)
-                            {
-                                std::cout << "sub_accel " << id << "\n";
-                            }),
-                        ecst::refresh_event::on_subscribe(st::collision,
-                            [](auto&, auto id)
-                            {
-                                std::cout << "sub_collis " << id << "\n";
-                            }));
-
-                    /*ecst::refresh_event::on_subscribe([](auto&,
-                     auto id)
-                     {
-                         std::cout << "sub_any " << id << "\n";
-                         }));*/
+                        });
                 }
 
                 _kill_pls = false;
@@ -125,8 +107,7 @@ namespace example
 
                 std::vector<std::unique_ptr<sf::Drawable>> debug_drawables;
 
-                _ctx.step(
-                    [&](auto& proxy)
+                _ctx.step([&](auto& proxy)
                     {
                         auto& sp = proxy.system(st::spatial_partition);
                         auto& cell = sp.cell_by_pos(mpos);
@@ -174,12 +155,7 @@ namespace example
                                 debug_drawables.emplace_back(std::move(rsp2));
                             }
                         }
-                    },
-                    ecst::refresh_event::on_reclaim([](auto id)
-                        {
-                            std::cout << "reclaimed " << id << "\n";
-                        }));
-
+                    });
 
                 if(_delay > 0)
                 {
