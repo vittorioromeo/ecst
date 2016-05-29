@@ -3,9 +3,6 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <random>
-#include <iostream>
-#include <chrono>
 #include <ecst.hpp>
 #include "../test/ecst/settings_generator.hpp"
 
@@ -279,7 +276,7 @@ namespace example
 
 
 
-    constexpr auto entity_count = ecst::sz_v<10>;
+    constexpr auto entity_count = ecst::sz_v<1>;
 
     namespace ecst_setup
     {
@@ -374,19 +371,9 @@ namespace example
     namespace c = example::component;
     namespace s = example::system;
 
-    std::random_device rnd_device;
-    std::default_random_engine rnd_gen{rnd_device()};
-
-    auto rndf = [](float min, float max)
+    auto rndf = [](float, float max)
     {
-#if 1
         return max;
-        (void)min;
-        (void)max;
-#else
-        using dist_t = std::uniform_real_distribution<float>;
-        return dist_t(min, max)(rnd_gen);
-#endif
     };
 
     template <typename TContext>
@@ -397,16 +384,10 @@ namespace example
 
         void init_loops()
         {
-            std::chrono::high_resolution_clock hrc;
-            using ft_dur = std::chrono::duration<ft, std::ratio<1, 1000>>;
-
             ft dt = 1;
 
             while(true)
             {
-                auto cb = hrc.now();
-                (void)cb;
-
                 update_ctx(dt);
 
                 dt = 0.5f;

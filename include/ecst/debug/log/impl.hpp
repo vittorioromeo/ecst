@@ -10,6 +10,10 @@
 #include <ecst/aliases.hpp>
 #include "./elog.hpp"
 
+#if defined(ECST_LOG_ENABLED)
+#include <iostream>
+#endif
+
 ECST_DEBUG_NAMESPACE
 {
     namespace impl
@@ -78,6 +82,8 @@ ECST_DEBUG_NAMESPACE
             return static_if(bool_v<(TType::value >= 0)>)
                 .then([]() -> auto&
                     {
+#if defined(ECST_LOG_ENABLED)
+
                         constexpr auto logt = TType::value;
 
                         if(last_log() != logt)
@@ -89,6 +95,9 @@ ECST_DEBUG_NAMESPACE
 
                         return std::cout << "[" << tstrings()[TType::value]
                                          << "]\t";
+#else
+                        return fake_cout();
+#endif
                     })
                 .else_([]() -> auto&
                     {

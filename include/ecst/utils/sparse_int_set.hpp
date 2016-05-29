@@ -12,6 +12,8 @@
 #include <ecst/settings.hpp>
 #include <ecst/context/types.hpp>
 
+#include <iostream>
+
 ECST_NAMESPACE
 {
     template <sz_t TCapacity>
@@ -27,8 +29,8 @@ ECST_NAMESPACE
             return static_if(settings::has_fixed_entity_storage<TSettings>)
                 .then([](auto ts)
                     {
-                        return mp::type_c<fixed_set<settings::fixed_capacity(
-                            decltype(ts){})>>;
+                        auto capacity = settings::fixed_capacity(ts);
+                        return mp::type_c<fixed_set<decltype(capacity){}>>;
                     })
                 .else_([](auto)
                     {
@@ -46,6 +48,9 @@ ECST_NAMESPACE
     template <typename TSet, typename T>
     void add_range_in_set_reverse(TSet & set, T i_begin, T i_end)
     {
+        // TODO: pattern for reverse loop and search in other projs
+        if(i_end - i_begin == 0) return;
+
         for(T i(i_end - 1); i > i_begin; --i)
         {
             set.unchecked_add(i);
