@@ -33,6 +33,11 @@ ECST_CONTEXT_NAMESPACE
                         _to_match_ids.add(eid)   // .
                         ));
 
+                void del_to_match(entity_id eid) // .
+                    noexcept(noexcept(           // .
+                        _to_match_ids.erase(eid) // .
+                        ));
+
                 template <typename TF>
                 void for_to_match(TF&& f)              // .
                     noexcept(noexcept(                 // .

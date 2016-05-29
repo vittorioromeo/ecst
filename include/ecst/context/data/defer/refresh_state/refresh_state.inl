@@ -30,6 +30,15 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
+            void refresh_state<TSettings>::del_to_match(entity_id eid) // .
+                noexcept(noexcept(                                     // .
+                    _to_match_ids.erase(eid)                           // .
+                    ))
+            {
+                _to_match_ids.erase(eid);
+            }
+
+            template <typename TSettings>
             template <typename TF>
             void refresh_state<TSettings>::for_to_match(TF&& f) // .
                 noexcept(noexcept(                              // .

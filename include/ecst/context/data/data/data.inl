@@ -90,9 +90,9 @@ ECST_CONTEXT_NAMESPACE
                 {
                     instance.for_states([&rs](auto& state)
                         {
-                            state._state.for_to_kill([&rs](auto eid)
+                            state._state.for_to_kill([&rs](entity_id eid)
                                 {
-                                    rs.add_to_kill(entity_id{eid});
+                                    rs.add_to_kill(eid);
                                 });
 
                             // Clear deferred functions and to-kill sets.
@@ -105,18 +105,20 @@ ECST_CONTEXT_NAMESPACE
 
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
-                    rs.for_to_kill([&instance, &f_refresh](auto eid)
+                    rs.for_to_kill([&instance, &f_refresh](entity_id eid)
                         {
-                            instance.unsubscribe(entity_id{eid});
-                            f_refresh(refresh_event::impl::unsubscribed,
-                                instance, entity_id{eid});
+                            if(instance.unsubscribe(eid))
+                            {
+                                f_refresh(refresh_event::impl::unsubscribed,
+                                    instance, eid);
+                            }
                         });
                 });
 
-            rs.for_to_kill([this, &f_refresh](auto eid)
+            rs.for_to_kill([this, &f_refresh, &rs](entity_id eid)
                 {
-                    this->reclaim(entity_id{eid});
-                    f_refresh(refresh_event::impl::reclaimed, entity_id{eid});
+                    this->reclaim(eid);
+                    f_refresh(refresh_event::impl::reclaimed, eid);
                 });
         }
 
@@ -132,12 +134,11 @@ ECST_CONTEXT_NAMESPACE
 
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
-                    rs.for_to_match([this, &instance, &f_refresh](auto eid)
+                    rs.for_to_match(
+                        [this, &rs, &instance, &f_refresh](entity_id eid)
                         {
-                            entity_id eeid(eid);
-
                             // Get entity metadata.
-                            auto& em(this->metadata(eeid));
+                            auto& em(this->metadata(eid));
 
                             // Get entity bitset.
                             auto& ebs(em.bitset());
@@ -161,15 +162,19 @@ ECST_CONTEXT_NAMESPACE
                                         << ")\n";                  // .
                                     );
 
-                                instance.subscribe(eeid);
-                                f_refresh(refresh_event::impl::subscribed,
-                                    instance, eeid);
+                                if(instance.subscribe(eid))
+                                {
+                                    f_refresh(refresh_event::impl::subscribed,
+                                        instance, eid);
+                                }
                             }
                             else
                             {
-                                instance.unsubscribe(eeid);
-                                f_refresh(refresh_event::impl::unsubscribed,
-                                    instance, eeid);
+                                if(instance.unsubscribe(eid))
+                                {
+                                    f_refresh(refresh_event::impl::unsubscribed,
+                                        instance, eid);
+                                }
                             }
                         });
                 });

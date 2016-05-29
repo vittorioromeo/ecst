@@ -26,7 +26,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TSettings, typename TSystemSignature>
         class instance_base
         {
-        protected:
+        public:
             using system_tag_type =
                 signature::system::tag_type<TSystemSignature>;
 
@@ -59,9 +59,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
     private:
         using base_type = impl::instance_base<TSettings, TSystemSignature>;
+
+    public:
         using system_tag_type = typename base_type::system_tag_type;
         using system_type = typename base_type::system_type;
 
+    private:
         using bitset_type = bitset::dispatch<TSettings>;
 
         using state_manager_type = // .

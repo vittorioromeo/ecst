@@ -85,7 +85,7 @@ namespace example
             return slc::make(ct::c0, ct::c1);
         }
 
-        constexpr auto entity_count = ecst::sz_v<1000>;
+        constexpr auto entity_count = ecst::sz_v<3000>;
 
         constexpr auto make_ssl()
         {
@@ -114,8 +114,6 @@ namespace example
         }
     }
 
-    constexpr sz_t cycles = 10000;
-
     namespace sea = ::ecst::system_execution_adapter;
 
     std::atomic<sz_t> subs_0{0};
@@ -126,10 +124,16 @@ namespace example
 
     auto test_impl_f = [](auto& ctx)
     {
+        subs_0 = 0;
+        subs_1 = 0;
+        unsubs_0 = 0;
+        unsubs_1 = 0;
+        reclaims = 0;
+
         ctx.step(
             [&ctx](auto& proxy)
             {
-                for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
+                for(sz_t ie = 0; ie < 1000; ++ie)
                 {
                     auto e0 = proxy.create_entity();
                     proxy.add_component(ct::c0, e0);
@@ -143,35 +147,33 @@ namespace example
                 }
             },
             ecst::refresh_event::on_subscribe(st::s0,
-                [](auto&, auto)
+                [](s::s0&, auto)
                 {
                     ++subs_0;
                 }),
-            ecst::refresh_event::on_subscribe(st::s1, [](auto&, auto)
+            ecst::refresh_event::on_subscribe(st::s1, [](s::s1&, auto)
                 {
                     ++subs_1;
                 }));
 
-        TEST_ASSERT_OP(
-            subs_0.load(), ==, example::ecst_setup::entity_count * 2);
-        TEST_ASSERT_OP(
-            subs_1.load(), ==, example::ecst_setup::entity_count * 2);
+        TEST_ASSERT_OP(subs_0.load(), ==, 2000);
+        TEST_ASSERT_OP(subs_1.load(), ==, 2000);
 
         ctx.step(
             [&ctx](auto& proxy)
             {
-                for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
+                for(sz_t ie = 0; ie < 3000; ++ie)
                 {
                     proxy.kill_entity(ecst::entity_id{ie});
                 }
             },
             ecst::refresh_event::on_unsubscribe(st::s0,
-                [](auto&, auto)
+                [](s::s0&, auto)
                 {
                     ++unsubs_0;
                 }),
             ecst::refresh_event::on_unsubscribe(st::s1,
-                [](auto&, auto)
+                [](s::s1&, auto)
                 {
                     ++unsubs_1;
                 }),
@@ -180,12 +182,9 @@ namespace example
                     ++reclaims;
                 }));
 
-        TEST_ASSERT_OP(
-            unsubs_0.load(), ==, example::ecst_setup::entity_count * 2);
-        TEST_ASSERT_OP(
-            unsubs_1.load(), ==, example::ecst_setup::entity_count * 2);
-        TEST_ASSERT_OP(
-            reclaims.load(), ==, example::ecst_setup::entity_count * 3);
+        TEST_ASSERT_OP(unsubs_0.load(), ==, subs_0.load());
+        TEST_ASSERT_OP(unsubs_1.load(), ==, subs_1.load());
+        TEST_ASSERT_OP(reclaims.load(), ==, 3000);
     };
 }
 

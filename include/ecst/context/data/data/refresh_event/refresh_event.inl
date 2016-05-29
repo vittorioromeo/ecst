@@ -49,31 +49,47 @@ ECST_NAMESPACE
             };
         }
 
-        template <typename TSystemTag, typename TF>
-        auto on_subscribe(TSystemTag, TF&& f) noexcept
+        namespace impl
         {
-            using system_type = tag::system::unwrap<TSystemTag>;
+            template <bool TPredicateResult>
+            using enabler = std::enable_if_t<TPredicateResult, void>;
 
+            template <typename TInstance, typename TSystemTagToCheck>
+            struct tag_checker
+            {
+                constexpr auto operator()() const noexcept
+                {
+                    ECST_S_ASSERT_DT(tag::system::valid(TSystemTagToCheck{}));
+
+                    using system_type =
+                        typename decay_t<TInstance>::system_type;
+
+                    constexpr auto system_tag = tag::system::v<system_type>;
+                    ECST_S_ASSERT(tag::system::valid(system_tag));
+
+                    return std::is_same<ECST_DECAY_DECLTYPE(system_tag),
+                        decay_t<TSystemTagToCheck>>{};
+                }
+            };
+        }
+
+        template <typename TSystemTag, typename TF>
+        auto on_subscribe(TSystemTag st, TF&& f) noexcept
+        {
             return [f = FWD(f)](impl::subscribed_t, auto& instance, auto eid)
-                ->std::enable_if_t<
-                    std::is_same<system_type,
-                        ECST_DECAY_DECLTYPE(instance.system())>{},
-                    decltype(f(instance.system(), eid))>
+                ->impl::enabler<
+                    impl::tag_checker<decltype(instance), decltype(st)>{}()>
             {
                 return f(instance.system(), eid);
             };
         }
 
         template <typename TSystemTag, typename TF>
-        auto on_unsubscribe(TSystemTag, TF&& f) noexcept
+        auto on_unsubscribe(TSystemTag st, TF&& f) noexcept
         {
-            using system_type = tag::system::unwrap<TSystemTag>;
-
             return [f = FWD(f)](impl::unsubscribed_t, auto& instance, auto eid)
-                ->std::enable_if_t<
-                    std::is_same<system_type,
-                        ECST_DECAY_DECLTYPE(instance.system())>{},
-                    decltype(f(instance.system(), eid))>
+                ->impl::enabler<
+                    impl::tag_checker<decltype(instance), decltype(st)>{}()>
             {
                 return f(instance.system(), eid);
             };
