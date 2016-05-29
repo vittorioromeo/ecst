@@ -279,7 +279,7 @@ namespace example
 
 
 
-    constexpr auto entity_count = ecst::sz_v<1000>;
+    constexpr auto entity_count = ecst::sz_v<10>;
 
     namespace ecst_setup
     {
@@ -464,7 +464,7 @@ namespace example
                 {
                     proxy.system(st::render_colored_circle).prepare();
 
-                    proxy.execute_systems_from(st::acceleration)( // .
+                    proxy.execute_systems_from(st::acceleration, st::life)( // .
                         sea::t(
                             st::acceleration, st::velocity, st::curve, st::life)
                             .for_subtasks([dt](auto& s, auto& data)
