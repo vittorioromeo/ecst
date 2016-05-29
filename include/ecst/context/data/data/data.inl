@@ -86,44 +86,38 @@ ECST_CONTEXT_NAMESPACE
                     << "Killing marked dead entities\n"; // .
                 );
 
-            {
-                this->for_instances_sequential([&rs](auto& instance)
-                    {
-                        instance.for_states([&rs](auto& state)
-                            {
-                                state._state.for_to_kill([&rs](auto eid)
-                                    {
-                                        rs.add_to_kill(entity_id{eid});
-                                    });
+            this->for_instances_sequential([&rs](auto& instance)
+                {
+                    instance.for_states([&rs](auto& state)
+                        {
+                            state._state.for_to_kill([&rs](auto eid)
+                                {
+                                    rs.add_to_kill(entity_id{eid});
+                                });
 
-                                // Clear deferred functions and to-kill sets.
-                                state._state.clear();
-                            });
-                    });
-            }
+                            // Clear deferred functions and to-kill sets.
+                            state._state.clear();
+                        });
+                });
 
-            {
-                // Possibly due to data locality reasons, it is more efficient
-                // to iterate over `rs` twice.
+            // Possibly due to data locality reasons, it is more efficient
+            // to iterate over `rs` twice.
 
-                this->for_instances_dispatch(
-                    [this, &rs, &f_refresh](auto& instance)
-                    {
-                        rs.for_to_kill([&instance, &f_refresh](auto eid)
-                            {
-                                instance.unsubscribe(entity_id{eid});
-                                f_refresh(refresh_event::impl::unsubscribed,
-                                    instance, entity_id{eid});
-                            });
-                    });
+            this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
+                {
+                    rs.for_to_kill([&instance, &f_refresh](auto eid)
+                        {
+                            instance.unsubscribe(entity_id{eid});
+                            f_refresh(refresh_event::impl::unsubscribed,
+                                instance, entity_id{eid});
+                        });
+                });
 
-                rs.for_to_kill([this, &f_refresh](auto eid)
-                    {
-                        this->reclaim(entity_id{eid});
-                        f_refresh(
-                            refresh_event::impl::reclaimed, entity_id{eid});
-                    });
-            }
+            rs.for_to_kill([this, &f_refresh](auto eid)
+                {
+                    this->reclaim(entity_id{eid});
+                    f_refresh(refresh_event::impl::reclaimed, entity_id{eid});
+                });
         }
 
         template <typename TSettings>
