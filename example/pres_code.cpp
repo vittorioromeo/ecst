@@ -658,7 +658,8 @@ namespace example
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
-        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
+        ctx.step(
+            [&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
             {
                 proxy.execute_systems_from(st::acceleration)(
                     ft_tags.for_subtasks([dt](auto& s, auto& data)

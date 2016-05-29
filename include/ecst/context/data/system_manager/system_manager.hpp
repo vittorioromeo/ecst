@@ -48,16 +48,16 @@ ECST_CONTEXT_NAMESPACE
         public:
             /// @brief Executes `f` on all systems, sequentially.
             template <typename TF>
-            void for_systems_sequential(TF&& f);
+            void for_instances_sequential(TF&& f);
 
             /// @brief Executes `f` on all systems, in parallel.
             template <typename TF>
-            void for_systems_parallel(TF&& f);
+            void for_instances_parallel(TF&& f);
 
             /// @brief Executes `f` on all systems, in parallel if enabled by
             /// settings, sequentially otherwise.
             template <typename TF>
-            void for_systems_dispatch(TF&& f);
+            void for_instances_dispatch(TF&& f);
 
             template <typename TF>
             auto post_in_thread_pool(TF&& f);

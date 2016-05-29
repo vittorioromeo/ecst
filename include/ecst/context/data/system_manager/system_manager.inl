@@ -17,19 +17,19 @@ ECST_CONTEXT_NAMESPACE
 
         template <typename TSettings>
         template <typename TF>
-        void system_manager<TSettings>::for_systems_sequential(TF&& f)
+        void system_manager<TSettings>::for_instances_sequential(TF&& f)
         {
-            _system_storage.for_systems(FWD(f));
+            _system_storage.for_instances(FWD(f));
         }
 
         template <typename TSettings>
         template <typename TF>
-        void system_manager<TSettings>::for_systems_parallel(TF&& f)
+        void system_manager<TSettings>::for_instances_parallel(TF&& f)
         {
             counter_blocker b{_system_storage.system_count()};
             execute_and_wait_until_counter_zero(b, [ this, &b, f = FWD(f) ]()
                 {
-                    _system_storage.for_systems([this, &b, &f](auto& system)
+                    _system_storage.for_instances([this, &b, &f](auto& system)
                         {
                             this->post_in_thread_pool([this, &b, &system, &f]()
                                 {
@@ -42,16 +42,16 @@ ECST_CONTEXT_NAMESPACE
 
         template <typename TSettings>
         template <typename TF>
-        void system_manager<TSettings>::for_systems_dispatch(TF&& f)
+        void system_manager<TSettings>::for_instances_dispatch(TF&& f)
         {
             static_if(settings::refresh_parallelism_allowed<settings_type>())
                 .then([this](auto&& xf)
                     {
-                        this->for_systems_parallel(FWD(xf));
+                        this->for_instances_parallel(FWD(xf));
                     })
                 .else_([this](auto&& xf)
                     {
-                        this->for_systems_sequential(FWD(xf));
+                        this->for_instances_sequential(FWD(xf));
                     })(FWD(f));
         }
 

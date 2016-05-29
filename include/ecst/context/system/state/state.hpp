@@ -34,14 +34,41 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
-        // TODO: abstract in order to use either std::vector<function> or
-        // function_queue behind same interface
-
-        /// @brief A "deferred function" is a void-returning `std::function`
-        /// that takes a "defer proxy" by reference as its only parameter.
         template <typename TSettings>
-        using deferred_fn_type =
-            std::function<void(context::impl::defer::proxy<TSettings>&)>;
+        class deferred_fns_vector
+        {
+        private:
+            using defer_proxy_type = context::impl::defer::proxy<TSettings>;
+
+            /// @brief A "deferred function" is a void-returning `std::function`
+            /// that takes a "defer proxy" by reference as its only parameter.
+            using fn_type = std::function<void(defer_proxy_type&)>;
+
+            std::vector<fn_type> _fns;
+
+        public:
+            void clear() noexcept
+            {
+                _fns.clear();
+            }
+
+            template <typename TF>
+            void add(TF&& f)
+            {
+                _fns.emplace_back(FWD(f));
+            }
+
+            template <typename TProxy>
+            void execute_all(TProxy& proxy)
+            {
+                for(auto& f : _fns)
+                {
+                    f(proxy);
+                }
+            }
+        };
+
+        // TODO: use function_queue
 
         /// @brief A "system state" is a storage class bound to a particular
         /// subtask during system execution.
@@ -51,10 +78,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         class state : public ecst::impl::to_kill_set_wrapper<TSettings>
         {
         private:
-            using my_deferred_fn_type = deferred_fn_type<TSettings>;
             using set_type = dispatch_set<TSettings>;
 
-            std::vector<my_deferred_fn_type> _deferred_fns;
+            deferred_fns_vector<TSettings> _deferred_fns;
 
         public:
             void clear() noexcept
@@ -66,16 +92,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TF>
             void add_deferred_fn(TF&& f)
             {
-                _deferred_fns.emplace_back(FWD(f));
+                _deferred_fns.add(FWD(f));
             }
 
             template <typename TProxy>
             void execute_deferred_fns(TProxy& proxy)
             {
-                for(auto& f : _deferred_fns)
-                {
-                    f(proxy);
-                }
+                _deferred_fns.execute_all(proxy);
             }
         };
     }

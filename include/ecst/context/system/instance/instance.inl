@@ -105,16 +105,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     auto instance<TSettings, TSystemSignature>::subscribe(entity_id eid)
     {
-        // TODO: callback, optional subscription function that returns bool to
-        // ignore
         return subscribed().add(eid);
     }
 
     template <typename TSettings, typename TSystemSignature>
     auto instance<TSettings, TSystemSignature>::unsubscribe(entity_id eid)
     {
-        // TODO: callback, optional subscription function that returns bool to
-        // ignore
         return subscribed().erase(eid);
     }
 

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "./utils/do_nothing.hpp"
 #include "./utils/sparse_int_set.hpp"
 #include "./utils/macros.hpp"
 #include "./utils/scope_guard.hpp"

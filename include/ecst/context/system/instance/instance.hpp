@@ -120,18 +120,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief Returns `true` if `eid` is subscribed to the system.
         auto is_subscribed(entity_id eid) const noexcept;
 
-        /// @brief Subscribes `eid` to the system. (unchecked)
-        auto unchecked_subscribe(entity_id eid);
-
-        /// @brief Unsubscribes `eid` from the system. (unchecked)
-        auto unchecked_unsubscribe(entity_id eid);
-
         /// @brief Subscribes `eid` to the system.
         auto subscribe(entity_id eid);
 
         /// @brief Unsubscribes `eid` from the system.
         auto unsubscribe(entity_id eid);
-
 
         const auto& bitset() const noexcept;
 

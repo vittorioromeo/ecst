@@ -6,16 +6,20 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <boost/hana.hpp>
 
 ECST_NAMESPACE
 {
-    namespace bh = boost::hana;
+    namespace impl
+    {
+        struct do_nothing_t
+        {
+            template <typename... Ts>
+            constexpr auto operator()(Ts&&...) const noexcept
+            {
+            }
+        };
 
-    template <typename... Ts>
-    using decay_t = typename bh::detail::decay<Ts...>::type;
+        constexpr impl::do_nothing_t do_nothing{};
+    }
 }
 ECST_NAMESPACE_END
-
-/// @brief Alias for `decay_t<decltype(...)>`.
-#define ECST_DECAY_DECLTYPE(...) ::ecst::decay_t<decltype(__VA_ARGS__)>

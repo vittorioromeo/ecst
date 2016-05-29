@@ -8,6 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
+#include "./refresh_event.hpp"
 #include "../system_manager.hpp"
 #include "../main_storage.hpp"
 #include "../step.hpp"
@@ -39,23 +40,27 @@ ECST_CONTEXT_NAMESPACE
             refresh_state_type _refresh_state;
 
             /// @brief Executes all systems' deferred functions, sequentially.
-            template <typename TRefreshState>
-            void refresh_impl_execute_deferred(TRefreshState& rs);
+            template <typename TRefreshState, typename TFRefresh>
+            void refresh_impl_execute_deferred(
+                TRefreshState& rs, TFRefresh&& f_refresh);
 
             /// @brief Unsubscribes dead entities from systems, in parallel.
-            template <typename TRefreshState>
-            void refresh_impl_kill_entities(TRefreshState& rs);
+            template <typename TRefreshState, typename TFRefresh>
+            void refresh_impl_kill_entities(
+                TRefreshState& rs, TFRefresh&& f_refresh);
 
             /// @brief Matches new/modified entities to systems, in parallel.
-            template <typename TRefreshState>
-            void refresh_impl_match_entities(TRefreshState& rs);
+            template <typename TRefreshState, typename TFRefresh>
+            void refresh_impl_match_entities(
+                TRefreshState& rs, TFRefresh&& f_refresh);
 
             /// @brief Refreshes the context.
-            void refresh();
+            template <typename TFRefresh>
+            void refresh(TFRefresh&& f_refresh);
 
         public:
-            template <typename TF>
-            auto step(TF&& f);
+            template <typename TFStep, typename... TFsRefresh>
+            auto step(TFStep&& f_step, TFsRefresh&&... fs_refresh);
         };
     }
 }

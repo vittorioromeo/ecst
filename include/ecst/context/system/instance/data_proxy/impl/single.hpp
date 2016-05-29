@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <ecst/utils.hpp>
 #include "./base.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
@@ -38,9 +39,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TF>
             auto for_other_entities(TF&&) noexcept
             {
-                return [](auto&&...)
-                {
-                };
+                return ecst::impl::do_nothing;
             }
 
             /// @brief Iterates over all entities in the system.

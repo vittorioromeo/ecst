@@ -18,23 +18,22 @@ ECST_NAMESPACE
         struct scope_guard : public TF
         {
             template <typename TFFwd>
-            scope_guard(TFFwd&& f)                                 // .
+            ECST_ALWAYS_INLINE scope_guard(TFFwd&& f)              // .
                 noexcept(std::is_nothrow_move_constructible<TF>{}) // .
                 : TF{FWD(f)}
             {
             }
 
-            ~scope_guard() noexcept(                      // .
+            ECST_ALWAYS_INLINE ~scope_guard() noexcept(   // .
                 noexcept(std::declval<TF>().operator()()) // .
                 )
-
             {
                 this->operator()();
             }
         };
 
         template <typename TF>
-        auto make_scope_guard(TF&& f) // .
+        ECST_ALWAYS_INLINE auto make_scope_guard(TF&& f) // .
             noexcept(std::is_nothrow_move_constructible<TF>{})
         {
             return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
@@ -43,7 +42,8 @@ ECST_NAMESPACE
 }
 ECST_NAMESPACE_END
 
-// TODO: docs
+/// @brief Given a lambda, creates a scope guard that will execute it upon
+/// exiting the current scope.
 #define ECST_SCOPE_GUARD(...)               \
     auto VRM_PP_CAT(scope_guard, __LINE__)( \
         ::ecst::impl::make_scope_guard(__VA_ARGS__))

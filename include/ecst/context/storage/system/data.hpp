@@ -85,7 +85,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             }
 
             template <typename TF>
-            void for_systems(TF&& f)
+            void for_instances(TF&& f)
             {
                 bh::for_each(_storage, f);
             }
