@@ -27,9 +27,25 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             {
                 namespace sc = ecst::context::storage::component;
 
-                return mp::type_c<                                          // .
-                    sc::chunk::dynamic_buffer<TSettings, TComponentTagList> // .
-                    >;
+                // TODO:
+                return static_if(settings::has_fixed_entity_storage<TSettings>)
+                    .then([](auto s)
+                        {
+                            auto sz = settings::fixed_capacity(s);
+
+                            return mp::type_c< // .
+                                sc::chunk::fixed_buffer<TComponentTagList,
+                                    ECST_DECAY_DECLTYPE(sz)> // .
+                                >;
+                        })
+                    .else_([](auto s)
+                        {
+                            return mp::type_c<             // .
+                                sc::chunk::dynamic_buffer< // .
+                                    ECST_DECAY_DECLTYPE(s),
+                                    TComponentTagList> // .
+                                >;
+                        })(TSettings{});
             }
         };
 

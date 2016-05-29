@@ -28,8 +28,6 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto index_of_first_matching(
         TTuple && t, TPredicate && p) noexcept
     {
-        using p_type = ECST_DECAY_DECLTYPE(p);
-
         auto res = bh::fold_left(t, bh::make_pair(sz_v<0>, bh::false_c),
             [](auto&& acc, auto&& x)
             {

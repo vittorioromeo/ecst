@@ -14,18 +14,23 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
-        template <typename TComponent, typename TN>
+        template <typename TComponentTagList, typename TN>
         class fixed_buffer
         {
         public:
-            using component_type = TComponent;
+            using component_tag_list_type = TComponentTagList;
 
+        private:
+            using component_tuple_type =
+                impl::component_tuple_type<TComponentTagList>;
+
+        public:
             struct metadata
             {
             };
 
         private:
-            std::array<TComponent, TN{}> _data;
+            std::array<component_tuple_type, TN{}> _data;
 
             auto valid_index(sz_t i) const noexcept
             {
@@ -37,32 +42,37 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return vrmc::to_sz_t(eid);
             }
 
-            template <typename TSelf>
-            decltype(auto) get_impl(
-                TSelf&& self, entity_id eid, const metadata&) noexcept
+            template <typename TComponentTag, typename TSelf>
+            decltype(auto) get_impl(TComponentTag ct, TSelf&& self,
+                entity_id eid, const metadata&) noexcept
             {
+                using component_type =
+                    tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
+
                 auto i = self.entity_id_to_index(eid);
                 ECST_ASSERT(self.valid_index(i));
 
-                return vrmc::forward_like<TSelf>(_data[i]);
+                return vrmc::forward_like<TSelf>(
+                    std::get<component_type>(_data[i]));
             }
 
         public:
-            template <typename... Ts>
-                auto& get(Ts&&... xs) & noexcept
+            template <typename TComponentTag, typename... Ts>
+                auto& get(TComponentTag ct, Ts&&... xs) & noexcept
             {
-                return get_impl(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
-            template <typename... Ts>
-            const auto& get(Ts&&... xs) const& noexcept
+            template <typename TComponentTag, typename... Ts>
+            const auto& get(TComponentTag ct, Ts&&... xs) const& noexcept
             {
-                return get_impl(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
-            auto& add(entity_id eid, metadata& m) noexcept
+            template <typename TComponentTag>
+            auto& add(TComponentTag ct, entity_id eid, metadata& m) noexcept
             {
-                return get(eid, m);
+                return get(ct, eid, m);
             }
         };
     }

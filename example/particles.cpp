@@ -279,19 +279,23 @@ namespace example
 
 
 
-    constexpr auto entity_count = ecst::sz_v<1000000>;
+    constexpr auto entity_count = ecst::sz_v<1000>;
 
     namespace ecst_setup
     {
         constexpr auto make_csl()
         {
-            namespace c = example::component;
-            namespace slc = ecst::signature_list::component;
+            namespace cs = ecst::signature::component;
+            namespace csl = ecst::signature_list::component;
 
-            return slc::make(                                 // .
-                ct::position, ct::velocity, ct::acceleration, // .
-                ct::curve, ct::color,                         // .
-                ct::circle_shape, ct::life                    // .
+            return csl::make(               // .
+                cs::make(ct::position),     // .
+                cs::make(ct::velocity),     // .
+                cs::make(ct::acceleration), // .
+                cs::make(ct::curve),        // .
+                cs::make(ct::color),        // .
+                cs::make(ct::circle_shape), // .
+                cs::make(ct::life)          // .
                 );
         }
 
