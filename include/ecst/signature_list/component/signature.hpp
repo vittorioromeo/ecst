@@ -8,7 +8,6 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/tag/component.hpp>
-#include <ecst/signature/component/tag_of.hpp>
 #include <ecst/signature_list/component/is_signature_list.hpp>
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
@@ -19,7 +18,7 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         constexpr auto signature_by_tag_impl(
             TComponentSignatureList csl, TComponentTag ct)
         {
-            // TODO: needs unwrap
+            // TODO: needs unwrap?
             // ECST_S_ASSERT_DT(valid(csl));
             ECST_S_ASSERT_DT(tag::component::valid(ct));
 

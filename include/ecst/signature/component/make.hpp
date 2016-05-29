@@ -12,7 +12,7 @@
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
     template <typename... TComponentTags>
-    constexpr auto make(TComponentTags... cts)
+    constexpr auto make(TComponentTags... cts) noexcept
     {
         auto ct_list = mp::list::make(cts...);
 

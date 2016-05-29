@@ -15,19 +15,17 @@ ECST_CONTEXT_BITSET_NAMESPACE
 {
     namespace impl
     {
+        // TODO: move
         namespace impl
         {
             template <typename TComponentSignatureList>
             auto flattened_component_list_impl(
-                TComponentSignatureList csl) noexcept
+                TComponentSignatureList&& csl) noexcept
             {
-                auto t0 = bh::transform(csl, [](auto cs)
+                return bh::flatten(bh::transform(csl, [](auto cs)
                     {
-                        auto ucs = mp::unwrapped(cs);
-                        return ucs.tag_list();
-                    });
-
-                return bh::flatten(t0);
+                        return mp::unwrapped(cs).tag_list();
+                    }));
             }
         }
 

@@ -91,12 +91,6 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
                 return TComponentTagList{};
             }
         };
-
-        /*
-        /// @brief Alias for the tag type inside `TComponentSignature`.
-        template <typename TComponentSignature>
-        using tag_type = typename mp::unwrap<TComponentSignature>::tag;
-        */
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

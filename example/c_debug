@@ -5,7 +5,7 @@ time g++ -std=c++14 \
         -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
         -g \
-        -O0 \
+        -Og \
         -pedantic \
         -W \
         -Wall \

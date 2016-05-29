@@ -70,92 +70,91 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             }
 
             /// @brief Returns the chunk storing `TComponent`.
-            template <typename TComponent>
-            auto& chunk_for() noexcept
+            template <typename TComponentTag>
+            auto& chunk_for(TComponentTag ct) noexcept
             {
-                auto idx =
-                    mp::list::index_of_first_matching(_chunk_tuple, [](auto& c)
-                        {
-                            using chunk_type = ECST_DECAY_DECLTYPE(c);
+                auto idx = mp::list::index_of_first_matching(_chunk_tuple,
+                    [ct](auto& c)
+                    {
+                        using chunk_type = ECST_DECAY_DECLTYPE(c);
 
-                            using chunk_component_tag_list_type = // .
-                                typename chunk_type::component_tag_list_type;
+                        using chunk_component_tag_list_type = // .
+                            typename chunk_type::component_tag_list_type;
 
-                            return bh::contains(                 // .
-                                chunk_component_tag_list_type{}, // .
-                                tag::component::v<TComponent>);
-                        });
+                        return bh::contains(
+                            chunk_component_tag_list_type{}, ct);
+                    });
 
                 return bh::at(_chunk_tuple, idx);
             }
 
             /// @brief Executes `f` on the chunk storing `TComponent`.
-            template <typename TComponent, typename TSelf,
+            template <typename TComponentTag, typename TSelf,
                 typename TEntityChunkMetadata, typename TF>
-            decltype(auto) chunk_fn_impl(
-                TSelf&& self, entity_id eid, TEntityChunkMetadata& ecm, TF&& f)
+            decltype(auto) chunk_fn_impl(TComponentTag ct, TSelf&& self,
+                entity_id eid, TEntityChunkMetadata& ecm, TF&& f)
             {
-                decltype(auto) c(self.template chunk_for<TComponent>());
+                decltype(auto) c(self.chunk_for(ct));
                 using metadata = chunk::metadata<ECST_DECAY_DECLTYPE(c)>;
 
                 auto& chunk_md = std::get<metadata>(ecm);
-                return f(c, eid, chunk_md);
+                return f(ct, c, eid, chunk_md);
             }
 
-            template <typename TComponent, typename TSelf,
+            template <typename TComponentTag, typename TSelf,
                 typename TEntityChunkMetadata>
-            decltype(auto) get_impl(
-                TSelf&& self, entity_id eid, const TEntityChunkMetadata& ecm)
+            decltype(auto) get_impl(TComponentTag ct, TSelf&& self,
+                entity_id eid, const TEntityChunkMetadata& ecm)
             {
-                return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
-                    [](auto& xc, auto x_eid, const auto& x_md) -> decltype(auto)
+                return chunk_fn_impl(ct, FWD(self), eid, ecm,
+                    [](auto xct, auto& xc, auto x_eid,
+                                         const auto& x_md) -> decltype(auto)
                     {
-                        return xc.get(
-                            tag::component::v<TComponent>, x_eid, x_md);
+                        return xc.get(xct, x_eid, x_md);
                     });
             }
 
-            template <typename TComponent, typename TSelf,
+            template <typename TComponentTag, typename TSelf,
                 typename TEntityChunkMetadata>
-            decltype(auto) add_impl(
-                TSelf&& self, entity_id eid, TEntityChunkMetadata& ecm)
+            decltype(auto) add_impl(TComponentTag ct, TSelf&& self,
+                entity_id eid, TEntityChunkMetadata& ecm)
             {
                 ELOG(                                                    // .
                     debug::lo_component() << "Creating for eID: " << eid // .
                                           << "\n";                       // .
                     );
 
-                return chunk_fn_impl<TComponent>(FWD(self), eid, ecm,
-                    [](auto& zc, auto z_eid, auto& z_md) -> decltype(auto)
+                return chunk_fn_impl(ct, FWD(self), eid, ecm,
+                    [](auto zct, auto& zc, auto z_eid, auto& z_md) -> decltype(
+                                         auto)
                     {
-                        return zc.add(
-                            tag::component::v<TComponent>, z_eid, z_md);
+                        return zc.add(zct, z_eid, z_md);
                     });
             }
 
         public:
             /// @brief Given an "entity id" and an "entity chunk metadata",
             /// return a reference to a component.
-            template <typename TComponent, typename... Ts>
-                auto& get(Ts&&... xs) & noexcept
+            template <typename TComponentTag, typename... Ts>
+                auto& get(TComponentTag ct, Ts&&... xs) & noexcept
             {
-                return get_impl<TComponent>(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
             /// @brief Given an "entity id" and an "entity chunk metadata",
             /// return a const reference to a component.
-            template <typename TComponent, typename... Ts>
-            const auto& get(Ts&&... xs) const& noexcept
+            template <typename TComponentTag, typename... Ts>
+            const auto& get(TComponentTag ct, Ts&&... xs) const& noexcept
             {
-                return get_impl<TComponent>(*this, FWD(xs)...);
+                return get_impl(ct, *this, FWD(xs)...);
             }
 
             /// @brief Given an "entity id" and an "entity chunk metadata",
             /// creates a component and returns a reference to it.
-            template <typename TComponent, typename... Ts>
-                decltype(auto) add(Ts&&... xs) & noexcept
+            template <typename TComponentTag, typename... Ts>
+                decltype(auto) add(TComponentTag ct, Ts&&... xs) & noexcept
             {
-                return add_impl<TComponent>(*this, FWD(xs)...);
+                return add_impl(ct, *this, FWD(xs)...);
             }
         };
     }

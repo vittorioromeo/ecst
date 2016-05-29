@@ -51,45 +51,40 @@ ECST_NAMESPACE
 
         namespace impl
         {
-            template <bool TPredicateResult>
-            using enabler = std::enable_if_t<TPredicateResult, void>;
-
             template <typename TInstance, typename TSystemTagToCheck>
-            struct tag_checker
+            constexpr auto check_tag() noexcept
             {
-                constexpr auto operator()() const noexcept
-                {
-                    ECST_S_ASSERT_DT(tag::system::valid(TSystemTagToCheck{}));
+                ECST_S_ASSERT_DT(tag::system::valid(TSystemTagToCheck{}));
 
-                    using system_type =
-                        typename decay_t<TInstance>::system_type;
+                using system_type = typename decay_t<TInstance>::system_type;
 
-                    constexpr auto system_tag = tag::system::v<system_type>;
-                    ECST_S_ASSERT(tag::system::valid(system_tag));
+                constexpr auto system_tag = tag::system::v<system_type>;
+                ECST_S_ASSERT(tag::system::valid(system_tag));
 
-                    return std::is_same<ECST_DECAY_DECLTYPE(system_tag),
-                        decay_t<TSystemTagToCheck>>{};
-                }
-            };
+                return std::is_same<ECST_DECAY_DECLTYPE(system_tag),
+                    decay_t<TSystemTagToCheck>>{};
+            }
+
+            template <typename TInstance, typename TSystemTag>
+            using enable_matching_instance =
+                std::enable_if_t<check_tag<TInstance, TSystemTag>()>;
         }
 
         template <typename TSystemTag, typename TF>
-        auto on_subscribe(TSystemTag st, TF&& f) noexcept
+        auto on_subscribe(TSystemTag, TF&& f) noexcept
         {
             return [f = FWD(f)](impl::subscribed_t, auto& instance, auto eid)
-                ->impl::enabler<
-                    impl::tag_checker<decltype(instance), decltype(st)>{}()>
+                ->impl::enable_matching_instance<decltype(instance), TSystemTag>
             {
                 return f(instance.system(), eid);
             };
         }
 
         template <typename TSystemTag, typename TF>
-        auto on_unsubscribe(TSystemTag st, TF&& f) noexcept
+        auto on_unsubscribe(TSystemTag, TF&& f) noexcept
         {
             return [f = FWD(f)](impl::unsubscribed_t, auto& instance, auto eid)
-                ->impl::enabler<
-                    impl::tag_checker<decltype(instance), decltype(st)>{}()>
+                ->impl::enable_matching_instance<decltype(instance), TSystemTag>
             {
                 return f(instance.system(), eid);
             };
