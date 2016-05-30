@@ -14,4 +14,5 @@ time clang++ -std=c++14 \
         -lsfml-system \
         -lsfml-graphics \
         -lsfml-window \
+        -fdiagnostics-color=always \
         $1 -o /tmp/x.x && echo "Compiled." && /tmp/x.x "${@:2}"
