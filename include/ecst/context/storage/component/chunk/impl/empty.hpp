@@ -8,6 +8,8 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 
+// TODO: add to component signature
+
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk

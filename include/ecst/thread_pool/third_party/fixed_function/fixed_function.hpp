@@ -80,7 +80,7 @@ ECST_NAMESPACE
 
         /**
          * @brief fixed_function Constructor from functional object.
-         * @param object Functor object will be stored in the internal storage
+         * @param f Functor object will be stored in the internal storage
          * using move constructor. Unmovable objects are prohibited explicitly.
          */
         template <typename TFFwd>

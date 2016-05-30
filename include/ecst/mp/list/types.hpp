@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <tuple>
-#include <utility>
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
 
@@ -14,13 +12,17 @@ ECST_MP_LIST_NAMESPACE
 {
     namespace impl
     {
-        // A `type_list` is an `std::tuple`.
+        // A `type_list` is an `bh::basic_tuple`.
         template <typename... Ts>
-        using type_list = std::tuple<Ts...>;
+        using type_list = bh::basic_tuple<Ts...>;
 
         // An empty list is an empty `type_list`.
         using empty_type_list = type_list<>;
     }
+
+    // Type of `type_list<Ts...>`.
+    template <typename... Ts>
+    using t = impl::type_list<Ts...>;
 
     // Variable template for `type_list`.
     template <typename... Ts>

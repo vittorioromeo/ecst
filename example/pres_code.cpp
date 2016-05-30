@@ -39,15 +39,10 @@
 //   (inner parallelism allowed)
 //   (depends on: Keep in bounds)
 //
-// * Spatial filler: reads the pairs produced by Spatial partition and fills
-//                   the 2D grid data structure.
-//   (inner parallelism disallowed)
-//   (depends on: Spatial partition)
-//
 // * Collision: detects collisions between particles and produces lists of
 //              contacts that will be later evaluated to solve the collisions.
 //   (inner parallelism allowed)
-//   (depends on: Spatial filler)
+//   (depends on: Spatial partition)
 //
 // * Solve contacts: reads the contacts produced by Collision and solves them
 //                   by moving particles and changing their velocities.
@@ -63,9 +58,9 @@ namespace example
 {
     // Boundaries of the simulation.
     constexpr auto left_bound = 0;
-    constexpr auto right_bound = 1024;
+    constexpr auto right_bound = 1440;
     constexpr auto top_bound = 0;
-    constexpr auto bottom_bound = 768;
+    constexpr auto bottom_bound = 900;
 
     // Data of a collision contact.
     struct contact
@@ -145,30 +140,32 @@ namespace example
         // With tags:
         data.get(ct::position, eid);
     */
+}
 
-    // Component tags, in namespace `example::ct`.
-    EXAMPLE_COMPONENT_TAG(acceleration);
-    EXAMPLE_COMPONENT_TAG(velocity);
-    EXAMPLE_COMPONENT_TAG(position);
-    EXAMPLE_COMPONENT_TAG(circle);
-    EXAMPLE_COMPONENT_TAG(color);
+// Component tags, in namespace `example::ct`.
+EXAMPLE_COMPONENT_TAG(acceleration);
+EXAMPLE_COMPONENT_TAG(velocity);
+EXAMPLE_COMPONENT_TAG(position);
+EXAMPLE_COMPONENT_TAG(circle);
+EXAMPLE_COMPONENT_TAG(color);
 
-    // A macro is used to define tags to suppress "unused variable" warnings and
-    // to avoid code repetition. Essentially, it expands to:
-    /*
-        constexpr auto x = ecst::signature::component::tag<c::x>;
-    */
+// A macro is used to define tags to suppress "unused variable" warnings and
+// to avoid code repetition. Essentially, it expands to:
+/*
+    constexpr auto x = ecst::tag::component::vc::x>;
+*/
 
-    // System tags, in namespace `example::st`.
-    EXAMPLE_SYSTEM_TAG(acceleration);
-    EXAMPLE_SYSTEM_TAG(velocity);
-    EXAMPLE_SYSTEM_TAG(keep_in_bounds);
-    EXAMPLE_SYSTEM_TAG(spatial_partition);
-    EXAMPLE_SYSTEM_TAG(spatial_filler);
-    EXAMPLE_SYSTEM_TAG(collision);
-    EXAMPLE_SYSTEM_TAG(solve_contacts);
-    EXAMPLE_SYSTEM_TAG(render_colored_circle);
+// System tags, in namespace `example::st`.
+EXAMPLE_SYSTEM_TAG(acceleration);
+EXAMPLE_SYSTEM_TAG(velocity);
+EXAMPLE_SYSTEM_TAG(keep_in_bounds);
+EXAMPLE_SYSTEM_TAG(spatial_partition);
+EXAMPLE_SYSTEM_TAG(collision);
+EXAMPLE_SYSTEM_TAG(solve_contacts);
+EXAMPLE_SYSTEM_TAG(render_colored_circle);
 
+namespace example
+{
     // System definitions.
     namespace s
     {
@@ -371,24 +368,6 @@ namespace example
             }
         };
 
-        // This single-threaded system fills the spatial partitioning data
-        // structure.
-        struct spatial_filler
-        {
-            template <typename TData>
-            void execute(TData& data)
-            {
-                data.for_previous_outputs(st::spatial_partition,
-                    [](auto& s, auto& sp_vector)
-                    {
-                        for(const auto& x : sp_vector)
-                        {
-                            s.add_sp(x);
-                        }
-                    });
-            }
-        };
-
         // This system detects collisions between particles and produces an
         // output vector of `contact` instances.
         struct collision
@@ -422,11 +401,11 @@ namespace example
                                     data.get(ct::circle, eid2)._radius;
 
                                 // Check for a circle-circle collision.
-                                auto sd = squared_distance(p0, p1);
-                                if(sd <= square(r0 + r1))
+                                auto sd = distance(p0, p1);
+                                if(sd <= r0 + r1)
                                 {
                                     // Emplace a `contact` in the output.
-                                    out.emplace_back(eid, eid2, std::sqrt(sd));
+                                    out.emplace_back(eid, eid2, sd);
                                 }
                             });
                     });
@@ -461,7 +440,7 @@ namespace example
                                 data.get(ct::circle, x._e1)._radius;
 
                             // Solve.
-                            solve_penetration(x, p0, v0, r0, p1, v1, r1);
+                            solve_penetration(x._dist, p0, v0, r0, p1, v1, r1);
                         }
                     });
             }
@@ -518,22 +497,41 @@ namespace example
     }
 
     // Compile-time `std::size_t` entity limit.
-    constexpr auto entity_limit = ecst::sz_v<50000>;
+    constexpr auto entity_limit = ecst::sz_v<65536>;
 
     // Compile-time initial particle count.
-    constexpr auto initial_particle_count = ecst::sz_v<20000>;
+    constexpr auto initial_particle_count = ecst::sz_v<50000>;
 
     namespace ecst_setup
     {
         // Builds and returns a "component signature list".
         constexpr auto make_csl()
         {
-            namespace slc = ecst::signature_list::component;
+            namespace cs = ecst::signature::component;
+            namespace csl = ecst::signature_list::component;
 
-            return slc::v<                                 // .
-                c::position, c::velocity, c::acceleration, // .
-                c::color, c::circle                        // .
-                >;
+            // Store `c::acceleration`, `c::velocity` and `c::position` in three
+            // separate contiguous buffers (SoA).
+            constexpr auto cs_acceleration = // .
+                cs::make(ct::acceleration).contiguous_buffer();
+
+            constexpr auto cs_velocity = // .
+                cs::make(ct::velocity).contiguous_buffer();
+
+            constexpr auto cs_position = // .
+                cs::make(ct::position).contiguous_buffer();
+
+            // Store `c::color` and `c::circle` in the same contiguous buffer,
+            // interleaved (AoS).
+            constexpr auto cs_rendering = // .
+                cs::make(ct::color, ct::circle).contiguous_buffer();
+
+            return csl::make(    // .
+                cs_acceleration, // .
+                cs_velocity,     // .
+                cs_position,     // .
+                cs_rendering     // .
+                );
         }
 
         // Builds and returns a "system signature list".
@@ -547,117 +545,75 @@ namespace example
             namespace ips = ecst::inner_parallelism::strategy;
             namespace ipc = ecst::inner_parallelism::composer;
             constexpr auto none = ips::none::v();
-            constexpr auto par = ips::split_evenly_fn::v_cores();
+            constexpr auto split_evenly_per_core =
+                ips::split_evenly_fn::v_cores();
 
             // Acceleration system.
             // * Multithreaded.
             // * No dependencies.
-            constexpr auto ssig_acceleration =    // .
-                ss::make<s::acceleration>(        // .
-                    par,                          // .
-                    ss::no_dependencies,          // .
-                    ss::component_use(            // .
-                        ss::mutate<c::velocity>,  // .
-                        ss::read<c::acceleration> // .
-                        ),                        // .
-                    ss::output::none              // .
-                    );
+            constexpr auto ssig_acceleration =          // .
+                ss::make(st::acceleration)              // .
+                    .parallelism(split_evenly_per_core) // .
+                    .read(ct::acceleration)             // .
+                    .write(ct::velocity);               // .
 
             // Velocity system.
             // * Multithreaded.
-            constexpr auto ssig_velocity =           // .
-                ss::make<s::velocity>(               // .
-                    par,                             // .
-                    ss::depends_on<s::acceleration>, // .
-                    ss::component_use(               // .
-                        ss::mutate<c::position>,     // .
-                        ss::read<c::velocity>        // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
-
+            constexpr auto ssig_velocity =              // .
+                ss::make(st::velocity)                  // .
+                    .parallelism(split_evenly_per_core) // .
+                    .dependencies(st::acceleration)     // .
+                    .read(ct::velocity)                 // .
+                    .write(ct::position);               // .
 
             // Keep in bounds system.
             // * Multithreaded.
-            constexpr auto ssig_keep_in_bounds = // .
-                ss::make<s::keep_in_bounds>(     // .
-                    par,                         // .
-                    ss::depends_on<s::velocity>, // .
-                    ss::component_use(           // .
-                        ss::mutate<c::velocity>, // .
-                        ss::mutate<c::position>, // .
-                        ss::read<c::circle>      // .
-                        ),                       // .
-                    ss::output::none             // .
-                    );
+            constexpr auto ssig_keep_in_bounds =        // .
+                ss::make(st::keep_in_bounds)            // .
+                    .parallelism(split_evenly_per_core) // .
+                    .dependencies(st::velocity)         // .
+                    .read(ct::circle)                   // .
+                    .write(ct::velocity, ct::position); // .
 
             // Spatial partition system.
             // * Multithreaded.
             // * Output: `std::vector<sp_data>`.
-            constexpr auto ssig_spatial_partition =        // .
-                ss::make<s::spatial_partition>(            // .
-                    par,                                   // .
-                    ss::depends_on<s::keep_in_bounds>,     // .
-                    ss::component_use(                     // .
-                        ss::read<c::position>,             // .
-                        ss::read<c::circle>                // .
-                        ),                                 // .
-                    ss::output::data<std::vector<sp_data>> // .
-                    );
-
-            // Spatial partition spatial_filler system.
-            // * Singlethreaded.
-            constexpr auto ssig_spatial_filler =          // .
-                ss::make<s::spatial_filler>(              // .
-                    none,                                 // .
-                    ss::depends_on<s::spatial_partition>, // .
-                    ss::no_component_use,                 // .
-                    ss::output::none                      // .
-                    );
+            constexpr auto ssig_spatial_partition =            // .
+                ss::make(st::spatial_partition)                // .
+                    .parallelism(split_evenly_per_core)        // .
+                    .dependencies(st::keep_in_bounds)          // .
+                    .read(ct::position, ct::circle)            // .
+                    .output(ss::output<std::vector<sp_data>>); // .
 
             // Collision detection system.
             // * Multithreaded.
             // * Output: `std::vector<contact>`.
-            constexpr auto ssig_collision =                // .
-                ss::make<s::collision>(                    // .
-                    par,                                   // .
-                    ss::depends_on<s::spatial_filler>,     // .
-                    ss::component_use(                     // .
-                        ss::mutate<c::velocity>,           // .
-                        ss::mutate<c::position>,           // .
-                        ss::read<c::circle>                // .
-                        ),                                 // .
-                    ss::output::data<std::vector<contact>> // .
-                    );
+            constexpr auto ssig_collision =                    // .
+                ss::make(st::collision)                        // .
+                    .parallelism(split_evenly_per_core)        // .
+                    .dependencies(st::spatial_partition)       // .
+                    .read(ct::circle)                          // .
+                    .write(ct::position, ct::velocity)         // .
+                    .output(ss::output<std::vector<contact>>); // .
 
             // Solve contacts system.
             // * Singlethreaded.
-            constexpr auto ssig_solve_contacts =  // .
-                ss::make<s::solve_contacts>(      // .
-                    none,                         // .
-                    ss::depends_on<s::collision>, // .
-                    ss::component_use(            // .
-                        ss::mutate<c::velocity>,  // .
-                        ss::mutate<c::position>,  // .
-                        ss::read<c::circle>       // .
-                        ),                        // .
-                    ss::output::none              // .
-                    );
+            constexpr auto ssig_solve_contacts =        // .
+                ss::make(st::solve_contacts)            // .
+                    .parallelism(none)                  // .
+                    .dependencies(st::collision)        // .
+                    .read(ct::circle)                   // .
+                    .write(ct::velocity, ct::position); // .
 
             // Render colored circle system.
             // * Multithreaded.
             // * Output: `std::vector<sf::Vertex>`.
-            constexpr auto ssig_render_colored_circle =       // .
-                ss::make<s::render_colored_circle>(           // .
-                    par,                                      // .
-                    ss::depends_on<s::solve_contacts>,        // .
-                    ss::component_use(                        // .
-                        ss::read<c::circle>,                  // .
-                        ss::read<c::position>,                // .
-                        ss::read<c::color>                    // .
-                        ),                                    // .
-                    ss::output::data<std::vector<sf::Vertex>> // .
-                    );
+            constexpr auto ssig_render_colored_circle =           // .
+                ss::make(st::render_colored_circle)               // .
+                    .parallelism(split_evenly_per_core)           // .
+                    .dependencies(st::solve_contacts)             // .
+                    .read(ct::circle, ct::position, ct::color)    // .
+                    .output(ss::output<std::vector<sf::Vertex>>); // .
 
             // Build and return the "system signature list".
             return sls::make(              // .
@@ -665,7 +621,6 @@ namespace example
                 ssig_velocity,             // .
                 ssig_keep_in_bounds,       // .
                 ssig_spatial_partition,    // .
-                ssig_spatial_filler,       // .
                 ssig_collision,            // .
                 ssig_solve_contacts,       // .
                 ssig_render_colored_circle // .
@@ -716,43 +671,42 @@ namespace example
     template <typename TContext, typename TRenderTarget>
     void update_ctx(TContext& ctx, TRenderTarget& rt, ft dt)
     {
-        ctx.step([&rt, dt](auto& proxy)
-            {
-                proxy.system(st::spatial_partition).clear_cells();
+        namespace sea = ::ecst::system_execution_adapter;
 
-                proxy.execute_systems_overload( // .
-                    [dt](s::acceleration& s, auto& data)
-                    {
-                        s.process(dt, data);
-                    },
-                    [dt](s::velocity& s, auto& data)
-                    {
-                        s.process(dt, data);
-                    },
-                    [](s::keep_in_bounds& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::spatial_partition& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::spatial_filler& s, auto& data)
-                    {
-                        s.execute(data);
-                    },
-                    [](s::collision& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::solve_contacts& s, auto& data)
-                    {
-                        s.process(data);
-                    },
-                    [](s::render_colored_circle& s, auto& data)
-                    {
-                        s.process(data);
-                    });
+        auto ft_tags = sea::t(st::acceleration, st::velocity);
+        auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
+            st::solve_contacts, st::render_colored_circle);
+
+        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
+            {
+                proxy.execute_systems_from(st::acceleration)(
+                    ft_tags.for_subtasks([dt](auto& s, auto& data)
+                        {
+                            s.process(dt, data);
+                        }),
+                    nonft_tags.for_subtasks([](auto& s, auto& data)
+                        {
+                            s.process(data);
+                        }),
+                    sea::t(st::spatial_partition)
+                        .detailed_instance([&proxy](auto& i, auto& executor)
+                            {
+                                auto& s(i.system());
+                                s.clear_cells();
+
+                                executor.for_subtasks([&s](auto& data)
+                                    {
+                                        s.process(data);
+                                    });
+
+                                i.for_outputs([](auto& xs, auto& sp_vector)
+                                    {
+                                        for(const auto& x : sp_vector)
+                                        {
+                                            xs.add_sp(x);
+                                        }
+                                    });
+                            }));
 
                 proxy.for_system_outputs(st::render_colored_circle,
                     [&rt](auto&, auto& va)
@@ -776,16 +730,22 @@ int main()
     namespace ss = ecst::scheduler;
 
     // Define ECST context settings.
-    constexpr auto s = ecst::settings::make(            // .
-        cs::multithreaded(cs::allow_inner_parallelism), // .
-        cs::fixed<entity_limit>,                        // .
-        make_csl(),                                     // .
-        make_ssl(),                                     // .
-        cs::scheduler<ss::s_atomic_counter>             // .
-        );
+    constexpr auto s =                        // .
+        ecst::settings::make()                // .
+            .allow_inner_parallelism()        // .
+            .fixed_entity_limit(entity_limit) // .
+            .component_signatures(make_csl()) // .
+            .system_signatures(make_ssl())    // .
+            .scheduler(cs::scheduler<ss::s_atomic_counter>);
+
+
+    using ssss = decltype(s);
+    struct hs : public ssss
+    {
+    };
 
     // Create an ECST context.
-    auto ctx = ecst::context::make_uptr(s);
+    auto ctx = ecst::context::make_uptr(hs{});
 
     // Run the simulation.
     run_simulation(*ctx);

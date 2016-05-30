@@ -18,6 +18,7 @@
 #include <ecst/context/types.hpp>
 #include <ecst/context/bitset.hpp>
 #include "./instance.hpp"
+#include "./data_proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -25,7 +26,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto ECST_PURE_FN instance<TSettings, TSystemSignature>::nth_subscribed(
         sz_t n) noexcept
     {
-        return _subscribed.at(n);
+        return entity_id{_subscribed.at(n)};
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -107,41 +108,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <typename TContext>
-    auto ECST_PURE_FN
-    instance<TSettings, TSystemSignature>::make_entity_range_data(
-        TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept
-    {
-        // Entity IDs provider functions.
-        auto erp = make_entity_range_provider(i_begin, i_end);
-        auto aep = make_all_entity_provider();
-        auto oep = make_other_entity_range_provider(i_begin, i_end);
-
-        // Entity counts.
-        auto erc = entity_range_count(i_begin, i_end);
-        auto aec = all_entity_count();
-        auto oec = other_entity_range_count(i_begin, i_end);
-
-        // Execution data instance.
-        // The bound state instance is retrieved through`state_idx`.
-        return make_data(   // .
-            std::move(erp), // .
-            erc,            // .
-                            // .
-            std::move(aep), // .
-            aec,            // .
-                            // .
-            std::move(oep), // .
-            oec,            // .
-                            // .
-            ctx,            // .
-            [ this, state_idx ]() -> auto&
-            {
-                return this->nth_state(state_idx);
-            });
-    }
-
-    template <typename TSettings, typename TSystemSignature>
     template <typename TCounterBlocker, typename TContext>
     auto ECST_PURE_FN instance<TSettings,
         TSystemSignature>::make_slice_executor(TCounterBlocker & cb,
@@ -149,11 +115,24 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         return [this, &cb, &ctx, state_idx, i_begin, i_end](auto&& f)
         {
-            auto data =
-                this->make_entity_range_data(ctx, state_idx, i_begin, i_end);
+            // Create multi-subtask data proxy.
+            auto dp = data_proxy::make_multi<TSystemSignature>(       // .
+                data_proxy::make_multi_functions(                     // .
+                    make_entity_range_provider(i_begin, i_end),       // .
+                    make_all_entity_provider(),                       // .
+                    make_other_entity_range_provider(i_begin, i_end), // .
+                    [ this, state_idx ]() -> auto&                    // .
+                    {                                                 // .
+                        return this->nth_state(state_idx);            // .
+                    }),                                               // .
+                ctx,                                                  // .
+                entity_range_count(i_begin, i_end),                   // .
+                all_entity_count(),                                   // .
+                other_entity_range_count(i_begin, i_end)              // .
+                );
 
             // Executes the processing function over the slice of entities.
-            this->execute_subtask_and_decrement_counter(cb, data, f);
+            this->execute_subtask_and_decrement_counter(cb, dp, f);
         };
     }
 

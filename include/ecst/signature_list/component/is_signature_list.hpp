@@ -7,26 +7,15 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/component.hpp>
+#include <ecst/signature/component/valid.hpp>
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename T>
-        auto is_signature_list_impl()
-        {
-            return mp::list::all_match(T{}, [](auto sx)
-                {
-                    return signature::component::is_signature(sx);
-                });
-        }
-    }
-
     template <typename T>
-    constexpr auto is_signature_list(T)
+    constexpr auto valid(T && x) noexcept
     {
-        return decltype(impl::is_signature_list_impl<T>()){};
+        return bh::all_of(
+            bh::transform(x, mp::unwrapped), signature::component::valid);
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

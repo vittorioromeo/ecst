@@ -12,8 +12,8 @@
 #include <ecst/mp.hpp>
 #include <ecst/signature_list.hpp>
 #include <ecst/settings.hpp>
-#include <ecst/context/scheduler/atomic_counter/task_group.hpp>
-#include <ecst/context/scheduler/atomic_counter/utils.hpp>
+#include "./task_group.hpp"
+#include "./utils.hpp"
 
 ECST_SCHEDULER_NAMESPACE
 {
@@ -28,56 +28,65 @@ ECST_SCHEDULER_NAMESPACE
     class s_atomic_counter
     {
     private:
-        static constexpr auto ssl =
-            settings::system_signature_list(TSettings{});
+        static constexpr auto ssl()
+        {
+            return settings::system_signature_list(TSettings{});
+        }
 
-        impl::sac::impl::task_group_type<decltype(ssl)> _task_group;
+        impl::sac::impl::task_group_type<decltype(ssl())> _task_group;
 
         /// @brief Resets all dependency atomic counters.
         void reset() noexcept
         {
-            impl::sac::reset_task_group_from_ssl(ssl, _task_group);
+            impl::sac::reset_task_group_from_ssl(ssl(), _task_group);
         }
 
-        template <typename TContext, typename TBlocker, typename TF>
-        void start_execution(TContext& ctx, TBlocker& b, TF&& f)
+        template <typename TContext, typename TStartSystemTagList,
+            typename TBlocker, typename TF>
+        void start_execution(
+            TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF&& f)
         {
-            signature_list::system::for_indepedent_ids(ssl, // .
-                [this, &ctx, &b, &f](auto s_id)
+            namespace sls = signature_list::system;
+
+            // Execution can only be started from independent systems.
+            ECST_S_ASSERT(tag::system::is_list(sstl));
+            ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
+
+            bh::for_each(sstl, [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
                 {
-                    ctx.post_in_thread_pool([this, s_id, &ctx, &b, &f]
+                    auto sid = sls::id_by_tag(this->ssl(), st);
+
+                    ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]() mutable
                         {
                             this->_task_group.start_from_task_id(
-                                b, s_id, ctx, f);
+                                b, sid, ctx, f);
                         });
                 });
         }
 
     public:
-        s_atomic_counter() = default;
-        ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(s_atomic_counter);
-
-        template <typename TSystemStorage>
-        void initialize(TSystemStorage&)
+        template <typename TContext, typename TStartSystemTagList, typename TF>
+        void execute(TContext& ctx, TStartSystemTagList sstl, TF&& f)
         {
-            reset();
-        }
+            ECST_S_ASSERT(tag::system::is_list(sstl));
 
-        template <typename TContext, typename TF>
-        void execute(TContext& ctx, TF&& f)
-        {
             reset();
+
+            // Number of unique nodes traversed starting from every node in
+            // `sstl`.
+            constexpr auto chain_size(
+                signature_list::system::chain_size(ssl(), sstl));
 
             // Aggregates the required synchronization objects.
-            counter_blocker b{mp::list::size(ssl)};
+            counter_blocker b(chain_size);
 
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
             execute_and_wait_until_counter_zero(b,
-                [ this, &ctx, &b, f = FWD(f) ]
+                [ this, &ctx, &b, sstl, f = FWD(f) ]() mutable
                 {
-                    this->start_execution(ctx, b, f);
+                    this->start_execution(ctx, sstl, b, f);
                 });
         }
     };

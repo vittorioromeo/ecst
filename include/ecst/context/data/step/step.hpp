@@ -16,12 +16,6 @@ ECST_CONTEXT_NAMESPACE
         template <typename TSettings>
         class data;
 
-        namespace defer
-        {
-            template <typename TSettings>
-            class refresh_state;
-        }
-
         namespace step
         {
             template <typename TSettings>
@@ -36,13 +30,8 @@ ECST_CONTEXT_NAMESPACE
             public:
                 proxy(context_type&, refresh_state_type&) noexcept;
 
-                // TODO: generalize system execution steps.
-
-                template <typename TF>
-                void execute_systems(TF&& f);
-
-                template <typename... TFs>
-                void execute_systems_overload(TFs&&... fs);
+                template <typename... TStartSystemTags>
+                auto execute_systems_from(TStartSystemTags... st);
             };
         }
     }

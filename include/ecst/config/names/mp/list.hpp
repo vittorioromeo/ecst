@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <ecst/config/names/mp/mp.hpp>
+#include "./mp.hpp"
 
 #define ECST_IMPL_MP_LIST_NAMESPACE \
     ECST_MP_NAMESPACE               \

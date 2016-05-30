@@ -14,7 +14,7 @@ ECST_NAMESPACE
     /// @brief Wrapper around `std::atomic<T>` that allows move operations.
     /// @details Moves are handled by calling `std::atomic<T>::load()`.
     template <typename T>
-    class movable_atomic : public ecst::atomic<T>
+    class movable_atomic final : public ecst::atomic<T>
     {
     private:
         using base_type = ecst::atomic<T>;

@@ -7,7 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/system/tag.hpp>
+#include <ecst/tag/system.hpp>
 #include <ecst/signature/system/tag_of.hpp>
 #include <ecst/signature_list/system/is_signature_list.hpp>
 
@@ -19,10 +19,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         constexpr auto signature_by_tag_impl(
             TSystemSignatureList ssl, TSystemTag st)
         {
-            ECST_S_ASSERT_DT(is_signature_list(ssl));
-            ECST_S_ASSERT_DT(signature::system::is_tag(st));
+            ECST_S_ASSERT_DT(valid(ssl));
+            ECST_S_ASSERT_DT(tag::system::valid(st));
 
-            return mp::list::find_first_matching(ssl, [=](auto x_ssig)
+            return *bh::find_if(ssl, [st](auto x_ssig)
                 {
                     return mp::same_type_decay(
                         signature::system::tag_of(x_ssig), st);
@@ -41,14 +41,14 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename TSystem, typename TSystemSignatureList>
     constexpr auto signature_by_type(TSystemSignatureList ssl)
     {
-        return signature_by_tag(ssl, signature::system::tag<TSystem>);
+        return signature_by_tag(ssl, tag::system::v<TSystem>);
     }
 
     /// @brief Given a system ID `id`, returns its signature.
     template <typename TSystemSignatureList, typename TID>
     constexpr auto signature_by_id(TSystemSignatureList ssl, TID id)
     {
-        return mp::list::at(ssl, id);
+        return bh::at(ssl, id);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

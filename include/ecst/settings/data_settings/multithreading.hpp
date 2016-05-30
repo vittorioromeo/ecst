@@ -14,74 +14,9 @@ ECST_SETTINGS_NAMESPACE
 {
     namespace impl
     {
-        namespace system_parallelism
-        {
-            struct base
-            {
-            };
-
-            struct enabled : base
-            {
-            };
-
-            struct disabled : base
-            {
-            };
-
-            /// @brief Evaluates to true if `T` is a valid system parallelism
-            /// policy.
-            template <typename T>
-            constexpr auto is = std::is_base_of<base, T>{};
-        }
-
-        namespace threading
-        {
-            struct base
-            {
-            };
-
-            template <typename TSystemParallelism>
-            struct multi : base
-            {
-                ECST_S_ASSERT(system_parallelism::is<TSystemParallelism>);
-                using system_parallelism = TSystemParallelism;
-            };
-
-            struct single : base
-            {
-            };
-
-            /// @brief Evaluates to true if `T` is a valid multithreading
-            /// policy.
-            template <typename T>
-            constexpr auto is = std::is_base_of<base, T>{};
-        }
-
-        template <typename TMultithreading>
-        constexpr auto allows_inner_parallelism()
-        {
-            return std::is_same<                             // .
-                system_parallelism::enabled,                 // .
-                typename TMultithreading::system_parallelism //
-                >{};
-        }
-    }
-
-    constexpr auto allow_inner_parallelism =
-        impl::system_parallelism::enabled{};
-
-    constexpr auto disallow_inner_parallelism =
-        impl::system_parallelism::disabled{};
-
-    constexpr auto singlethreaded()
-    {
-        return impl::threading::single{};
-    }
-
-    template <typename TSystemParallelism>
-    constexpr auto multithreaded(TSystemParallelism)
-    {
-        return impl::threading::multi<TSystemParallelism>{};
+        constexpr auto v_singlethreaded = sz_v<0>;
+        constexpr auto v_allow_inner_parallelism = sz_v<1>;
+        constexpr auto v_disallow_inner_parallelism = sz_v<2>;
     }
 }
 ECST_SETTINGS_NAMESPACE_END

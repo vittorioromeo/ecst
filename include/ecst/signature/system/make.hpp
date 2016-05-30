@@ -7,55 +7,12 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/system/data.hpp>
-#include <ecst/signature/system/settings.hpp>
+#include "./data.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
-    template <                       // .
-        typename TTag,               // .
-        typename TParallelizability, // .
-        typename TTagDependencyList, // .
-        typename TComponentUseList,  // .
-        typename TOutput             // .
-        >
-    constexpr auto make_by_tag( // .
-        TTag,                   // .
-        TParallelizability,     // .
-        TTagDependencyList,     // .
-        TComponentUseList,      // .
-        TOutput                 // .
-        )
-    {
-        return impl::data<      // .
-            TTag,               // .
-            TParallelizability, // .
-            TTagDependencyList, // .
-            TComponentUseList,  // .
-            TOutput             // .
-            >{};
-    }
-
-    template <                       // .
-        typename T,                  // .
-        typename TParallelizability, // .
-        typename TTagDependencyList, // .
-        typename TComponentUseList,  // .
-        typename TOutput             // .
-        >
-    constexpr auto make(    // .
-        TParallelizability, // .
-        TTagDependencyList, // .
-        TComponentUseList,  // .
-        TOutput             // .
-        )
-    {
-        return make_by_tag(tag<T>, // .
-            TParallelizability{},  // .
-            TTagDependencyList{},  // .
-            TComponentUseList{},   // .
-            TOutput{}              // .
-            );
-    }
+    /// @brief Given a system tag `st`, creates a default system signature.
+    template <typename TSystemTag>
+    constexpr auto make(TSystemTag st);
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

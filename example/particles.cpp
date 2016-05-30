@@ -3,9 +3,6 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <random>
-#include <iostream>
-#include <chrono>
 #include <ecst.hpp>
 #include "../test/ecst/settings_generator.hpp"
 
@@ -60,15 +57,15 @@ namespace example
 
     namespace ct
     {
-        namespace sct = ecst::signature::component;
+        using namespace ecst;
 
-        constexpr auto position = sct::tag<c::position>;
-        constexpr auto velocity = sct::tag<c::velocity>;
-        constexpr auto acceleration = sct::tag<c::acceleration>;
-        constexpr auto curve = sct::tag<c::curve>;
-        constexpr auto color = sct::tag<c::color>;
-        constexpr auto circle_shape = sct::tag<c::circle_shape>;
-        constexpr auto life = sct::tag<c::life>;
+        constexpr auto position = tag::component::v<c::position>;
+        constexpr auto velocity = tag::component::v<c::velocity>;
+        constexpr auto acceleration = tag::component::v<c::acceleration>;
+        constexpr auto curve = tag::component::v<c::curve>;
+        constexpr auto color = tag::component::v<c::color>;
+        constexpr auto circle_shape = tag::component::v<c::circle_shape>;
+        constexpr auto life = tag::component::v<c::life>;
     }
 
     namespace actions
@@ -116,17 +113,29 @@ namespace example
         }
     }
 
+
+#define SYS_TAG(x)                                          \
+    namespace system                                        \
+    {                                                       \
+        struct x;                                           \
+    }                                                       \
+    namespace st                                            \
+    {                                                       \
+        constexpr auto x = ecst::tag::system::v<system::x>; \
+    }
+
+    SYS_TAG(acceleration)
+    SYS_TAG(velocity)
+    SYS_TAG(curve)
+    SYS_TAG(fade)
+    SYS_TAG(life)
+    SYS_TAG(render_colored_circle)
+
+
     namespace system
     {
-
-
         struct curve
         {
-            static constexpr const char* name()
-            {
-                return "curve";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -142,12 +151,6 @@ namespace example
 
         struct render_colored_circle
         {
-            static constexpr const char* name()
-            {
-                return "render_colored_circle";
-            }
-
-
             void prepare()
             {
             }
@@ -196,14 +199,8 @@ namespace example
             }
         };
 
-        class acceleration
+        struct acceleration
         {
-        public:
-            static constexpr const char* name()
-            {
-                return "acceleration";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -222,16 +219,10 @@ namespace example
 
         struct velocity
         {
-            static constexpr const char* name()
-            {
-                return "velocity";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.template for_previous_outputs<acceleration>(
-                    [](auto&, auto&&)
+                data.for_previous_outputs(st::acceleration, [](auto&, auto&&)
                     {
                     });
 
@@ -247,11 +238,6 @@ namespace example
 
         struct life
         {
-            static constexpr const char* name()
-            {
-                return "life";
-            }
-
             template <typename TData>
             void process(ft dt, TData& data)
             {
@@ -270,11 +256,6 @@ namespace example
 
         struct fade
         {
-            static constexpr const char* name()
-            {
-                return "fade";
-            }
-
             template <typename TData>
             void process(TData& data)
             {
@@ -293,20 +274,26 @@ namespace example
         };
     }
 
-    constexpr auto entity_count = ecst::sz_v<1000000>;
+
+
+    constexpr auto entity_count = ecst::sz_v<1>;
 
     namespace ecst_setup
     {
         constexpr auto make_csl()
         {
-            namespace c = example::component;
-            namespace slc = ecst::signature_list::component;
+            namespace cs = ecst::signature::component;
+            namespace csl = ecst::signature_list::component;
 
-            return slc::v<                                 // .
-                c::position, c::velocity, c::acceleration, // .
-                c::curve, c::color,                        // .
-                c::circle_shape, c::life                   // .
-                >;
+            return csl::make(               // .
+                cs::make(ct::position),     // .
+                cs::make(ct::velocity),     // .
+                cs::make(ct::acceleration), // .
+                cs::make(ct::curve),        // .
+                cs::make(ct::color),        // .
+                cs::make(ct::circle_shape), // .
+                cs::make(ct::life)          // .
+                );
         }
 
         constexpr auto make_ssl()
@@ -330,73 +317,45 @@ namespace example
 
             (void)test_p2;
 
-            constexpr auto ssig_acceleration =    // .
-                ss::make<s::acceleration>(        // .
-                    test_p,                       // .
-                    ss::no_dependencies,          // .
-                    ss::component_use(            // .
-                        ss::mutate<c::velocity>,  // .
-                        ss::read<c::acceleration> // .
-                        ),                        // .
-                    ss::output::none              // .
-                    );
+            constexpr auto ssig_acceleration = // .
+                ss::make(st::acceleration)     // .
+                    .parallelism(test_p)       // .
+                    .read(ct::acceleration)    // .
+                    .write(ct::velocity);      // .
 
-            constexpr auto ssig_curve =              // .
-                ss::make<s::curve>(                  // .
-                    test_p,                          // .
-                    ss::depends_on<s::acceleration>, // .
-                    ss::component_use(               // .
-                        ss::mutate<c::velocity>,     // .
-                        ss::read<c::curve>           // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
+            constexpr auto ssig_curve =             // .
+                ss::make(st::curve)                 // .
+                    .dependencies(st::acceleration) // .
+                    .parallelism(test_p)            // .
+                    .read(ct::curve)                // .
+                    .write(ct::velocity);           // .
 
-            constexpr auto ssig_velocity =       // .
-                ss::make<s::velocity>(           // .
-                    test_p,                      // .
-                    ss::depends_on<s::curve>,    // .
-                    ss::component_use(           // .
-                        ss::mutate<c::position>, // .
-                        ss::read<c::velocity>    // .
-                        ),                       // .
-                    ss::output::none             // .
-                    );
+            constexpr auto ssig_velocity =   // .
+                ss::make(st::velocity)       // .
+                    .parallelism(test_p)     // .
+                    .dependencies(st::curve) // .
+                    .read(ct::velocity)      // .
+                    .write(ct::position);    // .
 
-            constexpr auto ssig_render_colored_circle = // .
-                ss::make<s::render_colored_circle>(     // .
-                    test_p,                             // .
-                    ss::depends_on<s::velocity>,        // .
-                    ss::component_use(                  // .
-                        ss::mutate<c::circle_shape>,    // .
-                        ss::read<c::position>,          // .
-                        ss::read<c::color>              // .
-                        ),                              // .
-                    ss::output::data<std::vector<int>>  // .
-                    );
+            constexpr auto ssig_render_colored_circle =    // .
+                ss::make(st::render_colored_circle)        // .
+                    .parallelism(test_p)                   // .
+                    .dependencies(st::velocity)            // .
+                    .read(ct::position, ct::color)         // .
+                    .write(ct::circle_shape)               // .
+                    .output(ss::output<std::vector<int>>); // .
 
-            constexpr auto ssig_life =      // .
-                ss::make<s::life>(          // .
-                    test_p,                 // .
-                    ss::no_dependencies,    // .
-                    ss::component_use(      // .
-                        ss::mutate<c::life> // .
-                        ),                  // .
-                    ss::output::none        // .
-                    );
+            constexpr auto ssig_life =   // .
+                ss::make(st::life)       // .
+                    .parallelism(test_p) // .
+                    .write(ct::life);    // .
 
-            constexpr auto ssig_fade =               // .
-                ss::make<s::fade>(                   // .
-                    test_p,                          // .
-                    ss::depends_on<s::life>,         // .
-                    ss::component_use(               // .
-                        ss::mutate<c::color>,        // .
-                        ss::mutate<c::circle_shape>, // .
-                        ss::read<c::life>            // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
-
+            constexpr auto ssig_fade =                   // .
+                ss::make(st::fade)                       // .
+                    .parallelism(test_p)                 // .
+                    .dependencies(st::life)              // .
+                    .read(ct::life)                      // .
+                    .write(ct::color, ct::circle_shape); // .
 
             return sls::make(               // .
                 ssig_acceleration,          // .
@@ -412,19 +371,9 @@ namespace example
     namespace c = example::component;
     namespace s = example::system;
 
-    std::random_device rnd_device;
-    std::default_random_engine rnd_gen{rnd_device()};
-
-    auto rndf = [](float min, float max)
+    auto rndf = [](float, float max)
     {
-#if 1
         return max;
-        (void)min;
-        (void)max;
-#else
-        using dist_t = std::uniform_real_distribution<float>;
-        return dist_t(min, max)(rnd_gen);
-#endif
     };
 
     template <typename TContext>
@@ -435,16 +384,10 @@ namespace example
 
         void init_loops()
         {
-            std::chrono::high_resolution_clock hrc;
-            using ft_dur = std::chrono::duration<ft, std::ratio<1, 1000>>;
-
             ft dt = 1;
 
             while(true)
             {
-                auto cb = hrc.now();
-                (void)cb;
-
                 update_ctx(dt);
 
                 dt = 0.5f;
@@ -461,27 +404,27 @@ namespace example
         {
             auto eid = proxy.create_entity();
 
-            auto& ca = proxy.template add_component<c::acceleration>(eid);
+            auto& ca = proxy.add_component(ct::acceleration, eid);
             ca._x = rndf(-2, 2);
             ca._y = rndf(-2, 2);
 
-            auto& cv = proxy.template add_component<c::velocity>(eid);
+            auto& cv = proxy.add_component(ct::velocity, eid);
             cv._x = rndf(-5, 5);
             cv._y = rndf(-5, 5);
 
-            auto& cp = proxy.template add_component<c::position>(eid);
+            auto& cp = proxy.add_component(ct::position, eid);
             cp._x = rndf(0, 1024);
             cp._y = rndf(0, 768);
 
-            auto& ccrv = proxy.template add_component<c::curve>(eid);
+            auto& ccrv = proxy.add_component(ct::curve, eid);
             ccrv._radians = rndf(-5, 5);
 
-            proxy.template add_component<c::color>(eid);
+            proxy.add_component(ct::color, eid);
 
-            auto& ccs = proxy.template add_component<c::circle_shape>(eid);
+            auto& ccs = proxy.add_component(ct::circle_shape, eid);
             (void)ccs;
 
-            auto& cl = proxy.template add_component<c::life>(eid);
+            auto& cl = proxy.add_component(ct::life, eid);
             static int x = 0;
 
             cl._v = 10 + x;
@@ -496,40 +439,30 @@ namespace example
             // SSVU_BENCHMARK_INIT_GROUP_SCOPE_EXIT("execution");
             // SSVU_BENCHMARK_RUN_GROUP_SCOPE_EXIT("execution");
 
+            namespace sea = ::ecst::system_execution_adapter;
+
             _ctx.step([this, dt](auto& proxy)
                 {
+                    proxy.system(st::render_colored_circle).prepare();
 
-                    proxy.template system<s::render_colored_circle>().prepare();
+                    proxy.execute_systems_from(st::acceleration, st::life)( // .
+                        sea::t(
+                            st::acceleration, st::velocity, st::curve, st::life)
+                            .for_subtasks([dt](auto& s, auto& data)
+                                {
+                                    s.process(dt, data);
+                                }),
+                        sea::t(st::fade).for_subtasks([](auto& s, auto& data)
+                            {
+                                s.process(data);
+                            }),
+                        sea::t(st::render_colored_circle)
+                            .for_subtasks([this, dt](auto& s, auto& data)
+                                {
+                                    s.process(0, data);
+                                }));
 
-                    proxy.execute_systems_overload( // .
-                        [dt](s::acceleration& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::velocity& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::curve& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [dt](s::life& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        },
-                        [](s::fade& s, auto& data)
-                        {
-                            s.process(data);
-                        },
-                        [this, dt](s::render_colored_circle& s, auto& data)
-                        {
-                            s.process(0, data);
-                        });
-
-
-
-                    if(!_ctx.template any_entity_in<s::life>())
+                    if(!_ctx.any_entity_in(st::life))
                     {
                         _running = false;
                     }
@@ -564,7 +497,7 @@ int main()
 
     auto test_impl = [&](auto& ctx)
     {
-        using ct = std::remove_reference_t<decltype(ctx)>;
+        using ct = ECST_DECAY_DECLTYPE(ctx);
         game_app<ct> a{ctx};
         (void)a;
     };

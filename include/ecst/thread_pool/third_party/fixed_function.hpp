@@ -5,5 +5,4 @@
 
 #pragma once
 
-// TODO: rewrite my own fixed function
 #include "./fixed_function/fixed_function.hpp"

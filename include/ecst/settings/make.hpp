@@ -10,29 +10,7 @@
 
 ECST_SETTINGS_NAMESPACE
 {
-    template <                            // .
-        typename TMultithreading,         // .
-        typename TEntityStorage,          // .
-        typename TSystemSignatureList,    // .
-        typename TComponentSignatureList, // .
-        typename TScheduler               // .
-        >
-    constexpr auto make(         // .
-        TMultithreading,         // .
-        TEntityStorage,          // .
-        TSystemSignatureList,    // .
-        TComponentSignatureList, // .
-        TScheduler)
-    {
-        return impl::data<           // .
-            TMultithreading,         // .
-            TEntityStorage,          // .
-            TSystemSignatureList,    // .
-            TComponentSignatureList, // .
-            TScheduler,              // .
-            // TODO: allow customization:
-            impl::refresh_parallelism::enabled // .
-            >{};
-    }
+    /// @brief Creates default settings for an `ecst::context`.
+    constexpr auto make();
 }
 ECST_SETTINGS_NAMESPACE_END

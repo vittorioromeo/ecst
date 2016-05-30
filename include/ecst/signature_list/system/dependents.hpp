@@ -7,7 +7,8 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature_list/system/id.hpp>
+#include "./id.hpp"
+#include "./id_list.hpp"
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -16,12 +17,12 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto tag_list_to_signature_list(
         TSystemSignatureList ssl, TSystemTagList stl)
     {
-        return mp::list::transform(
-            [ssl](auto x)
+        ECST_S_ASSERT_DT(tag::system::is_list(stl));
+
+        return bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::signature_by_tag(ssl, x);
-            },
-            stl);
+            });
     }
 
     /// @brief Given a list of system tags, returns a list of system IDs.
@@ -29,12 +30,12 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto tag_list_to_id_list(
         TSystemSignatureList ssl, TSystemTagList stl)
     {
-        return mp::list::transform(
-            [ssl](auto x)
+        ECST_S_ASSERT_DT(tag::system::is_list(stl));
+
+        return bh::transform(stl, [ssl](auto x)
             {
                 return signature_list::system::id_by_tag(ssl, x);
-            },
-            stl);
+            });
     }
 
     /// @brief Returns the set of IDs `parent` depends on.
@@ -46,65 +47,45 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             ssl, signature::system::dependencies_as_tag_list(ss));
     }
 
+    namespace impl
+    {
+        template <typename TSystemSignatureList, typename TSystemSignature>
+        auto dependent_ids_list_impl(
+            TSystemSignatureList ssl, TSystemSignature parent)
+        {
+            namespace ss = signature::system;
+            namespace sls = signature_list::system;
+
+            // Retrieve the id of `parent`.
+            auto parent_id = sls::id_by_signature(ssl, parent);
+
+            // Build a list of dependent IDs.
+            return bh::fold_right(ssl, mp::list::empty_v, [=](auto ss, auto acc)
+                {
+                    // Check if the ID of `parent` is in the list of `ss`'s
+                    // depedendencies.
+                    auto dl = sls::dependencies_as_id_list(ssl, ss);
+                    return static_if(bh::contains(dl, parent_id))
+                        .then([=](auto x_acc)
+                            {
+                                // If so, add `ss`'s ID to the result list.
+                                auto ss_id = sls::id_by_signature(ssl, ss);
+                                return bh::append(x_acc, ss_id);
+                            })
+                        .else_([=](auto x_acc)
+                            {
+                                return x_acc;
+                            })(acc);
+                });
+        }
+    }
+
     /// @brief Returns the set of dependent IDs of `parent`.
     template <typename TSystemSignatureList, typename TSystemSignature>
-    auto dependent_ids_list(TSystemSignatureList ssl, TSystemSignature parent)
+    constexpr auto dependent_ids_list(
+        TSystemSignatureList ssl, TSystemSignature parent)
     {
-        namespace ss = signature::system;
-        namespace sls = signature_list::system;
-
-        // Retrieve the id of `parent`.
-        auto parent_id = sls::id_by_signature(ssl, parent);
-
-        // Build a list of dependent IDs.
-        return mp::list::fold_l(mp::list::empty_v,
-            [=](auto acc, auto ss)
-            {
-                // Check if the ID of `parent` is in the list of `ss`'s
-                // depedendencies.
-                auto dl = sls::dependencies_as_id_list(ssl, ss);
-                return static_if(mp::list::contains(dl, parent_id))
-                    .then([=](auto x_acc)
-                        {
-                            // If so, add `ss`'s ID to the result list.
-                            auto ss_id = sls::id_by_signature(ssl, ss);
-                            return mp::list::append(x_acc, ss_id);
-                        })
-                    .else_([](auto x_acc)
-                        {
-                            return x_acc;
-                        })(acc);
-            },
-            ssl);
-    }
-
-    /// @brief Returns the set of independent system signatures.
-    template <typename TSystemSignatureList>
-    constexpr auto independent_signature_list(TSystemSignatureList ssl)
-    {
-        return mp::list::filter(ssl, [](auto sx)
-            {
-                return signature::system::is_independent(sx);
-            });
-    }
-
-    /// @brief Returns the set of independent system IDs.
-    template <typename TSystemSignatureList>
-    constexpr auto independent_ids_list(TSystemSignatureList ssl)
-    {
-        return mp::list::transform(
-            [ssl](auto x)
-            {
-                return signature_list::system::id_by_signature(ssl, x);
-            },
-            independent_signature_list(ssl));
-    }
-
-    /// @brief Executes `f` on every independent system ID in `ssl`.
-    template <typename TSystemSignatureList, typename TF>
-    void for_indepedent_ids(TSystemSignatureList ssl, TF && f)
-    {
-        for_tuple(FWD(f), independent_ids_list(ssl));
+        return decltype(impl::dependent_ids_list_impl(ssl, parent)){};
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

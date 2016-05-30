@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include <ecst/mp/core.hpp>
-#include <ecst/mp/minmax.hpp>
-#include <ecst/mp/list.hpp>
+#include "./mp/core.hpp"
+#include "./mp/list.hpp"
+#include "./mp/option_map.hpp"

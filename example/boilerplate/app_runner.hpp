@@ -23,7 +23,9 @@ namespace example
         {
         private:
             sf::RenderWindow _window;
-            std::unique_ptr<T> _app;
+
+            // TODO: use unique_ptr if compiler stops crashing...
+            T* _app = nullptr;
             std::function<void()> _run_fn;
 
         public:
@@ -42,14 +44,20 @@ namespace example
                     _window.setVerticalSyncEnabled(true);
                     _window.setFramerateLimit(60);
 #endif
+                    delete _app;
+                    _app = new T(_window, FWD(xs)...);
 
-                    _app = std::make_unique<T>(_window, FWD(xs)...);
                 };
+            }
+
+            ~app_runner()
+            {
+                delete _app;
             }
 
             inline auto& app() noexcept
             {
-                ECST_ASSERT_OP(_app.get(), !=, nullptr);
+                ECST_ASSERT_OP(_app, !=, nullptr);
                 return *_app;
             }
 

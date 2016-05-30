@@ -15,22 +15,14 @@
 ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
 {
     template <typename TSettings, typename TSystemSignatureList>
-    auto make_system_storage_tuple_impl(TSystemSignatureList ssl) noexcept
-    {
-        return mp::list::transform(
-            [](auto ssig)
-            {
-                using ssig_type = decltype(ssig);
-                return mp::type_v<
-                    context::system::instance<TSettings, ssig_type>>;
-            },
-            ssl);
-    }
-
-    template <typename TSettings, typename TSystemSignatureList>
     constexpr auto make_system_storage_tuple(TSystemSignatureList ssl) noexcept
     {
-        return decltype(make_system_storage_tuple_impl<TSettings>(ssl)){};
+        return bh::transform(ssl, [](auto ssig)
+            {
+                using ssig_type = decltype(ssig);
+                return mp::type_c<
+                    context::system::instance<TSettings, ssig_type>>;
+            });
     }
 
     template <typename TSettings, typename TSystemSignatureList>

@@ -16,20 +16,35 @@ namespace etp
     class worker
     {
     private:
+        enum class state
+        {
+            // Initial state of the `worker`.
+            uninitialized,
+
+            // The `worker` is dequeuing and accepting tasks.
+            running,
+
+            // The `worker` will not dequeue tasks anymore and will try to
+            // transition to `state::finished` automatically.
+            stopped,
+
+            // The `worker` is done. The thread can be joined.
+            finished
+        };
+
         ecst::thread _thread;
         consumer_queue_ptr _queue;
-        movable_atomic<bool> _running{false};
-        movable_atomic<bool> _finished{false};
+        movable_atomic<state> _state{state::uninitialized};
 
         void run()
         {
-            ECST_ASSERT_NS(_running);
+            ECST_ASSERT_NS(_state == state::running);
 
             // Next task buffer.
             task t;
 
             // While the worker is running...
-            while(_running)
+            while(_state == state::running)
             {
                 // ...dequeue a task (blocking).
                 _queue->wait_dequeue(_queue.ctok(), t);
@@ -39,7 +54,7 @@ namespace etp
             }
 
             // Signal the thread pool to send dummy final tasks.
-            _finished = true;
+            _state = state::finished;
         }
 
     public:
@@ -52,14 +67,14 @@ namespace etp
         template <typename TCounter>
         void start(TCounter& remaining_inits)
         {
-            ECST_ASSERT_NS(!_running);
+            ECST_ASSERT_NS(_state == state::uninitialized);
 
             // Start the worker thread.
             _thread = ecst::thread([this, &remaining_inits]
                 {
                     // Set the running flag and signal the pool the thread has
                     // been initialized.
-                    _running = true;
+                    _state = state::running;
                     (--remaining_inits);
 
                     run();
@@ -70,8 +85,8 @@ namespace etp
         /// accept tasks.
         void stop() noexcept
         {
-            ECST_ASSERT_NS(_running);
-            _running = false;
+            ECST_ASSERT_NS(_state == state::running);
+            _state = state::stopped;
         }
 
         /// @brief Assuming the worker is not running, tries to join the
@@ -79,14 +94,14 @@ namespace etp
         void join() noexcept
         {
             ECST_ASSERT(_thread.joinable());
-            ECST_ASSERT_NS(!_running);
+            ECST_ASSERT_NS(_state == state::finished);
             _thread.join();
         }
 
         /// @brief Returns `true` if the worker has exited the processing loop.
         auto finished() const noexcept
         {
-            return _finished.load();
+            return _state == state::finished;
         }
     };
 }

@@ -7,41 +7,51 @@
 
 #include "./dependencies.hpp"
 
-#define EXAMPLE_COMPONENT_TAG(x)                                            \
-    namespace c                                                             \
-    {                                                                       \
-        struct x;                                                           \
-    }                                                                       \
-    namespace ct                                                            \
-    {                                                                       \
-        constexpr auto x = ecst::signature::component::tag<c::x>;           \
-        void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(                   \
-            x, __LINE__, warning_suppressor)()                              \
-        {                                                                   \
-            (void) x;                                                       \
-        }                                                                   \
-    }                                                                       \
-    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(x, __LINE__, semicolon_suppressor) \
+/*
+    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
     {                                                                       \
     }
+*/
 
-#define EXAMPLE_SYSTEM_TAG(x)                                               \
-    namespace s                                                             \
-    {                                                                       \
-        struct x;                                                           \
-    }                                                                       \
-    namespace st                                                            \
-    {                                                                       \
-        constexpr auto x = ecst::signature::system::tag<s::x>;              \
-        void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT(                   \
-            x, __LINE__, warning_suppressor)()                              \
-        {                                                                   \
-            (void) x;                                                       \
-        }                                                                   \
-    }                                                                       \
-    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(x, __LINE__, semicolon_suppressor) \
-    {                                                                       \
-    }
+#define EXAMPLE_COMPONENT_TAG(x)                              \
+                                                              \
+    namespace example                                         \
+    {                                                         \
+        namespace c                                           \
+        {                                                     \
+            struct x;                                         \
+        }                                                     \
+        namespace ct                                          \
+        {                                                     \
+            constexpr auto x = ecst::tag::component::v<c::x>; \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+                x, __LINE__, warning_suppressor)()            \
+            {                                                 \
+                (void) x;                                     \
+            }                                                 \
+        }                                                     \
+    }                                                         \
+    ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
+
+#define EXAMPLE_SYSTEM_TAG(x)                                 \
+                                                              \
+    namespace example                                         \
+    {                                                         \
+        namespace s                                           \
+        {                                                     \
+            struct x;                                         \
+        }                                                     \
+        namespace st                                          \
+        {                                                     \
+            constexpr auto x = ecst::tag::system::v<s::x>;    \
+            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+                x, __LINE__, warning_suppressor)()            \
+            {                                                 \
+                (void) x;                                     \
+            }                                                 \
+        }                                                     \
+    }                                                         \
+    ECST_SPECIALIZE_SYSTEM_NAME(example::s::x)
 
 namespace example
 {
@@ -72,8 +82,14 @@ namespace example
         return square(b.x - a.x) + square(b.y - a.y);
     }
 
-    template <typename TContact>
-    void solve_penetration(TContact& contact, vec2f& p0, vec2f& v0, float r0,
+    template <typename TVec2>
+    ECST_ALWAYS_INLINE auto ECST_CONST_FN distance(
+        const TVec2& a, const TVec2& b) noexcept
+    {
+        return std::sqrt(squared_distance(a, b));
+    }
+
+    void solve_penetration(float dist, vec2f& p0, vec2f& v0, float r0,
         vec2f& p1, vec2f& v1, float r1) noexcept
     {
         std::swap(v0, v1);
@@ -82,7 +98,7 @@ namespace example
         auto dir_len = std::sqrt(square(dir.x) + square(dir.y));
 
         auto norm_dir = dir / dir_len;
-        auto depth = (r0 + r1) - contact._dist;
+        auto depth = (r0 + r1) - dist;
 
         constexpr auto softness = 0.6f;
         auto softned_depth = norm_dir * depth * softness;

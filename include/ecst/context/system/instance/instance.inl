@@ -7,9 +7,41 @@
 
 #include <ecst/hardware.hpp>
 #include "./instance.hpp"
+#include "./executor_proxy.hpp"
+#include "./data_proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    namespace impl
+    {
+        template <typename TSettings, typename TSystemSignature>
+        auto& instance_base<TSettings, TSystemSignature>::system() noexcept
+        {
+            return _system;
+        }
+
+        template <typename TSettings, typename TSystemSignature>
+        const auto& instance_base<TSettings, TSystemSignature>::system() const
+            noexcept
+        {
+            return _system;
+        }
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    ECST_ALWAYS_INLINE auto& ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::subscribed() noexcept
+    {
+        return _subscribed;
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    ECST_ALWAYS_INLINE const auto& ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::subscribed() const noexcept
+    {
+        return _subscribed;
+    }
+
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
         : _bitset{
@@ -46,7 +78,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         return for_states([this, &f](auto& state)
             {
-                f(_system, state.as_data());
+                f(this->system(), state.as_data());
             });
     }
 
@@ -73,70 +105,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     auto instance<TSettings, TSystemSignature>::subscribe(entity_id eid)
     {
-        // TODO: callback, optional subscription function that returns bool to
-        // ignore
         return subscribed().add(eid);
     }
 
     template <typename TSettings, typename TSystemSignature>
     auto instance<TSettings, TSystemSignature>::unsubscribe(entity_id eid)
     {
-        // TODO: callback, optional subscription function that returns bool to
-        // ignore
         return subscribed().erase(eid);
     }
-
-    template <typename TSettings, typename TSystemSignature>
-    template <                          // .
-        typename TFEntityProvider,      // .
-        typename TFAllEntityProvider,   // .
-        typename TFOtherEntityProvider, // .
-        typename TContext,              // .
-        typename TFStateGetter          // .
-        >
-    auto instance<TSettings, TSystemSignature>::make_data( // .
-        TFEntityProvider && f_ep,                          // .
-        sz_t ep_count,                                     // .
-                                                           // .
-        TFAllEntityProvider && f_aep,                      // .
-        sz_t ae_count,                                     // .
-                                                           // .
-        TFOtherEntityProvider && f_oep,                    // .
-        sz_t oe_count,                                     // .
-                                                           // .
-        TContext & ctx,                                    // .
-        TFStateGetter && sg                                // .
-        )
-    {
-        // `mutable` to allow implementations to be `mutable` as well.
-        auto make_entity_id_adapter = [](auto&& f) mutable
-        {
-            return [f = FWD(f)](auto&& g) mutable
-            {
-                return f([g = FWD(g)](auto id) mutable
-                    {
-                        return g(entity_id(id));
-                    });
-            };
-        };
-
-        return impl::make_execute_data<TSystemSignature> // .
-            (                                            // .
-                ctx,                                     // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_ep)),       // .
-                ep_count,                                // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_aep)),      // .
-                ae_count,                                // .
-                                                         // .
-                make_entity_id_adapter(FWD(f_oep)),      // .
-                oe_count,                                // .
-                                                         // .
-                FWD(sg)                                  // .
-                );
-    }
-
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
@@ -161,7 +137,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TCounterBlocker & cb, TData & data, TF && f               // .
         )
     {
-        f(_system, data);
+        f(data);
         decrement_cv_counter_and_notify_all(cb);
     }
 
@@ -173,26 +149,20 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         _sm.clear_and_prepare(1);
 
-        // TODO: refactor/create `single_execute_data`.
-        auto data = make_data(          // .
-            make_all_entity_provider(), // .
-            all_entity_count(),         // .
-                                        // .
-            make_all_entity_provider(), // .
-            all_entity_count(),         // .
-                                        // .
-            [](auto&&...)               // .
-            {                           // .
-            },                          // .
-            0,                          // .
-                                        // .
-            ctx,
-            [this]() -> auto&
-            {
-                return this->_sm.get(0);
-            });
+        // Create single-subtask data proxy.
+        auto dp = data_proxy::make_single<TSystemSignature>( // .
+            data_proxy::make_single_functions(               // .
+                make_all_entity_provider(),                  // .
+                [this]() -> auto&                            // .
+                {                                            // .
+                    return this->_sm.get(0);                 // .
+                }                                            // .
+                ),                                           // .
+            ctx,                                             // .
+            all_entity_count()                               // .
+            );
 
-        f(_system, data);
+        f(dp);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -206,32 +176,32 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
+    template <typename TContext>
+    auto instance<TSettings, TSystemSignature>::execution_dispatch(
+        TContext & ctx) noexcept
+    {
+        return [this, &ctx](auto&& f)
+        {
+            return static_if(settings::inner_parallelism_allowed(TSettings{}))
+                .then([this, &ctx](auto&& xf)
+                    {
+                        return this->execute_in_parallel(ctx, FWD(xf));
+                    })
+                .else_([this, &ctx](auto&& xf)
+                    {
+                        return this->execute_single(ctx, FWD(xf));
+                    })(FWD(f));
+        };
+    }
+
+    template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
         TContext & ctx, TF && f                          // .
         )
     {
-        static_if(settings::inner_parallelism_allowed<TSettings>())
-            .then([this, &f](auto& xsp)
-                {
-                    execute_in_parallel(xsp, f);
-                })
-            .else_([this, &f](auto& xsp)
-                {
-                    execute_single(xsp, f);
-                })(ctx);
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    auto& instance<TSettings, TSystemSignature>::system() noexcept
-    {
-        return _system;
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    const auto& instance<TSettings, TSystemSignature>::system() const noexcept
-    {
-        return _system;
+        auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
+        f(*this, eh);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -242,8 +212,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TBitset>
-    auto instance<TSettings, TSystemSignature>::matches_bitset(const TBitset& b)
-        const noexcept
+    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::matches_bitset(
+        const TBitset& b) const noexcept
     {
         return _bitset.contains(b);
     }

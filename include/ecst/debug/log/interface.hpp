@@ -5,6 +5,8 @@
 
 #pragma once
 
+#if defined(ECST_LOG_ENABLED)
+
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include "./impl.hpp"
@@ -32,3 +34,5 @@ ECST_DEBUG_NAMESPACE
 ECST_DEBUG_NAMESPACE_END
 
 #undef ECST_IMPL_DEFINE_LO
+
+#endif

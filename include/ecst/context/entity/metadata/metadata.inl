@@ -52,7 +52,9 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             TComponentStorage& cs, entity_id eid) noexcept
         {
             ECST_ASSERT(has_component<TComponent>());
-            return cs.template get<TComponent>(eid, as_chunk_metadata());
+
+            constexpr auto ct = tag::component::v<TComponent>;
+            return cs.get(ct, eid, as_chunk_metadata());
         }
 
         template <typename TBitset, typename TChunkMetadata>
@@ -62,7 +64,9 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             TComponentStorage& cs, entity_id eid) const noexcept
         {
             ECST_ASSERT(has_component<TComponent>());
-            return cs.template get<TComponent>(eid, as_chunk_metadata());
+
+            constexpr auto ct = tag::component::v<TComponent>;
+            return cs.get(ct, eid, as_chunk_metadata());
         }
 
         template <typename TBitset, typename TChunkMetadata>
@@ -73,7 +77,8 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             _bitset.template set_component<TComponent>(true);
             ECST_ASSERT(has_component<TComponent>());
 
-            return cs.template add<TComponent>(eid, as_chunk_metadata());
+            constexpr auto ct = tag::component::v<TComponent>;
+            return cs.add(ct, eid, as_chunk_metadata());
         }
 
         template <typename TBitset, typename TChunkMetadata>

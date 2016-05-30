@@ -9,9 +9,9 @@
 #include <ecst/aliases.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
-#include <ecst/context/scheduler/atomic_counter/task_dependency_data.hpp>
-#include <ecst/context/scheduler/atomic_counter/task.hpp>
-#include <ecst/context/scheduler/atomic_counter/task_group.hpp>
+#include "./task_dependency_data.hpp"
+#include "./task.hpp"
+#include "./task_group.hpp"
 
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {
@@ -49,14 +49,10 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             namespace ss = signature::system;
             namespace sls = signature_list::system;
 
-            return mp::list::transform(
-                [=](auto ss)
+            return bh::transform(ssl, [=](auto ss)
                 {
                     // Get the list of dependent IDs of `ss`.
                     auto dependent_ids = sls::dependent_ids_list(ssl, ss);
-
-                    // Verify validity and get its type.
-                    ECST_S_ASSERT_DT(mp::list::valid(dependent_ids));
                     using dep_list_type = decltype(dependent_ids);
 
                     // Use the list to compute the task type.
@@ -64,17 +60,16 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                     using task_type = task<dep_data_type>;
 
                     // Wrap the task type.
-                    return mp::type_v<task_type>;
-                },
-                ssl);
+                    return mp::type_c<task_type>;
+                });
         }
 
         /// @brief Type of task group for a specific system signature list.
-        /// @details All `type_v` wrappers are unwrapped thanks to
-        /// `unwrap_tuple`.
+        /// @details All `type_c` wrappers are unwrapped thanks to
+        /// `unwrap_bh_tuple`.
         template <typename TSSL>
         using task_group_type = task_group<              // .
-            mp::list::unwrap_tuple<                      // .
+            mp::list::unwrap_bh_tuple<                   // .
                 decltype(task_group_transformer(TSSL{})) // .
                 >                                        // .
             >;

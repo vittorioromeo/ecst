@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/context/types.hpp>
 #include <ecst/settings.hpp>
+#include <ecst/mp.hpp>
 
 ECST_CONTEXT_BITSET_NAMESPACE
 {
@@ -20,14 +21,20 @@ ECST_CONTEXT_BITSET_NAMESPACE
         class bits
         {
         private:
-            static constexpr auto my_settings = TSettings{};
-            static constexpr auto my_csl =
-                settings::component_signature_list(my_settings);
+            static constexpr auto my_settings()
+            {
+                return TSettings{};
+            }
+            static constexpr auto my_csl()
+            {
+                return settings::component_signature_list(my_settings());
+            }
 
         public:
             static constexpr auto component_count() noexcept
             {
-                return mp::list::size(my_csl);
+                return bh::size(
+                    signature_list::component::all_components(my_csl()));
             }
 
             static constexpr auto total_count() noexcept
@@ -40,7 +47,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             template <typename TID>
             static constexpr auto valid_component_id(TID id) noexcept
             {
-                return id >= 0 && id < component_count();
+                return id >= mp::sz_v<0> && id < component_count();
             }
 
             template <typename TID>
@@ -52,8 +59,9 @@ ECST_CONTEXT_BITSET_NAMESPACE
             template <typename TComponent>
             static constexpr auto component_id() noexcept
             {
-                return signature_list::component::id_by_type<TComponent>(
-                    my_csl);
+                constexpr auto ct = tag::component::v<TComponent>;
+                return mp::list::index_of(
+                    signature_list::component::all_components(my_csl()), ct);
             }
 
             template <typename TComponent>
@@ -65,7 +73,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             template <typename TBit>
             static constexpr auto valid_component_bit(TBit bit) noexcept
             {
-                return bit >= 0 && bit < component_count();
+                return bit >= mp::sz_v<0> && bit < component_count();
             }
         };
     }

@@ -29,6 +29,7 @@ ECST_NAMESPACE
         impl::mutex_type _mutex;
         impl::counter_type _counter;
 
+        // Note: `std::atomic` initialization is not atomic.
         counter_blocker(sz_t initial_count) noexcept : _counter{initial_count}
         {
         }

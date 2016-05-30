@@ -20,7 +20,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
     private:
         /// @brief Keeps track of the count of the remaining depedencies that
         /// still have to be executed during runtime scheduling.
-        movable_atomic<sz_t> _remaining_dependencies;
+        std::atomic<sz_t> _remaining_dependencies;
 
     public:
         /// @brief Decrements the number of remaining dependencies and returns
@@ -41,12 +41,12 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         template <typename TF>
         void for_dependent_ids(TF&& f)
         {
-            for_tuple(f, TDependentIDList{});
+            bh::for_each(TDependentIDList{}, f);
         }
 
         auto dependent_tasks_count() const noexcept
         {
-            return mp::list::size(TDependentIDList{});
+            return bh::size(TDependentIDList{});
         }
     };
 }

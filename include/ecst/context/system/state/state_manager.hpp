@@ -6,5 +6,4 @@
 #pragma once
 
 #include "./state_manager/state_storage.hpp"
-#include "./state_manager/multi_fixed.hpp"
-#include "./state_manager/dispatch.hpp"
+#include "./state_manager/data.hpp"

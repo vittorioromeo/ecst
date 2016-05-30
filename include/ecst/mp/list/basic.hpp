@@ -6,7 +6,6 @@
 #pragma once
 
 #include <ecst/mp/list/types.hpp>
-#include <ecst/mp/list/is_list.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
@@ -17,103 +16,79 @@ ECST_MP_LIST_NAMESPACE
         return v<Ts...>;
     }
 
-    /// @brief Returns true if `l` is a valid list.
-    template <typename TList>
-    constexpr auto valid(TList l)
+    // Executes `bh::all` on all `xs...`.
+    template <typename... Ts>
+    constexpr auto all_variadic(Ts && ... xs)
     {
-        return is_list(l);
+        return bh::all(bh::make_basic_tuple(FWD(xs)...));
     }
 
-    // Returns the size of a list.
-    template <typename TList>
-    constexpr auto size(TList l)
+    // Returns the index of `x` in `l`.
+    template <typename TList, typename T>
+    constexpr auto index_of(TList&&, T && x) noexcept
     {
-        ECST_S_ASSERT_DT(valid(l));
-        return sz_v<std::tuple_size<TList>{}>;
+        using Pred = decltype(bh::equal.to(x));
+        using Pack = typename bh::detail::make_pack<TList>::type;
+        return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
     }
 
-    namespace impl
+    // TODO: propose to hana?
+    template <typename TSeq, typename TAcc, typename TF>
+    constexpr auto indexed_fold_right(
+        TSeq && seq, TAcc && acc, TF && f) noexcept
     {
-        template <typename TList>
-        constexpr auto empty_impl(TList)
-        {
-            return bool_v<size(TList{}) == 0>;
-        }
+        return bh::second(bh::fold_right(FWD(seq),
+            bh::make_pair(bh::size(seq) - sz_v<1>, FWD(acc)),
+            [&f](auto&& x, auto&& idx_acc_pair)
+            {
+                auto curr_idx = bh::first(FWD(idx_acc_pair));
+                auto curr_acc = bh::second(FWD(idx_acc_pair));
+
+                auto next_acc = f(FWD(x), curr_acc, curr_idx);
+                return bh::make_pair(curr_idx - sz_v<1>, next_acc);
+            }));
     }
 
-    // Returns whether a list is empty or not.
-    template <typename TList>
-    constexpr auto empty(TList l)
+    template <typename TSeq, typename T, typename TCondition>
+    constexpr auto append_if(TSeq && seq, T && x, TCondition && c) noexcept
     {
-        return decltype(impl::empty_impl(l)){};
+        return static_if(c)
+            .then([](auto&& x_seq, auto&& x_x)
+                {
+                    return bh::append(FWD(x_seq), FWD(x_x));
+                })
+            .else_([](auto&& x_seq, auto&&)
+                {
+                    return x_seq;
+                })(FWD(seq), FWD(x));
     }
 
-    // Concatenates multiple lists together.
-    template <typename... TLists>
-    constexpr auto cat(TLists... ls)
+    // Returns the index of the first element `x` of `t` satisfying `p(x)`.
+    template <typename TTuple, typename TPredicate>
+    constexpr auto index_of_first_matching(
+        TTuple && t, TPredicate && p) noexcept
     {
-        ECST_S_ASSERT_DT(conjugate(valid(ls)...));
-        return std::tuple_cat(ls...);
+        auto res = indexed_fold_right(FWD(t), empty_v,
+            [&p](auto&& x, auto acc, auto idx)
+            {
+                return append_if(acc, idx, p(x));
+            });
+
+        return bh::front(res);
     }
 
-    // Appends some items at the end of a list.
-    template <typename TList, typename... Ts>
-    constexpr auto append(TList l, Ts... xs)
+    // Converts two lists to sets and returns their intersection.
+    template <typename TL0, typename TL1>
+    constexpr auto list_to_set_intersection(TL0 && l0, TL1 && l1) noexcept
     {
-        return cat(l, make(xs...));
+        return bh::intersection(bh::to_set(FWD(l0)), bh::to_set(FWD(l1)));
     }
 
-    // Prepends some items at the end of a list.
-    template <typename TList, typename... Ts>
-    constexpr auto prepend(TList l, Ts... xs)
+    // Returns true if `l0` and `l1` have at least one element in common.
+    template <typename TL0, typename TL1>
+    constexpr auto any_common_element(TL0 && l0, TL1 && l1) noexcept
     {
-        return cat(make(xs...), l);
-    }
-
-    namespace impl
-    {
-        template <typename TList, typename TI>
-        constexpr auto valid_index_impl(TList, TI)
-        {
-            return bool_v<(TI{} >= 0 && TI{} < size(TList{}))>;
-        }
-    }
-
-    // Returns true if `i` is a valid index for `l`.
-    template <typename TList, typename TI>
-    constexpr auto valid_index(TList l, TI i)
-    {
-        return decltype(impl::valid_index_impl(l, i)){};
-    }
-
-    // Returns the `i`-th item of a list.
-    template <typename TList, typename TI>
-    constexpr auto at(TList l, TI i)
-    {
-        ECST_S_ASSERT_DT(valid_index(l, i));
-        return std::get<i>(l);
-    }
-
-    // Returns the first item of `l`.
-    template <typename TList>
-    constexpr auto head(TList l)
-    {
-        return at(l, sz_v<0>);
-    }
-
-    // Returns the last valid index of `l`.
-    template <typename TList>
-    constexpr auto last_index(TList l)
-    {
-        ECST_S_ASSERT_DT(!empty(l));
-        return sz_v<size(l) - 1>;
-    }
-
-    // Returns the last item of `l`.
-    template <typename TList>
-    constexpr auto tail(TList l)
-    {
-        return at(l, last_index(l));
+        return list_to_set_intersection(FWD(l0), FWD(l1)) != bh::make_set();
     }
 }
 ECST_MP_LIST_NAMESPACE_END

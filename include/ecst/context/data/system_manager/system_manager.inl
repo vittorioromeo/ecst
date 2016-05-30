@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <vrm/core/overload.hpp>
+#include <ecst/aliases.hpp>
 #include "../defer.hpp"
 #include "./system_manager.hpp"
 
@@ -16,26 +16,20 @@ ECST_CONTEXT_NAMESPACE
         using handle = ecst::context::entity::impl::handle;
 
         template <typename TSettings>
-        system_manager<TSettings>::system_manager()
+        template <typename TF>
+        void system_manager<TSettings>::for_instances_sequential(TF&& f)
         {
-            _system_runner.initialize(_system_storage);
+            _system_storage.for_instances(FWD(f));
         }
 
         template <typename TSettings>
         template <typename TF>
-        void system_manager<TSettings>::for_systems_sequential(TF&& f)
-        {
-            _system_storage.for_systems(FWD(f));
-        }
-
-        template <typename TSettings>
-        template <typename TF>
-        void system_manager<TSettings>::for_systems_parallel(TF&& f)
+        void system_manager<TSettings>::for_instances_parallel(TF&& f)
         {
             counter_blocker b{_system_storage.system_count()};
             execute_and_wait_until_counter_zero(b, [ this, &b, f = FWD(f) ]()
                 {
-                    _system_storage.for_systems([this, &b, &f](auto& system)
+                    _system_storage.for_instances([this, &b, &f](auto& system)
                         {
                             this->post_in_thread_pool([this, &b, &system, &f]()
                                 {
@@ -48,16 +42,16 @@ ECST_CONTEXT_NAMESPACE
 
         template <typename TSettings>
         template <typename TF>
-        void system_manager<TSettings>::for_systems_dispatch(TF&& f)
+        void system_manager<TSettings>::for_instances_dispatch(TF&& f)
         {
             static_if(settings::refresh_parallelism_allowed<settings_type>())
                 .then([this](auto&& xf)
                     {
-                        this->for_systems_parallel(FWD(xf));
+                        this->for_instances_parallel(FWD(xf));
                     })
                 .else_([this](auto&& xf)
                     {
-                        this->for_systems_sequential(FWD(xf));
+                        this->for_instances_sequential(FWD(xf));
                     })(FWD(f));
         }
 
@@ -77,19 +71,31 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TContext, typename TF>
-        void system_manager<TSettings>::execute_systems(
-            TContext& context, TF&& f)
+        template <typename TContext, typename... TStartSystemTags>
+        auto system_manager<TSettings>::execute_systems_from(
+            TContext& context, TStartSystemTags... sts) noexcept
         {
-            _system_runner.execute(context, FWD(f));
+            auto sstl = mp::list::make(sts...);
+            return [this, &context, sstl](auto&&... fns)
+            {
+                this->execute_systems(context, sstl, FWD(fns)...);
+            };
         }
 
         template <typename TSettings>
-        template <typename TContext, typename... TFs>
-        void system_manager<TSettings>::execute_systems_overload(
-            TContext& context, TFs&&... fs)
+        template <typename TContext, typename TStartSystemTagList,
+            typename... TFs>
+        void system_manager<TSettings>::execute_systems(
+            TContext& context, TStartSystemTagList sstl, TFs&&... fs)
         {
-            execute_systems(context, vrmc::make_overload(FWD(fs)...));
+            ECST_S_ASSERT(tag::system::is_list(sstl));
+
+            // TODO: store instance in system_manager for stateful schedulers?
+            // scheduler_type must be movable in that case
+            scheduler_type s;
+
+            auto os = bh::overload_linearly(FWD(fs)...);
+            s.execute(context, sstl, os);
         }
 
         template <typename TSettings>

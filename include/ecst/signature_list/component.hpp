@@ -5,7 +5,8 @@
 
 #pragma once
 
-#include <ecst/signature_list/component/is_signature_list.hpp>
-#include <ecst/signature_list/component/make.hpp>
-#include <ecst/signature_list/component/signature.hpp>
-#include <ecst/signature_list/component/id.hpp>
+#include "./component/is_signature_list.hpp"
+#include "./component/make.hpp"
+#include "./component/signature.hpp"
+#include "./component/id.hpp"
+#include "./component/all_components.hpp"

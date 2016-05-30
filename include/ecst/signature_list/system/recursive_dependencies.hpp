@@ -7,12 +7,10 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature_list/system/id.hpp>
-#include <ecst/signature_list/system/dependents.hpp>
+#include "./id.hpp"
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
-    // TODO: refactor/beautify
     namespace impl
     {
         template <typename TSystemSignatureList, typename TSystemSignature>
@@ -26,21 +24,20 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             // Recursive step implementation.
             auto step = [=](auto self, auto curr_list)
             {
-                return mp::list::cat_unique( // .
-                    curr_list,               // .
-                    mp::list::fold_l(mp::list::empty_v,
-                        [=](auto acc, auto xid)
+                return bh::concat( //
+                    curr_list,     // .
+                    bh::fold_right(curr_list, mp::list::empty_v,
+                        [=](auto xid, auto acc)
                         {
                             auto xsig = signature_by_id(ssl, xid);
                             auto new_list = dependencies_ids_list(ssl, xsig);
 
-                            return mp::list::cat_unique(acc, self(new_list));
-                        },
-                        curr_list));
+                            return bh::concat(acc, self(new_list));
+                        }));
             };
 
             // Start the recursion.
-            return vrmc::y_combinator(step)(dependencies_list);
+            return bh::unique(bh::sort(bh::fix(step)(dependencies_list)));
         }
     }
 
@@ -62,8 +59,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         {
             auto ds_id = id_by_signature(ssl, ds);
 
-            return mp::list::contains(
-                recursive_dependency_id_list(ssl, ss), ds_id);
+            return bh::contains(recursive_dependency_id_list(ssl, ss), ds_id);
         }
     }
 

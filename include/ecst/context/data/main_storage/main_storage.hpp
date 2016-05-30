@@ -29,15 +29,12 @@ ECST_CONTEXT_NAMESPACE
                 context::storage::entity::dispatch<settings_type>;
 
             template <typename T>
-            using component_from_tag = signature::component::unwrap_tag<T>;
+            using component_from_tag = tag::component::unwrap<T>;
 
             component_storage_type _component_storage;
             entity_storage_type _entity_storage;
 
         public:
-            main_storage() = default;
-            ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(main_storage);
-
             auto& metadata(entity_id) noexcept;
             auto valid_handle(const handle& h) const noexcept;
 

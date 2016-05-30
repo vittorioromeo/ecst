@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/context/types.hpp>
 #include <ecst/settings.hpp>
+#include <ecst/tag.hpp>
 #include "./bits.hpp"
 #include "./data.hpp"
 
@@ -20,16 +21,14 @@ ECST_CONTEXT_BITSET_NAMESPACE
     void fill(dispatch<TSettings> & bitset, TSettings s,
         TSetComponentsList scl) noexcept
     {
-        ECST_S_ASSERT_DT(signature::component::is_tag_list(scl));
+        ECST_S_ASSERT_DT(tag::component::is_list(scl));
         auto csl = settings::component_signature_list(s);
 
-        for_tuple(
-            [&](auto ct)
+        bh::for_each(scl, [&](auto ct)
             {
                 auto id(signature_list::component::id_by_tag(csl, ct));
                 bitset.set_component_by_id(id, true);
-            },
-            scl);
+            });
     }
 
     /// @brief Returns a bitset filled with `scl`'s component bits.
@@ -45,18 +44,17 @@ ECST_CONTEXT_BITSET_NAMESPACE
     template <typename TSystemSignature, typename TSettings>
     auto make_from_system_signature(TSettings s) noexcept
     {
-        auto component_uses =
-            signature::system::component_uses_type<TSystemSignature>{};
+        auto read_component_tag_list =
+            signature::system::read_component_tag_list_type<TSystemSignature>{};
 
-        auto set_component_tags = mp::list::transform(
-            [](auto x)
-            {
-                using component_type = typename decltype(x)::component;
-                return signature::component::tag<component_type>;
-            },
-            component_uses);
+        auto write_component_tag_list =
+            signature::system::write_component_tag_list_type<
+                TSystemSignature>{};
 
-        return make(s, set_component_tags);
+        auto all_component_tag_list =
+            bh::concat(read_component_tag_list, write_component_tag_list);
+
+        return make(s, all_component_tag_list);
     }
 }
 ECST_CONTEXT_BITSET_NAMESPACE_END

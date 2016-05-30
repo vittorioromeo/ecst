@@ -5,12 +5,7 @@
 
 #pragma once
 
-#include <ecst/aliases.hpp>
-#include <ecst/mp/core/aliases.hpp>
-#include <ecst/mp/core/conjunction.hpp>
-#include <ecst/mp/core/is_specialization_of.hpp>
-#include <ecst/mp/core/type_wrapper.hpp>
-#include <ecst/mp/core/comparers.hpp>
-#include <ecst/mp/core/negate.hpp>
-#include <ecst/mp/core/static_and.hpp>
-#include <ecst/mp/core/static_or.hpp>
+#include "./core/aliases.hpp"
+#include "./core/is_specialization_of.hpp"
+#include "./core/type_wrapper.hpp"
+#include "./core/comparers.hpp"

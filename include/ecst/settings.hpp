@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <ecst/settings/data_settings.hpp>
-#include <ecst/settings/data.hpp>
-#include <ecst/settings/make.hpp>
-#include <ecst/settings/str.hpp>
+#include "./settings/data_settings.hpp"
+#include "./settings/data.hpp"
+#include "./settings/make.hpp"
+#include "./settings/str.hpp"

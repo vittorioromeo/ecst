@@ -16,8 +16,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename... TSystemSignatures>
     constexpr auto make(TSystemSignatures... sss)
     {
-        ECST_S_ASSERT_DT(signature::system::are_signatures(sss...));
-        return mp::list::make(sss...);
+        ECST_S_ASSERT_DT(signature::system::valid(sss...));
+        return mp::list::make(mp::wrap(sss)...);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

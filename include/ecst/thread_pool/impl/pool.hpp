@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <vector>
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
 #include "./types.hpp"
@@ -50,7 +51,7 @@ namespace etp
         {
             // Create workers.
             _workers.reserve(n);
-            for(decltype(n) i = 0; i < n; ++i)
+            for(decltype(n) i(0); i < n; ++i)
             {
                 _workers.emplace_back(_queue.queue());
             }

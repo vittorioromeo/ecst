@@ -5,11 +5,9 @@
 
 #pragma once
 
-#include <type_traits>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/settings.hpp>
 #include <ecst/context/storage/component/chunk/type.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
@@ -18,15 +16,11 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
     auto make_chunk_tuple(TSettings s) noexcept
     {
         auto csl = settings::component_signature_list(s);
-        return mp::list::transform(
-            [](auto xe)
+        return bh::transform(csl, [](auto cs)
             {
-                auto ct = signature::component::tag_of(xe);
-                using c = signature::component::unwrap_tag<decltype(ct)>;
-
-                return mp::type_v<chunk_dispatch_type<c, TSettings>>;
-            },
-            csl);
+                using ct_type = mp::unwrap<ECST_DECAY_DECLTYPE(cs)>;
+                return chunk_dispatch_type<TSettings, ct_type>{};
+            });
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

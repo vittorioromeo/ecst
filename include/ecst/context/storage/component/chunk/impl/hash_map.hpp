@@ -3,6 +3,9 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
+// TODO:
+
+/*
 #pragma once
 
 #include <unordered_map>
@@ -77,3 +80,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+*/

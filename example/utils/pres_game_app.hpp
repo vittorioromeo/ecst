@@ -19,7 +19,7 @@ namespace example
         using this_type = game_app;
         TContext& _ctx;
 
-        float _delay;
+        float _delay{0.f};
         bool _draw_grid{false}, _kill_pls{false};
 
         void init_loops()
@@ -157,7 +157,6 @@ namespace example
                         }
                     });
 
-
                 if(_delay > 0)
                 {
                     _delay -= dt;
@@ -181,8 +180,14 @@ namespace example
                 auto real_dt =
                     std::chrono::duration_cast<ft_dur>(ce - cb).count();
 
-                window().setTitle(
-                    std::string{"DT: "} + std::to_string(real_dt));
+                // TODO:
+                auto fps = 1.f / real_dt * 1000.f;
+
+                window().setTitle(std::string{"DT: "} +
+                                  std::to_string(real_dt) + "  |  FPS: " +
+                                  std::to_string(fps));
+
+
 
                 if(!_running)
                 {
@@ -212,9 +217,8 @@ namespace example
     template <typename TContext>
     void run_simulation(TContext& ctx)
     {
-        boilerplate::app_runner<
-            game_app<std::remove_reference_t<decltype(ctx)>>> x{
-            "Particle ECST test", 1024, 768, ctx};
+        boilerplate::app_runner<game_app<ECST_DECAY_DECLTYPE(ctx)>> x{
+            "Particle ECST test", 1440, 900, ctx};
 
         x.run();
     }

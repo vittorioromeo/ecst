@@ -5,10 +5,9 @@
 
 #pragma once
 
-#include <ecst/context/types.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/bitset.hpp>
-#include <ecst/context/system.hpp>
-#include <ecst/context/entity.hpp>
-#include <ecst/context/storage.hpp>
-#include <ecst/context/context.hpp>
+#include "./context/types.hpp"
+#include "./context/bitset.hpp"
+#include "./context/system.hpp"
+#include "./context/entity.hpp"
+#include "./context/storage.hpp"
+#include "./context/context.hpp"

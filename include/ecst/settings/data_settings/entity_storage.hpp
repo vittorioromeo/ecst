@@ -27,22 +27,6 @@ ECST_SETTINGS_NAMESPACE
         };
     }
 
-    template <typename T>
-    constexpr auto is_fixed_entity_storage = // .
-        mp::is_specialization_of_v<impl::fixed_impl, T>;
-
-    template <typename T>
-    constexpr auto is_dynamic_entity_storage = // .
-        mp::is_specialization_of_v<impl::dynamic_impl, T>;
-
-    namespace impl
-    {
-        /// @brief Evaluates to true if `T` is a valid entity storage policy.
-        template <typename T>
-        constexpr auto is_entity_storage =
-            is_fixed_entity_storage<T> || is_dynamic_entity_storage<T>;
-    }
-
     template <sz_t TSize>
     constexpr impl::fixed_impl<mp::sz_t_<TSize>> fixed{};
 

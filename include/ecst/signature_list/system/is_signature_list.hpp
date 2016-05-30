@@ -11,23 +11,12 @@
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename T>
-        auto is_signature_list_impl()
-        {
-            return mp::list::all_match(T{}, [](auto sx)
-                {
-                    return signature::system::is_signature(sx);
-                });
-        }
-    }
-
     /// @brief Returns `true` if the passed argument is a system signature list.
     template <typename T>
-    constexpr auto is_signature_list(T)
+    constexpr auto valid(T && x) noexcept
     {
-        return decltype(impl::is_signature_list_impl<T>()){};
+        return bh::all_of(bh::transform(x, mp::unwrapped), // .
+            signature::system::valid);
     }
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

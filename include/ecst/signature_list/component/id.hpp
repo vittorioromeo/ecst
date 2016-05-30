@@ -14,22 +14,18 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
     template <typename TComponentSignatureList, typename TComponentSignature>
     constexpr auto id_by_signature(
-        TComponentSignatureList csl, TComponentSignature cs)
+        TComponentSignatureList csl, TComponentSignature cs) noexcept
     {
-        ECST_S_ASSERT_DT(is_signature_list(csl));
-        ECST_S_ASSERT_DT(signature::component::is_signature(cs));
+        ECST_S_ASSERT_DT(valid(csl));
+        ECST_S_ASSERT_DT(signature::component::valid(mp::unwrapped(cs)));
 
-        return mp::list::find_first_index_of(csl, cs);
+        return mp::list::index_of(csl, cs);
     }
 
-    template <typename TComponent, typename TComponentSignatureList>
-    constexpr auto id_by_type(TComponentSignatureList csl)
-    {
-        return id_by_signature(csl, signature_by_type<TComponent>(csl));
-    }
 
     template <typename TComponentSignatureList, typename TComponentTag>
-    constexpr auto id_by_tag(TComponentSignatureList csl, TComponentTag ct)
+    constexpr auto id_by_tag(
+        TComponentSignatureList csl, TComponentTag ct) noexcept
     {
         return id_by_signature(csl, signature_by_tag(csl, ct));
     }

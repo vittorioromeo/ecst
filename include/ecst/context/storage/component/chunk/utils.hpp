@@ -6,6 +6,7 @@
 #pragma once
 
 #include <ecst/config.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -16,9 +17,15 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         template <typename TChunk>
         using metadata = typename TChunk::metadata;
 
-        /// @brief Type of the component stored by `TChunk`.
-        template <typename TChunk>
-        using component = typename TChunk::component_type;
+        // TODO: move
+        namespace impl
+        {
+            // TODO: use bh tuple ?
+            template <typename TComponentTagList>
+            using component_tuple_type =
+                mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
+                    TComponentTagList{})>;
+        }
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

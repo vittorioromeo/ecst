@@ -10,6 +10,10 @@
 #include <ecst/aliases.hpp>
 #include "./elog.hpp"
 
+#if defined(ECST_LOG_ENABLED)
+#include <iostream>
+#endif
+
 ECST_DEBUG_NAMESPACE
 {
     namespace impl
@@ -61,16 +65,16 @@ ECST_DEBUG_NAMESPACE
         }
 
         /* 00 */ constexpr auto entity = off;
-        /* 01 */ constexpr auto component = off;
+        /* 01 */ constexpr auto component = on<1>;
         /* 02 */ constexpr auto entity_memory = off;
         /* 03 */ constexpr auto component_memory = off;
         /* 04 */ constexpr auto thread_pool = off;
         /* 05 */ constexpr auto instance = off;
         /* 06 */ constexpr auto instance_parallelism = on<6>;
         /* 07 */ constexpr auto context_refresh = off;
-        /* 08 */ constexpr auto system_bitset = off;
-        /* 09 */ constexpr auto system_match = off;
-        /* 10 */ constexpr auto metadata_bitset = off;
+        /* 08 */ constexpr auto system_bitset = on<8>;
+        /* 09 */ constexpr auto system_match = on<9>;
+        /* 10 */ constexpr auto metadata_bitset = on<10>;
 
         template <typename TType>
         auto& log(TType) noexcept
@@ -78,6 +82,8 @@ ECST_DEBUG_NAMESPACE
             return static_if(bool_v<(TType::value >= 0)>)
                 .then([]() -> auto&
                     {
+#if defined(ECST_LOG_ENABLED)
+
                         constexpr auto logt = TType::value;
 
                         if(last_log() != logt)
@@ -89,6 +95,9 @@ ECST_DEBUG_NAMESPACE
 
                         return std::cout << "[" << tstrings()[TType::value]
                                          << "]\t";
+#else
+                        return fake_cout();
+#endif
                     })
                 .else_([]() -> auto&
                     {

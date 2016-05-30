@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include <ecst/signature/component.hpp>
-#include <ecst/signature/system.hpp>
+#include "./signature/component.hpp"
+#include "./signature/system.hpp"

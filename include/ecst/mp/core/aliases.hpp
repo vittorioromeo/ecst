@@ -5,31 +5,19 @@
 
 #pragma once
 
-#include <vrm/core/static_if.hpp>
-#include <vrm/core/for_args.hpp>
-#include <vrm/core/tuple_utils.hpp>
-#include <vrm/core/type_aliases.hpp>
-#include <vrm/core/y_combinator.hpp>
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
 
 ECST_MP_NAMESPACE
 {
-    namespace vrmc = vrm::core;
+    using ecst::sz_t;
+    using ecst::sz_t_;
 
-    using vrmc::bool_;
-    using vrmc::bool_v;
-    using vrmc::sz_t;
-    using vrmc::sz_t_;
-    using vrmc::sz_v;
-    using vrmc::int_;
-    using vrmc::int_v;
-    using vrmc::static_if;
-    using vrmc::apply;
+    template <std::size_t TX>
+    constexpr bh::size_t<TX> sz_v{};
 
-    template <typename TF>
-    constexpr auto y_combinator(TF && f) noexcept
-    {
-        return vrmc::y_combinator(FWD(f));
-    }
+    using ecst::int_;
+    using ecst::int_v;
+    using ecst::static_if;
 }
 ECST_MP_NAMESPACE_END

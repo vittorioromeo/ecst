@@ -1,3 +1,4 @@
+
 // Copyright (c) 2015-2016 Vittorio Romeo
 // License: Academic Free License ("AFL") v. 3.0
 // AFL License page: http://opensource.org/licenses/AFL-3.0
@@ -6,26 +7,43 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/core/aliases.hpp>
+#include <ecst/mp/core.hpp>
 
 ECST_MP_NAMESPACE
 {
+    // Bring hana's `type_c` into the `mp` namespace.
+    using bh::type_c;
+
+    /// @brief Returns the inner type wrapped by a `type_c`.
+    template <typename T>
+    using unwrap = typename T::type;
+
     namespace impl
     {
-        template <typename T>
-        struct type_wrapper
+        struct unwrapped_t
         {
-            using type = T;
+            template <typename T>
+            constexpr auto operator()(T) const noexcept
+            {
+                return unwrap<T>{};
+            }
+        };
+
+        struct wrap_t
+        {
+            template <typename T>
+            constexpr auto operator()(T) const noexcept
+            {
+                return type_c<T>;
+            }
         };
     }
 
-    template <typename T>
-    using type_ = impl::type_wrapper<T>;
+    /// @brief Returns a default-constructed instance of the inner type wrapped
+    /// by a `type_c`.
+    constexpr impl::unwrapped_t unwrapped{};
 
-    template <typename T>
-    constexpr type_<T> type_v{};
-
-    template <typename T>
-    using unwrap = typename T::type;
+    /// @brief Returns a `type_c` wrapping the passed parameter.
+    constexpr impl::wrap_t wrap{};
 }
 ECST_MP_NAMESPACE_END

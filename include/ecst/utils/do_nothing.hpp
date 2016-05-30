@@ -1,0 +1,25 @@
+// Copyright (c) 2015-2016 Vittorio Romeo
+// License: Academic Free License ("AFL") v. 3.0
+// AFL License page: http://opensource.org/licenses/AFL-3.0
+// http://vittorioromeo.info | vittorio.romeo@outlook.com
+
+#pragma once
+
+#include <ecst/config.hpp>
+
+ECST_NAMESPACE
+{
+    namespace impl
+    {
+        struct do_nothing_t
+        {
+            template <typename... Ts>
+            constexpr auto operator()(Ts&&...) const noexcept
+            {
+            }
+        };
+
+        constexpr impl::do_nothing_t do_nothing{};
+    }
+}
+ECST_NAMESPACE_END

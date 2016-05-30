@@ -5,4 +5,4 @@
 
 #pragma once
 
-#include <ecst/config/names.hpp>
+#include "./config/names.hpp"

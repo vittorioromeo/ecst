@@ -23,7 +23,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         {
         private:
             using ssl_type =
-                settings::impl::ctx_system_signature_list<TSettings>;
+                decltype(settings::system_signature_list(TSettings{}));
 
             using storage_type = mp::list::unwrap_tuple<
                 system_storage_tuple_type<TSettings, ssl_type>>;
@@ -37,18 +37,18 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 signature_list::system::signature_by_type<TSystem>(ssl_type{}));
 
             template <typename TSystem>
-            using system_tag_for = signature::system::impl::signature_tag_type<
-                system_signature_for<TSystem>>;
+            using system_tag_for =
+                signature::system::tag_type<system_signature_for<TSystem>>;
 
             template <typename TSystemTag>
-            using tag_to_system = signature::system::unwrap_tag<TSystemTag>;
+            using tag_to_system = tag::system::unwrap<TSystemTag>;
 
             storage_type _storage;
 
         public:
             auto system_count() const noexcept
             {
-                return mp::list::size(ssl_type{});
+                return bh::size(ssl_type{});
             }
 
             template <typename TSystem>
@@ -81,14 +81,13 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             auto& system_by_signature(TSystemSignature) noexcept
             {
                 return system_by_tag(
-                    signature::system::impl::signature_tag_type<
-                        TSystemSignature>{});
+                    signature::system::tag_type<TSystemSignature>{});
             }
 
             template <typename TF>
-            void for_systems(TF&& f)
+            void for_instances(TF&& f)
             {
-                for_tuple(f, _storage);
+                bh::for_each(_storage, f);
             }
         };
     }

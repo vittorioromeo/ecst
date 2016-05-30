@@ -21,6 +21,32 @@
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    namespace impl
+    {
+        template <typename TSettings, typename TSystemSignature>
+        class instance_base
+        {
+        public:
+            using system_tag_type =
+                signature::system::tag_type<TSystemSignature>;
+
+            using system_type = tag::system::unwrap<system_tag_type>;
+
+        private:
+            system_type _system;
+
+        public:
+            /// @brief Returns a reference to the stored system instance.
+            auto& system() noexcept;
+
+            /// @brief Returns a const reference to the stored system instance.
+            const auto& system() const noexcept;
+        };
+
+        // TODO: component-only systems with no knowledge of entities for SIMD
+        // operations (?)
+    }
+
     /// @brief System instance.
     /// @details Contains:
     /// * An instance of the user-defined system type.
@@ -29,43 +55,39 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     /// * A bitset of the used components by the system.
     /// * A parallel executor.
     template <typename TSettings, typename TSystemSignature>
-    class instance
+    class instance : public impl::instance_base<TSettings, TSystemSignature>
     {
     private:
-        using system_tag_type =
-            signature::system::impl::signature_tag_type<TSystemSignature>;
+        using base_type = impl::instance_base<TSettings, TSystemSignature>;
 
-        using system_type = signature::system::unwrap_tag<system_tag_type>;
+    public:
+        using system_tag_type = typename base_type::system_tag_type;
+        using system_type = typename base_type::system_type;
 
+    private:
         using bitset_type = bitset::dispatch<TSettings>;
 
         using state_manager_type = // .
-            impl::state_manager::dispatch<TSettings, TSystemSignature>;
+            impl::state_manager::data<TSettings, TSystemSignature>;
 
         using set_type = dispatch_set<TSettings>;
 
         using parallel_parameters_type = // .
-            signature::system::parallelism_policy<TSystemSignature>;
+            signature::system::parallelism_type<TSystemSignature>;
 
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
-        system_type _system;
+        using this_type = instance<TSettings, TSystemSignature>;
+
         state_manager_type _sm;
         set_type _subscribed;
         bitset_type _bitset;
         parallel_executor_type _parallel_executor;
 
     public:
-        ECST_ALWAYS_INLINE auto& ECST_PURE_FN subscribed() noexcept
-        {
-            return _subscribed;
-        }
-
-        ECST_ALWAYS_INLINE const auto& ECST_PURE_FN subscribed() const noexcept
-        {
-            return _subscribed;
-        }
+        auto& subscribed() noexcept;
+        const auto& subscribed() const noexcept;
 
     public:
         static constexpr auto system_id() noexcept
@@ -107,36 +129,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief Unsubscribes `eid` from the system.
         auto unsubscribe(entity_id eid);
 
-        auto& system() noexcept;
-        const auto& system() const noexcept;
-
         const auto& bitset() const noexcept;
 
         template <typename TBitset>
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
-        template <                          // .
-            typename TFEntityProvider,      // .
-            typename TFAllEntityProvider,   // .
-            typename TFOtherEntityProvider, // .
-            typename TContext,              // .
-            typename TFStateGetter          // .
-            >
-        auto make_data(                    // .
-            TFEntityProvider&& f_ep,       // .
-            sz_t ep_count,                 // .
-                                           // .
-            TFAllEntityProvider&& f_aep,   // .
-            sz_t ae_count,                 // .
-                                           // .
-            TFOtherEntityProvider&& f_oep, // .
-            sz_t oe_count,                 // .
-                                           // .
-            TContext& ctx,                 // .
-            TFStateGetter&& sg             // .
-            );
-
         /// @brief Clears and allocates `n` subtask states.
         template <typename TF>
         void prepare_and_wait_n_subtasks(sz_t n, TF&& f);
@@ -156,6 +154,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// `_parallel_executor`.
         template <typename TContext, typename TF>
         void execute_in_parallel(TContext& ctx, TF&& f);
+
+        /// @brief Returns an execution function that, when called with a
+        /// user-defined processing function, either invokes a single-threaded
+        /// execution or a multi-threaded execution.
+        template <typename TContext>
+        auto execution_dispatch(TContext&) noexcept;
 
     public:
         template <typename TContext, typename TF>
@@ -188,10 +192,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// except a range subset of entities.
         auto make_other_entity_range_provider(
             sz_t i_begin, sz_t i_end) noexcept;
-
-        template <typename TContext>
-        auto make_entity_range_data(
-            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept;
 
         template <typename TCounterBlocker, typename TContext>
         auto make_slice_executor(TCounterBlocker& cb, TContext& ctx,

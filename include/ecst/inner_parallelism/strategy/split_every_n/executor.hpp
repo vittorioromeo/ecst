@@ -7,6 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/signature.hpp>
 #include <ecst/inner_parallelism/utils.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE

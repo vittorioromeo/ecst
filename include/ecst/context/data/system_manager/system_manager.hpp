@@ -20,8 +20,7 @@ ECST_CONTEXT_NAMESPACE
     namespace impl
     {
         /// @brief Class managing systems and threads.
-        /// @details Contains a thread pool, a system runner and a system
-        /// storage.
+        /// @details Contains a thread pool, and a system storage.
         template <typename TSettings>
         class system_manager
         {
@@ -32,36 +31,33 @@ ECST_CONTEXT_NAMESPACE
             using settings_type = TSettings;
             using thread_pool = ecst::thread_pool;
 
-            using system_runner_type = // .
-                context::system::runner<settings_type>;
-
             using system_storage_type = // .
                 context::storage::system::dispatch<settings_type>;
 
+            using scheduler_type = // .
+                typename settings::impl::ctx_scheduler<
+                    settings_type>::template instantiate<settings_type>;
+
             template <typename T>
-            using system_from_tag = signature::system::unwrap_tag<T>;
+            using system_from_tag = tag::system::unwrap<T>;
 
         private:
             thread_pool _thread_pool;
-            system_runner_type _system_runner;
             system_storage_type _system_storage;
 
         public:
-            system_manager();
-            ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(system_manager);
-
             /// @brief Executes `f` on all systems, sequentially.
             template <typename TF>
-            void for_systems_sequential(TF&& f);
+            void for_instances_sequential(TF&& f);
 
             /// @brief Executes `f` on all systems, in parallel.
             template <typename TF>
-            void for_systems_parallel(TF&& f);
+            void for_instances_parallel(TF&& f);
 
             /// @brief Executes `f` on all systems, in parallel if enabled by
             /// settings, sequentially otherwise.
             template <typename TF>
-            void for_systems_dispatch(TF&& f);
+            void for_instances_dispatch(TF&& f);
 
             template <typename TF>
             auto post_in_thread_pool(TF&& f);
@@ -70,24 +66,21 @@ ECST_CONTEXT_NAMESPACE
             auto& instance_by_id(TID) noexcept;
 
         protected:
-            template <typename TContext, typename TF>
-            void execute_systems(TContext&, TF&& f);
+            template <typename TContext, typename... TStartSystemTags>
+            auto execute_systems_from(
+                TContext& context, TStartSystemTags... sts) noexcept;
 
-            template <typename TContext, typename... TFs>
-            void execute_systems_overload(TContext&, TFs&&... fs);
+        private:
+            template <typename TContext, typename TStartSystemTagList,
+                typename... TFs>
+            void execute_systems(
+                TContext&, TStartSystemTagList sstl, TFs&&... fs);
 
-        public:
             template <typename TSystem, typename TF>
             decltype(auto) for_system_outputs(TF&& f);
 
-            template <typename TSystemTag, typename TF>
-            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
-
             template <typename TSystem, typename TAcc, typename TF>
             auto foldl_system_outputs(TAcc acc, TF&& f);
-
-            template <typename TSystemTag, typename TAcc, typename TF>
-            auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
 
             template <typename TSystem>
             auto& instance() noexcept;
@@ -95,17 +88,33 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSystem>
             const auto& instance() const noexcept;
 
-            template <typename TSystemTag>
-            auto& instance(TSystemTag) noexcept;
-
-            template <typename TSystemTag>
-            const auto& instance(TSystemTag) const noexcept;
-
             template <typename TSystem>
             auto& system() noexcept;
 
             template <typename TSystem>
             const auto& system() const noexcept;
+
+            template <typename TSystem>
+            auto is_in_system(entity_id) const noexcept;
+
+            template <typename TSystem>
+            auto count_entities_in() const noexcept;
+
+            template <typename TSystem>
+            auto any_entity_in() const noexcept;
+
+        public:
+            template <typename TSystemTag, typename TF>
+            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
+
+            template <typename TSystemTag, typename TAcc, typename TF>
+            auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
+
+            template <typename TSystemTag>
+            auto& instance(TSystemTag) noexcept;
+
+            template <typename TSystemTag>
+            const auto& instance(TSystemTag) const noexcept;
 
             template <typename TSystemTag>
             auto& system(TSystemTag) noexcept;
@@ -113,20 +122,11 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSystemTag>
             const auto& system(TSystemTag) const noexcept;
 
-            template <typename TSystem>
-            auto is_in_system(entity_id) const noexcept;
-
             template <typename TSystemTag>
             auto is_in_system(TSystemTag, entity_id) const noexcept;
 
-            template <typename TSystem>
-            auto count_entities_in() const noexcept;
-
             template <typename TSystemTag>
             auto count_entities_in(TSystemTag) const noexcept;
-
-            template <typename TSystem>
-            auto any_entity_in() const noexcept;
 
             template <typename TSystemTag>
             auto any_entity_in(TSystemTag) const noexcept;

@@ -26,14 +26,6 @@ ECST_CONTEXT_BITSET_NAMESPACE
             my_bitset _bitset;
 
         public:
-            data() = default;
-
-            data(const data&) = default;
-            data& operator=(const data&) = default;
-
-            data(data&&) = default;
-            data& operator=(data&&) = default;
-
             void clear() noexcept
             {
                 _bitset.reset();
@@ -74,7 +66,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             }
 
             template <typename TBitset>
-            auto contains(const TBitset& b) const noexcept
+            auto ECST_PURE_FN contains(const TBitset& b) const noexcept
             {
                 return (_bitset & b._bitset) == _bitset;
             }

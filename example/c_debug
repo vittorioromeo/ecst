@@ -1,0 +1,18 @@
+#!/bin/bash
+
+time g++ -std=c++14 \
+        -I"/home/vittorioromeo/OHWorkspace/ecst/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
+        -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
+        -g \
+        -Og \
+        -pedantic \
+        -W \
+        -Wall \
+        -Wextra \
+        -lpthread \
+        -lsfml-system \
+        -lsfml-graphics \
+        -lsfml-window \
+        -Wno-unused-variable \
+        $1 -o /tmp/x.x && echo "Compiled." && /tmp/x.x "${@:2}"

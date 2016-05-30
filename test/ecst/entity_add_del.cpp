@@ -48,13 +48,13 @@ namespace example
 
     namespace ct
     {
-        namespace sct = ecst::signature::component;
+        using namespace ecst;
 
-        constexpr auto position = sct::tag<c::position>;
-        constexpr auto velocity = sct::tag<c::velocity>;
-        constexpr auto acceleration = sct::tag<c::acceleration>;
-        constexpr auto counter = sct::tag<c::counter>;
-        // constexpr auto countable = sct::tag<c::countable>;
+        constexpr auto position = tag::component::v<c::position>;
+        constexpr auto velocity = tag::component::v<c::velocity>;
+        constexpr auto acceleration = tag::component::v<c::acceleration>;
+        constexpr auto counter = tag::component::v<c::counter>;
+        constexpr auto countable = tag::component::v<c::countable>;
     }
 
 
@@ -122,17 +122,34 @@ namespace example
         };
     }
 
+#define SYS_TAG(x)                                          \
+    namespace system                                        \
+    {                                                       \
+        struct x;                                           \
+    }                                                       \
+    namespace st                                            \
+    {                                                       \
+        constexpr auto x = ecst::tag::system::v<system::x>; \
+    }
+
+    SYS_TAG(acceleration)
+    SYS_TAG(velocity)
+    SYS_TAG(counter)
+
+
     namespace ecst_setup
     {
         constexpr auto make_csl()
         {
             namespace c = example::component;
+            namespace sc = ecst::signature::component;
             namespace slc = ecst::signature_list::component;
 
-            return slc::v<                                             // .
-                c::position, c::velocity, c::acceleration, c::counter, // .
-                c::countable                                           // .
-                >;
+            return slc::make(                                      // .
+                sc::make(ct::position), sc::make(ct::velocity),    // .
+                sc::make(ct::acceleration), sc::make(ct::counter), // .
+                sc::make(ct::countable)                            // .
+                );
         }
 
         constexpr auto entity_count = ecst::sz_v<1000>;
@@ -150,38 +167,24 @@ namespace example
             constexpr auto test_p = // .
                 ips::split_every_n::v(sz_v<entity_count / 8>);
 
-            constexpr auto ssig_acceleration =    // .
-                ss::make<s::acceleration>(        // .
-                    test_p,                       // .
-                    ss::no_dependencies,          // .
-                    ss::component_use(            // .
-                        ss::mutate<c::velocity>,  // .
-                        ss::read<c::acceleration> // .
-                        ),                        // .
-                    ss::output::none              // .
-                    );
+            constexpr auto ssig_acceleration = // .
+                ss::make(st::acceleration)     // .
+                    .parallelism(test_p)       // .
+                    .read(ct::acceleration)    // .
+                    .write(ct::velocity);      // .
 
-            constexpr auto ssig_velocity =           // .
-                ss::make<s::velocity>(               // .
-                    test_p,                          // .
-                    ss::depends_on<s::acceleration>, // .
-                    ss::component_use(               // .
-                        ss::mutate<c::position>,     // .
-                        ss::read<c::velocity>        // .
-                        ),                           // .
-                    ss::output::none                 // .
-                    );
+            constexpr auto ssig_velocity =          // .
+                ss::make(st::velocity)              // .
+                    .parallelism(test_p)            // .
+                    .dependencies(st::acceleration) // .
+                    .read(ct::velocity)             // .
+                    .write(ct::position);           // .
 
-            constexpr auto ssig_counter =       // .
-                ss::make<s::counter>(           // .
-                    test_p,                     // .
-                    ss::no_dependencies,        // .
-                    ss::component_use(          // .
-                        ss::mutate<c::counter>, // .
-                        ss::read<c::countable>  // .
-                        ),                      // .
-                    ss::output::none            // .
-                    );
+            constexpr auto ssig_counter = // .
+                ss::make(st::counter)     // .
+                    .parallelism(test_p)  // .
+                    .read(ct::countable)  // .
+                    .write(ct::counter);  // .
 
             return sls::make(      // .
                 ssig_counter,      // .
@@ -194,39 +197,38 @@ namespace example
     namespace c = example::component;
     namespace s = example::system;
 
-    auto test_impl = [](auto& ctx)
+    auto test_impl_f = [](auto& ctx)
     {
         auto r_e0 = ctx.step([&ctx](auto& proxy)
             {
                 auto e0 = proxy.create_entity();
-                ECST_ASSERT(ctx.alive(e0));
+                TEST_ASSERT(ctx.alive(e0));
 
-                auto& e0_c_counter =
-                    proxy.template add_component<c::counter>(e0);
+                auto& e0_c_counter = proxy.add_component(ct::counter, e0);
                 (void)e0_c_counter;
-                proxy.template add_component<c::countable>(e0);
+                proxy.add_component(ct::countable, e0);
 
-                ECST_ASSERT(!ctx.template is_in_system<s::counter>(e0));
+                TEST_ASSERT(!ctx.is_in_system(st::counter, e0));
 
                 return e0;
             });
 
-        ECST_ASSERT(ctx.alive(r_e0));
-        ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+        TEST_ASSERT(ctx.alive(r_e0));
+        TEST_ASSERT(ctx.is_in_system(st::counter, r_e0));
 
         ctx.step([&ctx, r_e0](auto& proxy)
             {
-                ECST_ASSERT(ctx.alive(r_e0));
-                ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+                TEST_ASSERT(ctx.alive(r_e0));
+                TEST_ASSERT(ctx.is_in_system(st::counter, r_e0));
 
                 proxy.kill_entity(r_e0);
 
-                ECST_ASSERT(ctx.alive(r_e0));
-                ECST_ASSERT(ctx.template is_in_system<s::counter>(r_e0));
+                TEST_ASSERT(ctx.alive(r_e0));
+                TEST_ASSERT(ctx.is_in_system(st::counter, r_e0));
             });
 
-        ECST_ASSERT(ctx.alive(r_e0) == false);
-        ECST_ASSERT(!ctx.template is_in_system<s::counter>(r_e0));
+        TEST_ASSERT(ctx.alive(r_e0) == false);
+        TEST_ASSERT(!ctx.is_in_system(st::counter, r_e0));
     };
 }
 
@@ -235,6 +237,6 @@ int main()
     using namespace example;
     using namespace example::ecst_setup;
 
-    test::run_tests(test_impl, entity_count, make_csl(), make_ssl());
+    test::run_tests(test_impl_f, entity_count, make_csl(), make_ssl());
     return 0;
 }

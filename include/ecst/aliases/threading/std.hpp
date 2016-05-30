@@ -7,6 +7,35 @@
 
 #include <ecst/config.hpp>
 
+// TODO: remove
+/*
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+// https://github.com/meganz/mingw-std-threads
+#include <mingw.thread.h>
+#include <mingw.mutex.h>
+#include <mingw.condition_variable.h>
+
+#define BOOST_THREAD_PROVIDES_FUTURE 1
+#include <boost/thread/future.hpp>
+
+namespace std
+{
+    using boost::future;
+    using boost::launch;
+
+    template <typename... Ts>
+    auto async(Ts&&... xs)
+    {
+        return boost::async(std::forward<Ts>(xs)...);
+    }
+}
+
+#define _GLIBCXX_FUTURE 1
+*/
+
 #include <chrono>
 #include <thread>
 #include <atomic>

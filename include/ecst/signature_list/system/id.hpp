@@ -16,10 +16,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto id_by_signature(
         TSystemSignatureList ssl, TSystemSignature ss)
     {
-        ECST_S_ASSERT_DT(is_signature_list(ssl));
-        ECST_S_ASSERT_DT(signature::system::is_signature(ss));
+        ECST_S_ASSERT_DT(valid(ssl));
+        ECST_S_ASSERT_DT(signature::system::valid(mp::unwrapped(ss)));
 
-        return mp::list::find_first_index_of(ssl, ss);
+        return mp::list::index_of(ssl, ss);
     }
 
     /// @brief Given a system type `TSystem`, returns its ID.
@@ -33,7 +33,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     template <typename TSystemSignatureList, typename TSystemTag>
     constexpr auto id_by_tag(TSystemSignatureList ssl, TSystemTag st)
     {
-        ECST_S_ASSERT_DT(signature::system::is_tag(st));
+        ECST_S_ASSERT_DT(tag::system::valid(st));
         return id_by_signature(ssl, signature_by_tag(ssl, st));
     }
 }

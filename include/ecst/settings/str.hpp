@@ -19,17 +19,15 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "entity storage: ";
 
-            static_if(bool_v<settings::has_fixed_entity_storage<TSettings>>)
-                .then([&oss](auto ts)
-                    {
-                        oss << "fixed (capacity: "
-                            << settings::fixed_capacity(ts) << ")";
-                    })
-                .else_([&oss](auto ts)
-                    {
-                        oss << "dynamic (initial: "
-                            << settings::initial_capacity(ts) << ")";
-                    })(TSettings{});
+            settings::dispatch_on_storage_type(TSettings{},
+                [&oss](auto fixed_capacity)
+                {
+                    oss << "fixed (capacity: " << fixed_capacity << ")";
+                },
+                [&oss](auto initial_capacity)
+                {
+                    oss << "dynamic (initial: " << initial_capacity << ")";
+                });
 
             return oss.str();
         }
@@ -40,7 +38,7 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "multithreading: ";
 
-            static_if(bool_v<settings::inner_parallelism_allowed<TSettings>()>)
+            static_if(settings::inner_parallelism_allowed(TSettings{}))
                 .then([&oss](auto)
                     {
                         oss << "allows inner parallelism";

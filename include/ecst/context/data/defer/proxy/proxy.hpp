@@ -42,10 +42,10 @@ ECST_CONTEXT_NAMESPACE
                 refresh_state_type& _refresh_state;
 
                 template <typename T>
-                using component_from_tag = signature::component::unwrap_tag<T>;
+                using component_from_tag = tag::component::unwrap<T>;
 
                 template <typename T>
-                using system_from_tag = signature::system::unwrap_tag<T>;
+                using system_from_tag = tag::system::unwrap<T>;
 
             protected:
                 auto& context() noexcept;
@@ -68,15 +68,6 @@ ECST_CONTEXT_NAMESPACE
 
                 void kill_entity(entity_id) noexcept;
 
-                template <typename TComponent>
-                decltype(auto) add_component(entity_id);
-
-                template <typename TComponent>
-                decltype(auto) get_component(entity_id);
-
-                template <typename TComponent>
-                void remove_component(entity_id) noexcept;
-
                 template <typename TComponentTag>
                 decltype(auto) add_component(TComponentTag, entity_id);
 
@@ -86,44 +77,23 @@ ECST_CONTEXT_NAMESPACE
                 template <typename TComponentTag>
                 void remove_component(TComponentTag, entity_id) noexcept;
 
-                template <typename TSystem>
-                auto& instance() noexcept;
-
                 template <typename TSystemTag>
                 auto& instance(TSystemTag) noexcept;
-
-                template <typename TSystem>
-                auto& system() noexcept;
 
                 template <typename TSystemTag>
                 auto& system(TSystemTag) noexcept;
 
-                template <typename TSystem, typename TF>
-                decltype(auto) for_system_outputs(TF&& f);
-
                 template <typename TSystemTag, typename TF>
                 decltype(auto) for_system_outputs(TSystemTag, TF&& f);
-
-                template <typename TSystem, typename TAcc, typename TF>
-                auto foldl_system_outputs(TAcc acc, TF&& f);
 
                 template <typename TSystemTag, typename TAcc, typename TF>
                 auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
 
-                template <typename TSystem>
-                auto is_in_system(entity_id) const noexcept;
-
                 template <typename TSystemTag>
                 auto is_in_system(TSystemTag, entity_id) const noexcept;
 
-                template <typename TSystem>
-                auto count_entities_in() const noexcept;
-
                 template <typename TSystemTag>
                 auto count_entities_in(TSystemTag) const noexcept;
-
-                template <typename TSystem>
-                auto any_entity_in() const noexcept;
 
                 template <typename TSystemTag>
                 auto any_entity_in(TSystemTag) const noexcept;

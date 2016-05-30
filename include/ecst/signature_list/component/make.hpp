@@ -14,12 +14,8 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     template <typename... TComponentSignatures>
     constexpr auto make(TComponentSignatures... css)
     {
-        ECST_S_ASSERT_DT(signature::component::are_signatures(css...));
-
-        return mp::list::make(css...);
+        ECST_S_ASSERT_DT(signature::component::valid(css...));
+        return mp::list::make(mp::wrap(css)...);
     }
-
-    template <typename... TComponents>
-    constexpr auto v = make(signature::component::make<TComponents>()...);
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

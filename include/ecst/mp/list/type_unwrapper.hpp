@@ -7,8 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
-#include <ecst/mp/list/inverse_indices.hpp>
-#include <ecst/mp/list/remove.hpp>
+#include <boost/hana/ext/std/tuple.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
@@ -20,14 +19,25 @@ ECST_MP_LIST_NAMESPACE
         template <typename... Ts>
         struct list_unwrapper<type_list<Ts...>>
         {
-            using type = type_list<typename Ts::type...>;
+            using type = std::tuple<typename Ts::type...>;
         };
 
         template <typename T>
-        using unwrap_type_v_list = typename list_unwrapper<T>::type;
+        struct list_bh_unwrapper;
+
+        template <typename... Ts>
+        struct list_bh_unwrapper<type_list<Ts...>>
+        {
+            using type = bh::tuple<typename Ts::type...>;
+        };
     }
 
+    /// @brief Unwraps a `type_list<type_c<xs>...>` into an `std::tuple<xs...>`.
     template <typename T>
-    using unwrap_tuple = impl::unwrap_type_v_list<T>;
+    using unwrap_tuple = typename impl::list_unwrapper<T>::type;
+
+    /// @brief Unwraps a `type_list<type_c<xs>...>` into a `bh::tuple<xs...>`.
+    template <typename T>
+    using unwrap_bh_tuple = typename impl::list_bh_unwrapper<T>::type;
 }
 ECST_MP_LIST_NAMESPACE_END
