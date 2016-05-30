@@ -23,12 +23,10 @@ def find_angles(s, xi_start, xi_end):
     open_angles = []
 
     for i in range(xi_start, xi_end):
-        c = s[i]
-
-        if c == '<':
+        if s[i-1] != ' ' and s[i] == '<':
             open_angles.append(i)
 
-        elif c == '>':
+        elif s[i-1] != '-' and s[i] == '>':
             assert(len(open_angles) > 0)
 
             depth = len(open_angles)
@@ -61,8 +59,10 @@ def merged(intervals):
 
 # Namespace replacements
 ns_replacement('boost::hana', 'bh')
+ns_replacement('vrm::core', 'vrmc')
 ns_replacement('std', '')
 ns_replacement('ecst', '')
+ns_replacement('impl', '_')
 ns_replacement('system_execution_adapter', 'sea')
 ns_replacement('context', 'ctx')
 ns_replacement('tag::system', 'tag_s')
@@ -71,8 +71,11 @@ ns_replacement('tag::component', 'tag_c')
 # Non-namespace replacements
 replacement(r'integral_constant', r'ic')
 replacement(r'lambda\(', r'[](')
+replacement(r'size_t', r'sz_t')
 replacement(r'unsigned ', r'u')
 replacement(r'long u', r'ul')
+replacement(r'type_impl', r'type')
+replacement(r'tag_impl', r'tag')
 replacement(r'<>', r'<?>')
 
 # Find all angle bracket pairs
