@@ -27,7 +27,8 @@ def find_angles(s, xi_start, xi_end):
             open_angles.append(i)
 
         elif s[i-1] != '-' and s[i] == '>':
-            assert(len(open_angles) > 0)
+            if len(open_angles) == 0:
+                continue
 
             depth = len(open_angles)
             x = open_angles.pop()
@@ -76,6 +77,7 @@ replacement(r'unsigned ', r'u')
 replacement(r'long u', r'ul')
 replacement(r'type_impl', r'type')
 replacement(r'tag_impl', r'tag')
+replacement(r'forward', r'fwd')
 replacement(r'<>', r'<?>')
 
 # Find all angle bracket pairs
