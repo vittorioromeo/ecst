@@ -510,51 +510,28 @@ namespace example
             namespace cs = ecst::signature::component;
             namespace csl = ecst::signature_list::component;
 
-#define GROUP_PHYSICS_CS 0
+            // Store `c::acceleration`, `c::velocity` and `c::position` in three
+            // separate contiguous buffers (SoA).
+            constexpr auto cs_acceleration = // .
+                cs::make(ct::acceleration).contiguous_buffer();
 
-#if GROUP_PHYSICS_CS
-            constexpr auto csig_physics0 = // .
-                cs::make(ct::acceleration) // .
-                    .contiguous_buffer();
+            constexpr auto cs_velocity = // .
+                cs::make(ct::velocity).contiguous_buffer();
 
-            constexpr auto csig_physics1 = // .
-                cs::make(ct::velocity)     // .
-                    .contiguous_buffer();
+            constexpr auto cs_position = // .
+                cs::make(ct::position).contiguous_buffer();
 
-            constexpr auto csig_physics2 = // .
-                cs::make(ct::position)     // .
-                    .contiguous_buffer();
-#else
-            constexpr auto csig_physics =                              // .
-                cs::make(ct::position, ct::velocity, ct::acceleration) // .
-                    .contiguous_buffer();
-#endif
-            constexpr auto csig_color = // .
-                cs::make(ct::color)     // .
-                    .contiguous_buffer();
+            // Store `c::color` and `c::circle` in the same contiguous buffer,
+            // interleaved (AoS).
+            constexpr auto cs_rendering = // .
+                cs::make(ct::color, ct::circle).contiguous_buffer();
 
-            constexpr auto csig_circle = // .
-                cs::make(ct::circle)     // .
-                    .contiguous_buffer();
-
-            return csl::make( // .
-#if GROUP_PHYSICS_CS
-                csig_physics0, // .
-                csig_physics1, // .
-                csig_physics2, // .
-#else
-                csig_physics, // .
-#endif
-                csig_color, // .
-                csig_circle // .
+            return csl::make(    // .
+                cs_acceleration, // .
+                cs_velocity,     // .
+                cs_position,     // .
+                cs_rendering     // .
                 );
-
-            /*
-            return ecst::signature_list::component::make(     // .
-                ct::position, ct::velocity, ct::acceleration, // .
-                ct::color, ct::circle                         // .
-                );
-            */
         }
 
         // Builds and returns a "system signature list".
@@ -637,8 +614,6 @@ namespace example
                     .dependencies(st::solve_contacts)             // .
                     .read(ct::circle, ct::position, ct::color)    // .
                     .output(ss::output<std::vector<sf::Vertex>>); // .
-
-
 
             // Build and return the "system signature list".
             return sls::make(              // .
@@ -755,11 +730,10 @@ int main()
     namespace ss = ecst::scheduler;
 
     // Define ECST context settings.
-    constexpr auto s =                          // .
-        ecst::settings::make()                  // .
-            .allow_inner_parallelism()          // .
-            .dynamic_entity_limit(entity_limit) // .
-            // .fixed_entity_limit(entity_limit) // .
+    constexpr auto s =                        // .
+        ecst::settings::make()                // .
+            .allow_inner_parallelism()        // .
+            .fixed_entity_limit(entity_limit) // .
             .component_signatures(make_csl()) // .
             .system_signatures(make_ssl())    // .
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
@@ -772,7 +746,6 @@ int main()
 
     // Create an ECST context.
     auto ctx = ecst::context::make_uptr(hs{});
-
 
     // Run the simulation.
     run_simulation(*ctx);
