@@ -16,9 +16,8 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     constexpr auto id_by_signature(
         TComponentSignatureList csl, TComponentSignature cs) noexcept
     {
-        // TODO:
-        // ECST_S_ASSERT_DT(valid(csl));
-        // ECST_S_ASSERT_DT(signature::component::valid(cs));
+        ECST_S_ASSERT_DT(valid(csl));
+        ECST_S_ASSERT_DT(signature::component::valid(mp::unwrapped(cs)));
 
         return mp::list::index_of(csl, cs);
     }

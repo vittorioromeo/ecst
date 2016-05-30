@@ -6,6 +6,7 @@
 #pragma once
 
 #include <ecst/config.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -19,7 +20,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         // TODO: move
         namespace impl
         {
-            // TODO: use bh tuple
+            // TODO: use bh tuple ?
             template <typename TComponentTagList>
             using component_tuple_type =
                 mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(

@@ -23,44 +23,6 @@ ECST_MP_LIST_NAMESPACE
         return bh::all(bh::make_basic_tuple(FWD(xs)...));
     }
 
-    // TODO: please
-    template <typename TTuple, typename TPredicate>
-    constexpr auto index_of_first_matching(
-        TTuple && t, TPredicate && p) noexcept
-    {
-        auto res = bh::fold_left(t, bh::make_pair(sz_v<0>, bh::false_c),
-            [](auto&& acc, auto&& x)
-            {
-                return static_if(bh::second(acc))
-                    .then([](auto&& xacc, auto&&)
-                        {
-                            return xacc;
-                        })
-                    .else_([](auto&& xacc, auto&& xx)
-                        {
-                            return static_if(bh::bool_c<           // .
-                                                 decltype(p(xx)){} // .
-                                                 >)
-                                .then([](auto&& yacc)
-                                    {
-                                        return bh::make_pair(
-                                            bh::first(decltype(yacc){}),
-                                            bh::true_c);
-                                    })
-                                .else_([](auto&& yacc)
-                                    {
-                                        return bh::make_pair(
-                                            sz_v<bh::first(decltype(yacc){}) +
-                                                 sz_v<1>>,
-                                            bh::false_c);
-
-                                    })(FWD(xacc));
-                        })(FWD(acc), FWD(x));
-            });
-
-        return bh::first(decltype(res){});
-    }
-
     // Returns the index of `x` in `l`.
     template <typename TList, typename T>
     constexpr auto index_of(TList&&, T && x) noexcept
@@ -68,6 +30,51 @@ ECST_MP_LIST_NAMESPACE
         using Pred = decltype(bh::equal.to(x));
         using Pack = typename bh::detail::make_pack<TList>::type;
         return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
+    }
+
+    // TODO: propose to hana?
+    template <typename TSeq, typename TAcc, typename TF>
+    constexpr auto indexed_fold_right(
+        TSeq && seq, TAcc && acc, TF && f) noexcept
+    {
+        return bh::second(bh::fold_right(FWD(seq),
+            bh::make_pair(bh::size(seq) - sz_v<1>, FWD(acc)),
+            [&f](auto&& x, auto&& idx_acc_pair)
+            {
+                auto curr_idx = bh::first(FWD(idx_acc_pair));
+                auto curr_acc = bh::second(FWD(idx_acc_pair));
+
+                auto next_acc = f(FWD(x), curr_acc, curr_idx);
+                return bh::make_pair(curr_idx - sz_v<1>, next_acc);
+            }));
+    }
+
+    template <typename TSeq, typename T, typename TCondition>
+    constexpr auto append_if(TSeq && seq, T && x, TCondition && c) noexcept
+    {
+        return static_if(c)
+            .then([](auto&& x_seq, auto&& x_x)
+                {
+                    return bh::append(FWD(x_seq), FWD(x_x));
+                })
+            .else_([](auto&& x_seq, auto&&)
+                {
+                    return x_seq;
+                })(FWD(seq), FWD(x));
+    }
+
+    // Returns the index of the first element `x` of `t` satisfying `p(x)`.
+    template <typename TTuple, typename TPredicate>
+    constexpr auto index_of_first_matching(
+        TTuple && t, TPredicate && p) noexcept
+    {
+        auto res = indexed_fold_right(FWD(t), empty_v,
+            [&p](auto&& x, auto acc, auto idx)
+            {
+                return append_if(acc, idx, p(x));
+            });
+
+        return bh::front(res);
     }
 
     // Converts two lists to sets and returns their intersection.

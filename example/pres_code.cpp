@@ -510,7 +510,9 @@ namespace example
             namespace cs = ecst::signature::component;
             namespace csl = ecst::signature_list::component;
 
-#if 0
+#define GROUP_PHYSICS_CS 0
+
+#if GROUP_PHYSICS_CS
             constexpr auto csig_physics0 = // .
                 cs::make(ct::acceleration) // .
                     .contiguous_buffer();
@@ -536,7 +538,7 @@ namespace example
                     .contiguous_buffer();
 
             return csl::make( // .
-#if 0
+#if GROUP_PHYSICS_CS
                 csig_physics0, // .
                 csig_physics1, // .
                 csig_physics2, // .

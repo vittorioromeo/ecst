@@ -5,10 +5,8 @@
 
 #pragma once
 
-#include <type_traits>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
 #include "../utils.hpp"
 #include "../impl.hpp"
 

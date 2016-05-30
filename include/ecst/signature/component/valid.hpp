@@ -7,14 +7,14 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/component/data.hpp>
+#include "./data.hpp"
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
     namespace impl
     {
         template <typename T>
-        using valid_impl = mp::is_specialization_of<data, T>;
+        using valid_impl = std::is_base_of<impl::base_data, T>;
 
         struct valid_t
         {

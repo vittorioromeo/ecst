@@ -9,3 +9,4 @@
 #include "./component/make.hpp"
 #include "./component/signature.hpp"
 #include "./component/id.hpp"
+#include "./component/all_components.hpp"

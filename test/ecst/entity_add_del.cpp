@@ -142,11 +142,13 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::component;
+            namespace sc = ecst::signature::component;
             namespace slc = ecst::signature_list::component;
 
-            return slc::make(                                              // .
-                ct::position, ct::velocity, ct::acceleration, ct::counter, // .
-                ct::countable                                              // .
+            return slc::make(                                      // .
+                sc::make(ct::position), sc::make(ct::velocity),    // .
+                sc::make(ct::acceleration), sc::make(ct::counter), // .
+                sc::make(ct::countable)                            // .
                 );
         }
 

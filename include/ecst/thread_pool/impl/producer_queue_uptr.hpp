@@ -15,7 +15,7 @@ namespace etp
     class producer_queue_uptr
     {
     private:
-        // TODO: avoidable unique_ptr?
+        // TODO: avoid unique_ptr somehow? unique_ptr the whole thread_pool?
         std::unique_ptr<task_queue> _queue;
         task_queue_producer_token _ptok;
 

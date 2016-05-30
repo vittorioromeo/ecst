@@ -5,10 +5,8 @@
 
 #pragma once
 
-#include <type_traits>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
 #include "../utils.hpp"
 #include "../impl.hpp"
 #include "../tuple.hpp"
@@ -23,10 +21,9 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 )                             // .
             >;
 
-    // TODO: use bh tuple
     template <typename TSettings>
     using chunk_metadata_tuple_type =                                    // .
-        mp::list::unwrap_tuple<                                          // .
+        mp::list::unwrap_bh_tuple<                                       // .
             decltype(                                                    // .
                 make_chunk_metadata_tuple(make_chunk_tuple(TSettings{})) // .
                 )                                                        // .

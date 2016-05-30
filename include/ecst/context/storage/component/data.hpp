@@ -16,40 +16,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace impl
     {
-        /*
-        namespace impl
-        {
-            template <typename TComponent, typename TChunkTuple>
-            auto getidx_impl()
-            {
-                auto wt = bh::transform(std::declval<TChunkTuple>(), [](auto& c)
-                    {
-                        return mp::wrap(c);
-                    });
-
-                auto idx = mp::list::index_of_first_matching(wt, [](auto& wc)
-                    {
-                        using chunk_type = mp::unwrap<ECST_DECAY_DECLTYPE(wc)>;
-
-                        using chunk_component_tag_list_type = // .
-                            typename chunk_type::component_tag_list_type;
-
-                        return bh::contains(                 // .
-                            chunk_component_tag_list_type{}, // .
-                            tag::component::v<TComponent>);
-                    });
-
-                return idx;
-            }
-        }
-
-        template <typename TComponent, typename TChunkTuple>
-        constexpr auto getidx()
-        {
-            return decltype(impl::getidx_impl<TComponent, TChunkTuple>()){};
-        }
-*/
-
         // TODO: cleanup
 
         template <typename TSettings>
@@ -69,11 +35,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return bh::at(_chunk_tuple, TID{});
             }
 
-            /// @brief Returns the chunk storing `TComponent`.
             template <typename TComponentTag>
-            auto& chunk_for(TComponentTag ct) noexcept
+            constexpr auto component_idx(TComponentTag ct) noexcept
             {
-                auto idx = mp::list::index_of_first_matching(_chunk_tuple,
+                return mp::list::index_of_first_matching(_chunk_tuple,
                     [ct](auto& c)
                     {
                         using chunk_type = ECST_DECAY_DECLTYPE(c);
@@ -84,8 +49,13 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                         return bh::contains(
                             chunk_component_tag_list_type{}, ct);
                     });
+            }
 
-                return bh::at(_chunk_tuple, idx);
+            /// @brief Returns the chunk storing `TComponent`.
+            template <typename TComponentTag>
+            auto& chunk_for(TComponentTag ct) noexcept
+            {
+                return bh::at(_chunk_tuple, component_idx(ct));
             }
 
             /// @brief Executes `f` on the chunk storing `TComponent`.
@@ -95,10 +65,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 entity_id eid, TEntityChunkMetadata& ecm, TF&& f)
             {
                 decltype(auto) c(self.chunk_for(ct));
-                using metadata = chunk::metadata<ECST_DECAY_DECLTYPE(c)>;
-
-                auto& chunk_md = std::get<metadata>(ecm);
-                return f(ct, c, eid, chunk_md);
+                auto& metadata = bh::at(ecm, component_idx(ct));
+                return f(ct, c, eid, metadata);
             }
 
             template <typename TComponentTag, typename TSelf,

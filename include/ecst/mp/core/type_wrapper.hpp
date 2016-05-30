@@ -20,10 +20,6 @@ ECST_MP_NAMESPACE
 
     namespace impl
     {
-        // TODO: docs, test
-        template <typename T>
-        using is_wrapped = std::is_base_of<bh::basic_type<T>, T>;
-
         struct unwrapped_t
         {
             template <typename T>

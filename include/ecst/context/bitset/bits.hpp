@@ -15,27 +15,6 @@ ECST_CONTEXT_BITSET_NAMESPACE
 {
     namespace impl
     {
-        // TODO: move
-        namespace impl
-        {
-            template <typename TComponentSignatureList>
-            auto flattened_component_list_impl(
-                TComponentSignatureList&& csl) noexcept
-            {
-                return bh::flatten(bh::transform(csl, [](auto cs)
-                    {
-                        return mp::unwrapped(cs).tag_list();
-                    }));
-            }
-        }
-
-        template <typename TComponentSignatureList>
-        constexpr auto flattened_component_list(
-            TComponentSignatureList csl) noexcept
-        {
-            return decltype(impl::flattened_component_list_impl(csl)){};
-        }
-
         /// @brief Helper class that assigns a specific bit to a specific
         /// component type.
         template <typename TSettings>
@@ -54,7 +33,8 @@ ECST_CONTEXT_BITSET_NAMESPACE
         public:
             static constexpr auto component_count() noexcept
             {
-                return bh::size(flattened_component_list(my_csl()));
+                return bh::size(
+                    signature_list::component::all_components(my_csl()));
             }
 
             static constexpr auto total_count() noexcept
@@ -81,7 +61,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             {
                 constexpr auto ct = tag::component::v<TComponent>;
                 return mp::list::index_of(
-                    flattened_component_list(my_csl()), ct);
+                    signature_list::component::all_components(my_csl()), ct);
             }
 
             template <typename TComponent>

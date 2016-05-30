@@ -26,16 +26,15 @@ ECST_NAMESPACE
         template <typename TSettings>
         auto dispatch_set_type() noexcept
         {
-            return static_if(settings::has_fixed_entity_storage<TSettings>)
-                .then([](auto ts)
-                    {
-                        auto capacity = settings::fixed_capacity(ts);
-                        return mp::type_c<fixed_set<decltype(capacity){}>>;
-                    })
-                .else_([](auto)
-                    {
-                        return mp::type_c<dynamic_set>;
-                    })(TSettings{});
+            return settings::dispatch_on_storage_type(TSettings{},
+                [](auto fixed_capacity)
+                {
+                    return mp::type_c<fixed_set<fixed_capacity>>;
+                },
+                [](auto)
+                {
+                    return mp::type_c<dynamic_set>;
+                });
         }
 
         template <typename TSettings>
@@ -45,18 +44,26 @@ ECST_NAMESPACE
 
     using impl::dispatch_set;
 
+    namespace impl
+    {
+        // TODO: other usage opportunities? to vrm_core?
+        template <typename T, typename TF>
+        auto reverse_loop(T i_begin, T i_end, TF&& f)
+        {
+            for(T i = i_end; i-- > i_begin;)
+            {
+                f(i);
+            }
+        }
+    }
+
     template <typename TSet, typename T>
     void add_range_in_set_reverse(TSet & set, T i_begin, T i_end)
     {
-        // TODO: pattern for reverse loop and search in other projs
-        if(i_end - i_begin == 0) return;
-
-        for(T i(i_end - 1); i > i_begin; --i)
-        {
-            set.unchecked_add(i);
-        }
-
-        set.unchecked_add(i_begin);
+        impl::reverse_loop(i_begin, i_end, [&set](auto i)
+            {
+                set.unchecked_add(i);
+            });
     }
 
     template <typename TSet, typename T>

@@ -59,7 +59,8 @@ constexpr auto TEST_CONST setup_components()
     namespace slc = signature_list::component;
 
     // Define component signature list
-    return slc::make(ctag_physics, ctag_draw, ctag_collision);
+    return slc::make(
+        sc::make(ctag_physics), sc::make(ctag_draw), sc::make(ctag_collision));
 }
 
 // Define system tags
@@ -125,14 +126,14 @@ void test_cs(TS s)
     auto fake_metadata =
         ecst::context::storage::component::chunk_metadata_tuple_type<TS>{};
 
-    auto& cs_c_physics =
-        cs.template get<c_physics>(ecst::entity_id(0), fake_metadata);
+    auto& cs_c_physics = // .
+        cs.get(ctag_physics, ecst::entity_id(0), fake_metadata);
 
-    auto& cs_c_draw =
-        cs.template get<c_draw>(ecst::entity_id(0), fake_metadata);
+    auto& cs_c_draw = // .
+        cs.get(ctag_draw, ecst::entity_id(0), fake_metadata);
 
-    auto& cs_c_collision =
-        cs.template get<c_collision>(ecst::entity_id(0), fake_metadata);
+    auto& cs_c_collision = // .
+        cs.get(ctag_collision, ecst::entity_id(0), fake_metadata);
 
     (void)cs;
     (void)s;

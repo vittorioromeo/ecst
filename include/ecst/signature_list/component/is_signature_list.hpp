@@ -7,14 +7,15 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/signature/component.hpp>
+#include <ecst/signature/component/valid.hpp>
 
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
 {
     template <typename T>
     constexpr auto valid(T && x) noexcept
     {
-        return bh::all_of(x, signature::component::valid);
+        return bh::all_of(
+            bh::transform(x, mp::unwrapped), signature::component::valid);
     }
 }
 ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END

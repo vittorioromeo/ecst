@@ -7,8 +7,8 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
-// TODO:
-// #include <ecst/signature_list.hpp>
+#include <ecst/signature_list/component/is_signature_list.hpp>
+#include <ecst/signature_list/system/is_signature_list.hpp>
 #include "./data_settings.hpp"
 #include "./impl/keys.hpp"
 
@@ -28,7 +28,6 @@ ECST_SETTINGS_NAMESPACE
 // TODO:
 #define TEMP(x) mp::option_map::type_of<TOptions, decltype(x)>
 
-            using entity_storage = TEMP(keys::entity_storage);
             using scheduler_type = TEMP(keys::scheduler);
             using refresh_parallelism = TEMP(keys::refresh_parallelism);
 
@@ -75,15 +74,43 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto get_csl() noexcept
             {
                 auto result = _map.at(keys::component_signature_list);
-                //   ECST_S_ASSERT_DT(signature_list::component::valid(result));
+                ECST_S_ASSERT_DT(signature_list::component::valid(result));
                 return decltype(result){};
             }
 
             constexpr auto get_ssl() noexcept
             {
                 auto result = _map.at(keys::system_signature_list);
-                //    ECST_S_ASSERT_DT(signature_list::system::valid(result));
+                ECST_S_ASSERT_DT(signature_list::system::valid(result));
                 return decltype(result){};
+            }
+
+            constexpr auto has_fixed_capacity() noexcept
+            {
+                auto es = _map.at(keys::entity_storage);
+                return mp::is_specialization_of<impl::fixed_impl,
+                    ECST_DECAY_DECLTYPE(es)>{};
+            }
+
+            constexpr auto has_dynamic_capacity() noexcept
+            {
+                auto es = _map.at(keys::entity_storage);
+                return mp::is_specialization_of<impl::dynamic_impl,
+                    ECST_DECAY_DECLTYPE(es)>{};
+            }
+
+            constexpr auto get_fixed_capacity() noexcept
+            {
+                ECST_S_ASSERT_DT(has_fixed_capacity());
+                auto es = _map.at(keys::entity_storage);
+                return typename ECST_DECAY_DECLTYPE(es)::size{};
+            }
+
+            constexpr auto get_dynamic_capacity() noexcept
+            {
+                ECST_S_ASSERT_DT(has_dynamic_capacity());
+                auto es = _map.at(keys::entity_storage);
+                return typename ECST_DECAY_DECLTYPE(es)::initial_size{};
             }
 
 
@@ -140,6 +167,23 @@ ECST_SETTINGS_NAMESPACE
         using ctx_scheduler = typename TSettings::scheduler_type;
     }
 
+    template <typename TSettings, typename TFFixed, typename TFDynamic>
+    auto dispatch_on_storage_type(
+        TSettings && s, TFFixed && f_fixed, TFDynamic && f_dynamic)
+    {
+        return static_if(s.has_fixed_capacity())
+            .then([f_fixed = FWD(f_fixed)](auto xs)
+                {
+                    auto capacity = xs.get_fixed_capacity();
+                    return f_fixed(capacity);
+                })
+            .else_([f_dynamic = FWD(f_dynamic)](auto xs)
+                {
+                    auto initial_capacity = xs.get_dynamic_capacity();
+                    return f_dynamic(initial_capacity);
+                })(s);
+    }
+
     template <typename TSettings>
     constexpr auto system_signature_list(TSettings s)
     {
@@ -150,42 +194,6 @@ ECST_SETTINGS_NAMESPACE
     constexpr auto component_signature_list(TSettings s)
     {
         return s.get_csl();
-    }
-
-    template <typename TSettings>
-    using entity_storage_type = typename TSettings::entity_storage;
-
-    template <typename TSettings>
-    constexpr auto has_fixed_entity_storage = // .
-        is_fixed_entity_storage<entity_storage_type<TSettings>>;
-
-    template <typename TSettings>
-    constexpr auto has_dynamic_entity_storage = // .
-        is_dynamic_entity_storage<entity_storage_type<TSettings>>;
-
-    namespace impl
-    {
-        template <typename TSettings>
-        constexpr auto fixed_capacity_v = // .
-            entity_storage_type<TSettings>::size::value;
-
-        template <typename TSettings>
-        constexpr auto dynamic_initial_capacity_v = // .
-            entity_storage_type<TSettings>::initial_size::value;
-    }
-
-    template <typename TSettings>
-    constexpr auto fixed_capacity(TSettings)
-    {
-        ECST_S_ASSERT(has_fixed_entity_storage<TSettings>);
-        return impl::fixed_capacity_v<TSettings>;
-    }
-
-    template <typename TSettings>
-    constexpr auto initial_capacity(TSettings)
-    {
-        ECST_S_ASSERT(has_dynamic_entity_storage<TSettings>);
-        return impl::dynamic_initial_capacity_v<TSettings>;
     }
 
     template <typename TSettings>

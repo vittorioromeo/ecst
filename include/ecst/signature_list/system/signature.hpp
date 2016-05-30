@@ -22,7 +22,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(valid(ssl));
             ECST_S_ASSERT_DT(tag::system::valid(st));
 
-            return *bh::find_if(ssl, [=](auto x_ssig)
+            return *bh::find_if(ssl, [st](auto x_ssig)
                 {
                     return mp::same_type_decay(
                         signature::system::tag_of(x_ssig), st);

@@ -15,7 +15,7 @@ ECST_NAMESPACE
     namespace impl
     {
         template <typename TF>
-        struct scope_guard : public TF
+        struct scope_guard final : TF
         {
             template <typename TFFwd>
             ECST_ALWAYS_INLINE scope_guard(TFFwd&& f)              // .

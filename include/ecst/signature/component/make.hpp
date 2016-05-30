@@ -12,18 +12,6 @@
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
     template <typename... TComponentTags>
-    constexpr auto make(TComponentTags... cts) noexcept
-    {
-        auto ct_list = mp::list::make(cts...);
-
-        constexpr auto d_opts =    // .
-            mp::option_map::make() // .
-                .add(impl::keys::storage, impl::contiguous_buffer_maker);
-
-        return impl::data<                // .
-            ECST_DECAY_DECLTYPE(ct_list), // .
-            ECST_DECAY_DECLTYPE(d_opts)   // .
-            >{};
-    }
+    constexpr auto make(TComponentTags... cts) noexcept;
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

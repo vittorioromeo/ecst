@@ -66,10 +66,10 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
         /// @brief Type of task group for a specific system signature list.
         /// @details All `type_c` wrappers are unwrapped thanks to
-        /// `unwrap_tuple`.
+        /// `unwrap_bh_tuple`.
         template <typename TSSL>
         using task_group_type = task_group<              // .
-            mp::list::unwrap_tuple<                      // .
+            mp::list::unwrap_bh_tuple<                   // .
                 decltype(task_group_transformer(TSSL{})) // .
                 >                                        // .
             >;

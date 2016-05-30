@@ -30,7 +30,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             };
 
         private:
-            // TODO: TN is not resolved correctly, fix
             std::array<component_tuple_type, TN{}> _data;
 
             auto valid_index(sz_t i) const noexcept

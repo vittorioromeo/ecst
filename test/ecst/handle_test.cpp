@@ -109,9 +109,10 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::component;
+            namespace sc = ecst::signature::component;
             namespace slc = ecst::signature_list::component;
 
-            return slc::make(ct::c0, ct::c1);
+            return slc::make(sc::make(ct::c0), sc::make(ct::c1));
         }
 
         constexpr auto make_ssl()

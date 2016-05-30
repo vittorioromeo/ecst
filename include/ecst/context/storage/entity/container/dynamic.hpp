@@ -115,7 +115,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
         public:
             dynamic()
             {
-                grow_by(settings::initial_capacity(settings_type{}) + 10);
+                grow_by(settings_type{}.get_dynamic_capacity() + 10);
             }
 
             ~dynamic()

@@ -18,7 +18,7 @@ ECST_MP_NAMESPACE
         struct same_type
         {
             template <typename T0, typename T1>
-            constexpr auto operator()(T0, T1) const noexcept
+            constexpr auto operator()(T0&&, T1&&) const noexcept
             {
                 return std::is_same<T0, T1>{};
             }
@@ -29,7 +29,7 @@ ECST_MP_NAMESPACE
         struct same_type_decay
         {
             template <typename T0, typename T1>
-            constexpr auto operator()(T0, T1) const noexcept
+            constexpr auto operator()(T0&&, T1&&) const noexcept
             {
                 return same_type{}(decay_t<T1>{}, decay_t<T0>{});
             }

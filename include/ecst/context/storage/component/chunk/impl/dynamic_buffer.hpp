@@ -98,7 +98,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         public:
             dynamic_buffer()
             {
-                grow_to(settings::initial_capacity(settings_type{}));
+                grow_to(settings_type{}.get_dynamic_capacity());
             }
 
             template <typename TComponentTag, typename... Ts>

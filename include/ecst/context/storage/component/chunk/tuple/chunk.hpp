@@ -5,11 +5,9 @@
 
 #pragma once
 
-#include <type_traits>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/settings.hpp>
 #include <ecst/context/storage/component/chunk/type.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE

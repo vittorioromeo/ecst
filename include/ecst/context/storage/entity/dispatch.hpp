@@ -19,23 +19,23 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
         template <typename TSettings>
         auto dispatch_tw(TSettings s) noexcept
         {
-            return static_if(settings::has_fixed_entity_storage<TSettings>)
-                .then([](auto ts)
-                    {
-                        return mp::type_c<                                // .
-                            impl::fixed_entity_storage<                   // .
-                                context::entity::dispatch<decltype(ts)>,  // .
-                                settings::fixed_capacity(decltype(ts){})> // .
-                            >;
-                    })
-                .else_([](auto ts)
-                    {
-                        return mp::type_c<                              // .
-                            impl::dynamic_entity_storage<TSettings,     // .
-                                context::entity::dispatch<decltype(ts)> // .
-                                >                                       // .
-                            >;
-                    })(s);
+            return settings::dispatch_on_storage_type(s,
+                [](auto fixed_capacity)
+                {
+                    return mp::type_c<                            // .
+                        impl::fixed_entity_storage<               // .
+                            context::entity::dispatch<TSettings>, // .
+                            fixed_capacity>                       // .
+                        >;
+                },
+                [](auto)
+                {
+                    return mp::type_c<                           // .
+                        impl::dynamic_entity_storage<TSettings,  // .
+                            context::entity::dispatch<TSettings> // .
+                            >                                    // .
+                        >;
+                });
         }
     }
 

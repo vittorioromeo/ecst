@@ -34,7 +34,6 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto is = std::is_base_of<base, T>{};
         }
 
-
         template <typename TRefreshParallelism>
         constexpr auto allows_refresh_parallelism()
         {
