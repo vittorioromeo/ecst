@@ -19,10 +19,9 @@ Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow
 
 *(Some examples may require [SFML](https://sfml-dev.org) to be installed.)*
 
-## Code sample *(outdated)*
+## Code sample
 
 ```cpp
-// Include "ECST".
 #include <ecst.hpp>
 
 // Define some components.
@@ -53,9 +52,9 @@ namespace ct
 {
     namespace sc = ecst::signature::component;
 
-    constexpr auto position = sc::tag<c::position>;
-    constexpr auto velocity = sc::tag<c::velocity>;
-    constexpr auto acceleration = sc::tag<c::acceleration>;
+    constexpr auto position = ecst::tag::component::v<c::position>;
+    constexpr auto velocity = ecst::tag::component::v<c::velocity>;
+    constexpr auto acceleration = ecst::tag::component::v<c::acceleration>;
 }
 
 // Define some systems.
@@ -116,12 +115,31 @@ namespace ecst_setup
     // Builds and returns a "component signature list".
     constexpr auto make_csl()
     {
+        namespace sc = ecst::signature::component;
         namespace slc = ecst::signature_list::component;
 
-        return slc::v<
-            c::position, c::velocity, c::acceleration,
-            c::color, c::circle
-            >;
+        // Store `c::acceleration`, `c::velocity` and `c::position` in
+        // three separate contiguous buffers (SoA).
+        constexpr auto cs_acceleration = // .
+            sc::make(ct::acceleration).contiguous_buffer();
+
+        constexpr auto cs_velocity = // .
+            sc::make(ct::velocity).contiguous_buffer();
+
+        constexpr auto cs_position = // .
+            sc::make(ct::position).contiguous_buffer();
+
+        // Build and return the "component signature list".
+        return slc::make(cs_acceleration, cs_velocity, cs_position);
+
+        // Components can be stored in multiple ways, and users
+        // can define their complex storage types. Here's an example
+        // of "AoS" storage:
+        /*
+            constexpr auto cs_aos_physics = // .
+                sc::make(ct::acceleration, ct::velocity, ct::position)
+                    .contiguous_buffer();
+        */
     }
 
     // Builds and returns a "system signature list".
@@ -136,43 +154,33 @@ namespace ecst_setup
         namespace ipc = ecst::inner_parallelism::composer;
 
         // "Split processing evenly between cores."
-        constexpr auto par = ips::split_evenly_fn::v_cores();
+        constexpr auto split_evenly_per_core = // .
+            ips::split_evenly_fn::v_cores();
 
         // Acceleration system.
         // * Multithreaded.
         // * No dependencies.
-        constexpr auto ssig_acceleration =
-            ss::make<s::acceleration>(
-                par,
-                ss::no_dependencies,
-                ss::component_use(
-                    ss::mutate<c::velocity>,
-                    ss::read<c::acceleration>
-                    ),
-                ss::output::none
-                );
+        constexpr auto ssig_acceleration =          // .
+            ss::make(st::acceleration)              // .
+                .parallelism(split_evenly_per_core) // .
+                .read(ct::acceleration)             // .
+                .write(ct::velocity);               // .
 
         // Velocity system.
         // * Multithreaded.
-        constexpr auto ssig_velocity =
-            ss::make<s::velocity>(
-                par,
-                ss::depends_on<s::acceleration>,
-                ss::component_use(
-                    ss::mutate<c::position>,
-                    ss::read<c::velocity>
-                    ),
-                ss::output::none
-                );
+        constexpr auto ssig_velocity =              // .
+            ss::make(st::velocity)                  // .
+                .parallelism(split_evenly_per_core) // .
+                .dependencies(st::acceleration)     // .
+                .read(ct::velocity)                 // .
+                .write(ct::position);               // .
 
         // Build and return the "system signature list".
-        return sls::make(
-            ssig_acceleration,
-            ssig_velocity);
+        return sls::make(ssig_acceleration, ssig_velocity);
     }
 }
 
-// Create a particle, return its ID.
+// Create a particle and return its unique ID.
 template <typename TProxy>
 auto mk_particle(TProxy& proxy, const vec2f& position)
 {
@@ -194,22 +202,22 @@ int main()
     using namespace ecst_setup;
     namespace cs = ecst::settings;
     namespace ss = ecst::scheduler;
+    namespace sea = ecst::system_execution_adapter;
 
     // Define ECST context settings.
-    constexpr auto s = ecst::settings::make(
-        cs::multithreaded(cs::allow_inner_parallelism),
-        cs::dynamic,
-        make_csl(),
-        make_ssl(),
-        cs::scheduler<ss::s_atomic_counter>
-        );
+    constexpr auto s =                        // .
+        ecst::settings::make()                // .
+            .allow_inner_parallelism()        // .
+            .fixed_entity_limit(ecst::sz_v<10000>) // .
+            .component_signatures(make_csl()) // .
+            .system_signatures(make_ssl())    // .
+            .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     // Create an ECST context.
-    auto ctx_uptr = ecst::context::make_uptr(s);
-    auto& ctx = *ctx_uptr;
+    auto ctx = ecst::context::make_uptr(s);
 
     // Initialize context with some entities.
-    ctx.step([&](auto& proxy)
+    ctx->step([&](auto& proxy)
         {
             for(sz_t i = 0; i < 1000; ++i)
             {
@@ -222,17 +230,45 @@ int main()
     {
         auto dt = delta_time();
 
-        ctx.step([dt](auto& proxy)
+        ctx->step([dt](auto& proxy)
             {
-                proxy.execute_systems_overload(
-                    [dt](s::acceleration& s, auto& data)
-                    {
-                        s.process(dt, data);
-                    },
-                    [dt](s::velocity& s, auto& data)
-                    {
-                        s.process(dt, data);
-                    });
+                // Start executing a chain of systems from `st::acceleration`:
+                proxy.execute_systems_from(st::acceleration)(
+                    // Match systems in the chain by tag...
+                    sea::t(st::acceleration, st::velocity, st::position)
+                    // ...and execute the same logic for every parallel subtask:
+                        .for_subtasks([dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            })
+                    );
+
+                // Need more control? Here's an example:
+                /*
+                    proxy.execute_systems_from(st::acceleration)(
+                        sea::t(st::acceleration, st::velocity)
+                            .for_subtasks([dt](auto& s, auto& data)
+                                {
+                                    s.process(dt, data);
+                                }),
+                        sea::t(st::position).detailed_instance(
+                            [&proxy, dt](auto& instance, auto& executor)
+                                {
+                                    // Access system `instance` details:
+                                    std::cout << instance.subscribed().size() << "\n";
+                                    auto& s(instance.system());
+
+                                    do_something_before();
+
+                                    executor.for_subtasks([&s, dt](auto& data)
+                                        {
+                                            s.process(dt, data);
+                                        });
+
+                                    do_something_after();
+                                })
+                        );
+                */
             });
     }
 }
