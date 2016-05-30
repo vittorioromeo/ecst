@@ -10,7 +10,7 @@ Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow
 2. Clone the repository.
 3. Execute the `./init-repository.sh` script.
 4. Create a build directory and execute CMake:
-    
+
     ```bash
     mkdir ./build
     cd ./build
@@ -120,13 +120,13 @@ namespace ecst_setup
 
         // Store `c::acceleration`, `c::velocity` and `c::position` in
         // three separate contiguous buffers (SoA).
-        constexpr auto cs_acceleration = // .
+        constexpr auto cs_acceleration =
             sc::make(ct::acceleration).contiguous_buffer();
 
-        constexpr auto cs_velocity = // .
+        constexpr auto cs_velocity =
             sc::make(ct::velocity).contiguous_buffer();
 
-        constexpr auto cs_position = // .
+        constexpr auto cs_position =
             sc::make(ct::position).contiguous_buffer();
 
         // Build and return the "component signature list".
@@ -136,7 +136,7 @@ namespace ecst_setup
         // can define their complex storage types. Here's an example
         // of "AoS" storage:
         /*
-            constexpr auto cs_aos_physics = // .
+            constexpr auto cs_aos_physics =
                 sc::make(ct::acceleration, ct::velocity, ct::position)
                     .contiguous_buffer();
         */
@@ -154,26 +154,26 @@ namespace ecst_setup
         namespace ipc = ecst::inner_parallelism::composer;
 
         // "Split processing evenly between cores."
-        constexpr auto split_evenly_per_core = // .
+        constexpr auto split_evenly_per_core =
             ips::split_evenly_fn::v_cores();
 
         // Acceleration system.
         // * Multithreaded.
         // * No dependencies.
-        constexpr auto ssig_acceleration =          // .
-            ss::make(st::acceleration)              // .
-                .parallelism(split_evenly_per_core) // .
-                .read(ct::acceleration)             // .
-                .write(ct::velocity);               // .
+        constexpr auto ssig_acceleration =
+            ss::make(st::acceleration)
+                .parallelism(split_evenly_per_core)
+                .read(ct::acceleration)
+                .write(ct::velocity);
 
         // Velocity system.
         // * Multithreaded.
-        constexpr auto ssig_velocity =              // .
-            ss::make(st::velocity)                  // .
-                .parallelism(split_evenly_per_core) // .
-                .dependencies(st::acceleration)     // .
-                .read(ct::velocity)                 // .
-                .write(ct::position);               // .
+        constexpr auto ssig_velocity =
+            ss::make(st::velocity)
+                .parallelism(split_evenly_per_core)
+                .dependencies(st::acceleration)
+                .read(ct::velocity)
+                .write(ct::position);
 
         // Build and return the "system signature list".
         return sls::make(ssig_acceleration, ssig_velocity);
@@ -205,12 +205,12 @@ int main()
     namespace sea = ecst::system_execution_adapter;
 
     // Define ECST context settings.
-    constexpr auto s =                        // .
-        ecst::settings::make()                // .
-            .allow_inner_parallelism()        // .
-            .fixed_entity_limit(ecst::sz_v<10000>) // .
-            .component_signatures(make_csl()) // .
-            .system_signatures(make_ssl())    // .
+    constexpr auto s =
+        ecst::settings::make()
+            .allow_inner_parallelism()
+            .fixed_entity_limit(ecst::sz_v<10000>)
+            .component_signatures(make_csl())
+            .system_signatures(make_ssl())
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     // Create an ECST context.
@@ -243,32 +243,30 @@ int main()
                             })
                     );
 
-                // Need more control? Here's an example:
-                /*
-                    proxy.execute_systems_from(st::acceleration)(
-                        sea::t(st::acceleration, st::velocity)
-                            .for_subtasks([dt](auto& s, auto& data)
-                                {
-                                    s.process(dt, data);
-                                }),
-                        sea::t(st::position).detailed_instance(
-                            [&proxy, dt](auto& instance, auto& executor)
-                                {
-                                    // Access system `instance` details:
-                                    std::cout << instance.subscribed().size() << "\n";
-                                    auto& s(instance.system());
+                // Need more control? Here's an additional example:
+                proxy.execute_systems_from(st::acceleration)(
+                    sea::t(st::acceleration, st::velocity)
+                        .for_subtasks([dt](auto& s, auto& data)
+                            {
+                                s.process(dt, data);
+                            }),
+                    sea::t(st::position).detailed_instance(
+                        [&proxy, dt](auto& instance, auto& executor)
+                            {
+                                // Access system `instance` details:
+                                std::cout << instance.subscribed().size() << "\n";
+                                auto& s(instance.system());
 
-                                    do_something_before();
+                                do_something_before();
 
-                                    executor.for_subtasks([&s, dt](auto& data)
-                                        {
-                                            s.process(dt, data);
-                                        });
+                                executor.for_subtasks([&s, dt](auto& data)
+                                    {
+                                        s.process(dt, data);
+                                    });
 
-                                    do_something_after();
-                                })
-                        );
-                */
+                                do_something_after();
+                            })
+                    );
             });
     }
 }
