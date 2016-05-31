@@ -8,6 +8,8 @@ time g++ -std=c++14 \
         -Wall \
         -Wextra \
         -O2 \
+        -ffast-math \
+        -ftree-vectorize \
         -pedantic \
         -DNDEBUG \
         -lpthread \
@@ -15,5 +17,10 @@ time g++ -std=c++14 \
         -lsfml-graphics \
         -lsfml-window \
         -fdiagnostics-color=always \
-        $1 -o /tmp/x.x && echo "Compiled." && /tmp/x.x "${@:2}"
-        # -ftemplate-backtrace-limit=0 \
+        $1 -o /tmp/x.x &> error.out
+
+if [ $? == 0 ]; then
+    echo "Compiled." && /tmp/x.x "${@:2}"
+else
+    echo "Failed." && cat ./error.out | ./simplify_error.py 0
+fi

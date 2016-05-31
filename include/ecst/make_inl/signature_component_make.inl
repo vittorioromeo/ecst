@@ -7,6 +7,7 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
+#include <ecst/context/storage/component/chunk.hpp>
 #include <ecst/signature/component/data.hpp>
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
@@ -14,15 +15,15 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     namespace impl
     {
         // TODO: move, make it easy for users to build their own
-        class contiguous_buffer_maker_t
+        struct contiguous_buffer_maker_t
         {
-        public:
             template <typename TSettings, typename TComponentTagList>
-            constexpr auto make_type() const noexcept
+            constexpr auto make_type(TSettings s, TComponentTagList) const
+                noexcept
             {
-                namespace sc = ecst::context::storage::component;
+                namespace sc = context::storage::component;
 
-                return settings::dispatch_on_storage_type(TSettings{},
+                return settings::dispatch_on_storage_type(s,
                     [](auto fixed_capacity)
                     {
                         return mp::type_c< // .
@@ -40,7 +41,50 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             }
         };
 
+        struct empty_maker_t
+        {
+            template <typename TSettings, typename TComponentTagList>
+            constexpr auto make_type(TSettings, TComponentTagList) const
+                noexcept
+            {
+                namespace sc = context::storage::component;
+                return mp::type_c<sc::chunk::empty<TComponentTagList>>;
+            }
+        };
+
         constexpr contiguous_buffer_maker_t contiguous_buffer_maker{};
+        constexpr empty_maker_t empty_maker{};
+
+        struct default_maker_dispatch_t
+        {
+            template <typename TSettings, typename TComponentTagList>
+            constexpr auto make_type(TSettings s, TComponentTagList ctl) const
+                noexcept
+            {
+                namespace sc = context::storage::component;
+
+                auto all_empty = bh::all_of(ctl, [](auto ct)
+                    {
+                        using component_type =
+                            tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
+
+                        return std::is_empty<component_type>{};
+                    });
+
+                return static_if(ECST_DECAY_DECLTYPE(all_empty){})
+                    .then([]
+                        {
+                            return empty_maker;
+                        })
+                    .else_([]
+                        {
+                            return contiguous_buffer_maker;
+                        })()
+                    .make_type(s, ctl);
+            }
+        };
+
+        constexpr default_maker_dispatch_t default_maker{};
     }
 
     template <typename... TComponentTags>
@@ -50,8 +94,7 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
 
         constexpr auto d_opts =    // .
             mp::option_map::make() // .
-                // TODO: sensible defaults for zero-sized components
-                .add(impl::keys::storage, impl::contiguous_buffer_maker);
+                .add(impl::keys::storage, impl::default_maker);
 
         return impl::data<                // .
             ECST_DECAY_DECLTYPE(ct_list), // .

@@ -18,8 +18,6 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             constexpr auto storage = sz_v<0>;
         }
 
-
-
         struct base_data
         {
         };
@@ -41,13 +39,12 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         public:
             constexpr auto contiguous_buffer() noexcept;
 
-            // TODO:
             template <typename TSettings>
-            constexpr auto make_storage_type() noexcept
+            constexpr auto make_storage_type(TSettings s) noexcept
             {
                 return TOptions{}
                     .at(keys::storage)
-                    .template make_type<TSettings, TComponentTagList>();
+                    .make_type(s, TComponentTagList{});
             }
 
             template <typename TComponentTag>

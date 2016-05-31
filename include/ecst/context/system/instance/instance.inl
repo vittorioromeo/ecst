@@ -66,9 +66,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     void instance<TSettings, TSystemSignature>::execute_deferred_fns(
         TProxy & proxy)
     {
-        for_states([&proxy](auto& state)
+        for_states([&proxy](auto& s)
             {
-                state._state.execute_deferred_fns(proxy);
+                s.as_state().execute_deferred_fns(proxy);
             });
     }
 
@@ -76,9 +76,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TF>
     decltype(auto) instance<TSettings, TSystemSignature>::for_outputs(TF && f)
     {
-        return for_states([this, &f](auto& state)
+        return for_states([this, &f](auto& s)
             {
-                f(this->system(), state.as_data());
+                f(this->system(), s.as_data());
             });
     }
 

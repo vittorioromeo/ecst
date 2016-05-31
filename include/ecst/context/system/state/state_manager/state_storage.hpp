@@ -26,8 +26,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TSettings, typename TSystemSignature>
             class state_storage : public data_type<TSystemSignature>
             {
-            public:
+            private:
                 using my_data_type = data_type<TSystemSignature>;
+
+                state<TSettings> _state;
+
+            public:
+                void clear() noexcept
+                {
+                    as_state().clear();
+                }
 
                 auto& as_data() noexcept
                 {
@@ -39,11 +47,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     return vrmc::to_base<my_data_type>(*this);
                 }
 
-                state<TSettings> _state;
-
-                void clear() noexcept
+                auto& as_state() noexcept
                 {
-                    _state.clear();
+                    return _state;
+                }
+
+                const auto& as_state() const noexcept
+                {
+                    return _state;
                 }
             };
         }

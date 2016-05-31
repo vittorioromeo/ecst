@@ -67,11 +67,11 @@ ECST_CONTEXT_NAMESPACE
 
             this->for_instances_sequential([&defer_proxy](auto& instance)
                 {
-                    instance.for_states([&defer_proxy](auto& state)
+                    instance.for_states([&defer_proxy](auto& s)
                         {
                             // The execution of deferred functions fills the
                             // refresh state and alters the context state.
-                            state._state.execute_deferred_fns(defer_proxy);
+                            s.as_state().execute_deferred_fns(defer_proxy);
                         });
                 });
         }
@@ -88,15 +88,15 @@ ECST_CONTEXT_NAMESPACE
 
             this->for_instances_sequential([&rs](auto& instance)
                 {
-                    instance.for_states([&rs](auto& state)
+                    instance.for_states([&rs](auto& s)
                         {
-                            state._state.for_to_kill([&rs](entity_id eid)
+                            s.as_state().for_to_kill([&rs](entity_id eid)
                                 {
                                     rs.add_to_kill(eid);
                                 });
 
                             // Clear deferred functions and to-kill sets.
-                            state._state.clear();
+                            s.clear();
                         });
                 });
 

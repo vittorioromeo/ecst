@@ -47,7 +47,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             auto& state() noexcept
             {
-                return state_wrapper()._state;
+                return state_wrapper().as_state();
             }
 
             auto& output_data() noexcept

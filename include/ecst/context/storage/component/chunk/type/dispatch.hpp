@@ -14,8 +14,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     // TODO:
     template <typename TSettings, typename TComponentSignature>
-    using chunk_dispatch_type = ECST_DECAY_DECLTYPE(                  // .
-        TComponentSignature{}.template make_storage_type<TSettings>() // .
+    using chunk_dispatch_type = ECST_DECAY_DECLTYPE(         // .
+        TComponentSignature{}.make_storage_type(TSettings{}) // .
         );
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

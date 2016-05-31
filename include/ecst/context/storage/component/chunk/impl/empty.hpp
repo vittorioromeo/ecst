@@ -8,17 +8,15 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 
-// TODO: add to component signature
-
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
-        template <typename TComponent>
+        template <typename TComponentTagList>
         class empty
         {
         public:
-            using component_type = TComponent;
+            using component_tag_list_type = TComponentTagList;
 
             struct metadata
             {
