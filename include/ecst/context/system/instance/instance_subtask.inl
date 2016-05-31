@@ -113,6 +113,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TSystemSignature>::make_slice_executor(TCounterBlocker & cb,
         TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept
     {
+        // TODO: think about data_proxy storage - maybe store one per state in a
+        // pre-allocated buffer?
+
         return [this, &cb, &ctx, state_idx, i_begin, i_end](auto&& f)
         {
             // Create multi-subtask data proxy.
@@ -142,9 +145,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TCounterBlocker & cb, TContext & ctx, sz_t state_idx, sz_t i_begin,
         sz_t i_end, TF && f) noexcept
     {
-        return [this, &cb, &ctx, &f, state_idx, i_begin, i_end]
+        auto se = make_slice_executor(cb, ctx, state_idx, i_begin, i_end);
+        return [&f, se = std::move(se) ]
         {
-            this->make_slice_executor(cb, ctx, state_idx, i_begin, i_end)(f);
+            se(f);
         };
     }
 
