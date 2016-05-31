@@ -32,6 +32,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 state<TSettings> _state;
 
             public:
+                state_storage(const state_storage&) = delete;
+
                 void clear() noexcept
                 {
                     as_state().clear();
