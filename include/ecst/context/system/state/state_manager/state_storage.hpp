@@ -6,7 +6,7 @@
 #pragma once
 
 #include <ecst/debug.hpp>
-#include <ecst/settings.hpp>
+#include <ecst/utils.hpp>
 #include <ecst/signature/system.hpp>
 #include "../state.hpp"
 
@@ -32,7 +32,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 state<TSettings> _state;
 
             public:
-                state_storage(const state_storage&) = delete;
+                state_storage() = default;
+                ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(state_storage);
 
                 void clear() noexcept
                 {
