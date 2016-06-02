@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "./impl/buffer_base.hpp"
 #include "./impl/dynamic_buffer.hpp"
 #include "./impl/fixed_buffer.hpp"
 #include "./impl/hash_map.hpp"

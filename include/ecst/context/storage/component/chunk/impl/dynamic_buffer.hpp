@@ -8,43 +8,39 @@
 #include <vector>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/debug.hpp>
-#include <ecst/context/types.hpp>
+#include "./buffer_base.hpp"
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
-        template <typename TSettings, typename TComponentTagList>
-        class dynamic_buffer
+        namespace impl
         {
+            struct dynamic_buffer_metadata
+            {
+            };
+        }
+
+#define ECST_IMPL_DYNAMIC_BUFFER_BASE_TYPE                          \
+    impl::buffer_base<dynamic_buffer<TSettings, TComponentTagList>, \
+        impl::dynamic_buffer_metadata, TComponentTagList>
+
+        template <typename TSettings, typename TComponentTagList>
+        class dynamic_buffer : public ECST_IMPL_DYNAMIC_BUFFER_BASE_TYPE
+        {
+            friend ECST_IMPL_DYNAMIC_BUFFER_BASE_TYPE;
+#undef ECST_IMPL_DYNAMIC_BUFFER_BASE_TYPE
+
         public:
+            using settings_type = TSettings;
             using component_tag_list_type = TComponentTagList;
+            using metadata = impl::dynamic_buffer_metadata;
 
         private:
             using component_tuple_type =
                 impl::component_tuple_type<TComponentTagList>;
 
-        public:
-            using settings_type = TSettings;
-
-            struct metadata
-            {
-            };
-
-        private:
             std::vector<component_tuple_type> _data;
-
-            auto valid_index(sz_t i) const noexcept
-            {
-                return i >= 0 && i < _data.size();
-            }
-
-            auto entity_id_to_index(entity_id eid) const noexcept
-            {
-                return vrmc::to_sz_t(eid);
-            }
 
             void grow_to(sz_t i)
             {
@@ -61,7 +57,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 _data.resize(target);
 
                 ECST_ASSERT_OP(_data.size(), >, i);
-                ECST_ASSERT(valid_index(i));
+                ECST_ASSERT(this->valid_index(i));
 
                 ELOG(                            // .
                     debug::lo_component_memory() // .
@@ -81,44 +77,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 }
             }
 
-            template <typename TComponentTag, typename TSelf>
-            decltype(auto) get_impl(TComponentTag ct, TSelf&& self,
-                entity_id eid, const metadata&) noexcept
-            {
-                using component_type =
-                    tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
-
-                auto i = self.entity_id_to_index(eid);
-                ECST_ASSERT(self.valid_index(i));
-
-                return vrmc::forward_like<TSelf>(
-                    std::get<component_type>(_data[i]));
-            }
-
         public:
             dynamic_buffer()
             {
                 grow_to(settings_type{}.get_dynamic_capacity());
-            }
-
-            template <typename TComponentTag, typename... Ts>
-                auto& get(TComponentTag ct, Ts&&... xs) & noexcept
-            {
-                return get_impl(ct, *this, FWD(xs)...);
-            }
-
-            template <typename TComponentTag, typename... Ts>
-            const auto& get(TComponentTag ct, Ts&&... xs) const& noexcept
-            {
-                return get_impl(ct, *this, FWD(xs)...);
-            }
-
-            template <typename TComponentTag>
-            auto& add(TComponentTag ct, entity_id eid, metadata& m)
-            {
-                auto i = entity_id_to_index(eid);
-                grow_if_required(i);
-                return get(ct, eid, m);
             }
         };
     }

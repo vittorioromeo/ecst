@@ -12,15 +12,19 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace chunk
     {
+        namespace impl
+        {
+            struct empty_metadata
+            {
+            };
+        }
+
         template <typename TComponentTagList>
         class empty
         {
         public:
             using component_tag_list_type = TComponentTagList;
-
-            struct metadata
-            {
-            };
+            using metadata = impl::empty_metadata;
 
             template <typename... Ts>
             void add(Ts&&...)

@@ -147,11 +147,7 @@ namespace example
                     .parallelism(test_p)    // .
                     .write(ct::c0, ct::c1); // .
 
-            return sls::make( // .
-                ssig_s0,      // .
-                ssig_s1,      // .
-                ssig_s01      // .
-                );
+            return sls::make(ssig_s0, ssig_s1, ssig_s01);
         }
     }
 
@@ -175,19 +171,9 @@ namespace example
 
         void init_loops()
         {
-            std::chrono::high_resolution_clock hrc;
-
-            while(true)
+            while(_running)
             {
-                auto cb = hrc.now();
-                (void)cb;
-
                 update_ctx();
-
-                if(!_running)
-                {
-                    break;
-                }
             }
         }
 
@@ -228,14 +214,6 @@ namespace example
 
             _ctx.step([this](auto& proxy)
                 {
-                    /*
-                        auto ec = _ctx.template count_entities<s::s0>();
-
-                        std::cout << "step start (" << _hs_killed.size() << " |
-                       "
-                                  << ec << ")\n";
-                    */
-
                     int to_kill;
                     handle h;
 
@@ -264,13 +242,10 @@ namespace example
 
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);
-
                         proxy.execute_systems_from(
                             st::s0, st::s1, st::s01)( // .
-                            sea::all().for_subtasks([i = 0](
-                                auto& s, auto& data) mutable
+                            sea::all().for_subtasks([](auto& s, auto& data)
                                 {
-                                    ++i;
                                     s.process(data);
                                 }));
                     }
@@ -297,6 +272,7 @@ namespace example
 
         void init()
         {
+
             _ctx.step([this](auto& proxy)
                 {
                     this->refill(proxy);
