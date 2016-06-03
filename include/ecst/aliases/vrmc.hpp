@@ -22,7 +22,6 @@ ECST_NAMESPACE
     using vrmc::int_;
     using vrmc::int_v;
     using vrmc::static_if;
-    using vrmc::for_tuple;
     using vrmc::likely;
     using vrmc::unlikely;
 }

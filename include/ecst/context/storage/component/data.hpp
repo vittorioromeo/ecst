@@ -16,8 +16,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
     namespace impl
     {
-        // TODO: cleanup
-
         template <typename TSettings>
         class data
         {
@@ -35,8 +33,9 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return bh::at(_chunk_tuple, TID{});
             }
 
+            /// @brief Returns the index of the chunk storing `ct`.
             template <typename TComponentTag>
-            constexpr auto component_idx(TComponentTag ct) noexcept
+            constexpr auto chunk_idx(TComponentTag ct) noexcept
             {
                 return mp::list::index_of_first_matching(_chunk_tuple,
                     [ct](auto& c)
@@ -55,18 +54,18 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             template <typename TComponentTag>
             auto& chunk_for(TComponentTag ct) noexcept
             {
-                return bh::at(_chunk_tuple, component_idx(ct));
+                return bh::at(_chunk_tuple, chunk_idx(ct));
             }
 
             /// @brief Executes `f` on the chunk storing `TComponent`.
             template <typename TComponentTag, typename TSelf,
                 typename TEntityChunkMetadata, typename TF>
             decltype(auto) chunk_fn_impl(TComponentTag ct, TSelf&& self,
-                entity_id eid, TEntityChunkMetadata& ecm, TF&& f)
+                TEntityChunkMetadata& ecm, TF&& f)
             {
                 decltype(auto) c(self.chunk_for(ct));
-                auto& metadata = bh::at(ecm, component_idx(ct));
-                return f(ct, c, eid, metadata);
+                auto& metadata = bh::at(ecm, chunk_idx(ct));
+                return f(c, metadata);
             }
 
             template <typename TComponentTag, typename TSelf,
@@ -74,11 +73,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             decltype(auto) get_impl(TComponentTag ct, TSelf&& self,
                 entity_id eid, const TEntityChunkMetadata& ecm)
             {
-                return chunk_fn_impl(ct, FWD(self), eid, ecm,
-                    [](auto xct, auto& xc, auto x_eid,
-                                         const auto& x_md) -> decltype(auto)
+                return chunk_fn_impl(ct, FWD(self), ecm,
+                    [ct, eid](auto& chunk, const auto& md) -> decltype(auto)
                     {
-                        return xc.get(xct, x_eid, x_md);
+                        return chunk.get(ct, eid, md);
                     });
             }
 
@@ -92,11 +90,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                                           << "\n";                       // .
                     );
 
-                return chunk_fn_impl(ct, FWD(self), eid, ecm,
-                    [](auto zct, auto& zc, auto z_eid, auto& z_md) -> decltype(
-                                         auto)
+                return chunk_fn_impl(ct, FWD(self), ecm,
+                    [ct, eid](auto& chunk, auto& md) -> decltype(auto)
                     {
-                        return zc.add(zct, z_eid, z_md);
+                        return chunk.add(ct, eid, md);
                     });
             }
 
