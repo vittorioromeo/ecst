@@ -67,7 +67,7 @@ ECST_CONTEXT_NAMESPACE
         auto& ECST_CONST_FN system_manager<TSettings>::instance_by_id(
             TID) noexcept
         {
-            return _system_storage.system_by_id(TID{});
+            return _system_storage.instance_by_id(TID{});
         }
 
         template <typename TSettings>
@@ -115,40 +115,25 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TSystem>
-        auto& ECST_CONST_FN system_manager<TSettings>::instance() noexcept
+        template <typename TSystemTag>
+        auto& system_manager<TSettings>::instance(TSystemTag st) noexcept
         {
-            return _system_storage.template instance<TSystem>();
-        }
-
-        template <typename TSettings>
-        template <typename TSystem>
-        const auto& ECST_CONST_FN system_manager<TSettings>::instance() const
-            noexcept
-        {
-            return _system_storage.template instance<TSystem>();
+            return _system_storage.instance_by_tag(st);
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
-        auto& system_manager<TSettings>::instance(TSystemTag) noexcept
-        {
-            return instance<system_from_tag<TSystemTag>>();
-        }
-
-        template <typename TSettings>
-        template <typename TSystemTag>
-        const auto& system_manager<TSettings>::instance(TSystemTag) const
+        const auto& system_manager<TSettings>::instance(TSystemTag st) const
             noexcept
         {
-            return instance<system_from_tag<TSystemTag>>();
+            return _system_storage.instance_by_tag(st);
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
         auto& system_manager<TSettings>::system(TSystemTag st) noexcept
         {
-            return _system_storage.system_by_tag(st);
+            return instance(st).system();
         }
 
         template <typename TSettings>
@@ -156,7 +141,7 @@ ECST_CONTEXT_NAMESPACE
         const auto& system_manager<TSettings>::system(TSystemTag st) const
             noexcept
         {
-            return _system_storage.system_by_tag(st);
+            return instance(st).system();
         }
 
         template <typename TSettings>

@@ -66,13 +66,19 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             }
 
             template <typename TSystemID>
-            auto& system_by_id(TSystemID) noexcept
+            auto& instance_by_id(TSystemID) noexcept
             {
                 return std::get<TSystemID{}>(_storage);
             }
 
             template <typename TSystemTag>
-            auto& system_by_tag(TSystemTag) noexcept
+            auto& instance_by_tag(TSystemTag) noexcept
+            {
+                return instance<tag_to_system<TSystemTag>>();
+            }
+
+            template <typename TSystemTag>
+            const auto& instance_by_tag(TSystemTag) const noexcept
             {
                 return instance<tag_to_system<TSystemTag>>();
             }
@@ -80,7 +86,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             template <typename TSystemSignature>
             auto& system_by_signature(TSystemSignature) noexcept
             {
-                return system_by_tag(
+                return instance_by_tag(
                     signature::system::tag_type<TSystemSignature>{});
             }
 

@@ -78,12 +78,6 @@ ECST_CONTEXT_NAMESPACE
             void execute_systems(
                 TContext&, TStartSystemTagList sstl, TFs&&... fs);
 
-            template <typename TSystem>
-            auto& instance() noexcept;
-
-            template <typename TSystem>
-            const auto& instance() const noexcept;
-
         public:
             template <typename TSystemTag, typename TF>
             decltype(auto) for_system_outputs(TSystemTag, TF&& f);
