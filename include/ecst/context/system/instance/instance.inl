@@ -124,7 +124,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // Runs the parallel executor and waits until the remaining subtasks
         // counter is zero.
-        execute_and_wait_until_counter_zero(b, [this, &b, &f]
+        execute_and_wait_until_counter_zero(b, [&b, &f]
             {
                 f(b);
             });
@@ -171,8 +171,29 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                                      // .
         )
     {
-        // Aggregates synchronization primitives.
-        _parallel_executor.execute(*this, ctx, f);
+        // The executor accepts an "adapter function" argument that binds a
+        // `counter_blocker` `b`, a context reference and the user-defined
+        // function to a instance-type specific way of executing the
+        // user-provided function.
+        // This allows non-parallel executors (such as `none`), to ignore
+        // binding a `counter_blocker`, and allows future instance types (like
+        // component-processing-instances) to execute `f` without binding
+        // slices.
+        auto subtask_adapter = [this](auto& b, auto& ctx, auto&& xf)
+        {
+            return [ this, &ctx, &b, xf = FWD(xf) ] // .
+                (auto split_idx, auto i_begin, auto i_end) mutable
+            {
+                // Create looping execution function.
+                auto bse = this->make_bound_slice_executor(
+                    b, ctx, split_idx, i_begin, i_end, xf);
+
+                // Execute the bound slice in the thread pool.
+                this->run_subtask_in_thread_pool(ctx, std::move(bse));
+            };
+        };
+
+        _parallel_executor.execute(*this, ctx, std::move(subtask_adapter), f);
     }
 
     template <typename TSettings, typename TSystemSignature>

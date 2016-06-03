@@ -7,6 +7,8 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/signature.hpp>
+#include <ecst/debug.hpp>
 #include <ecst/inner_parallelism/utils.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
@@ -20,8 +22,10 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             {
                 using parameters = TParameters;
 
-                template <typename TInstance, typename TContext, typename TF>
-                void execute(TInstance& inst, TContext& ctx, TF&& f)
+                template <typename TInstance, typename TContext,
+                    typename TFAdapter, typename TF>
+                void execute(
+                    TInstance& inst, TContext& ctx, TFAdapter&& fa, TF&& f)
                 {
                     namespace ss = signature::system;
 
@@ -41,21 +45,12 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 
                     inst.prepare_and_wait_n_subtasks(split_count, [&](auto& b)
                         {
-                            auto run_subtask = [&inst, &b, &ctx, &f](
-                                auto split_idx, auto xi_begin, auto xi_end)
-                            {
-                                // Create looping execution function.
-                                auto bse = inst.make_bound_slice_executor(
-                                    b, ctx, split_idx, xi_begin, xi_end, f);
-
-                                inst.run_subtask_in_thread_pool(
-                                    ctx, std::move(bse));
-                            };
+                            auto adapted_subtask(fa(b, ctx, FWD(f)));
 
                             // Builds and runs the subtasks.
                             utils::execute_split_runtime(
                                 inst.subscribed_count(), per_split, split_count,
-                                run_subtask);
+                                adapted_subtask);
                         });
                 }
             };
