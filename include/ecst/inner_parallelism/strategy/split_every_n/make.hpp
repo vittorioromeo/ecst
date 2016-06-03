@@ -13,14 +13,10 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
     namespace split_every_n
     {
-        template <                       // .
-            typename TEntitiesPerSubtask // .
-            >
+        template <typename TEntitiesPerSubtask>
         constexpr auto v(TEntitiesPerSubtask)
         {
-            return impl::parameters< // .
-                TEntitiesPerSubtask  // .
-                >{};
+            return impl::parameters<TEntitiesPerSubtask>{};
         }
     }
 }

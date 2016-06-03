@@ -7,5 +7,5 @@
 
 #include "./strategy/none.hpp"
 #include "./strategy/split_every_n.hpp"
-#include "./strategy/split_evenly.hpp"
 #include "./strategy/split_evenly_fn.hpp"
+#include "./strategy/split_evenly.hpp"

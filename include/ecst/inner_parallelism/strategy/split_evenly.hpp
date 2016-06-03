@@ -5,6 +5,4 @@
 
 #pragma once
 
-#include "./split_evenly/executor.hpp"
-#include "./split_evenly/parameters.hpp"
 #include "./split_evenly/make.hpp"

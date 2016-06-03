@@ -14,10 +14,7 @@ ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
 {
     namespace none_below_threshold
     {
-        template <                     // .
-            typename TEntityThreshold, // .
-            typename TStrategyGreater  // .
-            >
+        template <typename TEntityThreshold, typename TStrategyGreater>
         constexpr auto v(TEntityThreshold, TStrategyGreater)
         {
             constexpr auto none_fallback = // .

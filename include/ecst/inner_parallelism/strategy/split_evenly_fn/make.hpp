@@ -14,28 +14,27 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
     namespace split_evenly_fn
     {
-        template <                       // .
-            typename TSubtaskCountGetter // .
-            >
+        template <typename TSubtaskCountGetter>
         constexpr auto v(TSubtaskCountGetter)
         {
-            return impl::parameters< // .
-                TSubtaskCountGetter  // .
-                >{};
+            return impl::parameters<TSubtaskCountGetter>{};
         }
 
-        struct v_cores_getter
+        namespace impl
         {
-            auto operator()() const noexcept
+            struct v_cores_getter
             {
-                ECST_ASSERT(ecst::hardware::status::core_count_known());
-                return ecst::hardware::status::core_count();
-            }
-        };
+                auto operator()() const noexcept
+                {
+                    ECST_ASSERT(ecst::hardware::status::core_count_known());
+                    return ecst::hardware::status::core_count();
+                }
+            };
+        }
 
         constexpr auto v_cores()
         {
-            return v(v_cores_getter{});
+            return v(impl::v_cores_getter{});
         }
     }
 }

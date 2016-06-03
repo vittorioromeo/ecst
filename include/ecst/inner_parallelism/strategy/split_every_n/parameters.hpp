@@ -15,9 +15,7 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
     {
         namespace impl
         {
-            template <                       // .
-                typename TEntitiesPerSubtask // .
-                >
+            template <typename TEntitiesPerSubtask>
             struct parameters
             {
                 template <typename TParameters>

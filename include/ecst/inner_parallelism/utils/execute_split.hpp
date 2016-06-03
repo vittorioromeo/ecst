@@ -15,7 +15,11 @@ ECST_INNER_PARALLELISM_NAMESPACE
     {
         template <typename TF>
         void execute_split_runtime(
-            sz_t total, sz_t per_split, sz_t split_count, TF&& f)
+            sz_t total, sz_t per_split, sz_t split_count, TF&& f) // .
+            noexcept(noexcept(                                    // .
+                f(0, 0, 0)                                        // .
+                ))
+
         {
             ECST_ASSERT(split_count > 0);
 
