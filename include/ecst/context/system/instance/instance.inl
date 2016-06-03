@@ -221,8 +221,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                          // .
         )
     {
-        auto eh = executor_proxy::make(*this, execution_dispatch(ctx));
-        f(*this, eh);
+        // Bind the dispatch function to `ctx`.
+        auto bound_dispatch = execution_dispatch(ctx);
+
+        // Create an executor proxy.
+        auto ep = executor_proxy::make(*this, std::move(bound_dispatch));
+
+        // Call the user function.
+        f(*this, ep);
     }
 
     template <typename TSettings, typename TSystemSignature>

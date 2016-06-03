@@ -7,7 +7,6 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
 #include "./refresh_event.hpp"
 #include "../system_manager.hpp"
 #include "../main_storage.hpp"
@@ -37,6 +36,7 @@ ECST_CONTEXT_NAMESPACE
             using step_proxy_type = step::proxy<settings_type>;
             using refresh_state_type = defer::refresh_state<settings_type>;
 
+            // State keeping track of entities to match/kill during refreshes.
             refresh_state_type _refresh_state;
 
             /// @brief Executes all systems' deferred functions, sequentially.

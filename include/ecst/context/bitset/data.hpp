@@ -22,8 +22,8 @@ ECST_CONTEXT_BITSET_NAMESPACE
         {
         private:
             using my_bits = bits<TSettings>;
-            using my_bitset = typename my_bits::bitset_type;
-            my_bitset _bitset;
+            using bitset_type = typename my_bits::bitset_type;
+            bitset_type _bitset;
 
         public:
             void clear() noexcept

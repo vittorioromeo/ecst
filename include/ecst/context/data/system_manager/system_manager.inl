@@ -99,34 +99,19 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TSystem, typename TF>
-        decltype(auto) system_manager<TSettings>::for_system_outputs(TF&& f)
-        {
-            return instance<TSystem>().for_outputs(FWD(f));
-        }
-
-        template <typename TSettings>
         template <typename TSystemTag, typename TF>
         decltype(auto) system_manager<TSettings>::for_system_outputs(
-            TSystemTag, TF&& f)
+            TSystemTag st, TF&& f)
         {
-            return for_system_outputs<system_from_tag<TSystemTag>>(FWD(f));
-        }
-
-        template <typename TSettings>
-        template <typename TSystem, typename TAcc, typename TF>
-        auto system_manager<TSettings>::foldl_system_outputs(TAcc acc, TF&& f)
-        {
-            return instance<TSystem>().foldl_outputs(acc, FWD(f));
+            return instance(st).for_outputs(FWD(f));
         }
 
         template <typename TSettings>
         template <typename TSystemTag, typename TAcc, typename TF>
         auto system_manager<TSettings>::foldl_system_outputs(
-            TSystemTag, TAcc acc, TF&& f)
+            TSystemTag st, TAcc acc, TF&& f)
         {
-            return foldl_system_outputs<system_from_tag<TSystemTag>>(
-                acc, FWD(f));
+            return instance(st).foldl_outputs(acc, FWD(f));
         }
 
         template <typename TSettings>
@@ -160,80 +145,42 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TSystem>
-        auto& system_manager<TSettings>::system() noexcept
+        template <typename TSystemTag>
+        auto& system_manager<TSettings>::system(TSystemTag st) noexcept
         {
-            return instance<TSystem>().system();
-        }
-
-        template <typename TSettings>
-        template <typename TSystem>
-        const auto& system_manager<TSettings>::system() const noexcept
-        {
-            return instance<TSystem>().system();
+            return _system_storage.system_by_tag(st);
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
-        auto& system_manager<TSettings>::system(TSystemTag) noexcept
-        {
-            return system<system_from_tag<TSystemTag>>();
-        }
-
-        template <typename TSettings>
-        template <typename TSystemTag>
-        const auto& system_manager<TSettings>::system(TSystemTag) const noexcept
-        {
-            return system<system_from_tag<TSystemTag>>();
-        }
-
-        template <typename TSettings>
-        template <typename TSystem>
-        auto system_manager<TSettings>::is_in_system(entity_id eid) const
+        const auto& system_manager<TSettings>::system(TSystemTag st) const
             noexcept
         {
-            const auto& si(this->template instance<TSystem>());
-            return si.is_subscribed(eid);
+            return _system_storage.system_by_tag(st);
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
         auto system_manager<TSettings>::is_in_system(
-            TSystemTag, entity_id eid) const noexcept
+            TSystemTag st, entity_id eid) const noexcept
         {
-            return is_in_system<system_from_tag<TSystemTag>>(eid);
-        }
-
-        template <typename TSettings>
-        template <typename TSystem>
-        auto ECST_PURE_FN system_manager<TSettings>::count_entities_in() const
-            noexcept
-        {
-            const auto& si(this->template instance<TSystem>());
-            return si.subscribed_count();
+            return instance(st).is_subscribed(eid);
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
-        auto system_manager<TSettings>::count_entities_in(TSystemTag) const
+        auto system_manager<TSettings>::count_entities_in(TSystemTag st) const
             noexcept
         {
-            return count_entities_in<system_from_tag<TSystemTag>>();
-        }
-
-        template <typename TSettings>
-        template <typename TSystem>
-        auto ECST_PURE_FN system_manager<TSettings>::any_entity_in() const
-            noexcept
-        {
-            return count_entities_in<TSystem>() > 0;
+            return instance(st).subscribed_count();
         }
 
         template <typename TSettings>
         template <typename TSystemTag>
-        auto system_manager<TSettings>::any_entity_in(TSystemTag) const noexcept
+        auto system_manager<TSettings>::any_entity_in(TSystemTag st) const
+            noexcept
         {
-            return any_entity_in<system_from_tag<TSystemTag>>();
+            return count_entities_in(st) > 0;
         }
     }
 }

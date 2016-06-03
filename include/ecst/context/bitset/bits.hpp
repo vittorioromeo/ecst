@@ -21,20 +21,16 @@ ECST_CONTEXT_BITSET_NAMESPACE
         class bits
         {
         private:
-            static constexpr auto my_settings()
+            static constexpr auto csl() noexcept
             {
-                return TSettings{};
-            }
-            static constexpr auto my_csl()
-            {
-                return settings::component_signature_list(my_settings());
+                return settings::component_signature_list(TSettings());
             }
 
         public:
             static constexpr auto component_count() noexcept
             {
                 return bh::size(
-                    signature_list::component::all_components(my_csl()));
+                    signature_list::component::all_components(csl()));
             }
 
             static constexpr auto total_count() noexcept
@@ -61,7 +57,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
             {
                 constexpr auto ct = tag::component::v<TComponent>;
                 return mp::list::index_of(
-                    signature_list::component::all_components(my_csl()), ct);
+                    signature_list::component::all_components(csl()), ct);
             }
 
             template <typename TComponent>

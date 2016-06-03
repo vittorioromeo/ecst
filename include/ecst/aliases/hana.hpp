@@ -10,8 +10,10 @@
 
 ECST_NAMESPACE
 {
+    /// @brief Alias for the `boost::hana` namespace.
     namespace bh = boost::hana;
 
+    /// @brief Alias for `typename boost::hana::decay<...>::type`.
     template <typename... Ts>
     using decay_t = typename bh::detail::decay<Ts...>::type;
 }

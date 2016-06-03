@@ -66,6 +66,8 @@ ECST_CONTEXT_NAMESPACE
             auto& instance_by_id(TID) noexcept;
 
         protected:
+            // TODO: consider adding `execute_systems(ctx)` which starts from
+            // all independent systems.
             template <typename TContext, typename... TStartSystemTags>
             auto execute_systems_from(
                 TContext& context, TStartSystemTags... sts) noexcept;
@@ -76,37 +78,17 @@ ECST_CONTEXT_NAMESPACE
             void execute_systems(
                 TContext&, TStartSystemTagList sstl, TFs&&... fs);
 
-            template <typename TSystem, typename TF>
-            decltype(auto) for_system_outputs(TF&& f);
-
-            template <typename TSystem, typename TAcc, typename TF>
-            auto foldl_system_outputs(TAcc acc, TF&& f);
-
             template <typename TSystem>
             auto& instance() noexcept;
 
             template <typename TSystem>
             const auto& instance() const noexcept;
 
-            template <typename TSystem>
-            auto& system() noexcept;
-
-            template <typename TSystem>
-            const auto& system() const noexcept;
-
-            template <typename TSystem>
-            auto is_in_system(entity_id) const noexcept;
-
-            template <typename TSystem>
-            auto count_entities_in() const noexcept;
-
-            template <typename TSystem>
-            auto any_entity_in() const noexcept;
-
         public:
             template <typename TSystemTag, typename TF>
             decltype(auto) for_system_outputs(TSystemTag, TF&& f);
 
+            // TODO: consider removing
             template <typename TSystemTag, typename TAcc, typename TF>
             auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
 

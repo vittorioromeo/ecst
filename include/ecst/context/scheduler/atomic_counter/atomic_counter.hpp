@@ -10,6 +10,7 @@
 #include <ecst/utils.hpp>
 #include <ecst/thread_pool.hpp>
 #include <ecst/mp.hpp>
+#include <ecst/tag.hpp>
 #include <ecst/signature_list.hpp>
 #include <ecst/settings.hpp>
 #include "./task_group.hpp"
@@ -28,7 +29,7 @@ ECST_SCHEDULER_NAMESPACE
     class s_atomic_counter
     {
     private:
-        static constexpr auto ssl()
+        static constexpr auto ssl() noexcept
         {
             return settings::system_signature_list(TSettings{});
         }

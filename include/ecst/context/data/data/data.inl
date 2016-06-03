@@ -19,6 +19,8 @@ ECST_CONTEXT_NAMESPACE
         template <typename TFStep, typename... TFsRefresh>
         auto data<TSettings>::step(TFStep&& f_step, TFsRefresh&&... fs_refresh)
         {
+            // Create an overloaded `refresh_event` handler with a `do_nothing`
+            // fallback.
             auto refresh_event_handler = bh::overload_linearly(
                 FWD(fs_refresh)..., ecst::impl::do_nothing);
 
@@ -65,6 +67,7 @@ ECST_CONTEXT_NAMESPACE
 
             defer_proxy_type defer_proxy{*this, rs};
 
+            // Sequentially execute every deferred function.
             this->for_instances_sequential([&defer_proxy](auto& instance)
                 {
                     instance.for_states([&defer_proxy](auto& s)
@@ -86,6 +89,8 @@ ECST_CONTEXT_NAMESPACE
                     << "Killing marked dead entities\n"; // .
                 );
 
+            // Sequentially add entities to kill in the main refresh state
+            // sparse set, and clear instance subtask states.
             this->for_instances_sequential([&rs](auto& instance)
                 {
                     instance.for_states([&rs](auto& s)
@@ -100,21 +105,25 @@ ECST_CONTEXT_NAMESPACE
                         });
                 });
 
-            // Possibly due to data locality reasons, it is more efficient
-            // to iterate over `rs` twice.
+            // (Possibly due to data locality reasons, it is more efficient
+            // to iterate over `rs` twice.)
 
+            // Unsubscribe dead entities from instances, in parallel.
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
                     rs.for_to_kill([&instance, &f_refresh](entity_id eid)
                         {
                             if(instance.unsubscribe(eid))
                             {
+                                // Fire an event if the unsubscription was
+                                // successful.
                                 f_refresh(refresh_event::impl::unsubscribed,
                                     instance, eid);
                             }
                         });
                 });
 
+            // Reclaim all killed entities and fire events.
             rs.for_to_kill([this, &f_refresh, &rs](entity_id eid)
                 {
                     this->reclaim(eid);
@@ -132,16 +141,14 @@ ECST_CONTEXT_NAMESPACE
                     << "Matching new/modified entities\n"; // .
                 );
 
+            // Match new/modified entities to instances, in parallel.
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
                     rs.for_to_match(
                         [this, &rs, &instance, &f_refresh](entity_id eid)
                         {
-                            // Get entity metadata.
-                            auto& em(this->metadata(eid));
-
                             // Get entity bitset.
-                            auto& ebs(em.bitset());
+                            const auto& ebs(this->metadata(eid).bitset());
 
                             ELOG(                               // .
                                 auto& sbs(instance.bitset());   // .
@@ -162,16 +169,24 @@ ECST_CONTEXT_NAMESPACE
                                         << ")\n";                  // .
                                     );
 
+                                // If the entity matches the system, subscribe
+                                // it.
                                 if(instance.subscribe(eid))
                                 {
+                                    // If the subscription was successful, fire
+                                    // an event.
                                     f_refresh(refresh_event::impl::subscribed,
                                         instance, eid);
                                 }
                             }
                             else
                             {
+                                // If the entity does not match the system,
+                                // unsubscribe it.
                                 if(instance.unsubscribe(eid))
                                 {
+                                    // If the unsubscription was successful,
+                                    // fire an event.
                                     f_refresh(refresh_event::impl::unsubscribed,
                                         instance, eid);
                                 }
