@@ -20,7 +20,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
             NewPair const& new_pair;
 
             template <typename Pair>
-            constexpr decltype(auto) operator()(Pair&& p) const
+            constexpr decltype(auto) operator()(Pair&& p) const noexcept
             {
                 return bh::if_(bh::equal(bh::first(new_pair), bh::first(p)),
                     new_pair, FWD(p));
@@ -31,6 +31,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
         {
             template <typename Map, typename NewPair>
             constexpr auto operator()(Map&& m, NewPair&& new_pair) const
+                noexcept
             {
                 return bh::unpack(
                     FWD(m), bh::on(bh::make_map,

@@ -12,22 +12,12 @@
 ECST_NAMESPACE
 {
     /// @brief Wrapper around `std::atomic<T>` that allows move operations.
-    /// @details Moves are handled by calling `std::atomic<T>::load()`.
+    /// @details Moves are handled by using `store(rhs.load())`.
     template <typename T>
     class movable_atomic final : public ecst::atomic<T>
     {
     private:
         using base_type = ecst::atomic<T>;
-
-        auto& as_base_type() noexcept
-        {
-            return vrmc::to_base<base_type>(*this);
-        }
-
-        const auto& as_base_type() const noexcept
-        {
-            return vrmc::to_base<base_type>(*this);
-        }
 
     public:
         using base_type::base_type;
@@ -43,14 +33,14 @@ ECST_NAMESPACE
 
         movable_atomic& operator=(movable_atomic&& rhs) noexcept
         {
-            as_base_type() = rhs.load();
+            this->store(rhs.load());
             return *this;
         }
 
         template <T TV>
         movable_atomic& operator=(std::integral_constant<T, TV> x) noexcept
         {
-            as_base_type() = decltype(x)::value;
+            this->store(decltype(x)::value);
             return *this;
         }
     };

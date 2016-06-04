@@ -22,8 +22,7 @@ ECST_SETTINGS_NAMESPACE
                 .add(keys::component_signature_list, mp::list::empty_v)     // .
                 .add(keys::system_signature_list, mp::list::empty_v)        // .
                 .add(keys::scheduler,
-                    impl::scheduler_wrapper<
-                         ecst::scheduler::s_atomic_counter>{}) // .
+                    impl::scheduler_wrapper<scheduler::s_atomic_counter>{}) // .
                 .add(keys::refresh_parallelism,
                     impl::refresh_parallelism::enabled{}); // .
 

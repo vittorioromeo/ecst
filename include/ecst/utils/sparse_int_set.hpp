@@ -46,7 +46,9 @@ ECST_NAMESPACE
     {
         // TODO: other usage opportunities? to vrm_core?
         template <typename T, typename TF>
-        auto reverse_loop(T i_begin, T i_end, TF&& f)
+        auto reverse_loop(T i_begin, T i_end, TF&& f) noexcept( // .
+            noexcept(f(std::declval<T>()))                      // .
+            )
         {
             for(T i = i_end; i-- > i_begin;)
             {
@@ -56,7 +58,9 @@ ECST_NAMESPACE
     }
 
     template <typename TSet, typename T>
-    void add_range_in_set_reverse(TSet & set, T i_begin, T i_end)
+    void add_range_in_set_reverse(TSet & set, T i_begin, T i_end) noexcept( // .
+        noexcept(set.unchecked_add(std::declval<T>()))                      // .
+        )
     {
         impl::reverse_loop(i_begin, i_end, [&set](auto i)
             {
@@ -65,7 +69,9 @@ ECST_NAMESPACE
     }
 
     template <typename TSet, typename T>
-    void add_range_in_set_forward(TSet & set, T i_begin, T i_end)
+    void add_range_in_set_forward(TSet & set, T i_begin, T i_end) noexcept( // .
+        noexcept(set.unchecked_add(std::declval<T>()))                      // .
+        )
     {
         for(T i(i_begin); i < i_end; ++i)
         {

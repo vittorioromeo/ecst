@@ -33,7 +33,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
             }
 
             template <typename TKey, typename T>
-            constexpr auto add(const TKey& key, T&& x) noexcept
+            constexpr auto add(const TKey& key, T&& x) const noexcept
             {
                 auto new_map = bh::insert(_map,
                     bh::make_pair(key, bh::make_pair(FWD(x), bh::false_c)));
@@ -42,7 +42,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
             }
 
             template <typename TKey, typename T>
-            constexpr auto set(const TKey& key, T&& x) noexcept
+            constexpr auto set(const TKey& key, T&& x) const noexcept
             {
                 // Prevent setting same setting twice.
                 ECST_S_ASSERT_DT(

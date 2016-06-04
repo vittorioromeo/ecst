@@ -83,19 +83,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <typename TAcc, typename TF>
-    auto instance<TSettings, TSystemSignature>::foldl_outputs(TAcc acc, TF && f)
-    {
-        for_outputs([&acc, xf = FWD(f) ](auto& system, auto& state_data)
-            {
-                xf(system, acc, state_data);
-            });
-
-        return acc;
-    }
-
-
-    template <typename TSettings, typename TSystemSignature>
     auto instance<TSettings, TSystemSignature>::is_subscribed(entity_id eid)
         const noexcept
     {

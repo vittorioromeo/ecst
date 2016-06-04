@@ -28,8 +28,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             using tag_type = TTag;
             using parallelism_type = TEMP(keys::parallelism);
             using tag_dependency_list_type = TEMP(keys::dependencies);
-            using read_component_tag_list_type = TEMP(keys::read_components);
-            using write_component_tag_list_type = TEMP(keys::write_components);
+            using read_ctag_list_type = TEMP(keys::read_components);
+            using write_ctag_list_type = TEMP(keys::write_components);
             using output_type = TEMP(keys::output);
 
 #undef TEMP
@@ -45,18 +45,15 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(tag::system::is_list(tag_dependency_list_type{}));
 
             // Assert read component list validity.
-            ECST_S_ASSERT_DT(
-                tag::component::is_list(read_component_tag_list_type{}));
+            ECST_S_ASSERT_DT(tag::component::is_list(read_ctag_list_type{}));
 
             // Assert write component list validity.
-            ECST_S_ASSERT_DT(
-                tag::component::is_list(write_component_tag_list_type{}));
+            ECST_S_ASSERT_DT(tag::component::is_list(write_ctag_list_type{}));
 
             // Assert that no component tags are shared between the write and
             // read lists.
             ECST_S_ASSERT_DT(!mp::list::any_common_element( // .
-                read_component_tag_list_type{},
-                write_component_tag_list_type{}));
+                read_ctag_list_type{}, write_ctag_list_type{}));
 
             ECST_S_ASSERT_DT(impl::is_valid_output<output_type>);
 
@@ -116,12 +113,12 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         typename mp::unwrap<TSystemSignature>::tag_dependency_list_type;
 
     template <typename TSystemSignature> // .
-    using read_component_tag_list_type = // .
-        typename mp::unwrap<TSystemSignature>::read_component_tag_list_type;
+    using read_ctag_list_type =          // .
+        typename mp::unwrap<TSystemSignature>::read_ctag_list_type;
 
-    template <typename TSystemSignature>  // .
-    using write_component_tag_list_type = // .
-        typename mp::unwrap<TSystemSignature>::write_component_tag_list_type;
+    template <typename TSystemSignature> // .
+    using write_ctag_list_type =         // .
+        typename mp::unwrap<TSystemSignature>::write_ctag_list_type;
 
     template <typename TSystemSignature> // .
     using output_type =                  // .
@@ -131,8 +128,8 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature, typename TComponentTag>
     constexpr auto can_write(TComponentTag ct)
     {
-        return bh::contains(                                   // .
-            write_component_tag_list_type<TSystemSignature>{}, // .
+        return bh::contains(                          // .
+            write_ctag_list_type<TSystemSignature>{}, // .
             ct);
     }
 
@@ -140,9 +137,9 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     template <typename TSystemSignature, typename TComponentTag>
     constexpr auto can_read(TComponentTag ct)
     {
-        return can_write<TSystemSignature>(ct) ||                    // .
-               bh::contains(                                         // .
-                   read_component_tag_list_type<TSystemSignature>{}, // .
+        return can_write<TSystemSignature>(ct) ||           // .
+               bh::contains(                                // .
+                   read_ctag_list_type<TSystemSignature>{}, // .
                    ct);
     }
 

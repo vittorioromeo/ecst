@@ -86,9 +86,6 @@ ECST_CONTEXT_NAMESPACE
                 template <typename TSystemTag, typename TF>
                 decltype(auto) for_system_outputs(TSystemTag, TF&& f);
 
-                template <typename TSystemTag, typename TAcc, typename TF>
-                auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
-
                 template <typename TSystemTag>
                 auto is_in_system(TSystemTag, entity_id) const noexcept;
 

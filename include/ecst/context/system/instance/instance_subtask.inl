@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <vector>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/utils/sparse_int_set.hpp>

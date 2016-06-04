@@ -82,10 +82,6 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSystemTag, typename TF>
             decltype(auto) for_system_outputs(TSystemTag, TF&& f);
 
-            // TODO: consider removing
-            template <typename TSystemTag, typename TAcc, typename TF>
-            auto foldl_system_outputs(TSystemTag, TAcc acc, TF&& f);
-
             template <typename TSystemTag>
             auto& instance(TSystemTag) noexcept;
 

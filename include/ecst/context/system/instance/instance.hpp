@@ -116,10 +116,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TF>
         decltype(auto) for_outputs(TF&& f);
 
-        /// @brief Left-folds over `acc` with `f` on all subtask outputs.
-        template <typename TAcc, typename TF>
-        auto foldl_outputs(TAcc acc, TF&& f);
-
         /// @brief Returns `true` if `eid` is subscribed to the system.
         auto is_subscribed(entity_id eid) const noexcept;
 

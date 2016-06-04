@@ -11,6 +11,8 @@ ECST_NAMESPACE
 {
     namespace impl
     {
+        /// @brief Empty struct with a `constexpr` variadic `operator()` that
+        /// does nothing.
         struct do_nothing_t
         {
             template <typename... Ts>
@@ -19,6 +21,7 @@ ECST_NAMESPACE
             }
         };
 
+        /// @brief Instance of `do_nothing_t`.
         constexpr impl::do_nothing_t do_nothing{};
     }
 }

@@ -45,11 +45,10 @@ ECST_CONTEXT_BITSET_NAMESPACE
     auto make_from_system_signature(TSettings s) noexcept
     {
         auto read_component_tag_list =
-            signature::system::read_component_tag_list_type<TSystemSignature>{};
+            signature::system::read_ctag_list_type<TSystemSignature>{};
 
         auto write_component_tag_list =
-            signature::system::write_component_tag_list_type<
-                TSystemSignature>{};
+            signature::system::write_ctag_list_type<TSystemSignature>{};
 
         auto all_component_tag_list =
             bh::concat(read_component_tag_list, write_component_tag_list);

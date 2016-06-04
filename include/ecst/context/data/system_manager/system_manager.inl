@@ -107,14 +107,6 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TSystemTag, typename TAcc, typename TF>
-        auto system_manager<TSettings>::foldl_system_outputs(
-            TSystemTag st, TAcc acc, TF&& f)
-        {
-            return instance(st).foldl_outputs(acc, FWD(f));
-        }
-
-        template <typename TSettings>
         template <typename TSystemTag>
         auto& system_manager<TSettings>::instance(TSystemTag st) noexcept
         {

@@ -126,14 +126,6 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
-            template <typename TSystemTag, typename TAcc, typename TF>
-            auto proxy<TSettings>::foldl_system_outputs(
-                TSystemTag st, TAcc acc, TF&& f)
-            {
-                return _context.foldl_system_outputs(st, acc, FWD(f));
-            }
-
-            template <typename TSettings>
             template <typename TSystemTag>
             auto proxy<TSettings>::is_in_system(
                 TSystemTag st, entity_id eid) const noexcept

@@ -23,8 +23,7 @@ ECST_CONTEXT_NAMESPACE
                 using set_type = dispatch_set<settings_type>;
 
             public:
-                set_type _to_match;
-                set_type _to_kill;
+                set_type _to_kill, _to_match;
 
                 void clear() noexcept;
             };
