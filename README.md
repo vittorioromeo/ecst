@@ -267,7 +267,18 @@ int main()
                                 do_something_after();
                             })
                     );
-            });
+            },
+            // Refresh events can be caught and handled sequentially.
+            ecst::refresh_event::on_subscribe(st::acceleration,
+                [](auto& system, auto eid)
+                {
+                    log() << "Entity #" << eid 
+                          << " subscribed to acceleration system.\n".
+                }),
+            ecst::refresh_event::on_reclaim([](auto eid)
+                {
+                    log() << "Entity #" << eid << " reclaimed.\n".
+                }));
     }
 }
 ```
