@@ -12,8 +12,6 @@
 #include <ecst/settings.hpp>
 #include <ecst/context/types.hpp>
 
-#include <iostream>
-
 ECST_NAMESPACE
 {
     template <sz_t TCapacity>

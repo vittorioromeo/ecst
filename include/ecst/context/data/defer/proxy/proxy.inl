@@ -34,7 +34,7 @@ ECST_CONTEXT_NAMESPACE
                 auto res(_context.create_entity());
 
                 // The newly-created it must be matched to systems.
-                _refresh_state.add_to_match(res);
+                _refresh_state._to_match.add(res);
 
                 // Return the entity ID.
                 return res;
@@ -69,7 +69,7 @@ ECST_CONTEXT_NAMESPACE
             void proxy<TSettings>::kill_entity(entity_id eid) noexcept
             {
                 // The killed entity must be removed from all systems.
-                _refresh_state.add_to_kill(eid);
+                _refresh_state._to_kill.add(eid);
             }
 
             template <typename TSettings>
@@ -78,7 +78,7 @@ ECST_CONTEXT_NAMESPACE
                 TComponentTag ct, entity_id eid)
             {
                 // The modified entity must be re-matched.
-                _refresh_state.add_to_match(eid);
+                _refresh_state._to_match.add(eid);
                 return _context.add_component(ct, eid);
             }
 
@@ -99,7 +99,7 @@ ECST_CONTEXT_NAMESPACE
                 _context.remove_component(ct, eid);
 
                 // The modified entity must be re-matched.
-                _refresh_state.add_to_match(eid);
+                _refresh_state._to_match.add(eid);
             }
 
             template <typename TSettings>

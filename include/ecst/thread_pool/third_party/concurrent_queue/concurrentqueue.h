@@ -1166,7 +1166,7 @@ namespace moodycamel
                 {
                     auto prev = hash->prev;
                     if(prev != nullptr)
-                    {   // The last hash is part of this object and was not
+                    { // The last hash is part of this object and was not
                         // allocated dynamically
                         for(size_t i = 0; i != hash->capacity; ++i)
                         {
@@ -4829,7 +4829,7 @@ namespace moodycamel
                 // Look for the id in this hash
                 auto index = hashedId;
                 while(true)
-                {   // Not an infinite loop because at least one slot is free in
+                { // Not an infinite loop because at least one slot is free in
                     // the hash table
                     index &= hash->capacity - 1;
 

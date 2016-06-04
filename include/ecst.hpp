@@ -6,46 +6,46 @@
 #pragma once
 
 // Library API configuration, namespace macros, internal code.
-#include <ecst/config.hpp>
+#include "./ecst/config.hpp"
 
 // Type/function aliases.
-#include <ecst/aliases.hpp>
+#include "./ecst/aliases.hpp"
 
 // Utility module, with functions/types used throughout the project.
-#include <ecst/utils.hpp>
+#include "./ecst/utils.hpp"
 
 // Debugging/logging utilities.
-#include <ecst/debug.hpp>
+#include "./ecst/debug.hpp"
 
 // "Type-value encoding" metaprogramming.
-#include <ecst/mp.hpp>
+#include "./ecst/mp.hpp"
 
 // Machine hardware status detection and querying.
-#include <ecst/hardware.hpp>
+#include "./ecst/hardware.hpp"
 
 // Inner parallelism strategies.
-#include <ecst/inner_parallelism.hpp>
+#include "./ecst/inner_parallelism.hpp"
 
 // Component and system signatures.
-#include <ecst/tag.hpp>
+#include "./ecst/tag.hpp"
 
 // Component and system signatures.
-#include <ecst/signature.hpp>
+#include "./ecst/signature.hpp"
 
 // Component and system signature lists.
-#include <ecst/signature_list.hpp>
+#include "./ecst/signature_list.hpp"
 
 // System execution function adapters.
-#include <ecst/system_execution_adapter.hpp>
+#include "./ecst/system_execution_adapter.hpp"
 
 // Thread pool utility class.
-#include <ecst/thread_pool.hpp>
+#include "./ecst/thread_pool.hpp"
 
 // Framework user-defined template settings.
-#include <ecst/settings.hpp>
+#include "./ecst/settings.hpp"
 
 // Context/manager class.
-#include <ecst/context.hpp>
+#include "./ecst/context.hpp"
 
 // Implementation of make functions (default settings).
-#include <ecst/make_inl.hpp>
+#include "./ecst/make_inl.hpp"

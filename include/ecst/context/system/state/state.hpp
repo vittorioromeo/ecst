@@ -69,30 +69,19 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @details Contains a vector of deferred functions and a "killed
         /// entities" sparse set.
         template <typename TSettings>
-        class state : public ecst::impl::to_kill_set_wrapper<TSettings>
+        class state
         {
         private:
             using set_type = dispatch_set<TSettings>;
 
-            deferred_fns_vector<TSettings> _deferred_fns;
-
         public:
+            deferred_fns_vector<TSettings> _deferred_fns;
+            set_type _to_kill;
+
             void clear() noexcept
             {
-                ecst::impl::to_kill_set_wrapper<TSettings>::clear();
+                _to_kill.clear();
                 _deferred_fns.clear();
-            }
-
-            template <typename TF>
-            void add_deferred_fn(TF&& f)
-            {
-                _deferred_fns.add(FWD(f));
-            }
-
-            template <typename TProxy>
-            void execute_deferred_fns(TProxy& proxy)
-            {
-                _deferred_fns.execute_all(proxy);
             }
         };
     }

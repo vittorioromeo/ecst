@@ -26,7 +26,8 @@ namespace ecst
         void execute_simd(TCTL ctl, TF f, sz_t i_begin, sz_t i_end)
         {
             float* data_ptrs = ctl.chunk().data()...;
-            auto casted_data_ptrs = reinterpret_cast<sse_float4_whatever*>(data_ptrs);
+            auto casted_data_ptrs =
+                reinterpret_cast<sse_float4_whatever*>(data_ptrs);
 
             for(auto i = i_begin; i < i_end; ++i)
             {
@@ -36,9 +37,10 @@ namespace ecst
 
     public:
         void for_components_simd(TComponentTagList ctl, TF f)
-        {   
+        {
             static_assert(all ctl in system signature);
-            static_assert(all ctl components are sizeof(float) or sizeof(double));
+            static_assert(
+                all ctl components are sizeof(float) or sizeof(double));
             static_assert(all ctl component chunks are arrays or vectors);
 
             // maybe:
@@ -53,30 +55,29 @@ namespace ecst
             execute_simd(ctl, f, 0, floored_end_indices);
 
             // process remaining data sequentially
-            execute_sequential(ctl, f, floored_end_indices * 4, ctl.chunk.count()); 
-        } 
+            execute_sequential(
+                ctl, f, floored_end_indices * 4, ctl.chunk.count());
+        }
     };
 }
 
 auto make_ssl()
 {
-    auto s0 = ss::make_entity_system()
-        .usualstuff();
+    auto s0 = ss::make_entity_system().usualstuff();
 
     // not related to entities
-    auto s1 = ss::make_component_system()
-        .usualstuff();
+    auto s1 = ss::make_component_system().usualstuff();
 }
 
 struct s1
 {
-    template<typename TData>
+    template <typename TData>
     void process(TData& d)
     {
         // compile-time error, no subscribers
         // d.for_entities(...)
 
-        d.for_components_simd(list(ct::position, ct::velocity), 
+        d.for_components_simd(list(ct::position, ct::velocity),
             [](auto& pos4, auto& vel4)
             {
                 simd_add(pos4, vel4);

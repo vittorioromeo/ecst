@@ -74,7 +74,7 @@ ECST_CONTEXT_NAMESPACE
                         {
                             // The execution of deferred functions fills the
                             // refresh state and alters the context state.
-                            s.as_state().execute_deferred_fns(defer_proxy);
+                            s.as_state()._deferred_fns.execute_all(defer_proxy);
                         });
                 });
         }
@@ -95,9 +95,9 @@ ECST_CONTEXT_NAMESPACE
                 {
                     instance.for_states([&rs](auto& s)
                         {
-                            s.as_state().for_to_kill([&rs](entity_id eid)
+                            s.as_state()._to_kill.for_each([&rs](entity_id eid)
                                 {
-                                    rs.add_to_kill(eid);
+                                    rs._to_kill.add(eid);
                                 });
 
                             // Clear deferred functions and to-kill sets.
@@ -111,7 +111,7 @@ ECST_CONTEXT_NAMESPACE
             // Unsubscribe dead entities from instances, in parallel.
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
-                    rs.for_to_kill([&instance, &f_refresh](entity_id eid)
+                    rs._to_kill.for_each([&instance, &f_refresh](entity_id eid)
                         {
                             if(instance.unsubscribe(eid))
                             {
@@ -124,7 +124,7 @@ ECST_CONTEXT_NAMESPACE
                 });
 
             // Reclaim all killed entities and fire events.
-            rs.for_to_kill([this, &f_refresh, &rs](entity_id eid)
+            rs._to_kill.for_each([this, &f_refresh, &rs](entity_id eid)
                 {
                     this->reclaim(eid);
                     f_refresh(refresh_event::impl::reclaimed, eid);
@@ -144,7 +144,7 @@ ECST_CONTEXT_NAMESPACE
             // Match new/modified entities to instances, in parallel.
             this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
                 {
-                    rs.for_to_match(
+                    rs._to_match.for_each(
                         [this, &rs, &instance, &f_refresh](entity_id eid)
                         {
                             // Get entity bitset.

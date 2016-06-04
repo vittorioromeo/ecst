@@ -111,12 +111,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TF>
             void defer(TF&& f)
             {
-                state().add_deferred_fn(FWD(f));
+                state()._deferred_fns.add(FWD(f));
             }
 
             void kill_entity(entity_id eid)
             {
-                state().add_to_kill(eid);
+                state()._to_kill.add(eid);
             }
 
             // TODO: enable if, rename?

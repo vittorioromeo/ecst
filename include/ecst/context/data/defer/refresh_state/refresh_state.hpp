@@ -17,32 +17,16 @@ ECST_CONTEXT_NAMESPACE
         {
             template <typename TSettings>
             class refresh_state
-                : public ecst::impl::to_kill_set_wrapper<TSettings>
             {
             private:
                 using settings_type = TSettings;
                 using set_type = dispatch_set<settings_type>;
 
-                set_type _to_match_ids;
-
             public:
+                set_type _to_match;
+                set_type _to_kill;
+
                 void clear() noexcept;
-
-                void add_to_match(entity_id eid) // .
-                    noexcept(noexcept(           // .
-                        _to_match_ids.add(eid)   // .
-                        ));
-
-                void del_to_match(entity_id eid) // .
-                    noexcept(noexcept(           // .
-                        _to_match_ids.erase(eid) // .
-                        ));
-
-                template <typename TF>
-                void for_to_match(TF&& f)              // .
-                    noexcept(noexcept(                 // .
-                        _to_match_ids.for_each(FWD(f)) // .
-                        ));
             };
         }
     }

@@ -68,7 +68,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         for_states([&proxy](auto& s)
             {
-                s.as_state().execute_deferred_fns(proxy);
+                s.as_state()._deferred_fns.execute_all(proxy);
             });
     }
 
