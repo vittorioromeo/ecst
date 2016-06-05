@@ -1,0 +1,3 @@
+#!/bin/bash
+
+../../example/cf2 $1 ; cat ./error.out | ../../example/simplify_error.py    
