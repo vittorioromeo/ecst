@@ -102,7 +102,7 @@ namespace example
         };
     }
 
-    constexpr auto entity_count = ecst::sz_v<500>;
+    constexpr auto entity_count = ecst::sz_v<200>;
 
     namespace ecst_setup
     {

@@ -115,7 +115,7 @@ namespace example
         }
     }
 
-    constexpr sz_t cycles = 10000;
+    constexpr sz_t cycles = 500;
 
     namespace sea = ::ecst::system_execution_adapter;
 
