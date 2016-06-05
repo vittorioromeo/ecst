@@ -1,4 +1,5 @@
 #include "../utils/test_utils.hpp"
+#include <vrm/core/config/detection.hpp>
 
 using namespace vrm::core;
 using namespace ecst;
@@ -58,7 +59,8 @@ TEST_MAIN()
         );
 
 
-
+// TODO: BUG: crashes clang++
+#ifndef VRM_CORE_COMPILER_CLANG
     SA(bh::length(sls::recursive_dependency_id_list(ssl, mp::wrap(ssig_b))) ==
         bh::size_c<1>);
 
@@ -76,4 +78,5 @@ TEST_MAIN()
         (sls::recursive_dependency_id_list(ssl, mp::wrap(ssig_c))), // .
         (mp::list::v<bh::size_t<0>, bh::size_t<1>>)                 // .
         );
+#endif
 }
