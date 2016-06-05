@@ -166,17 +166,17 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // binding a `counter_blocker`, and allows future instance types (like
         // component-processing-instances) to execute `f` without binding
         // slices.
-        auto subtask_adapter = [this](auto& b, auto& ctx, auto&& xf)
+        auto subtask_adapter = [this](auto& b, auto& x_ctx, auto&& xf)
         {
-            return [ this, &ctx, &b, xf = FWD(xf) ] // .
+            return [ this, &x_ctx, &b, xf = FWD(xf) ] // .
                 (auto split_idx, auto i_begin, auto i_end) mutable
             {
                 // Create looping execution function.
                 auto bse = this->make_bound_slice_executor(
-                    b, ctx, split_idx, i_begin, i_end, xf);
+                    b, x_ctx, split_idx, i_begin, i_end, xf);
 
                 // Execute the bound slice in the thread pool.
-                this->run_subtask_in_thread_pool(ctx, std::move(bse));
+                this->run_subtask_in_thread_pool(x_ctx, std::move(bse));
             };
         };
 
