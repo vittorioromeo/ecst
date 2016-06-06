@@ -71,24 +71,12 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        template <typename TContext, typename... TStartSystemTags>
-        auto system_manager<TSettings>::execute_systems_from(
-            TContext& context, TStartSystemTags... sts) noexcept
-        {
-            auto sstl = mp::list::make(sts...);
-            return [this, &context, sstl](auto&&... fns)
-            {
-                this->execute_systems(context, sstl, FWD(fns)...);
-            };
-        }
-
-        template <typename TSettings>
         template <typename TContext, typename TStartSystemTagList,
             typename... TFs>
-        void system_manager<TSettings>::execute_systems(
+        void system_manager<TSettings>::execute_systems_impl(
             TContext& context, TStartSystemTagList sstl, TFs&&... fs)
         {
-            ECST_S_ASSERT(tag::system::is_list(sstl));
+            ECST_S_ASSERT_DT(tag::system::is_list(sstl));
 
             // TODO: store instance in system_manager for stateful schedulers?
             // scheduler_type must be movable in that case
@@ -97,6 +85,41 @@ ECST_CONTEXT_NAMESPACE
             auto os = bh::overload_linearly(FWD(fs)...);
             s.execute(context, sstl, os);
         }
+
+        template <typename TSettings>
+        template <typename TContext, typename... TStartSystemTags>
+        auto system_manager<TSettings>::execute_systems_from(
+            TContext& context, TStartSystemTags... sts) noexcept
+        {
+            auto sstl = mp::list::make(sts...);
+            return [this, &context, sstl](auto&&... fns)
+            {
+                this->execute_systems_impl(context, sstl, FWD(fns)...);
+            };
+        }
+
+        template <typename TSettings>
+        template <typename TContext>
+        auto system_manager<TSettings>::execute_systems(
+            TContext& context) noexcept
+        {
+            auto ssl = settings::system_signature_list(TSettings{});
+
+            auto independent_ssl =
+                bh::filter(ssl, signature::system::indepedent);
+
+            auto independent_stl = bh::transform(independent_ssl, [](auto ss)
+                {
+                    return signature::system::tag_of(ss);
+                });
+
+            return [this, &context, independent_stl](auto&&... fns)
+            {
+                this->execute_systems_impl(
+                    context, independent_stl, FWD(fns)...);
+            };
+        }
+
 
         template <typename TSettings>
         template <typename TSystemTag, typename TF>

@@ -679,7 +679,7 @@ namespace example
 
         ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
             {
-                proxy.execute_systems_from(st::acceleration)(
+                proxy.execute_systems()(
                     ft_tags.for_subtasks([dt](auto& s, auto& data)
                         {
                             s.process(dt, data);

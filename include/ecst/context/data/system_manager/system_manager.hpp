@@ -10,6 +10,7 @@
 #include <ecst/utils.hpp>
 #include <ecst/thread_pool.hpp>
 #include <ecst/settings.hpp>
+#include <ecst/mp.hpp>
 #include <ecst/context/bitset.hpp>
 #include <ecst/context/scheduler.hpp>
 #include <ecst/context/system.hpp>
@@ -65,18 +66,27 @@ ECST_CONTEXT_NAMESPACE
             template <typename TID>
             auto& instance_by_id(TID) noexcept;
 
+        private:
+            /// @brief Executes all the system chains starting with tags in
+            /// `sstl`, overloading `fs...`.
+            template <typename TContext, typename TStartSystemTagList,
+                typename... TFs>
+            void execute_systems_impl(
+                TContext&, TStartSystemTagList sstl, TFs&&... fs);
+
         protected:
-            // TODO: consider adding `execute_systems(ctx)` which starts from
-            // all independent systems.
+            /// @brief Returns a variadic lambda accepting system execution
+            /// functions that will be executed on all dependency chains
+            /// starting from `sts...`.
             template <typename TContext, typename... TStartSystemTags>
             auto execute_systems_from(
                 TContext& context, TStartSystemTags... sts) noexcept;
 
-        private:
-            template <typename TContext, typename TStartSystemTagList,
-                typename... TFs>
-            void execute_systems(
-                TContext&, TStartSystemTagList sstl, TFs&&... fs);
+            /// @brief Returns a variadic lambda accepting system execution
+            /// functions that will be executed on all dependency chains
+            /// starting from all independent systems in the context.
+            template <typename TContext>
+            auto execute_systems(TContext& context) noexcept;
 
         public:
             template <typename TSystemTag, typename TF>

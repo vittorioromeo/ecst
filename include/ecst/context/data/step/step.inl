@@ -23,10 +23,17 @@ ECST_CONTEXT_NAMESPACE
 
             template <typename TSettings>
             template <typename... TStartSystemTags>
-            auto proxy<TSettings>::execute_systems_from(TStartSystemTags... sts)
+            auto proxy<TSettings>::execute_systems_from(
+                TStartSystemTags... sts) noexcept
             {
                 return this->context().execute_systems_from(
                     this->context(), sts...);
+            }
+
+            template <typename TSettings>
+            auto proxy<TSettings>::execute_systems() noexcept
+            {
+                return this->context().execute_systems(this->context());
             }
         }
     }

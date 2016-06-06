@@ -31,7 +31,9 @@ ECST_CONTEXT_NAMESPACE
                 proxy(context_type&, refresh_state_type&) noexcept;
 
                 template <typename... TStartSystemTags>
-                auto execute_systems_from(TStartSystemTags... st);
+                auto execute_systems_from(TStartSystemTags... st) noexcept;
+
+                auto execute_systems() noexcept;
             };
         }
     }
