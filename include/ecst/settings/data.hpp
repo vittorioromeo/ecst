@@ -65,7 +65,7 @@ ECST_SETTINGS_NAMESPACE
             }
 
 
-            // TODO: private
+            // TODO: private (attorney/client pattern?)
             constexpr auto get_threading() noexcept
             {
                 return _map.at(keys::threading);
