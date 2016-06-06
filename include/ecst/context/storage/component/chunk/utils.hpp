@@ -16,16 +16,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         /// @details Stored in a tuple, inside entity metadata.
         template <typename TChunk>
         using metadata = typename TChunk::metadata;
-
-        // TODO: move
-        namespace impl
-        {
-            // TODO: use bh tuple ?
-            template <typename TComponentTagList>
-            using component_tuple_type =
-                mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
-                    TComponentTagList{})>;
-        }
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

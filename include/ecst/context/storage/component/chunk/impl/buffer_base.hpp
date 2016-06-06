@@ -10,6 +10,7 @@
 #include <ecst/settings.hpp>
 #include <ecst/debug.hpp>
 #include <ecst/context/types.hpp>
+#include "../type.hpp"
 #include "../utils.hpp"
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE

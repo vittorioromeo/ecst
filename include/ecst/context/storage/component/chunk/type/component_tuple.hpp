@@ -6,16 +6,20 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include "../utils.hpp"
-#include "../impl.hpp"
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
-    // TODO:
-    template <typename TSettings, typename TComponentSignature>
-    using chunk_dispatch_type = ECST_DECAY_DECLTYPE(         // .
-        TComponentSignature{}.make_storage_type(TSettings{}) // .
-        );
+    namespace chunk
+    {
+        namespace impl
+        {
+            // TODO: use bh tuple ?
+            template <typename TComponentTagList>
+            using component_tuple_type =
+                mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
+                    TComponentTagList{})>;
+        }
+    }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
