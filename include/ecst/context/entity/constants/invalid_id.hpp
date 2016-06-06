@@ -14,12 +14,9 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 {
     namespace impl
     {
-        // TODO: generalize
-        using underlying_entity_id = typename entity_id::underlying_type;
-
         /// @brief Invalid entity ID used for invalid handles.
-        constexpr auto invalid_id =
-            std::numeric_limits<underlying_entity_id>::max();
+        constexpr auto invalid_id = std::numeric_limits<
+            vrmc::underlying_if_strong_typedef_type<entity_id>>::max();
     }
 
     /// @brief Returns `true` if `eid` is a valid entity ID.
