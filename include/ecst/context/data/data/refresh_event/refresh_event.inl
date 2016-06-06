@@ -76,8 +76,7 @@ ECST_NAMESPACE
             return [f = FWD(f)](impl::subscribed_t, auto& instance, auto eid)
                 ->impl::enable_matching_instance<decltype(instance), TSystemTag>
             {
-                // TODO: instance?
-                return f(instance.system(), eid);
+                return f(instance, eid);
             };
         }
 
@@ -87,8 +86,7 @@ ECST_NAMESPACE
             return [f = FWD(f)](impl::unsubscribed_t, auto& instance, auto eid)
                 ->impl::enable_matching_instance<decltype(instance), TSystemTag>
             {
-                // TODO: instance?
-                return f(instance.system(), eid);
+                return f(instance, eid);
             };
         }
     }

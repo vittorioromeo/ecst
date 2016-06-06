@@ -148,11 +148,11 @@ namespace example
                 }
             },
             ecst::refresh_event::on_subscribe(st::s0,
-                [](s::s0&, auto)
+                [](auto&, auto)
                 {
                     ++subs_0;
                 }),
-            ecst::refresh_event::on_subscribe(st::s1, [](s::s1&, auto)
+            ecst::refresh_event::on_subscribe(st::s1, [](auto&, auto)
                 {
                     ++subs_1;
                 }));
@@ -169,12 +169,12 @@ namespace example
                 }
             },
             ecst::refresh_event::on_unsubscribe(st::s0,
-                [](s::s0&, auto)
+                [](auto&, auto)
                 {
                     ++unsubs_0;
                 }),
             ecst::refresh_event::on_unsubscribe(st::s1,
-                [](s::s1&, auto)
+                [](auto&, auto)
                 {
                     ++unsubs_1;
                 }),
