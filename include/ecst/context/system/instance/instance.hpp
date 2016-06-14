@@ -45,6 +45,22 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // TODO: component-only systems with no knowledge of entities for SIMD
         // operations (?)
+
+        // TODO: hierarchy of instances:
+        /*
+            `execution_step` (base type):
+                * can produce/consume outputs
+                * can have dependencies
+                * can be parallelized (but quite explicitly)
+
+            `entity_system : execution_step`: instance
+
+            `component_system : execution_step`:
+                * no knowledge of entities
+                * iterates over component
+                * SIMD support, etc
+                * (necessary?) is it just execution_step?
+        */
     }
 
     /// @brief System instance.
