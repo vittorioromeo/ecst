@@ -59,7 +59,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         private:
             template <typename TKey, typename T>
-            constexpr auto change_self(const TKey& key, T&& x) noexcept
+            constexpr auto change_self(const TKey& key, T&& x) const noexcept
             {
                 auto new_options = TOptions{}.set(key, FWD(x));
                 return data<TTag, ECST_DECAY_DECLTYPE(new_options)>{};
@@ -67,33 +67,34 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         public:
             template <typename TNewParallelism>
-            constexpr auto parallelism(TNewParallelism new_parallelism) noexcept
+            constexpr auto parallelism(TNewParallelism new_parallelism) const
+                noexcept
             {
                 return change_self(keys::parallelism, new_parallelism);
             }
 
             template <typename... TSystemTags>
-            constexpr auto dependencies(TSystemTags... sts) noexcept
+            constexpr auto dependencies(TSystemTags... sts) const noexcept
             {
                 return change_self(keys::dependencies, mp::list::make(sts...));
             }
 
             template <typename... TComponentTags>
-            constexpr auto read(TComponentTags... cts) noexcept
+            constexpr auto read(TComponentTags... cts) const noexcept
             {
                 return change_self(
                     keys::read_components, mp::list::make(cts...));
             }
 
             template <typename... TComponentTags>
-            constexpr auto write(TComponentTags... cts) noexcept
+            constexpr auto write(TComponentTags... cts) const noexcept
             {
                 return change_self(
                     keys::write_components, mp::list::make(cts...));
             }
 
             template <typename TNewOutput>
-            constexpr auto output(TNewOutput new_output) noexcept
+            constexpr auto output(TNewOutput new_output) const noexcept
             {
                 return change_self(keys::output, new_output);
             }

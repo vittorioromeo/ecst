@@ -105,8 +105,8 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     namespace impl
     {
         template <typename TComponentTagList, typename TOptions>
-        constexpr auto data<TComponentTagList,
-            TOptions>::contiguous_buffer() noexcept
+        constexpr auto data<TComponentTagList, TOptions>::contiguous_buffer()
+            const noexcept
         {
             return change_self(keys::storage, contiguous_buffer_maker);
         }

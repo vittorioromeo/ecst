@@ -29,7 +29,7 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
 
         private:
             template <typename TKey, typename T>
-            constexpr auto change_self(const TKey& key, T&& x) noexcept
+            constexpr auto change_self(const TKey& key, T&& x) const noexcept
             {
                 auto new_options = TOptions{}.set(key, FWD(x));
                 return data<TComponentTagList,
@@ -37,10 +37,10 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             }
 
         public:
-            constexpr auto contiguous_buffer() noexcept;
+            constexpr auto contiguous_buffer() const noexcept;
 
             template <typename TSettings>
-            constexpr auto make_storage_type(TSettings s) noexcept
+            constexpr auto make_storage_type(TSettings s) const noexcept
             {
                 return TOptions{}
                     .at(keys::storage)
@@ -48,16 +48,19 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             }
 
             template <typename TComponentTag>
-            constexpr auto has(TComponentTag ct) noexcept
+            constexpr auto has(TComponentTag ct) const noexcept
             {
                 return bh::contains(TComponentTagList{}, ct);
             }
 
-            constexpr auto tag_list() noexcept
+            constexpr auto tag_list() const noexcept
             {
                 return TComponentTagList{};
             }
         };
+
+        // TODO: `data.set_storage_type(contiguous_buffer_maker)`
+        // TODO: `data.set_storage_type(hash_map_maker)`
     }
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

@@ -45,7 +45,7 @@ ECST_SETTINGS_NAMESPACE
 
         private:
             template <typename TKey, typename T>
-            constexpr auto change_self(const TKey& key, T&& x) noexcept
+            constexpr auto change_self(const TKey& key, T&& x) const noexcept
             {
                 auto new_options = _map.set(key, FWD(x));
                 return data<ECST_DECAY_DECLTYPE(new_options)>{};
@@ -53,60 +53,60 @@ ECST_SETTINGS_NAMESPACE
 
         public:
             template <typename T>
-            constexpr auto set_threading(T&& x)
+            constexpr auto set_threading(T&& x) const noexcept
             {
                 return change_self(keys::threading, FWD(x));
             }
 
             template <typename T>
-            constexpr auto set_storage(T&& x)
+            constexpr auto set_storage(T&& x) const noexcept
             {
                 return change_self(keys::entity_storage, FWD(x));
             }
 
 
             // TODO: private (attorney/client pattern?)
-            constexpr auto get_threading() noexcept
+            constexpr auto get_threading() const noexcept
             {
                 return _map.at(keys::threading);
             }
 
-            constexpr auto get_csl() noexcept
+            constexpr auto get_csl() const noexcept
             {
                 auto result = _map.at(keys::component_signature_list);
                 ECST_S_ASSERT_DT(signature_list::component::valid(result));
                 return decltype(result){};
             }
 
-            constexpr auto get_ssl() noexcept
+            constexpr auto get_ssl() const noexcept
             {
                 auto result = _map.at(keys::system_signature_list);
                 ECST_S_ASSERT_DT(signature_list::system::valid(result));
                 return decltype(result){};
             }
 
-            constexpr auto has_fixed_capacity() noexcept
+            constexpr auto has_fixed_capacity() const noexcept
             {
                 auto es = _map.at(keys::entity_storage);
                 return mp::is_specialization_of<impl::fixed_impl,
                     ECST_DECAY_DECLTYPE(es)>{};
             }
 
-            constexpr auto has_dynamic_capacity() noexcept
+            constexpr auto has_dynamic_capacity() const noexcept
             {
                 auto es = _map.at(keys::entity_storage);
                 return mp::is_specialization_of<impl::dynamic_impl,
                     ECST_DECAY_DECLTYPE(es)>{};
             }
 
-            constexpr auto get_fixed_capacity() noexcept
+            constexpr auto get_fixed_capacity() const noexcept
             {
                 ECST_S_ASSERT_DT(has_fixed_capacity());
                 auto es = _map.at(keys::entity_storage);
                 return typename ECST_DECAY_DECLTYPE(es)::size{};
             }
 
-            constexpr auto get_dynamic_capacity() noexcept
+            constexpr auto get_dynamic_capacity() const noexcept
             {
                 ECST_S_ASSERT_DT(has_dynamic_capacity());
                 auto es = _map.at(keys::entity_storage);
@@ -115,49 +115,49 @@ ECST_SETTINGS_NAMESPACE
 
 
 
-            constexpr auto allow_inner_parallelism() noexcept
+            constexpr auto allow_inner_parallelism() const noexcept
             {
                 return set_threading(impl::v_allow_inner_parallelism);
             }
 
-            constexpr auto disallow_inner_parallelism() noexcept
+            constexpr auto disallow_inner_parallelism() const noexcept
             {
                 return set_threading(impl::v_disallow_inner_parallelism);
             }
 
-            constexpr auto singlethreaded() noexcept
+            constexpr auto singlethreaded() const noexcept
             {
                 return change_self(keys::threading, impl::v_singlethreaded);
             }
 
             template <typename TCapacity>
-            constexpr auto fixed_entity_limit(TCapacity) noexcept
+            constexpr auto fixed_entity_limit(TCapacity) const noexcept
             {
                 return set_storage(impl::fixed_impl<TCapacity>{});
             }
 
             template <typename TInitialCapacity>
-            constexpr auto dynamic_entity_limit(TInitialCapacity) noexcept
+            constexpr auto dynamic_entity_limit(TInitialCapacity) const noexcept
             {
                 return set_storage(impl::dynamic_impl<TInitialCapacity>{});
             }
 
             template <typename TNewComponentSignatureList>
             constexpr auto component_signatures(
-                TNewComponentSignatureList new_csl) noexcept
+                TNewComponentSignatureList new_csl) const noexcept
             {
                 return change_self(keys::component_signature_list, new_csl);
             }
 
             template <typename TNewSystemSignatureList>
             constexpr auto system_signatures(
-                TNewSystemSignatureList new_ssl) noexcept
+                TNewSystemSignatureList new_ssl) const noexcept
             {
                 return change_self(keys::system_signature_list, new_ssl);
             }
 
             template <typename TNewScheduler>
-            constexpr auto scheduler(TNewScheduler new_scheduler) noexcept
+            constexpr auto scheduler(TNewScheduler new_scheduler) const noexcept
             {
                 return change_self(keys::scheduler, new_scheduler);
             }
