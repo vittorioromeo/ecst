@@ -82,7 +82,7 @@ namespace etp
                 ecst::this_thread::sleep_for(ecst::chrono::milliseconds(1));
             }
 
-            // Signal all worker to exit their processing loops.
+            // Signal all workers to exit their processing loops.
             for(auto& w : _workers)
             {
                 w.stop();
