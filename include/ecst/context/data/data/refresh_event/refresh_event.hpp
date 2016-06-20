@@ -34,13 +34,13 @@ ECST_NAMESPACE
 
         /// @brief Calls a provided `(instance_type&, id)` function `f` when an
         /// entity is subscribed to a system.
-        /// @details Not thread-safe. (May be inovked by multiple threads.)
+        /// @details Not thread-safe. (May be invoked by multiple threads.)
         template <typename TF>
         auto on_subscribe(TF&& f) noexcept;
 
         /// @brief Calls a provided `(instance_type&, id)` function `f` when an
         /// entity is unsubscribed from a system.
-        /// @details Not thread-safe. (May be inovked by multiple threads.)
+        /// @details Not thread-safe. (May be invoked by multiple threads.)
         template <typename TF>
         auto on_unsubscribe(TF&& f) noexcept;
 
@@ -52,13 +52,13 @@ ECST_NAMESPACE
 
         /// @brief Calls a provided `(system_type&, id)` function `f` when an
         /// entity is subscribed to a system.
-        /// @details Not thread-safe. (May be inovked by multiple threads.)
+        /// @details Not thread-safe. (May be invoked by multiple threads.)
         template <typename TSystemTag, typename TF>
         auto on_subscribe(TSystemTag st, TF&& f) noexcept;
 
         /// @brief Calls a provided `(system_type&, id)` function `f` when an
         /// entity is unsubscribed from a system.
-        /// @details Not thread-safe.(May be inovked by multiple threads.)
+        /// @details Not thread-safe.(May be invoked by multiple threads.)
         template <typename TSystemTag, typename TF>
         auto on_unsubscribe(TSystemTag st, TF&& f) noexcept;
     }
