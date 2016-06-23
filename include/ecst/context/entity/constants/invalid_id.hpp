@@ -20,7 +20,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     }
 
     /// @brief Returns `true` if `eid` is a valid entity ID.
-    auto ECST_CONST_FN valid(entity_id eid) noexcept
+    auto ECST_CONST_FN is_valid_id(entity_id eid) noexcept
     {
         return eid != impl::invalid_id;
     }

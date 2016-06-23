@@ -207,7 +207,8 @@ namespace example
         {
             for(const auto& h : _hs_killed)
             {
-                TEST_ASSERT(!_ctx.valid_handle(h));
+                TEST_ASSERT(_ctx.valid_handle(h));
+                TEST_ASSERT(!_ctx.alive(h));
             }
 
             namespace sea = ::ecst::system_execution_adapter;
@@ -238,7 +239,7 @@ namespace example
                         {
                             to_kill = rndi(0, entity_count);
                             h = _hs[to_kill];
-                        } while(!proxy.valid_handle(h));
+                        } while(!proxy.valid_handle(h) || !_ctx.alive(h));
 
                         proxy.kill_entity(proxy.access(h));
                         _hs_killed.emplace_back(h);

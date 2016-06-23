@@ -42,11 +42,6 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                 return handle{eid, get_counter_from_eid(eid)};
             }
 
-            auto eid_from_handle(const handle& h) const noexcept
-            {
-                return h._id;
-            }
-
         public:
             auto create_entity()
             {
@@ -57,10 +52,12 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                     );
 
                 ECST_ASSERT(alive(res));
-                ECST_ASSERT(context::entity::valid(res));
+                ECST_ASSERT(context::entity::is_valid_id(res));
 
                 return res;
             }
+
+            // TODO: interface to create null handle?
 
             auto create_handle(entity_id eid) noexcept
             {
@@ -83,17 +80,12 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 
             auto alive(const handle& h) const noexcept
             {
-                return alive(eid_from_handle(h));
+                return alive(access(h));
             }
 
             auto valid_handle(const handle& h) const noexcept
             {
-                if(!context::entity::valid(h._id))
-                {
-                    return false;
-                }
-
-                return h._ctr == get_counter_from_eid(eid_from_handle(h));
+                return context::entity::is_valid_id(h._id);
             }
 
             auto access(const handle& h) const noexcept

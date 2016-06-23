@@ -11,6 +11,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 {
     namespace impl
     {
+        // TODO: should just be uninitialized for performance reasons?
         handle::handle() noexcept : _id{invalid_id}
         {
         }
