@@ -122,8 +122,12 @@ ECST_NAMESPACE
     void execute_and_wait_until_counter_zero(
         counter_blocker & cb, TF && f) noexcept
     {
-        impl::execute_and_wait_until_counter_zero(
-            cb._mutex, cb._cv, cb._counter, FWD(f));
+        impl::execute_and_wait_until_counter_zero(cb._mutex, cb._cv,
+            cb._counter,
+            [&cb, f = FWD(f) ](auto&&... xs) mutable->decltype(auto)
+            {
+                return f(cb, FWD(xs)...);
+            });
     }
 }
 ECST_NAMESPACE_END

@@ -111,9 +111,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // Runs the parallel executor and waits until the remaining subtasks
         // counter is zero.
-        execute_and_wait_until_counter_zero(b, [&b, &f]
+        execute_and_wait_until_counter_zero(b, [&f](auto& x_b)
             {
-                f(b);
+                f(x_b);
             });
     }
 

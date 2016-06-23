@@ -85,9 +85,9 @@ ECST_SCHEDULER_NAMESPACE
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
             execute_and_wait_until_counter_zero(b,
-                [ this, &ctx, &b, sstl, f = FWD(f) ]() mutable
+                [ this, &ctx, sstl, f = FWD(f) ](auto& x_b) mutable
                 {
-                    this->start_execution(ctx, sstl, b, f);
+                    this->start_execution(ctx, sstl, x_b, f);
                 });
         }
     };
