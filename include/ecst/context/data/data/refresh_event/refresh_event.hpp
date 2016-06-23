@@ -8,6 +8,12 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 
+// TODO: generalize with system execution adapters, something like:
+/*
+    sea::t(st::a, st::b).on_subscribe([](...){...});
+    sea::all().on_unsubscribe([](...){...});
+*/
+
 ECST_NAMESPACE
 {
     /// @namespace Contains functions to handle events in `step` calls.
