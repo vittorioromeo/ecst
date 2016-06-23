@@ -93,3 +93,16 @@ ECST_SCHEDULER_NAMESPACE
     };
 }
 ECST_SCHEDULER_NAMESPACE_END
+
+// TODO: possible issue?
+/*
+    A
+     \
+      >-C
+     /
+    B
+*/
+// Starting from either A or B is incorrect.
+// The algorithm should prevent that and either:
+// 1) force the user to start both from A and B
+// 2) force the user to create a shared depedency between A and B
