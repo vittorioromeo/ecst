@@ -8,6 +8,7 @@
 #include <vector>
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
+#include <ecst/hardware.hpp>
 #include "./types.hpp"
 #include "./worker.hpp"
 #include "./producer_queue_uptr.hpp"
@@ -67,7 +68,7 @@ namespace etp
     public:
         pool()
         {
-            auto hwc = ecst::thread::hardware_concurrency();
+            auto hwc = ecst::hardware::status::core_count();
             auto worker_count = hwc;
             initialize_workers(worker_count);
         }
