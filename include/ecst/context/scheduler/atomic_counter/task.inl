@@ -53,7 +53,9 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                 }
 
                 // Recursively run the dependent instance.
-                ctx.post_in_thread_pool([this, &dt, &tg, &b, &ctx, id, &f]
+                // Use of multithreading:
+                // * Run children instance tasks in separate thread.
+                ctx.post_in_thread_pool([this, &dt, &tg, &b, &ctx, &f, id]
                     {
                         dt.run(tg, b, id, ctx, f);
                     });

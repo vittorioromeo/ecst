@@ -57,6 +57,8 @@ ECST_SCHEDULER_NAMESPACE
                 {
                     auto sid = sls::id_by_tag(this->ssl(), st);
 
+                    // Use of multithreading:
+                    // * Execute multiple indepedent systems in parallel.
                     ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]() mutable
                         {
                             this->_task_group.start_from_task_id(

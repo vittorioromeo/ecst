@@ -32,8 +32,10 @@ ECST_CONTEXT_NAMESPACE
                 {
                     _system_storage.for_instances([this, &x_b, &f](auto& system)
                         {
-                            this->post_in_thread_pool(
-                                [this, &x_b, &system, &f]()
+                            // Use of multithreading:
+                            // * Unsubscribe dead entities from instances.
+                            // * Match new/modified entities to instances.
+                            this->post_in_thread_pool([this, &x_b, &system, &f]
                                 {
                                     f(system);
                                     decrement_cv_counter_and_notify_one(x_b);
