@@ -74,14 +74,15 @@ ECST_NAMESPACE
                 });
         }
 
-        /// @brief Locks `mutex`, executes `f` and waits until `predicate`
-        /// through `cv`.
+        /// @brief Executes `f`, locks `mutex`, and waits until `predicate`
+        /// is `true` through `cv`.
         template <typename TPredicate, typename TF>
         void execute_and_wait_until(mutex_type& mutex, cv_type& cv,
             TPredicate&& predicate, TF&& f) noexcept
         {
-            unique_lock_type l(mutex);
             f();
+
+            unique_lock_type l(mutex);
             cv.wait(l, FWD(predicate));
         }
 
@@ -122,12 +123,8 @@ ECST_NAMESPACE
     void execute_and_wait_until_counter_zero(
         counter_blocker & cb, TF && f) noexcept
     {
-        impl::execute_and_wait_until_counter_zero(cb._mutex, cb._cv,
-            cb._counter,
-            [&cb, f = FWD(f) ](auto&&... xs) mutable->decltype(auto)
-            {
-                return f(cb, FWD(xs)...);
-            });
+        impl::execute_and_wait_until_counter_zero(
+            cb._mutex, cb._cv, cb._counter, FWD(f));
     }
 }
 ECST_NAMESPACE_END

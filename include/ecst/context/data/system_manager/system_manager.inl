@@ -27,18 +27,17 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::for_instances_parallel(TF&& f)
         {
             counter_blocker b{_system_storage.system_count()};
-            execute_and_wait_until_counter_zero(b,
-                [ this, f = FWD(f) ](auto& x_b)
+            execute_and_wait_until_counter_zero(b, [ this, &b, f = FWD(f) ]
                 {
-                    _system_storage.for_instances([this, &x_b, &f](auto& system)
+                    _system_storage.for_instances([this, &b, &f](auto& system)
                         {
                             // Use of multithreading:
                             // * Unsubscribe dead entities from instances.
                             // * Match new/modified entities to instances.
-                            this->post_in_thread_pool([this, &x_b, &system, &f]
+                            this->post_in_thread_pool([this, &b, &system, &f]
                                 {
                                     f(system);
-                                    decrement_cv_counter_and_notify_one(x_b);
+                                    decrement_cv_counter_and_notify_one(b);
                                 });
                         });
                 });
