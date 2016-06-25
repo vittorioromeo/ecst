@@ -7,6 +7,7 @@
 
 #include "./instance/data_proxy.hpp"
 #include "./instance/base.hpp"
+#include "./instance/base.inl"
 #include "./instance/instance.hpp"
 #include "./instance/instance.inl"
 #include "./instance/instance_subtask.inl"
