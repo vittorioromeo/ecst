@@ -17,12 +17,11 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             template <typename TParameters>
             struct executor
             {
-                template <typename TInstance, typename TContext,
-                    typename TFAdapter, typename TF>
-                void execute(
-                    TInstance& inst, TContext& ctx, TFAdapter&&, TF&& f)
+                template <typename TInstance, typename TContext, typename TF>
+                void execute(TInstance& inst, TContext&, TF&& f)
                 {
-                    inst.execute_single(ctx, FWD(f));
+                    // TODO: nicer and safer interface
+                    f(0, 0, inst.subscribed_count());
                 }
             };
         }

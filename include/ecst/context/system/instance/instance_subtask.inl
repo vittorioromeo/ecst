@@ -107,56 +107,59 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <typename TCounterBlocker, typename TContext>
-    auto ECST_PURE_FN instance<TSettings,
-        TSystemSignature>::make_slice_executor(TCounterBlocker & cb,
+    template <typename TContext>
+    auto ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::make_multi_data_proxy(
+        TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end)
+    {
+        return data_proxy::make_multi<TSystemSignature>(          // .
+            data_proxy::make_multi_functions(                     // .
+                make_entity_range_provider(i_begin, i_end),       // .
+                make_all_entity_provider(),                       // .
+                make_other_entity_range_provider(i_begin, i_end), // .
+                [ this, state_idx ]() -> auto&                    // .
+                {                                                 // .
+                    return this->nth_state(state_idx);            // .
+                }),                                               // .
+            ctx,                                                  // .
+            entity_range_count(i_begin, i_end),                   // .
+            all_entity_count(),                                   // .
+            other_entity_range_count(i_begin, i_end)              // .
+            );
+    }
+
+
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TContext>
+    auto ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::make_slice_executor(
         TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept
     {
         // TODO: think about data_proxy storage - maybe store one per state in a
-        // pre-allocated buffer?
+        // pre-allocated buffer big enough for `dp`?
 
-        return [this, &cb, &ctx, state_idx, i_begin, i_end](auto&& f)
+        return [this, &ctx, state_idx, i_begin, i_end](auto&& f)
         {
             // Create multi-subtask data proxy.
-            auto dp = data_proxy::make_multi<TSystemSignature>(       // .
-                data_proxy::make_multi_functions(                     // .
-                    make_entity_range_provider(i_begin, i_end),       // .
-                    make_all_entity_provider(),                       // .
-                    make_other_entity_range_provider(i_begin, i_end), // .
-                    [ this, state_idx ]() -> auto&                    // .
-                    {                                                 // .
-                        return this->nth_state(state_idx);            // .
-                    }),                                               // .
-                ctx,                                                  // .
-                entity_range_count(i_begin, i_end),                   // .
-                all_entity_count(),                                   // .
-                other_entity_range_count(i_begin, i_end)              // .
-                );
+            auto dp = make_multi_data_proxy(ctx, state_idx, i_begin, i_end);
 
             // Executes the processing function over the slice of entities.
-            this->execute_subtask_and_decrement_counter(cb, dp, f);
-        };
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    template <typename TCounterBlocker, typename TContext, typename TF>
-    auto instance<TSettings, TSystemSignature>::make_bound_slice_executor(
-        TCounterBlocker & cb, TContext & ctx, sz_t state_idx, sz_t i_begin,
-        sz_t i_end, TF && f) noexcept
-    {
-        auto se = make_slice_executor(cb, ctx, state_idx, i_begin, i_end);
-        return [&f, se = std::move(se) ]
-        {
-            se(f);
+            f(dp);
         };
     }
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
-    auto instance<TSettings, TSystemSignature>::run_subtask_in_thread_pool(
-        TContext & ctx, TF && f)
+    auto instance<TSettings, TSystemSignature>::make_bound_slice_executor(
+        TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end,
+        TF & f) noexcept
     {
-        ctx.post_in_thread_pool(FWD(f));
+        // TODO: review slice executor code, try to optimize
+        auto se = make_slice_executor(ctx, state_idx, i_begin, i_end);
+        return [&f, se = std::move(se) ]() mutable
+        {
+            se(f);
+        };
     }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

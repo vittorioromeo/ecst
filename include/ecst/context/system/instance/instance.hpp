@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <vector>
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/utils/sparse_int_set.hpp>
@@ -17,52 +16,11 @@
 #include <ecst/settings.hpp>
 #include <ecst/context/types.hpp>
 #include <ecst/context/bitset.hpp>
-#include "./../state.hpp"
+#include "./base.hpp"
+#include "../state.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename TSettings, typename TSystemSignature>
-        class instance_base
-        {
-        public:
-            using system_tag_type =
-                signature::system::tag_type<TSystemSignature>;
-
-            using system_type = tag::system::unwrap<system_tag_type>;
-
-        private:
-            system_type _system;
-
-        public:
-            /// @brief Returns a reference to the stored system instance.
-            auto& system() noexcept;
-
-            /// @brief Returns a const reference to the stored system instance.
-            const auto& system() const noexcept;
-        };
-
-        // TODO: component-only systems with no knowledge of entities for SIMD
-        // operations (?)
-
-        // TODO: hierarchy of instances:
-        /*
-            `execution_step` (base type):
-                * can produce/consume outputs
-                * can have dependencies
-                * can be parallelized (but quite explicitly)
-
-            `entity_system : execution_step`: instance
-
-            `component_system : execution_step`:
-                * no knowledge of entities
-                * iterates over component
-                * SIMD support, etc
-                * (necessary?) is it just execution_step?
-        */
-    }
-
     /// @brief System instance.
     /// @details Contains:
     /// * An instance of the user-defined system type.
@@ -104,6 +62,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     public:
         auto& subscribed() noexcept;
         const auto& subscribed() const noexcept;
+        auto subscribed_count() const noexcept;
 
     public:
         static constexpr auto system_id() noexcept
@@ -147,16 +106,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
-        /// @brief Clears and allocates `n` subtask states.
+        /// @brief Clears and allocates  subtask states.
         template <typename TF>
-        void prepare_and_wait_n_subtasks(sz_t n, TF&& f);
+        void prepare_and_wait_subtasks(sz_t n_total, sz_t n_septhread, TF& f);
 
-        /// @brief Executes `f` on a subset of the subscribed entities and
-        /// decrements the atomic remaining subtasks counter.
-        template <typename TCounterBlocker, typename TData, typename TF>
-        void execute_subtask_and_decrement_counter(
-            TCounterBlocker& cb, TData& data, TF&& f);
+        template <typename TContext, typename TF>
+        void execute(TContext& ctx, TF&& f);
 
+    private:
         /// @brief Executes `f` on every subscribed entity, without spawning any
         /// additional task.
         template <typename TContext, typename TF>
@@ -173,13 +130,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TContext>
         auto execution_dispatch(TContext&) noexcept;
 
-    public:
-        template <typename TContext, typename TF>
-        void execute(TContext& ctx, TF&& f);
-
-        auto subscribed_count() const noexcept;
-
+        /// @brief Returns the `n`-th subscribed id.
         auto nth_subscribed(sz_t n) noexcept;
+
+        /// @brief Returns a reference to the `n`-th subtask state.
         auto& nth_state(sz_t n) noexcept;
 
         /// @brief Number of entities provided by `make_all_entity_provider()`.
@@ -205,16 +159,17 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto make_other_entity_range_provider(
             sz_t i_begin, sz_t i_end) noexcept;
 
-        template <typename TCounterBlocker, typename TContext>
-        auto make_slice_executor(TCounterBlocker& cb, TContext& ctx,
-            sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept;
+        template <typename TContext>
+        auto make_multi_data_proxy(
+            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end);
 
-        template <typename TCounterBlocker, typename TContext, typename TF>
-        auto make_bound_slice_executor(TCounterBlocker& cb, TContext& ctx,
-            sz_t state_idx, sz_t i_begin, sz_t i_end, TF&& f) noexcept;
+        template <typename TContext>
+        auto make_slice_executor(
+            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept;
 
         template <typename TContext, typename TF>
-        auto run_subtask_in_thread_pool(TContext& ctx, TF&& f);
+        auto make_bound_slice_executor(TContext& ctx, sz_t state_idx,
+            sz_t i_begin, sz_t i_end, TF& f) noexcept;
     };
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

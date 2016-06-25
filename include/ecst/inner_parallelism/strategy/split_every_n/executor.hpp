@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/debug.hpp>
+#include <ecst/utils/cv_operations.hpp>
 #include <ecst/inner_parallelism/utils.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
@@ -22,10 +23,8 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             {
                 using parameters = TParameters;
 
-                template <typename TInstance, typename TContext,
-                    typename TFAdapter, typename TF>
-                void execute(
-                    TInstance& inst, TContext& ctx, TFAdapter&& fa, TF&& f)
+                template <typename TInstance, typename TContext, typename TF>
+                void execute(TInstance& inst, TContext& ctx, TF&& f)
                 {
                     namespace ss = signature::system;
 
@@ -46,15 +45,16 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                             << "\n\tsplit_count=" << split_count << "\n\n"; // .
                         );
 
-                    inst.prepare_and_wait_n_subtasks(split_count, [&](auto& b)
-                        {
-                            auto adapted_subtask(fa(b, ctx, FWD(f)));
+                    auto ef = [&](auto& rist) mutable
+                    {
+                        // Builds and runs the subtasks.
+                        utils::execute_split_runtime(inst.subscribed_count(),
+                            per_split, split_count, rist, ctx, f);
+                    };
 
-                            // Builds and runs the subtasks.
-                            utils::execute_split_runtime(
-                                inst.subscribed_count(), per_split, split_count,
-                                adapted_subtask);
-                        });
+                    // TODO: nicer and safer interface
+                    inst.prepare_and_wait_subtasks(
+                        split_count, split_count - 1, ef);
                 }
             };
         }

@@ -5,29 +5,12 @@
 
 #pragma once
 
-#include <ecst/hardware.hpp>
 #include "./instance.hpp"
 #include "./executor_proxy.hpp"
 #include "./data_proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
-    namespace impl
-    {
-        template <typename TSettings, typename TSystemSignature>
-        auto& instance_base<TSettings, TSystemSignature>::system() noexcept
-        {
-            return _system;
-        }
-
-        template <typename TSettings, typename TSystemSignature>
-        const auto& instance_base<TSettings, TSystemSignature>::system() const
-            noexcept
-        {
-            return _system;
-        }
-    }
-
     template <typename TSettings, typename TSystemSignature>
     ECST_ALWAYS_INLINE auto& ECST_PURE_FN
     instance<TSettings, TSystemSignature>::subscribed() noexcept
@@ -103,29 +86,35 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
-    void instance<TSettings, TSystemSignature>::prepare_and_wait_n_subtasks(
-        sz_t n, TF && f)
+    void instance<TSettings, TSystemSignature>::prepare_and_wait_subtasks(
+        sz_t n_total, sz_t n_septhread, TF & f)
     {
-        _sm.clear_and_prepare(n);
-        counter_blocker b{n};
+        _sm.clear_and_prepare(n_total);
+        counter_blocker b{n_septhread};
+
+        // Function accepting a context and another function which will be
+        // executed in a separated thread. Inteded to be called from inner
+        // parllelism strategy executors.
+        auto run_in_separate_thread = [this, &b](auto& ctx, auto& xf)
+        {
+            return [this, &b, &ctx, &xf](auto&&... xs) mutable
+            {
+                // Use of multithreading:
+                // * Run subtask slices in separate threads.
+                ctx.post_in_thread_pool([&xf, &b, xs...]() mutable
+                    {
+                        xf(FWD(xs)...);
+                        decrement_cv_counter_and_notify_all(b);
+                    });
+            };
+        };
 
         // Runs the parallel executor and waits until the remaining subtasks
         // counter is zero.
-        execute_and_wait_until_counter_zero(b, [&f](auto& x_b)
+        execute_and_wait_until_counter_zero(b, [&f, &run_in_separate_thread]
             {
-                f(x_b);
+                f(run_in_separate_thread);
             });
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    template <typename TCounterBlocker, typename TData, typename TF>
-    void instance<TSettings,
-        TSystemSignature>::execute_subtask_and_decrement_counter( // .
-        TCounterBlocker & cb, TData & data, TF && f               // .
-        )
-    {
-        f(data);
-        decrement_cv_counter_and_notify_all(cb);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -158,29 +147,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         TContext & ctx, TF && f                                      // .
         )
     {
-        // The executor accepts an "adapter function" argument that binds a
-        // `counter_blocker` `b`, a context reference and the user-defined
-        // function to a instance-type specific way of executing the
-        // user-provided function.
-        // This allows non-parallel executors (such as `none`), to ignore
-        // binding a `counter_blocker`, and allows future instance types (like
-        // component-processing-instances) to execute `f` without binding
-        // slices.
-        auto subtask_adapter = [this](auto& b, auto& x_ctx, auto&& xf)
+        auto st = [ this, &ctx, f = FWD(f) ] // .
+            (auto split_idx, auto i_begin, auto i_end) mutable
         {
-            return [ this, &x_ctx, &b, xf = FWD(xf) ] // .
-                (auto split_idx, auto i_begin, auto i_end) mutable
-            {
-                // Create looping execution function.
-                auto bse = this->make_bound_slice_executor(
-                    b, x_ctx, split_idx, i_begin, i_end, xf);
+            // Create bound slice executor.
+            auto bse = this->make_bound_slice_executor(
+                ctx, split_idx, i_begin, i_end, f);
 
-                // Execute the bound slice in the thread pool.
-                this->run_subtask_in_thread_pool(x_ctx, std::move(bse));
-            };
+            // Execute the bound slice.
+            bse();
         };
 
-        _parallel_executor.execute(*this, ctx, std::move(subtask_adapter), f);
+        _parallel_executor.execute(*this, ctx, std::move(st));
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -214,7 +192,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // Create an executor proxy.
         auto ep = executor_proxy::make(*this, std::move(bound_dispatch));
 
-        // Call the user function.
+        // TODO: repetition of `*this`, access instance only through exector?
+        // Call the user `(instance&, executor&)` function.
         f(*this, ep);
     }
 

@@ -13,13 +13,13 @@ ECST_INNER_PARALLELISM_NAMESPACE
 {
     namespace utils
     {
-        template <typename TF>
-        void execute_split_runtime(
-            sz_t total, sz_t per_split, sz_t split_count, TF&& f) // .
-            noexcept(noexcept(                                    // .
-                f(0, 0, 0)                                        // .
+        template <typename TFRIST, typename TContext, typename TF>
+        void execute_split_runtime(                       // .
+            sz_t total, sz_t per_split, sz_t split_count, // .
+            TFRIST& rist, TContext& ctx, TF&& f)          // .
+            noexcept(noexcept(                            // .
+                f(0, 0, 0)                                // .
                 ))
-
         {
             ECST_ASSERT(split_count > 0);
 
@@ -27,7 +27,7 @@ ECST_INNER_PARALLELISM_NAMESPACE
             {
                 auto i_begin = i_split * per_split;
                 auto i_end = (i_split + 1) * per_split;
-                f(i_split, i_begin, i_end);
+                rist(ctx, f)(i_split, i_begin, i_end);
             }
 
             // Builds and runs the last subtask.
