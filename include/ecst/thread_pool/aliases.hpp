@@ -9,7 +9,6 @@
 #include <ecst/aliases.hpp>
 
 #include "./impl/types.hpp"
-#include "./impl/producer_queue_uptr.hpp"
 #include "./impl/consumer_queue_ptr.hpp"
 #include "./impl/worker.hpp"
 #include "./impl/pool.hpp"

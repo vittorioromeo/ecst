@@ -43,7 +43,9 @@ ECST_CONTEXT_NAMESPACE
             using system_from_tag = tag::system::unwrap<T>;
 
         private:
-            thread_pool _thread_pool;
+            std::unique_ptr<thread_pool> _thread_pool{
+                std::make_unique<thread_pool>()};
+
             system_storage_type _system_storage;
 
         public:

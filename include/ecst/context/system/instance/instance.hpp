@@ -8,7 +8,6 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 #include <ecst/utils/sparse_int_set.hpp>
-#include <ecst/thread_pool.hpp>
 #include <ecst/mp.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>

@@ -62,7 +62,7 @@ ECST_CONTEXT_NAMESPACE
         template <typename TF>
         auto system_manager<TSettings>::post_in_thread_pool(TF&& f)
         {
-            return _thread_pool.post(FWD(f));
+            return _thread_pool->post(FWD(f));
         }
 
         template <typename TSettings>

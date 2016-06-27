@@ -12,7 +12,8 @@
 
 namespace etp
 {
-    /// @brief Wraps an `std::thread` and atomic control variables.
+    /// @brief Wraps an `std::thread`, `consumer_queue_ptr` and atomic control
+    /// variables.
     class worker
     {
     private:
@@ -34,7 +35,7 @@ namespace etp
 
         ecst::thread _thread;
         consumer_queue_ptr _queue;
-        movable_atomic<state> _state{state::uninitialized};
+        ecst::movable_atomic<state> _state{state::uninitialized};
 
         void run()
         {

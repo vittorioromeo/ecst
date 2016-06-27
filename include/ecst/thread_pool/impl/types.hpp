@@ -13,7 +13,6 @@
 namespace etp
 {
     using ecst::sz_t;
-    using ecst::movable_atomic;
 
     using task = ecst::fixed_function<void(), 128>;
     using task_queue = moodycamel::BlockingConcurrentQueue<task>;

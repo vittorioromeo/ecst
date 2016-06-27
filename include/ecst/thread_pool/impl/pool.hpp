@@ -11,16 +11,15 @@
 #include <ecst/hardware.hpp>
 #include "./types.hpp"
 #include "./worker.hpp"
-#include "./producer_queue_uptr.hpp"
 
 namespace etp
 {
     class pool
     {
     private:
-        producer_queue_uptr _queue;
+        task_queue _queue;
         std::vector<worker> _workers;
-        movable_atomic<sz_t> _remaining_inits;
+        std::atomic<sz_t> _remaining_inits;
 
         /// @brief Returns `true` if all workers have finished (exited from
         /// loop).
@@ -51,10 +50,9 @@ namespace etp
         void initialize_workers(sz_t n)
         {
             // Create workers.
-            _workers.reserve(n);
             for(decltype(n) i(0); i < n; ++i)
             {
-                _workers.emplace_back(_queue.queue());
+                _workers.emplace_back(_queue);
             }
 
             // Start workers.
@@ -105,7 +103,7 @@ namespace etp
         template <typename TF>
         void post(TF&& f)
         {
-            _queue->enqueue(std::move(f));
+            _queue.enqueue(std::move(f));
         }
     };
 }
