@@ -71,7 +71,7 @@ ECST_CONTEXT_NAMESPACE
             const auto& component_storage() const noexcept;
 
             auto alive(entity_id) const noexcept;
-            auto alive(const handle& h) const noexcept;
+            auto alive(const handle&) const noexcept;
         };
     }
 }

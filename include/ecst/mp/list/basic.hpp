@@ -32,7 +32,7 @@ ECST_MP_LIST_NAMESPACE
         return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
     }
 
-    // TODO: propose to hana?
+    // Right-folds over a sequence, also passing the current index.
     template <typename TSeq, typename TAcc, typename TF>
     constexpr auto indexed_fold_right(
         TSeq && seq, TAcc && acc, TF && f) noexcept

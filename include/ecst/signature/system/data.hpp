@@ -28,11 +28,11 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             using tag_type = TTag;
             using parallelism_type = TEMP(keys::parallelism);
             using tag_dependency_list_type = TEMP(keys::dependencies);
-            using read_ctag_list_type = TEMP(keys::read_components);
-            using write_ctag_list_type = TEMP(keys::write_components);
             using output_type = TEMP(keys::output);
 
 #undef TEMP
+
+            using this_type = data<TTag, TOptions>;
 
 
             // Assert system tag validity.
@@ -44,16 +44,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             // Assert dependency list validity.
             ECST_S_ASSERT_DT(tag::system::is_list(tag_dependency_list_type{}));
 
-            // Assert read component list validity.
-            ECST_S_ASSERT_DT(tag::component::is_list(read_ctag_list_type{}));
 
-            // Assert write component list validity.
-            ECST_S_ASSERT_DT(tag::component::is_list(write_ctag_list_type{}));
-
-            // Assert that no component tags are shared between the write and
-            // read lists.
-            ECST_S_ASSERT_DT(!mp::list::any_common_element( // .
-                read_ctag_list_type{}, write_ctag_list_type{}));
 
             ECST_S_ASSERT_DT(impl::is_valid_output<output_type>);
 
@@ -64,6 +55,43 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 auto new_options = TOptions{}.set(key, FWD(x));
                 return data<TTag, ECST_DECAY_DECLTYPE(new_options)>{};
             }
+
+            // TODO: private:
+        public:
+            static constexpr auto s_read_ctag_list() noexcept
+            {
+                return TOptions{}.at(keys::read_components);
+            }
+
+            static constexpr auto s_write_ctag_list() noexcept
+            {
+                return TOptions{}.at(keys::write_components);
+            }
+
+
+            // Assert read component list validity.
+            ECST_S_ASSERT_DT(tag::component::is_list(s_read_ctag_list()));
+
+            // Assert write component list validity.
+            ECST_S_ASSERT_DT(tag::component::is_list(s_write_ctag_list()));
+
+            // Assert that no component tags are shared between the write and
+            // read lists.
+            ECST_S_ASSERT_DT(!mp::list::any_common_element( // .
+                s_read_ctag_list(), s_write_ctag_list()));
+
+
+            constexpr auto read_ctag_list() const noexcept
+            {
+                return s_read_ctag_list();
+            }
+
+            constexpr auto write_ctag_list() const noexcept
+            {
+                return s_write_ctag_list();
+            }
+
+
 
         public:
             template <typename TNewParallelism>
@@ -114,36 +142,28 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         typename mp::unwrap<TSystemSignature>::tag_dependency_list_type;
 
     template <typename TSystemSignature> // .
-    using read_ctag_list_type =          // .
-        typename mp::unwrap<TSystemSignature>::read_ctag_list_type;
-
-    template <typename TSystemSignature> // .
-    using write_ctag_list_type =         // .
-        typename mp::unwrap<TSystemSignature>::write_ctag_list_type;
-
-    template <typename TSystemSignature> // .
     using output_type =                  // .
         typename mp::unwrap<TSystemSignature>::output_type;
 
-    // TODO: use
+    /// @brief Returns `true` if `ct` can be mutated by `TSystemSignature`.
     template <typename TSystemSignature, typename TComponentTag>
     constexpr auto can_write(TComponentTag ct)
     {
-        return bh::contains(                          // .
-            write_ctag_list_type<TSystemSignature>{}, // .
-            ct);
+        constexpr auto ss = mp::unwrapped(TSystemSignature{});
+        return bh::contains(ss.write_ctag_list(), ct);
     }
 
-    // TODO: use
+    /// @brief Returns `true` if `ct` can be read by `TSystemSignature`.
     template <typename TSystemSignature, typename TComponentTag>
     constexpr auto can_read(TComponentTag ct)
     {
-        return can_write<TSystemSignature>(ct) ||           // .
-               bh::contains(                                // .
-                   read_ctag_list_type<TSystemSignature>{}, // .
-                   ct);
+        constexpr auto ss = mp::unwrapped(TSystemSignature{});
+        return can_write<TSystemSignature>(ct) || // .
+               bh::contains(ss.read_ctag_list(), ct);
     }
 
+    /// @brief Returns `true` if `TSystemSignature` has a non-empty data output
+    /// type.
     template <typename TSystemSignature>
     constexpr auto has_data_output()
     {

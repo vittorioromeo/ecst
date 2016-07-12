@@ -192,7 +192,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // Create an executor proxy.
         auto ep = executor_proxy::make(*this, std::move(bound_dispatch));
 
-        // TODO: repetition of `*this`, access instance only through exector?
         // Call the user `(instance&, executor&)` function.
         f(*this, ep);
     }

@@ -750,5 +750,3 @@ int main()
     // Run the simulation.
     run_simulation(*ctx);
 }
-
-// TODO: celeron/nonius benchmarks

@@ -55,20 +55,21 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return state_wrapper().as_data();
             }
 
-            // TODO: move, beautify, refactor
             /// @brief Returns `true` if it's safe to iterate through
             /// `TSystem`'s output values.
-            template <typename TSystem>
-            constexpr auto can_get_output_of()
+            template <typename TSystemTag>
+            constexpr auto can_get_output_of(TSystemTag st) noexcept
             {
                 constexpr auto ssl =
                     settings::system_signature_list(settings_type{});
 
-                constexpr auto sig =
-                    signature_list::system::signature_by_type<TSystem>(ssl);
+                constexpr auto my_ss = TSystemSignature{};
+
+                constexpr auto target_ss =
+                    signature_list::system::signature_by_tag(ssl, st);
 
                 return signature_list::system::has_dependency_recursive(
-                    ssl, TSystemSignature{}, sig);
+                    ssl, my_ss, target_ss);
             }
 
         public:
@@ -100,12 +101,30 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TComponentTag>
             decltype(auto) get(TComponentTag ct, entity_id eid) noexcept
             {
-                // TODO: static assert validity!!!
-                return _context.get_component(ct, eid);
-                /*
-                    using component_type =
-                        tag::component::unwrap<TComponentTag>;
-                */
+                using component_type = tag::component::unwrap<TComponentTag>;
+
+                constexpr auto can_write =
+                    signature::system::can_write<TSystemSignature>(ct);
+
+                constexpr auto can_read =
+                    signature::system::can_read<TSystemSignature>(ct);
+
+                return static_if(can_write)
+                    .then([ct, eid](auto& x_ctx) -> component_type&
+                        {
+                            return x_ctx.get_component(ct, eid);
+                        })
+                    .else_if(can_read)
+                    .then([ct, eid](auto& x_ctx) -> const component_type&
+                        {
+                            return x_ctx.get_component(ct, eid);
+                        })
+                    .else_([](auto&)
+                        {
+                            // TODO: nicer error message
+                            struct cant_access_that_component;
+                            return cant_access_that_component{};
+                        })(_context);
             }
 
             template <typename TF>
@@ -137,8 +156,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TSystemTag, typename TF>
             decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept
             {
-                using system_type = tag::system::unwrap<TSystemTag>;
-                ECST_S_ASSERT_DT(can_get_output_of<system_type>());
+                ECST_S_ASSERT_DT(can_get_output_of(st));
                 return _context.for_system_outputs(st, FWD(f));
             }
         };

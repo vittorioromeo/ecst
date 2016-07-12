@@ -23,6 +23,10 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 {
     namespace impl
     {
+        struct uninitialized_handle_init
+        {
+        };
+
         using counter = ::ecst::impl::counter;
 
         /// @brief Handle class used to track a specific entity.
@@ -36,15 +40,27 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             counter _ctr;
 
         public:
+            /// @brief Default-construct an "invalid" handle.
             handle() noexcept;
+
+            /// @brief Uninitialized handle.
+            handle(uninitialized_handle_init) noexcept;
+
+            /// @brief Handle pointing to `id; ctr`.
             handle(entity_id id, counter ctr) noexcept;
 
+            // `noexcept` copies.
             handle(const handle&) noexcept = default;
             handle& operator=(const handle&) noexcept = default;
 
+            // `noexcept` moves.
             handle(handle&&) noexcept = default;
             handle& operator=(handle&&) noexcept = default;
         };
     }
+
+    /// @brief Special `constexpr` value that can be passed to `handle`'s
+    /// constructor to create uninitialized handles.
+    constexpr impl::uninitialized_handle_init uninitialized_handle{};
 }
 ECST_CONTEXT_ENTITY_NAMESPACE_END
