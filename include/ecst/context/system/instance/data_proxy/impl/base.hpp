@@ -100,12 +100,30 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TComponentTag>
             decltype(auto) get(TComponentTag ct, entity_id eid) noexcept
             {
-                // TODO: static assert validity!!!
-                return _context.get_component(ct, eid);
-                /*
-                    using component_type =
-                        tag::component::unwrap<TComponentTag>;
-                */
+                using component_type = tag::component::unwrap<TComponentTag>;
+
+                constexpr auto can_write =
+                    signature::system::can_write<TSystemSignature>(ct);
+
+                constexpr auto can_read =
+                    signature::system::can_read<TSystemSignature>(ct);
+
+                return static_if(can_write)
+                    .then([ct, eid](auto& x_ctx) -> component_type&
+                        {
+                            return x_ctx.get_component(ct, eid);
+                        })
+                    .else_if(can_read)
+                    .then([ct, eid](auto& x_ctx) -> const component_type&
+                        {
+                            return x_ctx.get_component(ct, eid);
+                        })
+                    .else_([](auto&)
+                        {
+                            // TODO: nicer error message
+                            struct cant_access_that_component;
+                            return cant_access_that_component{};
+                        })(_context);
             }
 
             template <typename TF>
