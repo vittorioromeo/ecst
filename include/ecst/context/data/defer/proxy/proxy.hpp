@@ -66,6 +66,9 @@ ECST_CONTEXT_NAMESPACE
                 auto valid_handle(const handle& h) const noexcept;
                 auto access(const handle&) const noexcept;
 
+                auto alive(entity_id) const noexcept;
+                auto alive(const handle&) const noexcept;
+
                 void kill_entity(entity_id) noexcept;
 
                 template <typename TComponentTag>

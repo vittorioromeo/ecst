@@ -54,6 +54,18 @@ ECST_CONTEXT_NAMESPACE
             }
 
             template <typename TSettings>
+            auto proxy<TSettings>::alive(entity_id eid) const noexcept
+            {
+                return _context.alive(eid);
+            }
+
+            template <typename TSettings>
+            auto proxy<TSettings>::alive(const handle& h) const noexcept
+            {
+                return _context.alive(h);
+            }
+
+            template <typename TSettings>
             auto proxy<TSettings>::valid_handle(const handle& h) const noexcept
             {
                 return _context.valid_handle(h);
