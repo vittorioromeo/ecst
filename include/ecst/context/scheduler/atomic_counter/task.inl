@@ -35,6 +35,10 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         // Execute processing function on system context.
         s_instance.execute(ctx, f);
 
+        // TODO:
+        // using system_type = ECST_DECAY_DECLTYPE(s_instance.system());
+        // std::cout << ecst::impl::system_name<system_type> << "\n";
+
         // Safely decrement remaining tasks counter.
         decrement_cv_counter_and_notify_one(b);
 

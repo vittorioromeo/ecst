@@ -15,6 +15,7 @@ ECST_NAMESPACE
     {
         using mutex_type = ecst::mutex;
         using cv_type = ecst::condition_variable;
+        // TODO:
         using counter_type = sz_t; // ecst::atomic<sz_t>;
         using lock_guard_type = ecst::lock_guard<mutex_type>;
         using unique_lock_type = ecst::unique_lock<mutex_type>;
@@ -29,6 +30,7 @@ ECST_NAMESPACE
         impl::mutex_type _mutex;
         impl::counter_type _counter;
 
+        // TODO:
         // Note: `std::atomic` initialization is not atomic.
         counter_blocker(sz_t initial_count) noexcept : _counter{initial_count}
         {
@@ -135,7 +137,7 @@ ECST_NAMESPACE
     /// the blocker's synchronization primitives.
     template <typename TF>
     void execute_and_wait_until_counter_zero(
-        counter_blocker & cb, TF && f) noexcept
+        counter_blocker & cb, TF && f) noexcept(noexcept(f()))
     {
         impl::execute_and_wait_until_counter_zero(
             cb._mutex, cb._cv, cb._counter, FWD(f));

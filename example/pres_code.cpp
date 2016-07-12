@@ -125,6 +125,11 @@ namespace example
         {
             float _radius;
         };
+
+        struct life
+        {
+            float _v;
+        };
     }
 
     // In order to avoid the annoying `data.template <component_type>` syntax
@@ -148,6 +153,7 @@ EXAMPLE_COMPONENT_TAG(velocity);
 EXAMPLE_COMPONENT_TAG(position);
 EXAMPLE_COMPONENT_TAG(circle);
 EXAMPLE_COMPONENT_TAG(color);
+EXAMPLE_COMPONENT_TAG(life);
 
 // A macro is used to define tags to suppress "unused variable" warnings and
 // to avoid code repetition. Essentially, it expands to:
@@ -163,6 +169,15 @@ EXAMPLE_SYSTEM_TAG(spatial_partition);
 EXAMPLE_SYSTEM_TAG(collision);
 EXAMPLE_SYSTEM_TAG(solve_contacts);
 EXAMPLE_SYSTEM_TAG(render_colored_circle);
+EXAMPLE_SYSTEM_TAG(cycle_color);
+EXAMPLE_SYSTEM_TAG(life);
+
+// TODO:
+namespace example
+{
+    template <typename TProxy>
+    void mk_particle(TProxy& proxy, const vec2f& position, float radius);
+}
 
 namespace example
 {
@@ -494,6 +509,56 @@ namespace example
                     });
             }
         };
+
+        // TODO:
+        struct cycle_color
+        {
+            template <typename TData>
+            void process(ft dt, TData& data)
+            {
+                data.for_entities([&](auto eid)
+                    {
+                        auto& c = data.get(ct::color, eid)._v;
+                        c.r += 50.f * dt;
+                        // float ca = c.a;
+                        // c.a = static_cast<sf::Uint8>(std::fmod(ca, 255.f));
+                        // c.a += dt;
+                        // c.a = c.a % 255;
+                        // std::cout << (int)c.a << "\n";
+                    });
+            }
+        };
+
+        // TODO:
+        struct life
+        {
+            template <typename TData>
+            void process(ft dt, TData& data)
+            {
+                data.for_entities([&](auto eid)
+                    {
+                        auto& l = data.get(ct::life, eid)._v;
+                        l -= 10.f * dt;
+
+                        if(l <= 0.f)
+                        {
+                            data.kill_entity(eid);
+                            data.defer([](auto& proxy)
+                                {
+                                    auto random_position = []
+                                    {
+                                        return vec2f{                      // .
+                                            rndf(left_bound, right_bound), // .
+                                            rndf(top_bound, bottom_bound)};
+                                    };
+
+                                    mk_particle(
+                                        proxy, random_position(), rndf(1, 4));
+                                });
+                        }
+                    });
+            }
+        };
     }
 
     // Compile-time `std::size_t` entity limit.
@@ -526,11 +591,16 @@ namespace example
             constexpr auto cs_rendering = // .
                 cs::make(ct::color, ct::circle).contiguous_buffer();
 
+            // TODO:
+            constexpr auto cs_life = // .
+                cs::make(ct::life).contiguous_buffer();
+
             return csl::make(    // .
                 cs_acceleration, // .
                 cs_velocity,     // .
                 cs_position,     // .
-                cs_rendering     // .
+                cs_rendering,    // .
+                cs_life          // .
                 );
         }
 
@@ -615,15 +685,29 @@ namespace example
                     .read(ct::circle, ct::position, ct::color)    // .
                     .output(ss::output<std::vector<sf::Vertex>>); // .
 
+            // TODO:
+            constexpr auto ssig_cycle_color =           // .
+                ss::make(st::cycle_color)               // .
+                    .parallelism(split_evenly_per_core) // .
+                    .write(ct::color);                  // .
+
+            // TODO:
+            constexpr auto ssig_life =                  // .
+                ss::make(st::life)                      // .
+                    .parallelism(split_evenly_per_core) // .
+                    .write(ct::life);                   // .
+
             // Build and return the "system signature list".
-            return sls::make(              // .
-                ssig_acceleration,         // .
-                ssig_velocity,             // .
-                ssig_keep_in_bounds,       // .
-                ssig_spatial_partition,    // .
-                ssig_collision,            // .
-                ssig_solve_contacts,       // .
-                ssig_render_colored_circle // .
+            return sls::make(               // .
+                ssig_acceleration,          // .
+                ssig_velocity,              // .
+                ssig_keep_in_bounds,        // .
+                ssig_spatial_partition,     // .
+                ssig_collision,             // .
+                ssig_solve_contacts,        // .
+                ssig_render_colored_circle, // .
+                ssig_cycle_color,           // .
+                ssig_life                   // .
                 );
         }
     }
@@ -647,6 +731,9 @@ namespace example
 
         auto& ccs = proxy.add_component(ct::circle, eid);
         ccs._radius = radius;
+
+        auto& ccl = proxy.add_component(ct::life, eid);
+        ccl._v = rndf(2, 10);
     }
 
     template <typename TContext>
@@ -673,7 +760,9 @@ namespace example
     {
         namespace sea = ::ecst::system_execution_adapter;
 
-        auto ft_tags = sea::t(st::acceleration, st::velocity);
+        auto ft_tags =
+            sea::t(st::acceleration, st::velocity, st::cycle_color, st::life);
+
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
@@ -737,7 +826,6 @@ int main()
             .component_signatures(make_csl()) // .
             .system_signatures(make_ssl())    // .
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
-
 
     using ssss = decltype(s);
     struct hs : public ssss

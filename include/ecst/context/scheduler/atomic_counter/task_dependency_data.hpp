@@ -27,7 +27,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         /// `true` if there are no more dependencies left.
         auto decrement_and_check() noexcept
         {
-            ECST_ASSERT_OP(_remaining_dependencies, >, 0);
+            ECST_ASSERT_OP(_remaining_dependencies.load(), >, 0);
             return --_remaining_dependencies == 0;
         }
 
