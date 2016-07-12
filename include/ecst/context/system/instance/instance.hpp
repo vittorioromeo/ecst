@@ -105,9 +105,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
-        /// @brief Clears and allocates  subtask states.
-        template <typename TF>
-        void prepare_and_wait_subtasks(sz_t n_total, sz_t n_septhread, TF& f);
+        /// @brief Clears and allocates subtask states.
+        /// @details Executes a subtask in the current thread and forwards `n -
+        /// 1` subtasks to the thread pool. The `n` value must be at least `1`.
+        template <typename TContext, typename TF>
+        void prepare_and_wait_subtasks(TContext& ctx, sz_t n, TF& f);
 
         template <typename TContext, typename TF>
         void execute(TContext& ctx, TF&& f);

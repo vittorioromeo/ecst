@@ -20,7 +20,8 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                 template <typename TInstance, typename TContext, typename TF>
                 void execute(TInstance& inst, TContext&, TF&& f)
                 {
-                    // TODO: nicer and safer interface
+                    // Immediately execute `f` in the zero-th state, with a
+                    // range of entities equal to `[0, subscribed_count)`.
                     f(0, 0, inst.subscribed_count());
                 }
             };

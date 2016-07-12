@@ -73,7 +73,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         sz_t i_begin, sz_t i_end) noexcept
     {
         // Assert that the range contains entities.
-        ECST_ASSERT(i_end - i_begin > 0);
+        ECST_ASSERT_OP(i_end, >, i_begin);
 
         return [this, i_begin, i_end](auto&& f)
         {
@@ -90,7 +90,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         sz_t i_begin, sz_t i_end) noexcept
     {
         // Assert that the range contains entities.
-        ECST_ASSERT(i_end - i_begin > 0);
+        ECST_ASSERT_OP(i_end, >, i_begin);
 
         return [this, i_begin, i_end](auto&& f)
         {

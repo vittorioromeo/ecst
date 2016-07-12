@@ -85,17 +85,22 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <typename TF>
+    template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::prepare_and_wait_subtasks(
-        sz_t n_total, sz_t n_septhread, TF & f)
+        TContext & ctx, sz_t n, TF & f)
     {
-        _sm.clear_and_prepare(n_total);
-        counter_blocker b{n_septhread};
+        // Assert that at least one subtask is being executed.
+        ECST_ASSERT_OP(n, >, 0);
 
-        // Function accepting a context and another function which will be
-        // executed in a separated thread. Inteded to be called from inner
-        // parllelism strategy executors.
-        auto run_in_separate_thread = [this, &b](auto& ctx, auto& xf)
+        // Prepare `n` states, but set the counter to `n - 1` since one of the
+        // subtasks will be executed in the current thread.
+        _sm.clear_and_prepare(n);
+        counter_blocker b{n - 1};
+
+        // Function accepting a callable object which will be executed in a
+        // separate thread. Intended to be called from inner parallelism
+        // strategy executors.
+        auto run_in_separate_thread = [this, &ctx, &b](auto& xf)
         {
             return [this, &b, &ctx, &xf](auto&&... xs) mutable
             {

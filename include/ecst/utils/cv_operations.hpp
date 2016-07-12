@@ -56,7 +56,7 @@ ECST_NAMESPACE
         {
             access_cv_counter(mutex, cv, c, [](auto& x_cv, auto& x_c)
                 {
-                    ECST_ASSERT(x_c > 0);
+                    ECST_ASSERT_OP(x_c, >, 0);
                     --x_c;
                     x_cv.notify_one();
                 });
@@ -68,7 +68,7 @@ ECST_NAMESPACE
         {
             access_cv_counter(mutex, cv, c, [](auto& x_cv, auto& x_c)
                 {
-                    ECST_ASSERT(x_c > 0);
+                    ECST_ASSERT_OP(x_c, >, 0);
                     --x_c;
                     x_cv.notify_all();
                 });

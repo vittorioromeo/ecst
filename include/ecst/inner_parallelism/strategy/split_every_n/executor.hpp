@@ -26,15 +26,10 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                 template <typename TInstance, typename TContext, typename TF>
                 void execute(TInstance& inst, TContext& ctx, TF&& f)
                 {
-                    namespace ss = signature::system;
-
                     constexpr auto per_split = // .
                         parameters::entities_per_subtask();
 
                     auto split_count = inst.subscribed_count() / per_split;
-
-                    // Assert there is at least one split.
-                    ECST_ASSERT_OP(split_count, >, 0);
 
                     ELOG(                                                   // .
                         debug::lo_instance_parallelism()                    // .
@@ -45,16 +40,9 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                             << "\n\tsplit_count=" << split_count << "\n\n"; // .
                         );
 
-                    auto ef = [&](auto& rist) mutable
-                    {
-                        // Builds and runs the subtasks.
-                        utils::execute_split_runtime(inst.subscribed_count(),
-                            per_split, split_count, rist, ctx, f);
-                    };
-
-                    // TODO: nicer and safer interface
-                    inst.prepare_and_wait_subtasks(
-                        split_count, split_count - 1, ef);
+                    // Executes all subtasks. Blocks until completed.
+                    utils::prepare_execute_wait_subtasks( // .
+                        inst, ctx, split_count, per_split, f);
                 }
             };
         }
