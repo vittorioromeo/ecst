@@ -15,7 +15,7 @@ ECST_NAMESPACE
     {
         using mutex_type = ecst::mutex;
         using cv_type = ecst::condition_variable;
-        using counter_type = ecst::atomic<sz_t>;
+        using counter_type = sz_t; // ecst::atomic<sz_t>;
         using lock_guard_type = ecst::lock_guard<mutex_type>;
         using unique_lock_type = ecst::unique_lock<mutex_type>;
     }
@@ -59,6 +59,8 @@ ECST_NAMESPACE
                 {
                     ECST_ASSERT_OP(x_c, >, 0);
                     --x_c;
+                    // x_c.fetch_sub(1,
+                    // std::memory_order::memory_order_acq_rel);
 
                     f(x_cv);
                 });
@@ -106,6 +108,8 @@ ECST_NAMESPACE
                 [&c]
                 {
                     return c == 0;
+                    // return c.load(std::memory_order::memory_order_acq_rel) ==
+                    // 0;
                 },
                 FWD(f));
         }
