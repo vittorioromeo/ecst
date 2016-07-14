@@ -34,6 +34,18 @@ ECST_CONTEXT_NAMESPACE
             component_storage_type _component_storage;
             entity_storage_type _entity_storage;
 
+            template <typename TComponent>
+            decltype(auto) add_component(entity_id);
+
+            template <typename TComponent>
+            decltype(auto) get_component(entity_id) noexcept;
+
+            template <typename TComponent>
+            void remove_component(entity_id) noexcept;
+
+        protected:
+            void reclaim(entity_id) noexcept;
+
         public:
             auto& metadata(entity_id) noexcept;
             auto valid_handle(const handle& h) const noexcept;
@@ -43,17 +55,6 @@ ECST_CONTEXT_NAMESPACE
             handle create_entity_and_handle();
 
             auto access(const handle&) const noexcept;
-
-            void reclaim(entity_id) noexcept;
-
-            template <typename TComponent>
-            decltype(auto) add_component(entity_id);
-
-            template <typename TComponent>
-            decltype(auto) get_component(entity_id) noexcept;
-
-            template <typename TComponent>
-            void remove_component(entity_id) noexcept;
 
             template <typename TComponentTag>
             decltype(auto) add_component(TComponentTag, entity_id);
