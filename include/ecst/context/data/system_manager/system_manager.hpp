@@ -114,6 +114,9 @@ ECST_CONTEXT_NAMESPACE
 
             template <typename TSystemTag>
             auto any_entity_in(TSystemTag) const noexcept;
+
+            // TODO:
+            constexpr auto inner_parallelism_allowed() const noexcept;
         };
     }
 }

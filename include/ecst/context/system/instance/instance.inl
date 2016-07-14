@@ -27,8 +27,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
-        : _bitset{
-              bitset::make_from_system_signature<TSystemSignature>(TSettings{})}
+        : _bitset{bitset::make_from_system_signature(
+              TSystemSignature{}, TSettings{})}
     {
         ELOG(                                                          // .
             debug::lo_system_bitset() << "(" << system_id()            // .
@@ -109,14 +109,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 ctx.post_in_thread_pool([&xf, &b, xs...]() mutable
                     {
                         xf(FWD(xs)...);
-                        decrement_cv_counter_and_notify_all(b);
+                        b.decrement_and_notify_all();
                     });
             };
         };
 
         // Runs the parallel executor and waits until the remaining subtasks
         // counter is zero.
-        execute_and_wait_until_counter_zero(b, [&f, &run_in_separate_thread]
+        b.execute_and_wait_until_zero([&f, &run_in_separate_thread]
             {
                 f(run_in_separate_thread);
             });

@@ -27,7 +27,7 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::for_instances_parallel(TF&& f)
         {
             counter_blocker b{_system_storage.system_count()};
-            execute_and_wait_until_counter_zero(b, [ this, &b, f = FWD(f) ]
+            b.execute_and_wait_until_zero([ this, &b, f = FWD(f) ]
                 {
                     _system_storage.for_instances([this, &b, &f](auto& system)
                         {
@@ -37,7 +37,7 @@ ECST_CONTEXT_NAMESPACE
                             this->post_in_thread_pool([this, &b, &system, &f]
                                 {
                                     f(system);
-                                    decrement_cv_counter_and_notify_one(b);
+                                    b.decrement_and_notify_one();
                                 });
                         });
                 });
@@ -184,6 +184,13 @@ ECST_CONTEXT_NAMESPACE
             noexcept
         {
             return count_entities_in(st) > 0;
+        }
+
+        template <typename TSettings>
+        constexpr auto system_manager<TSettings>::inner_parallelism_allowed()
+            const noexcept
+        {
+            return settings::inner_parallelism_allowed(TSettings{});
         }
     }
 }

@@ -40,7 +40,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         // std::cout << ecst::impl::system_name<system_type> << "\n";
 
         // Safely decrement remaining tasks counter.
-        decrement_cv_counter_and_notify_one(b);
+        b.decrement_and_notify_one();
 
         // For every dependent task ID...
         dependency_data().for_dependent_ids([this, &tg, &b, &ctx, &f](auto id)
