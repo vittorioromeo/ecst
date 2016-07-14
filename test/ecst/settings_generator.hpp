@@ -83,7 +83,8 @@ namespace test
     }
 
     template <typename TF, typename TEntityCount, typename TCSL, typename TSSL>
-    void run_tests(TF&& f, TEntityCount ec, TCSL csl, TSSL ssl)
+    void run_tests(
+        TF&& f, TEntityCount ec, TCSL csl, TSSL ssl, bool silent = false)
     {
         using vrm::core::sz_t;
         constexpr sz_t times = 2;
@@ -95,13 +96,18 @@ namespace test
         for(sz_t t = 0; t < times; ++t)
         {
             ecst::bh::for_each(impl::make_settings_list(ec, csl, ssl),
-                [f](auto s)
+                [f, &silent](auto s)
                 {
-                    std::cout
-                        << ecst::settings::str::entity_storage<decltype(s)>()
-                        << "\n"
-                        << ecst::settings::str::multithreading<decltype(s)>()
-                        << "\n";
+                    if(!silent)
+                    {
+                        std::cout
+                            << ecst::settings::str::entity_storage<decltype(
+                                   s)>()
+                            << "\n"
+                            << ecst::settings::str::multithreading<decltype(
+                                   s)>()
+                            << "\n";
+                    }
 
                     auto last(hr::now());
                     impl::do_test(s, f);
@@ -110,7 +116,10 @@ namespace test
                     auto timeMs(
                         std::chrono::duration_cast<d_type>(time).count());
 
-                    std::cout << "time: " << timeMs << "ms\n\n";
+                    if(!silent)
+                    {
+                        std::cout << "time: " << timeMs << "ms\n\n";
+                    }
                 });
         }
     }
