@@ -800,9 +800,13 @@ namespace example
                 proxy.for_system_outputs(st::render_colored_circle,
                     [&rt](auto&, auto& va)
                     {
-                        rt.draw(va.data(), va.size(),
-                            sf::PrimitiveType::Triangles,
-                            sf::RenderStates::Default);
+                        // TODO:
+                        if(true)
+                        {
+                            rt.draw(va.data(), va.size(),
+                                sf::PrimitiveType::Triangles,
+                                sf::RenderStates::Default);
+                        }
                     });
             });
     }
