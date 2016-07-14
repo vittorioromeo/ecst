@@ -13,6 +13,8 @@
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
+    // TODO: add `subtask_index() const noexcept` getter.
+
     namespace data_proxy
     {
         /// @brief "Data proxy".
