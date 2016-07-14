@@ -15,26 +15,31 @@ ECST_NAMESPACE
     {
         using mutex_type = ecst::mutex;
         using cv_type = ecst::condition_variable;
-        // TODO:
-        using counter_type = sz_t; // ecst::atomic<sz_t>;
+        using counter_type = sz_t;
         using lock_guard_type = ecst::lock_guard<mutex_type>;
         using unique_lock_type = ecst::unique_lock<mutex_type>;
     }
 
     /// @brief Data structure containing synchronization primitives required for
-    /// waiting over an atomic counter with an `std::condition_variable` and
-    /// `std::mutex`.
-    struct counter_blocker
+    /// a "blocking counter" with an `std::condition_variable` and `std::mutex`.
+    class counter_blocker
     {
+    private:
         impl::cv_type _cv;
         impl::mutex_type _mutex;
         impl::counter_type _counter;
 
-        // TODO:
-        // Note: `std::atomic` initialization is not atomic.
-        counter_blocker(sz_t initial_count) noexcept : _counter{initial_count}
+    public:
+        counter_blocker(impl::counter_type initial_count) noexcept
+            : _counter{initial_count}
         {
         }
+
+        void decrement_and_notify_one() noexcept;
+        void decrement_and_notify_all() noexcept;
+
+        template <typename TF>
+        void execute_and_wait_until_zero(TF&& f) noexcept(noexcept(f()));
     };
 
     namespace impl
@@ -61,8 +66,6 @@ ECST_NAMESPACE
                 {
                     ECST_ASSERT_OP(x_c, >, 0);
                     --x_c;
-                    // x_c.fetch_sub(1,
-                    // std::memory_order::memory_order_acq_rel);
 
                     f(x_cv);
                 });
@@ -110,37 +113,33 @@ ECST_NAMESPACE
                 [&c]
                 {
                     return c == 0;
-                    // return c.load(std::memory_order::memory_order_acq_rel) ==
-                    // 0;
                 },
                 FWD(f));
         }
     }
 
-    /// @brief Decrements `cb`'s atomic counter by one, and calls `notify_one`
-    /// on the inner condition variable.
-    void decrement_cv_counter_and_notify_one(counter_blocker & cb) noexcept
+    /// @brief Decrements `cb`'s counter by one, and calls `notify_one` on the
+    /// inner condition variable.
+    void counter_blocker::decrement_and_notify_one() noexcept
     {
-        impl::decrement_cv_counter_and_notify_one(
-            cb._mutex, cb._cv, cb._counter);
+        impl::decrement_cv_counter_and_notify_one(_mutex, _cv, _counter);
     }
 
-    /// @brief Decrements `cb`'s atomic counter by one, and calls `notify_all`
-    /// on the inner condition variable.
-    void decrement_cv_counter_and_notify_all(counter_blocker & cb) noexcept
+    /// @brief Decrements `cb`'s counter by one, and calls `notify_all` on the
+    /// inner condition variable.
+    void counter_blocker::decrement_and_notify_all() noexcept
     {
-        impl::decrement_cv_counter_and_notify_all(
-            cb._mutex, cb._cv, cb._counter);
+        impl::decrement_cv_counter_and_notify_all(_mutex, _cv, _counter);
     }
 
     /// @brief Executes `f` and waits until the blocker's counter is zero. Uses
     /// the blocker's synchronization primitives.
     template <typename TF>
-    void execute_and_wait_until_counter_zero(
-        counter_blocker & cb, TF && f) noexcept(noexcept(f()))
+    void counter_blocker::execute_and_wait_until_zero(TF && f) noexcept(
+        noexcept(f()))
     {
         impl::execute_and_wait_until_counter_zero(
-            cb._mutex, cb._cv, cb._counter, FWD(f));
+            _mutex, _cv, _counter, FWD(f));
     }
 }
 ECST_NAMESPACE_END
