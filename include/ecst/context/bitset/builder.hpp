@@ -42,10 +42,10 @@ ECST_CONTEXT_BITSET_NAMESPACE
 
     /// @brief Returns a bitset matching `TSystemSignature`'s used components.
     template <typename TSystemSignature, typename TSettings>
-    auto make_from_system_signature(TSettings s) noexcept
+    auto make_from_system_signature(TSystemSignature ss, TSettings s) noexcept
     {
-        constexpr auto ss = mp::unwrapped(TSystemSignature{});
-        return make(s, bh::concat(ss.read_ctag_list(), ss.write_ctag_list()));
+        constexpr auto u = mp::unwrapped(ss);
+        return make(s, bh::concat(u.read_ctag_list(), u.write_ctag_list()));
     }
 }
 ECST_CONTEXT_BITSET_NAMESPACE_END
