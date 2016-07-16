@@ -112,6 +112,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     instance<TSettings, TSystemSignature>::make_multi_data_proxy(
         TContext & ctx, sz_t state_idx, sz_t i_begin, sz_t i_end)
     {
+        // TODO: size is 104 bytes on my machine.
+
         return data_proxy::make_multi<TSystemSignature>(          // .
             data_proxy::make_multi_functions(                     // .
                 make_entity_range_provider(i_begin, i_end),       // .

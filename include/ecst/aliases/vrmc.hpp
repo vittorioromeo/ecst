@@ -7,7 +7,6 @@
 
 #include <vrm/core/type_aliases.hpp>
 #include <vrm/core/static_if.hpp>
-#include <vrm/core/tuple_utils/for.hpp>
 #include <ecst/config.hpp>
 
 ECST_NAMESPACE

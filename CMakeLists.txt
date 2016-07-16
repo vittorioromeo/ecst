@@ -17,14 +17,6 @@ vrm_cmake_init_project(ecst)
 vrm_cmake_find_extlib(vrm_pp)
 vrm_cmake_find_extlib(vrm_core)
 
-# TODO: remove
-include_directories("/home/vittorioromeo/OHWorkspace/vrm_core/include")
-# include_directories("D:/OHWorkspace/SFML/include")
-# include_directories("D:/OHWorkspace/mingw-std-threads")
-# link_directories("D:/OHWorkspace/SFML/lib")
-# find_package(boost 1.36.0 COMPONENTS system thread)
-# include_directories("${Boost_INCLUDE_DIRS}")
-
 # Alias the include directory.
 set(ECST_INC_DIR "${ECST_SOURCE_DIR}/include/")
 include_directories("${ECST_INC_DIR}")
@@ -42,10 +34,8 @@ add_subdirectory(example)
 # Create header-only install target (automatically glob)
 vrm_cmake_header_only_install_glob("${ECST_INC_DIR}" "include")
 
-# TODO: remove
 # vrm_cmake_add_common_compiler_flags_suggest_attribute()
 
-# TODO: remove
 add_executable(particles "${ECST_SOURCE_DIR}/example/particles.cpp")
 target_link_libraries(particles pthread)
 
