@@ -22,7 +22,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             /// @brief State manager with a fixed storage.
             /// @details "State storages" are stored in an `std::array`.
-            template <typename TSettings, typename TSystemSignature>
+            template <                    // .
+                typename TInstance,       // .
+                typename TSettings,       // .
+                typename TSystemSignature // .
+                >
             class data
             {
             public:
@@ -42,8 +46,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 // Number of currently prepared (in use) states.
                 sz_t _prepared = 0;
 
+                TInstance& _instance;
+
             public:
-                data() = default;
+                data(TInstance& instance) noexcept : _instance{instance}
+                {
+                }
+
                 ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(data);
 
                 void clear_and_prepare(sz_t n) noexcept

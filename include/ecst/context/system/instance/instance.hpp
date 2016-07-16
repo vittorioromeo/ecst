@@ -38,10 +38,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using system_type = typename base_type::system_type;
 
     private:
+        using this_type = instance<TSettings, TSystemSignature>;
         using bitset_type = bitset::dispatch<TSettings>;
 
         using state_manager_type = // .
-            impl::state_manager::data<TSettings, TSystemSignature>;
+            impl::state_manager::data<this_type, TSettings, TSystemSignature>;
 
         using set_type = dispatch_set<TSettings>;
 
@@ -51,7 +52,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
-        using this_type = instance<TSettings, TSystemSignature>;
 
         state_manager_type _sm;
         set_type _subscribed;

@@ -27,8 +27,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
-        : _bitset{bitset::make_from_system_signature(
-              TSystemSignature{}, TSettings{})}
+        : _sm{*this}, _bitset{bitset::make_from_system_signature(
+                          TSystemSignature{}, TSettings{})}
     {
         ELOG(                                                          // .
             debug::lo_system_bitset() << "(" << system_id()            // .
