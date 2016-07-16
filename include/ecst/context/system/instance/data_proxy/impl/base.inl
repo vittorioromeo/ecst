@@ -7,11 +7,12 @@
 
 #include "./base.hpp"
 
-#define ECST_IMPL_BASE_DATA_PROXY_TEMPLATE                      \
-    template <typename TSystemSignature, typename TEDFunctions, \
-        typename TContext>
+#define ECST_IMPL_BASE_DATA_PROXY_TEMPLATE                  \
+    template <typename TSystemSignature, typename TContext, \
+        typename TInstance, typename TDerived>
 
-#define ECST_IMPL_BASE_DATA_PROXY base<TSystemSignature, TEDFunctions, TContext>
+#define ECST_IMPL_BASE_DATA_PROXY \
+    base<TSystemSignature, TContext, TInstance, TDerived>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -20,7 +21,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
         auto& ECST_IMPL_BASE_DATA_PROXY::state_wrapper() noexcept
         {
-            return _functions._f_state_getter();
+            return static_cast<TDerived&>(*this).state_wrapper();
         }
 
         ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
@@ -53,27 +54,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         }
 
         ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        ECST_IMPL_BASE_DATA_PROXY::base(                   // .
-            ed_functions_type&& functions,                 // .
-            context_type& context,                         // .
-            sz_t ep_count                                  // .
-            ) noexcept : _functions(std::move(functions)), // .
-                         _context(context),                // .
-                         _ep_count{ep_count}               // .
+        ECST_IMPL_BASE_DATA_PROXY::base(      // .
+            instance_type& instance,          // .
+            context_type& context             // .
+            ) noexcept : _instance{instance}, // .
+                         _context{context}    // .
         {
-        }
-
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        template <typename TF>
-        auto ECST_IMPL_BASE_DATA_PROXY::for_entities(TF&& f)
-        {
-            return _functions._f_for_entities(f);
-        }
-
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        auto ECST_IMPL_BASE_DATA_PROXY::entity_count() const noexcept
-        {
-            return _ep_count;
         }
 
         ECST_IMPL_BASE_DATA_PROXY_TEMPLATE

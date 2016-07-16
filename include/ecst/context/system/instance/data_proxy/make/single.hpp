@@ -13,15 +13,15 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         template <                     // .
             typename TSystemSignature, // .
-            typename TEDFunctions,     // .
             typename TContext,         // .
+            typename TInstance,        // .
             typename... Ts             // .
             >
-        auto ECST_PURE_FN make_single( // .
-            TEDFunctions&& functions, TContext& ctx, Ts&&... xs)
+        auto ECST_PURE_FN make_single(
+            TInstance& inst, TContext& ctx, Ts&&... xs)
         {
-            return single<TSystemSignature, TEDFunctions, TContext>(
-                std::move(functions), ctx, FWD(xs)...);
+            return single<TSystemSignature, TContext, TInstance>(
+                inst, ctx, FWD(xs)...);
         }
     }
 }

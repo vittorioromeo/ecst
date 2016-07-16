@@ -11,3 +11,4 @@
 #include "./instance/instance.hpp"
 #include "./instance/instance.inl"
 #include "./instance/instance_subtask.inl"
+#include "./instance/data_proxy/impl_inl.hpp"

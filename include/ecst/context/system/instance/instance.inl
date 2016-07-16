@@ -131,18 +131,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         _sm.clear_and_prepare(1);
 
         // Create single-subtask data proxy.
-        auto dp = data_proxy::make_single<TSystemSignature>( // .
-            data_proxy::make_single_functions(               // .
-                make_all_entity_provider(),                  // .
-                [this]() -> auto&                            // .
-                {                                            // .
-                    return this->_sm.get(0);                 // .
-                }                                            // .
-                ),                                           // .
-            ctx,                                             // .
-            all_entity_count()                               // .
-            );
-
+        auto dp = data_proxy::make_single<TSystemSignature>(*this, ctx);
         f(dp);
     }
 
@@ -156,11 +145,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             (auto split_idx, auto i_begin, auto i_end) mutable
         {
             // Create bound slice executor.
-            auto bse = this->make_bound_slice_executor(
-                ctx, split_idx, i_begin, i_end, f);
+            // auto bse = this->make_bound_slice_executor(
+            // ctx, split_idx, i_begin, i_end, f);
 
+            auto dp = data_proxy::make_multi<TSystemSignature>(
+                *this, ctx, split_idx, i_begin, i_end);
             // Execute the bound slice.
-            bse();
+            f(dp);
         };
 
         _parallel_executor.execute(*this, ctx, std::move(st));

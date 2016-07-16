@@ -7,53 +7,68 @@
 
 #include "./multi.hpp"
 
-#define ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE                     \
-    template <typename TSystemSignature, typename TEDFunctions, \
-        typename TContext>
+#define ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE \
+    template <typename TSystemSignature, typename TContext, typename TInstance>
 
-#define ECST_IMPL_MULTI_DATA_PROXY \
-    multi<TSystemSignature, TEDFunctions, TContext>
+#define ECST_IMPL_MULTI_DATA_PROXY multi<TSystemSignature, TContext, TInstance>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
         ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
-        ECST_IMPL_MULTI_DATA_PROXY::multi(                              // .
-            TEDFunctions&& functions, TContext& context, sz_t ep_count, // .
-            sz_t ae_count,                                              // .
-            sz_t oe_count                                               // .
-            ) noexcept
-            : base_type{std::move(functions), context, ep_count}, // .
-              _ae_count{ae_count},                                // .
-              _oe_count{oe_count}                                 // .
+        ECST_IMPL_MULTI_DATA_PROXY::multi(TInstance& instance,
+            TContext& context, sz_t state_idx, sz_t i_begin,
+            sz_t i_end) noexcept : base_type{instance, context},
+                                   _state_idx{state_idx},
+                                   _i_begin{i_begin},
+                                   _i_end{i_end}
         {
+        }
+
+        ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
+        auto& ECST_IMPL_MULTI_DATA_PROXY::state_wrapper() noexcept
+        {
+            return this->_instance.nth_state(_state_idx);
+        }
+
+        ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
+        template <typename TF>
+        auto ECST_IMPL_MULTI_DATA_PROXY::for_entities(TF&& f)
+        {
+            return this->_instance.for_entities(_i_begin, _i_end, FWD(f));
         }
 
         ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
         template <typename TF>
         auto ECST_IMPL_MULTI_DATA_PROXY::for_other_entities(TF&& f)
         {
-            return this->_functions._f_for_other_entities(f);
+            return this->_instance.for_other_entities(_i_begin, _i_end, FWD(f));
         }
 
         ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
         template <typename TF>
         auto ECST_IMPL_MULTI_DATA_PROXY::for_all_entities(TF&& f)
         {
-            return this->_functions._f_for_all_entities(f);
+            return this->_instance.for_all_entities(FWD(f));
+        }
+
+        ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
+        auto ECST_IMPL_MULTI_DATA_PROXY::entity_count() const noexcept
+        {
+            return this->_instance.entity_range_count(_i_begin, _i_end);
         }
 
         ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
         auto ECST_IMPL_MULTI_DATA_PROXY::all_entity_count() const noexcept
         {
-            return _ae_count;
+            return this->_instance.all_entity_count();
         }
 
         ECST_IMPL_MULTI_DATA_PROXY_TEMPLATE
         auto ECST_IMPL_MULTI_DATA_PROXY::other_entity_count() const noexcept
         {
-            return _oe_count;
+            return this->_instance.other_entity_range_count(_i_begin, _i_end);
         }
     }
 }

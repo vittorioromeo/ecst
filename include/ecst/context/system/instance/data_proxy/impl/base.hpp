@@ -20,28 +20,23 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief "Data proxy".
         template <                     // .
             typename TSystemSignature, // .
-            typename TEDFunctions,     // .
-            typename TContext          // .
+            typename TContext,         // .
+            typename TInstance,        // .
+            typename TDerived          // .
             >
         class base
         {
         public:
             using system_signature_type = TSystemSignature;
             using context_type = TContext;
+            using instance_type = TInstance;
             using settings_type = typename context_type::settings_type;
 
-        private:
-            using ed_functions_type = TEDFunctions;
-
         protected:
-            ed_functions_type _functions;
-
-        private:
+            instance_type& _instance;
             context_type& _context;
 
         private:
-            sz_t _ep_count;
-
             auto& state_wrapper() noexcept;
             auto& state() noexcept;
             auto& output_data() noexcept;
@@ -52,20 +47,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             constexpr auto can_get_output_of(TSystemTag st) noexcept;
 
         public:
-            base(                              // .
-                ed_functions_type&& functions, // .
-                context_type& context,         // .
-                sz_t ep_count                  // .
-                ) noexcept;
-
-            /// @brief Iterates over entities assigned to the current subtask.
-            /// @details Iterates over all entities if the system has a single
-            /// subtask.
-            template <typename TF>
-            auto for_entities(TF&& f);
-
-            /// @brief Count of entities of the current subtask.
-            auto entity_count() const noexcept;
+            base(instance_type& instance, context_type& context) noexcept;
 
             template <typename TComponentTag>
             decltype(auto) get(TComponentTag ct, entity_id eid) noexcept;

@@ -11,6 +11,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
+        /*
         template <                       // .
             typename TFForEntities,      // .
             typename TFForAllEntities,   // .
@@ -39,6 +40,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 FWD(f_state_getter)        // .
             };
         }
+        */
     }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

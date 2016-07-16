@@ -7,17 +7,29 @@
 
 #include "./single.hpp"
 
-#define ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE                    \
-    template <typename TSystemSignature, typename TEDFunctions, \
-        typename TContext>
+#define ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE \
+    template <typename TSystemSignature, typename TContext, typename TInstance>
 
 #define ECST_IMPL_SINGLE_DATA_PROXY \
-    single<TSystemSignature, TEDFunctions, TContext>
+    single<TSystemSignature, TContext, TInstance>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
+        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        auto& ECST_IMPL_SINGLE_DATA_PROXY::state_wrapper() noexcept
+        {
+            return this->_instance.nth_state(0);
+        }
+
+        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        template <typename TF>
+        auto ECST_IMPL_SINGLE_DATA_PROXY::for_entities(TF&& f)
+        {
+            return this->_instance.for_all_entities(FWD(f));
+        }
+
         ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
         template <typename TF>
         auto ECST_IMPL_SINGLE_DATA_PROXY::for_other_entities(TF&&) noexcept
@@ -29,13 +41,19 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TF>
         auto ECST_IMPL_SINGLE_DATA_PROXY::for_all_entities(TF&& f)
         {
-            return this->for_entities(FWD(f));
+            return for_entities(FWD(f));
+        }
+
+        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        auto ECST_IMPL_SINGLE_DATA_PROXY::entity_count() const noexcept
+        {
+            return this->_instance.subscribed_count();
         }
 
         ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
         auto ECST_IMPL_SINGLE_DATA_PROXY::all_entity_count() const noexcept
         {
-            return this->entity_count();
+            return entity_count();
         }
 
         ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE

@@ -3,8 +3,10 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
+// TODO:
+
 #pragma once
 
-#include "./impl/base.hpp"
-#include "./impl/single.hpp"
-#include "./impl/multi.hpp"
+#include "./impl/base.inl"
+#include "./impl/single.inl"
+#include "./impl/multi.inl"
