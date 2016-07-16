@@ -61,7 +61,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
         return impl::data<ECST_DECAY_DECLTYPE(bh::make_map())>{};
     }
 
-    // TODO: docs, optimize
+    /// @brief Returns the type of the value stored in `TMap` at key `TKey`.
     template <typename TMap, typename TKey>
     using type_of = unwrap<decltype(TMap{}.type_at(TKey{}))>;
 }
