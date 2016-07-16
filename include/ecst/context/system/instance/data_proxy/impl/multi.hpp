@@ -37,41 +37,24 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 TEDFunctions&& functions, TContext& context, sz_t ep_count, // .
                 sz_t ae_count,                                              // .
                 sz_t oe_count                                               // .
-                ) noexcept
-                : base_type{std::move(functions), context, ep_count}, // .
-                  _ae_count{ae_count},                                // .
-                  _oe_count{oe_count}                                 // .
-            {
-            }
+                ) noexcept;
 
             /// @brief Iterates over entities not assigned to the current
             /// subtask.
             /// @details Iterates over no entities if the system has a single
             /// subtask.
             template <typename TF>
-            auto for_other_entities(TF&& f)
-            {
-                return this->_functions._f_for_other_entities(f);
-            }
+            auto for_other_entities(TF&& f);
 
             /// @brief Iterates over all entities in the system.
             template <typename TF>
-            auto for_all_entities(TF&& f)
-            {
-                return this->_functions._f_for_all_entities(f);
-            }
+            auto for_all_entities(TF&& f);
 
             /// @brief Count of all entities in the system.
-            auto all_entity_count() const noexcept
-            {
-                return _ae_count;
-            }
+            auto all_entity_count() const noexcept;
 
             /// @brief Count of entities not in the current subtask.
-            auto other_entity_count() const noexcept
-            {
-                return _oe_count;
-            }
+            auto other_entity_count() const noexcept;
         };
     }
 }

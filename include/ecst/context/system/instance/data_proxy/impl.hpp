@@ -8,3 +8,7 @@
 #include "./impl/base.hpp"
 #include "./impl/single.hpp"
 #include "./impl/multi.hpp"
+
+#include "./impl/base.inl"
+#include "./impl/single.inl"
+#include "./impl/multi.inl"

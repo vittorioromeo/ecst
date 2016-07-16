@@ -37,29 +37,17 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @details Iterates over no entities if the system has a single
             /// subtask.
             template <typename TF>
-            auto for_other_entities(TF&&) noexcept
-            {
-                return ecst::impl::do_nothing;
-            }
+            auto for_other_entities(TF&&) noexcept;
 
             /// @brief Iterates over all entities in the system.
             template <typename TF>
-            auto for_all_entities(TF&& f)
-            {
-                return this->for_entities(FWD(f));
-            }
+            auto for_all_entities(TF&& f);
 
             /// @brief Count of all entities in the system.
-            auto all_entity_count() const noexcept
-            {
-                return this->entity_count();
-            }
+            auto all_entity_count() const noexcept;
 
             /// @brief Count of entities not in the current subtask.
-            constexpr auto other_entity_count() const noexcept
-            {
-                return sz_t(0);
-            }
+            constexpr auto other_entity_count() const noexcept;
         };
     }
 }
