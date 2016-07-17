@@ -8,7 +8,7 @@
 #include <ecst/utils.hpp>
 #include "./base.hpp"
 
-#define ECST_IMPL_DATA_PROXY_SINGLE_BASE        \
+#define ECST_IMPL_DP_SINGLE_BASE                \
     base<TSystemSignature, TContext, TInstance, \
         single<TSystemSignature, TContext, TInstance>>
 
@@ -23,10 +23,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             typename TContext,         // .
             typename TInstance         // .
             >
-        class single : public ECST_IMPL_DATA_PROXY_SINGLE_BASE
+        class single : public ECST_IMPL_DP_SINGLE_BASE
         {
         private:
-            using base_type = ECST_IMPL_DATA_PROXY_SINGLE_BASE;
+            using base_type = ECST_IMPL_DP_SINGLE_BASE;
 
         public:
             using system_signature_type =
@@ -69,4 +69,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 
-#undef ECST_IMPL_DATA_PROXY_SINGLE_BASE
+#undef ECST_IMPL_DP_SINGLE_BASE

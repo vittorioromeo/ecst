@@ -7,38 +7,37 @@
 
 #include "./base.hpp"
 
-#define ECST_IMPL_BASE_DATA_PROXY_TEMPLATE                  \
+#define ECST_IMPL_DP_BASE_TEMPLATE                          \
     template <typename TSystemSignature, typename TContext, \
         typename TInstance, typename TDerived>
 
-#define ECST_IMPL_BASE_DATA_PROXY \
-    base<TSystemSignature, TContext, TInstance, TDerived>
+#define ECST_IMPL_DP_BASE base<TSystemSignature, TContext, TInstance, TDerived>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        auto& ECST_IMPL_BASE_DATA_PROXY::state_wrapper() noexcept
+        ECST_IMPL_DP_BASE_TEMPLATE
+        auto& ECST_IMPL_DP_BASE::state_wrapper() noexcept
         {
             return static_cast<TDerived&>(*this).state_wrapper();
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        auto& ECST_IMPL_BASE_DATA_PROXY::state() noexcept
+        ECST_IMPL_DP_BASE_TEMPLATE
+        auto& ECST_IMPL_DP_BASE::state() noexcept
         {
             return state_wrapper().as_state();
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        auto& ECST_IMPL_BASE_DATA_PROXY::output_data() noexcept
+        ECST_IMPL_DP_BASE_TEMPLATE
+        auto& ECST_IMPL_DP_BASE::output_data() noexcept
         {
             return state_wrapper().as_data();
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TSystemTag>
-        constexpr auto ECST_IMPL_BASE_DATA_PROXY::can_get_output_of(
+        constexpr auto ECST_IMPL_DP_BASE::can_get_output_of(
             TSystemTag st) noexcept
         {
             constexpr auto ssl =
@@ -53,8 +52,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 ssl, my_ss, target_ss);
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        ECST_IMPL_BASE_DATA_PROXY::base(      // .
+        ECST_IMPL_DP_BASE_TEMPLATE
+        ECST_IMPL_DP_BASE::base(              // .
             instance_type& instance,          // .
             context_type& context             // .
             ) noexcept : _instance{instance}, // .
@@ -62,9 +61,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TComponentTag>
-        decltype(auto) ECST_IMPL_BASE_DATA_PROXY::get(
+        decltype(auto) ECST_IMPL_DP_BASE::get(
             TComponentTag ct, entity_id eid) noexcept
         {
             using component_type = tag::component::unwrap<TComponentTag>;
@@ -93,21 +92,21 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     })(_context);
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TF>
-        void ECST_IMPL_BASE_DATA_PROXY::defer(TF&& f)
+        void ECST_IMPL_DP_BASE::defer(TF&& f)
         {
             state()._deferred_fns.add(FWD(f));
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        void ECST_IMPL_BASE_DATA_PROXY::kill_entity(entity_id eid)
+        ECST_IMPL_DP_BASE_TEMPLATE
+        void ECST_IMPL_DP_BASE::kill_entity(entity_id eid)
         {
             state()._to_kill.add(eid);
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
-        auto& ECST_IMPL_BASE_DATA_PROXY::output() noexcept
+        ECST_IMPL_DP_BASE_TEMPLATE
+        auto& ECST_IMPL_DP_BASE::output() noexcept
         {
             ECST_S_ASSERT(
                 signature::system::has_data_output<system_signature_type>());
@@ -115,16 +114,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             return output_data();
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TSystemTag>
-        auto& ECST_IMPL_BASE_DATA_PROXY::system(TSystemTag st) noexcept
+        auto& ECST_IMPL_DP_BASE::system(TSystemTag st) noexcept
         {
             return _context.system(st);
         }
 
-        ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TSystemTag, typename TF>
-        decltype(auto) ECST_IMPL_BASE_DATA_PROXY::for_previous_outputs(
+        decltype(auto) ECST_IMPL_DP_BASE::for_previous_outputs(
             TSystemTag st, TF&& f) noexcept
         {
             ECST_S_ASSERT_DT(can_get_output_of(st));
@@ -134,5 +133,5 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 
-#undef ECST_IMPL_BASE_DATA_PROXY
-#undef ECST_IMPL_BASE_DATA_PROXY_TEMPLATE
+#undef ECST_IMPL_DP_BASE
+#undef ECST_IMPL_DP_BASE_TEMPLATE

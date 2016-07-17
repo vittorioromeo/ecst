@@ -7,7 +7,7 @@
 
 #include "./base.hpp"
 
-#define ECST_IMPL_DATA_PROXY_MULTI_BASE         \
+#define ECST_IMPL_DP_MULTI_BASE                 \
     base<TSystemSignature, TContext, TInstance, \
         multi<TSystemSignature, TContext, TInstance>>
 
@@ -22,10 +22,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             typename TContext,         // .
             typename TInstance         // .
             >
-        class multi : public ECST_IMPL_DATA_PROXY_MULTI_BASE
+        class multi : public ECST_IMPL_DP_MULTI_BASE
         {
         private:
-            using base_type = ECST_IMPL_DATA_PROXY_MULTI_BASE;
+            using base_type = ECST_IMPL_DP_MULTI_BASE;
 
         public:
             using system_signature_type =
@@ -71,4 +71,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 
-#undef ECST_IMPL_DATA_PROXY_MULTI_BASE
+#undef ECST_IMPL_DP_MULTI_BASE

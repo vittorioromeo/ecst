@@ -7,58 +7,56 @@
 
 #include "./single.hpp"
 
-#define ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE \
+#define ECST_IMPL_DP_SINGLE_TEMPLATE \
     template <typename TSystemSignature, typename TContext, typename TInstance>
 
-#define ECST_IMPL_SINGLE_DATA_PROXY \
-    single<TSystemSignature, TContext, TInstance>
+#define ECST_IMPL_DP_SINGLE single<TSystemSignature, TContext, TInstance>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
-        auto& ECST_IMPL_SINGLE_DATA_PROXY::state_wrapper() noexcept
+        ECST_IMPL_DP_SINGLE_TEMPLATE
+        auto& ECST_IMPL_DP_SINGLE::state_wrapper() noexcept
         {
             return this->_instance.nth_state(0);
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_SINGLE_TEMPLATE
         template <typename TF>
-        auto ECST_IMPL_SINGLE_DATA_PROXY::for_entities(TF&& f)
+        auto ECST_IMPL_DP_SINGLE::for_entities(TF&& f)
         {
             return this->_instance.for_all_entities(FWD(f));
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_SINGLE_TEMPLATE
         template <typename TF>
-        auto ECST_IMPL_SINGLE_DATA_PROXY::for_other_entities(TF&&) noexcept
+        auto ECST_IMPL_DP_SINGLE::for_other_entities(TF&&) noexcept
         {
             return ecst::impl::do_nothing;
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+        ECST_IMPL_DP_SINGLE_TEMPLATE
         template <typename TF>
-        auto ECST_IMPL_SINGLE_DATA_PROXY::for_all_entities(TF&& f)
+        auto ECST_IMPL_DP_SINGLE::for_all_entities(TF&& f)
         {
             return for_entities(FWD(f));
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
-        auto ECST_IMPL_SINGLE_DATA_PROXY::entity_count() const noexcept
+        ECST_IMPL_DP_SINGLE_TEMPLATE
+        auto ECST_IMPL_DP_SINGLE::entity_count() const noexcept
         {
             return this->_instance.subscribed_count();
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
-        auto ECST_IMPL_SINGLE_DATA_PROXY::all_entity_count() const noexcept
+        ECST_IMPL_DP_SINGLE_TEMPLATE
+        auto ECST_IMPL_DP_SINGLE::all_entity_count() const noexcept
         {
             return entity_count();
         }
 
-        ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
-        constexpr auto ECST_IMPL_SINGLE_DATA_PROXY::other_entity_count() const
-            noexcept
+        ECST_IMPL_DP_SINGLE_TEMPLATE
+        constexpr auto ECST_IMPL_DP_SINGLE::other_entity_count() const noexcept
         {
             return sz_t(0);
         }
@@ -66,5 +64,5 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 
-#undef ECST_IMPL_SINGLE_DATA_PROXY
-#undef ECST_IMPL_SINGLE_DATA_PROXY_TEMPLATE
+#undef ECST_IMPL_DP_SINGLE
+#undef ECST_IMPL_DP_SINGLE_TEMPLATE
