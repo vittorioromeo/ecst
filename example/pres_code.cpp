@@ -801,7 +801,7 @@ namespace example
                     [&rt](auto&, auto& va)
                     {
                         // TODO:
-                        if(false)
+                        if(true)
                         {
                             rt.draw(va.data(), va.size(),
                                 sf::PrimitiveType::Triangles,
