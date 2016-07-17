@@ -18,9 +18,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TSettings, typename TSystemSignature>
         class instance_base
         {
-            template <typename, typename, typename>
-            friend class data_proxy::base;
-
         public:
             using system_tag_type =
                 signature::system::tag_type<TSystemSignature>;

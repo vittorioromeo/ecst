@@ -44,5 +44,45 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     {
         return (i_begin - sz_t(0)) + (subscribed_count() - i_end);
     }
+
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TF>
+    void instance<TSettings, TSystemSignature>::for_all_entities(TF && f)
+    {
+        this->_subscribed.for_each(FWD(f));
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TF>
+    void instance<TSettings, TSystemSignature>::for_entities(
+        sz_t i_begin, sz_t i_end, TF && f)
+    {
+        // Assert that the range contains entities.
+        ECST_ASSERT_OP(i_end, >, i_begin);
+
+        for(sz_t i = i_begin; i < i_end; ++i)
+        {
+            f(this->nth_subscribed(i));
+        }
+    }
+
+    template <typename TSettings, typename TSystemSignature>
+    template <typename TF>
+    void instance<TSettings, TSystemSignature>::for_other_entities(
+        sz_t i_begin, sz_t i_end, TF && f)
+    {
+        // Assert that the range contains entities.
+        ECST_ASSERT_OP(i_end, >, i_begin);
+
+        for(sz_t i = 0; i < i_begin; ++i)
+        {
+            f(this->nth_subscribed(i));
+        }
+
+        for(sz_t i = i_end; i < this->subscribed_count(); ++i)
+        {
+            f(this->nth_subscribed(i));
+        }
+    }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

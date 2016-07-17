@@ -66,8 +66,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         decltype(auto) ECST_IMPL_DP_BASE::get(
             TComponentTag ct, entity_id eid) noexcept
         {
-            using component_type = tag::component::unwrap<TComponentTag>;
-
             constexpr auto can_write =
                 signature::system::can_write<TSystemSignature>(ct);
 
@@ -75,12 +73,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 signature::system::can_read<TSystemSignature>(ct);
 
             return static_if(can_write)
-                .then([ct, eid](auto& x_ctx) -> component_type&
+                .then([ ct, eid ](auto& x_ctx) -> auto&
                     {
                         return x_ctx.get_component(ct, eid);
                     })
                 .else_if(can_read)
-                .then([ct, eid](auto& x_ctx) -> const component_type&
+                .then([ ct, eid ](auto& x_ctx) -> const auto&
                     {
                         return x_ctx.get_component(ct, eid);
                     })
