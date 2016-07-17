@@ -5,7 +5,5 @@
 
 #pragma once
 
-#include "./make/single_functions.hpp"
 #include "./make/single.hpp"
-#include "./make/multi_functions.hpp"
 #include "./make/multi.hpp"
