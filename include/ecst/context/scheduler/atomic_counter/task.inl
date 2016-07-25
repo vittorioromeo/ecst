@@ -26,7 +26,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         TCounterBlocker & b,         // .
         TID my_id,                   // .
         TContext & ctx,              // .
-        TF && f                      // .
+        TF & f                       // .
         )
     {
         // Get system instance from task ID.

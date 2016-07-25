@@ -30,7 +30,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     class instance : public impl::instance_base<TSettings, TSystemSignature>
     {
-        template <typename, typename, typename>
+        template <typename, typename, typename, typename>
         friend class data_proxy::base;
 
         template <typename, typename, typename>
@@ -121,18 +121,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         void prepare_and_wait_subtasks(TContext& ctx, sz_t n, TF& f);
 
         template <typename TContext, typename TF>
-        void execute(TContext& ctx, TF&& f);
+        void execute(TContext& ctx, TF& f);
 
     private:
         /// @brief Executes `f` on every subscribed entity, without spawning any
         /// additional task.
         template <typename TContext, typename TF>
-        void execute_single(TContext& ctx, TF&& f);
+        void execute_single(TContext& ctx, TF& f);
 
         /// @brief Executes `f` using the strategy provided by
         /// `_parallel_executor`.
         template <typename TContext, typename TF>
-        void execute_in_parallel(TContext& ctx, TF&& f);
+        void execute_in_parallel(TContext& ctx, TF& f);
 
         /// @brief Returns an execution function that, when called with a
         /// user-defined processing function, either invokes a single-threaded

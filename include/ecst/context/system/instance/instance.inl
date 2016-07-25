@@ -125,7 +125,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_single( // .
-        TContext & ctx, TF && f                                 // .
+        TContext & ctx, TF & f                                  // .
         )
     {
         _sm.clear_and_prepare(1);
@@ -138,12 +138,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_in_parallel( // .
-        TContext & ctx, TF && f                                      // .
+        TContext & ctx, TF & f                                       // .
         )
     {
         auto st = [ this, &ctx, f = FWD(f) ] // .
             (auto split_idx, auto i_begin, auto i_end) mutable
         {
+            // TODO:
             // Create bound slice executor.
             // auto bse = this->make_bound_slice_executor(
             // ctx, split_idx, i_begin, i_end, f);
@@ -179,7 +180,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
-        TContext & ctx, TF && f                          // .
+        TContext & ctx, TF & f                           // .
         )
     {
         // Bind the dispatch function to `ctx`.

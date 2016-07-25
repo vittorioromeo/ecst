@@ -45,7 +45,7 @@ ECST_SCHEDULER_NAMESPACE
         template <typename TContext, typename TStartSystemTagList,
             typename TBlocker, typename TF>
         void start_execution(
-            TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF&& f)
+            TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF& f)
         {
             namespace sls = signature_list::system;
 
@@ -53,7 +53,7 @@ ECST_SCHEDULER_NAMESPACE
             ECST_S_ASSERT(tag::system::is_list(sstl));
             ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
 
-            bh::for_each(sstl, [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
+            bh::for_each(sstl, [this, &ctx, &b, &f](auto st) mutable
                 {
                     auto sid = sls::id_by_tag(this->ssl(), st);
 
@@ -69,7 +69,7 @@ ECST_SCHEDULER_NAMESPACE
 
     public:
         template <typename TContext, typename TStartSystemTagList, typename TF>
-        void execute(TContext& ctx, TStartSystemTagList sstl, TF&& f)
+        void execute(TContext& ctx, TStartSystemTagList sstl, TF& f)
         {
             ECST_S_ASSERT(tag::system::is_list(sstl));
 
@@ -86,8 +86,7 @@ ECST_SCHEDULER_NAMESPACE
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
-            b.execute_and_wait_until_zero(
-                [ this, &ctx, &b, sstl, f = FWD(f) ]() mutable
+            b.execute_and_wait_until_zero([this, &ctx, &b, &f, sstl]() mutable
                 {
                     this->start_execution(ctx, sstl, b, f);
                 });

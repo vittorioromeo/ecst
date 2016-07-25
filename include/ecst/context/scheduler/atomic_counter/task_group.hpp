@@ -48,7 +48,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             typename TContext, // .
             typename TF        // .
             >
-        void start_from_task_id(TBlocker& b, TID id, TContext& sp, TF&& f)
+        void start_from_task_id(TBlocker& b, TID id, TContext& sp, TF& f)
         {
             task_by_id(id).run(*this, b, id, sp, f);
         }

@@ -45,7 +45,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             TCounterBlocker& b, // .
             TID my_id,          // .
             TContext& sp,       // .
-            TF&& f              // .
+            TF& f               // .
             );
     };
 }
