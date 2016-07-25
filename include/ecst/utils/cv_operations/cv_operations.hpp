@@ -13,11 +13,16 @@ ECST_NAMESPACE
 {
     namespace impl
     {
+        // Synchronization type aliases.
         using mutex_type = ecst::mutex;
         using cv_type = ecst::condition_variable;
-        using counter_type = sz_t;
         using lock_guard_type = ecst::lock_guard<mutex_type>;
         using unique_lock_type = ecst::unique_lock<mutex_type>;
+
+        // In case the counter needs to be atomic in the future, an "inner type"
+        // alias is defined.
+        using counter_inner_type = sz_t;
+        using counter_type = counter_inner_type;
 
         /// @brief Accesses `cv` and `c` through a `lock_guard` on `mutex`, and
         /// calls `f(cv, c)`.
@@ -39,7 +44,7 @@ ECST_NAMESPACE
         {
             access_cv_counter(mutex, cv, c, [&f](auto& x_cv, auto& x_c)
                 {
-                    ECST_ASSERT_OP(x_c, >, 0);
+                    ECST_ASSERT(x_c > 0);
                     --x_c;
 
                     f(x_cv);
