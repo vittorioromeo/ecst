@@ -1,8 +1,8 @@
 # ecst
 
-**Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library.
+**Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library. 
 
-Slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016).
+**ecst** was developed as my BCS graduation project. [The thesis can be found here](https://github.com/SuperV1234/bcs_thesis). An earlier version of the library was presented at **C++Now 2016**: slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016).
 
 ## Build instructions
 
