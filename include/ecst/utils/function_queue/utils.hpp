@@ -6,6 +6,7 @@
 #pragma once
 
 #include <ecst/config.hpp>
+#include <ecst/aliases.hpp>
 #include "./dependencies.hpp"
 
 ECST_NAMESPACE
@@ -14,6 +15,9 @@ ECST_NAMESPACE
     template <typename T0, typename T1>
     constexpr auto multiple_round_up(T0 x, T1 multiple) noexcept
     {
+        ECST_S_ASSERT(std::is_arithmetic<T0>{});
+        ECST_S_ASSERT(std::is_arithmetic<T1>{});
+
         VRM_CORE_CONSTEXPR_ASSERT(multiple != 0);
         return ((x + multiple - 1) / multiple) * multiple;
     }

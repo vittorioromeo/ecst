@@ -59,6 +59,7 @@ ECST_NAMESPACE
             class maker<TReturn(TArgs...)>
             {
             private:
+                // TODO: fix docs
                 /// @brief Call function pointer type.
                 /// @details The first parameter is the callable object.
                 using call_fp = fn_ptr<TReturn(char*, TArgs...)>;
@@ -71,7 +72,7 @@ ECST_NAMESPACE
                 /// @details The first parameter is the vtable.
                 /// The second parameter is the src callable object.
                 /// The third parameter is the dst callable object.
-                using copy_fp = fn_ptr<void(char*, char*)>;
+                using copy_fp = fn_ptr<void(const char*, char*)>;
 
                 /// @brief Move ctor function pointer type.
                 /// @details The first parameter is the vtable.
@@ -122,10 +123,11 @@ ECST_NAMESPACE
                 template <typename TF, typename TVTable>
                 static void set_fp(option::copy_t, TVTable& vt) noexcept
                 {
-                    bh::at_key(vt, option::copy) = [](char* src, char* dst)
+                    bh::at_key(vt, option::copy) = [](
+                        const char* src, char* dst)
                     {
                         // Copy-construct `src` into `dst`.
-                        new(dst) TF(*(reinterpret_cast<TF*>(src)));
+                        new(dst) TF(*(reinterpret_cast<const TF*>(src)));
                     };
                 }
 
