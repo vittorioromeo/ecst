@@ -12,3 +12,4 @@
 #include "./utils/specialized_names.hpp"
 #include "./utils/movable_atomic.hpp"
 #include "./utils/cv_operations.hpp"
+#include "./utils/function_queue.hpp"
