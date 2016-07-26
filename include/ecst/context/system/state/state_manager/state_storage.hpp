@@ -23,6 +23,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief Storage for a "system state" and its eventual output
             /// data.
+            /// @details Inheritance is being used to enable EBO.
             template <typename TSettings, typename TSystemSignature>
             class state_storage : public data_type<TSystemSignature>
             {

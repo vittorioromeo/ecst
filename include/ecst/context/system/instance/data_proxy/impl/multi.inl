@@ -70,6 +70,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return this->_instance.other_entity_range_count(_i_begin, _i_end);
         }
+
+        ECST_IMPL_DP_MULTI_TEMPLATE
+        auto ECST_IMPL_DP_MULTI::subtask_index() const noexcept
+        {
+            return _state_idx;
+        }
     }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

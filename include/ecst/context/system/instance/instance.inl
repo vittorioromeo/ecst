@@ -144,13 +144,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto st = [ this, &ctx, f = FWD(f) ] // .
             (auto split_idx, auto i_begin, auto i_end) mutable
         {
-            // TODO:
-            // Create bound slice executor.
-            // auto bse = this->make_bound_slice_executor(
-            // ctx, split_idx, i_begin, i_end, f);
-
+            // Create multi data proxy.
             auto dp = data_proxy::make_multi<TSystemSignature>(
                 *this, ctx, split_idx, i_begin, i_end);
+
             // Execute the bound slice.
             f(dp);
         };

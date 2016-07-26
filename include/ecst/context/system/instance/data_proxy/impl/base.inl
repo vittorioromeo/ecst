@@ -20,7 +20,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         ECST_IMPL_DP_BASE_TEMPLATE
         auto& ECST_IMPL_DP_BASE::state_wrapper() noexcept
         {
-            return static_cast<TDerived&>(*this).state_wrapper();
+            // CRTP is used to efficiently get the state index.
+            return vrmc::to_derived<TDerived>(*this).state_wrapper();
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE

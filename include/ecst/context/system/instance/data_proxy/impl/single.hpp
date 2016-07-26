@@ -16,8 +16,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
-        // TODO:
-        /// @brief "Data proxy".
+        /// @brief Single-subtask data proxy.
+        /// @details Created during non-parallel instance execution.
         template <                     // .
             typename TSystemSignature, // .
             typename TContext,         // .
@@ -27,6 +27,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
         private:
             using base_type = ECST_IMPL_DP_SINGLE_BASE;
+            friend base_type;
+
+            /// @brief Returns a reference to the state associated with this
+            /// subtask.
+            auto& state_wrapper() noexcept;
 
         public:
             using system_signature_type =
@@ -35,9 +40,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             using settings_type = typename base_type::settings_type;
 
             using base_type::base_type;
-
-            auto& state_wrapper() noexcept;
-
 
             /// @brief Iterates over entities assigned to the current subtask.
             /// @details Iterates over all entities if the system has a single
@@ -50,7 +52,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @details Iterates over no entities if the system has a single
             /// subtask.
             template <typename TF>
-            auto for_other_entities(TF&&) noexcept;
+            constexpr auto for_other_entities(TF&&) noexcept;
 
             /// @brief Iterates over all entities in the system.
             template <typename TF>
@@ -64,6 +66,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief Count of entities not in the current subtask.
             constexpr auto other_entity_count() const noexcept;
+
+            /// @brief Returns the index of the current subtask.
+            constexpr auto subtask_index() const noexcept;
         };
     }
 }

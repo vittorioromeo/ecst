@@ -31,7 +31,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         ECST_IMPL_DP_SINGLE_TEMPLATE
         template <typename TF>
-        auto ECST_IMPL_DP_SINGLE::for_other_entities(TF&&) noexcept
+        constexpr auto ECST_IMPL_DP_SINGLE::for_other_entities(TF&&) noexcept
         {
             return ecst::impl::do_nothing;
         }
@@ -57,6 +57,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         ECST_IMPL_DP_SINGLE_TEMPLATE
         constexpr auto ECST_IMPL_DP_SINGLE::other_entity_count() const noexcept
+        {
+            return sz_t(0);
+        }
+
+        ECST_IMPL_DP_SINGLE_TEMPLATE
+        constexpr auto ECST_IMPL_DP_SINGLE::subtask_index() const noexcept
         {
             return sz_t(0);
         }
