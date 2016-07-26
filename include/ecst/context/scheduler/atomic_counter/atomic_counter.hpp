@@ -34,18 +34,19 @@ ECST_SCHEDULER_NAMESPACE
             return settings::system_signature_list(TSettings{});
         }
 
-        impl::sac::impl::task_group_type<decltype(ssl())> _task_group;
+        using my_task_group = // .
+            impl::sac::impl::task_group_type<decltype(ssl())>;
 
         /// @brief Resets all dependency atomic counters.
-        void reset() noexcept
+        void reset(my_task_group& tg) noexcept
         {
-            impl::sac::reset_task_group_from_ssl(ssl(), _task_group);
+            impl::sac::reset_task_group_from_ssl(ssl(), tg);
         }
 
         template <typename TContext, typename TStartSystemTagList,
             typename TBlocker, typename TF>
-        void start_execution(
-            TContext& ctx, TStartSystemTagList sstl, TBlocker& b, TF&& f)
+        void start_execution(my_task_group& tg, TContext& ctx,
+            TStartSystemTagList sstl, TBlocker& b, TF& f)
         {
             namespace sls = signature_list::system;
 
@@ -53,27 +54,24 @@ ECST_SCHEDULER_NAMESPACE
             ECST_S_ASSERT(tag::system::is_list(sstl));
             ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
 
-            bh::for_each(sstl, [ this, &ctx, &b, f = FWD(f) ](auto st) mutable
+            bh::for_each(sstl, [this, &tg, &ctx, &b, &f](auto st) mutable
                 {
                     auto sid = sls::id_by_tag(this->ssl(), st);
 
                     // Use of multithreading:
                     // * Execute multiple indepedent systems in parallel.
-                    ctx.post_in_thread_pool([this, sid, &ctx, &b, &f]() mutable
+                    ctx.post_in_thread_pool([sid, &tg, &ctx, &b, &f]() mutable
                         {
-                            this->_task_group.start_from_task_id(
-                                b, sid, ctx, f);
+                            tg.start_from_task_id(b, sid, ctx, f);
                         });
                 });
         }
 
     public:
         template <typename TContext, typename TStartSystemTagList, typename TF>
-        void execute(TContext& ctx, TStartSystemTagList sstl, TF&& f)
+        void execute(TContext& ctx, TStartSystemTagList sstl, TF& f)
         {
             ECST_S_ASSERT(tag::system::is_list(sstl));
-
-            reset();
 
             // Number of unique nodes traversed starting from every node in
             // `sstl`.
@@ -86,10 +84,13 @@ ECST_SCHEDULER_NAMESPACE
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero. We forward `f` into the lambda here, then
             // refer to it everywhere else.
-            b.execute_and_wait_until_zero(
-                [ this, &ctx, &b, sstl, f = FWD(f) ]() mutable
+            b.execute_and_wait_until_zero([this, &ctx, &b, &f, sstl]() mutable
                 {
-                    this->start_execution(ctx, sstl, b, f);
+                    // TODO: avoid the reset call?
+                    my_task_group tg;
+                    this->reset(tg);
+
+                    this->start_execution(tg, ctx, sstl, b, f);
                 });
         }
     };

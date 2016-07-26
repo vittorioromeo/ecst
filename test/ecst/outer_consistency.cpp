@@ -136,14 +136,14 @@ int main()
 
     auto test_impl = [](auto& ctx)
     {
-        using ct = ECST_DECAY_DECLTYPE(ctx);
-        using ct_handle = typename ct::handle;
+        // using ct = ECST_DECAY_DECLTYPE(ctx);
+        // using ct_handle = typename ct::handle;
 
-        enum class outer_state
+        enum class outer_state : int
         {
-            none,
-            begin,
-            done
+            none = 0,
+            begin = 1,
+            done = 2
         };
 
         auto os_s0(outer_state::none);
@@ -211,6 +211,7 @@ int main()
                             // .
                     sea::t(st::s2).detailed_instance([&](auto&, auto& ep)
                         {
+                            // std::cout << "START: s2" << std::endl;
                             TEST_ASSERT_NS(os_s0 == outer_state::done);
 
                             TEST_ASSERT_NS(os_s2 == outer_state::none);

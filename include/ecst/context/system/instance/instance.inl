@@ -27,8 +27,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
-        : _bitset{bitset::make_from_system_signature(
-              TSystemSignature{}, TSettings{})}
+        : _sm{*this}, _bitset{bitset::make_from_system_signature(
+                          TSystemSignature{}, TSettings{})}
     {
         ELOG(                                                          // .
             debug::lo_system_bitset() << "(" << system_id()            // .
@@ -125,42 +125,31 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_single( // .
-        TContext & ctx, TF && f                                 // .
+        TContext & ctx, TF & f                                  // .
         )
     {
         _sm.clear_and_prepare(1);
 
         // Create single-subtask data proxy.
-        auto dp = data_proxy::make_single<TSystemSignature>( // .
-            data_proxy::make_single_functions(               // .
-                make_all_entity_provider(),                  // .
-                [this]() -> auto&                            // .
-                {                                            // .
-                    return this->_sm.get(0);                 // .
-                }                                            // .
-                ),                                           // .
-            ctx,                                             // .
-            all_entity_count()                               // .
-            );
-
+        auto dp = data_proxy::make_single<TSystemSignature>(*this, ctx);
         f(dp);
     }
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_in_parallel( // .
-        TContext & ctx, TF && f                                      // .
+        TContext & ctx, TF & f                                       // .
         )
     {
         auto st = [ this, &ctx, f = FWD(f) ] // .
             (auto split_idx, auto i_begin, auto i_end) mutable
         {
-            // Create bound slice executor.
-            auto bse = this->make_bound_slice_executor(
-                ctx, split_idx, i_begin, i_end, f);
+            // Create multi data proxy.
+            auto dp = data_proxy::make_multi<TSystemSignature>(
+                *this, ctx, split_idx, i_begin, i_end);
 
             // Execute the bound slice.
-            bse();
+            f(dp);
         };
 
         _parallel_executor.execute(*this, ctx, std::move(st));
@@ -188,7 +177,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
-        TContext & ctx, TF && f                          // .
+        TContext & ctx, TF & f                           // .
         )
     {
         // Bind the dispatch function to `ctx`.

@@ -7,21 +7,26 @@
 
 #include "./base.hpp"
 
+#define ECST_IMPL_DP_MULTI_BASE                 \
+    base<TSystemSignature, TContext, TInstance, \
+        multi<TSystemSignature, TContext, TInstance>>
+
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace data_proxy
     {
-        // TODO:
-        /// @brief "Data proxy".
+        /// @brief Multi-subtask data proxy.
+        /// @details Created during parallel instance execution.
         template <                     // .
             typename TSystemSignature, // .
-            typename TEDFunctions,     // .
-            typename TContext          // .
+            typename TContext,         // .
+            typename TInstance         // .
             >
-        class multi : public base<TSystemSignature, TEDFunctions, TContext>
+        class multi : public ECST_IMPL_DP_MULTI_BASE
         {
         private:
-            using base_type = base<TSystemSignature, TEDFunctions, TContext>;
+            using base_type = ECST_IMPL_DP_MULTI_BASE;
+            friend base_type;
 
         public:
             using system_signature_type =
@@ -30,49 +35,47 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             using settings_type = typename base_type::settings_type;
 
         private:
-            sz_t _ae_count, _oe_count;
+            sz_t _state_idx, _i_begin, _i_end;
+
+            /// @brief Returns a reference to the state associated with this
+            /// subtask.
+            auto& state_wrapper() noexcept;
 
         public:
-            multi(                                                          // .
-                TEDFunctions&& functions, TContext& context, sz_t ep_count, // .
-                sz_t ae_count,                                              // .
-                sz_t oe_count                                               // .
-                ) noexcept
-                : base_type{std::move(functions), context, ep_count}, // .
-                  _ae_count{ae_count},                                // .
-                  _oe_count{oe_count}                                 // .
-            {
-            }
+            multi(TInstance& instance, TContext& context, sz_t state_idx,
+                sz_t i_begin, sz_t i_end) noexcept;
+
+            /// @brief Iterates over entities assigned to the current subtask.
+            /// @details Iterates over all entities if the system has a single
+            /// subtask.
+            template <typename TF>
+            auto for_entities(TF&& f);
 
             /// @brief Iterates over entities not assigned to the current
             /// subtask.
             /// @details Iterates over no entities if the system has a single
             /// subtask.
             template <typename TF>
-            auto for_other_entities(TF&& f)
-            {
-                return this->_functions._f_for_other_entities(f);
-            }
+            auto for_other_entities(TF&& f);
 
             /// @brief Iterates over all entities in the system.
             template <typename TF>
-            auto for_all_entities(TF&& f)
-            {
-                return this->_functions._f_for_all_entities(f);
-            }
+            auto for_all_entities(TF&& f);
+
+            /// @brief Count of entities of the current subtask.
+            auto entity_count() const noexcept;
 
             /// @brief Count of all entities in the system.
-            auto all_entity_count() const noexcept
-            {
-                return _ae_count;
-            }
+            auto all_entity_count() const noexcept;
 
             /// @brief Count of entities not in the current subtask.
-            auto other_entity_count() const noexcept
-            {
-                return _oe_count;
-            }
+            auto other_entity_count() const noexcept;
+
+            /// @brief Returns the index of the current subtask.
+            auto subtask_index() const noexcept;
         };
     }
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
+
+#undef ECST_IMPL_DP_MULTI_BASE

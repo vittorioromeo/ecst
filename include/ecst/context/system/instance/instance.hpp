@@ -30,6 +30,15 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     class instance : public impl::instance_base<TSettings, TSystemSignature>
     {
+        template <typename, typename, typename, typename>
+        friend class data_proxy::base;
+
+        template <typename, typename, typename>
+        friend class data_proxy::single;
+
+        template <typename, typename, typename>
+        friend class data_proxy::multi;
+
     private:
         using base_type = impl::instance_base<TSettings, TSystemSignature>;
 
@@ -38,10 +47,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using system_type = typename base_type::system_type;
 
     private:
+        using this_type = instance<TSettings, TSystemSignature>;
         using bitset_type = bitset::dispatch<TSettings>;
 
         using state_manager_type = // .
-            impl::state_manager::data<TSettings, TSystemSignature>;
+            impl::state_manager::data<this_type, TSettings, TSystemSignature>;
 
         using set_type = dispatch_set<TSettings>;
 
@@ -51,7 +61,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
-        using this_type = instance<TSettings, TSystemSignature>;
 
         state_manager_type _sm;
         set_type _subscribed;
@@ -112,18 +121,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         void prepare_and_wait_subtasks(TContext& ctx, sz_t n, TF& f);
 
         template <typename TContext, typename TF>
-        void execute(TContext& ctx, TF&& f);
+        void execute(TContext& ctx, TF& f);
 
     private:
         /// @brief Executes `f` on every subscribed entity, without spawning any
         /// additional task.
         template <typename TContext, typename TF>
-        void execute_single(TContext& ctx, TF&& f);
+        void execute_single(TContext& ctx, TF& f);
 
         /// @brief Executes `f` using the strategy provided by
         /// `_parallel_executor`.
         template <typename TContext, typename TF>
-        void execute_in_parallel(TContext& ctx, TF&& f);
+        void execute_in_parallel(TContext& ctx, TF& f);
 
         /// @brief Returns an execution function that, when called with a
         /// user-defined processing function, either invokes a single-threaded
@@ -137,40 +146,27 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         /// @brief Returns a reference to the `n`-th subtask state.
         auto& nth_state(sz_t n) noexcept;
 
-        /// @brief Number of entities provided by `make_all_entity_provider()`.
+        /// @brief Number of entities used in `for_all_entities`.
         auto all_entity_count() const noexcept;
 
-        /// @brief Number of entities provided by
-        /// `make_entity_range_provider()`.
+        /// @brief Number of entities used in `for_entities`.
         auto entity_range_count(sz_t i_begin, sz_t i_end) const noexcept;
 
-        /// @brief Number of entities provided by
-        /// `make_other_entity_range_provider()`.
+        /// @brief Number of entities used in `for_other_entities`.
         auto other_entity_range_count(sz_t i_begin, sz_t i_end) const noexcept;
 
-        /// @brief Returns an object that executes a function on all entities.
-        auto make_all_entity_provider() noexcept;
+        /// @brief Execute a function on all entities.
+        template <typename TF>
+        void for_all_entities(TF&& f);
 
-        /// @brief Returns an object that executes a function on a range subset
-        /// of entities.
-        auto make_entity_range_provider(sz_t i_begin, sz_t i_end) noexcept;
+        /// @brief Execute a function on a range subset of entities.
+        template <typename TF>
+        void for_entities(sz_t i_begin, sz_t i_end, TF&& f);
 
-        /// @brief Returns an object that executes a function on all entities
-        /// except a range subset of entities.
-        auto make_other_entity_range_provider(
-            sz_t i_begin, sz_t i_end) noexcept;
-
-        template <typename TContext>
-        auto make_multi_data_proxy(
-            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end);
-
-        template <typename TContext>
-        auto make_slice_executor(
-            TContext& ctx, sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept;
-
-        template <typename TContext, typename TF>
-        auto make_bound_slice_executor(TContext& ctx, sz_t state_idx,
-            sz_t i_begin, sz_t i_end, TF& f) noexcept;
+        /// @brief Execute a function on all entities except a range subset of
+        /// entities.
+        template <typename TF>
+        void for_other_entities(sz_t i_begin, sz_t i_end, TF&& f);
     };
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

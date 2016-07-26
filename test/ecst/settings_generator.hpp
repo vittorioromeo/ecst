@@ -84,7 +84,7 @@ namespace test
 
     template <typename TF, typename TEntityCount, typename TCSL, typename TSSL>
     void run_tests(
-        TF&& f, TEntityCount ec, TCSL csl, TSSL ssl, bool silent = false)
+        TF f, TEntityCount ec, TCSL csl, TSSL ssl, bool silent = false)
     {
         using vrm::core::sz_t;
         constexpr sz_t times = 2;

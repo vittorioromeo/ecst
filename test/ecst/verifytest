@@ -1,0 +1,29 @@
+#!/bin/bash
+clear; clear;
+
+FLAGS='-std=c++14 -g -W -Wall -Wextra -Wpedantic -lpthread -I/home/vittorioromeo/OHWorkspace/ecst/include -I/home/vittorioromeo/OHWorkspace/vrm_core/include -I/home/vittorioromeo/OHWorkspace/vrm_pp/include'
+
+# -lboost_system -lboost_thread -lboost_chrono -lsfml-system -lsfml-window -lsfml-graphics -D_GLIBCXX_DEBUG
+
+fn()
+{
+    echo "$1 $2"
+
+    echo "Optimization level: O0"
+    time $1 $FLAGS -O0 -fsanitize=$2 -o "/tmp/$3.x" $4 && "/tmp/$3.x"
+
+    echo "Optimization level: O2"
+    time $1 $FLAGS -O2 -fsanitize=$2 -o "/tmp/$3.x" $4 && "/tmp/$3.x"
+    
+    echo "$1 $2 done"
+}
+
+# (fn clang++ undefined x0 $1) 
+# (fn clang++ address x1 $1) 
+# (fn clang++ memory x2 $1) 
+
+(fn g++ undefined x3 $1) 
+(fn g++ address x4 $1) 
+# (fn g++ memory x5 $1) 
+
+wait

@@ -5,5 +5,6 @@
 
 #pragma once
 
-#include "./make/single.hpp"
-#include "./make/multi.hpp"
+#include "./impl/base.inl"
+#include "./impl/single.inl"
+#include "./impl/multi.inl"

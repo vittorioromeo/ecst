@@ -48,6 +48,8 @@ ECST_CONTEXT_NAMESPACE
 
             system_storage_type _system_storage;
 
+            scheduler_type _scheduler;
+
         public:
             /// @brief Executes `f` on all systems, sequentially.
             template <typename TF>

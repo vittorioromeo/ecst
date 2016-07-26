@@ -33,7 +33,6 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
     public:
         task_group() = default;
-        ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(task_group);
 
         template <typename TID>
         auto& task_by_id(TID id) noexcept
@@ -48,7 +47,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             typename TContext, // .
             typename TF        // .
             >
-        void start_from_task_id(TBlocker& b, TID id, TContext& sp, TF&& f)
+        void start_from_task_id(TBlocker& b, TID id, TContext& sp, TF& f)
         {
             task_by_id(id).run(*this, b, id, sp, f);
         }

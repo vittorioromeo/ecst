@@ -9,6 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/tag.hpp>
 #include <ecst/signature/system.hpp>
+#include "./data_proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {

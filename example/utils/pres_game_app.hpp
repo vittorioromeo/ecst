@@ -31,6 +31,7 @@ namespace example
 
             while(true)
             {
+                auto focus = window().hasFocus();
                 auto cb = hrc.now();
 
 
@@ -41,7 +42,8 @@ namespace example
 
                 window().clear();
 
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                if(focus &&
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
                 {
                     _ctx.step([](auto& proxy)
                         {
@@ -61,12 +63,13 @@ namespace example
                 }
 
 
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
+                if(focus &&
+                    sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Escape))
                 {
                     _running = false;
                 }
 
-                if(_delay <= 0 &&
+                if(_delay <= 0 && focus &&
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X))
                 {
                     _delay = 0.4f;
@@ -85,7 +88,7 @@ namespace example
                 vec2f mpos = window().mapPixelToCoords(mposi);
 
 
-                if(_delay <= 0 &&
+                if(_delay <= 0 && focus &&
                     sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
                     _delay = 0.06f;
@@ -97,7 +100,7 @@ namespace example
 
                 _kill_pls = false;
 
-                if(_delay <= 0 &&
+                if(_delay <= 0 && focus &&
                     sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
 
                 {

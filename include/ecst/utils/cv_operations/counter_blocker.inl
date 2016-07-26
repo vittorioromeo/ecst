@@ -10,22 +10,22 @@
 
 ECST_NAMESPACE
 {
-    /// @brief Decrements `cb`'s counter by one, and calls `notify_one` on the
-    /// inner condition variable.
+    counter_blocker::counter_blocker(
+        impl::counter_inner_type initial_count) noexcept
+        : _counter{initial_count}
+    {
+    }
+
     void counter_blocker::decrement_and_notify_one() noexcept
     {
         impl::decrement_cv_counter_and_notify_one(_mutex, _cv, _counter);
     }
 
-    /// @brief Decrements `cb`'s counter by one, and calls `notify_all` on the
-    /// inner condition variable.
     void counter_blocker::decrement_and_notify_all() noexcept
     {
         impl::decrement_cv_counter_and_notify_all(_mutex, _cv, _counter);
     }
 
-    /// @brief Executes `f` and waits until the blocker's counter is zero. Uses
-    /// the blocker's synchronization primitives.
     template <typename TF>
     void counter_blocker::execute_and_wait_until_zero(TF && f) noexcept(
         noexcept(f()))

@@ -81,12 +81,8 @@ ECST_CONTEXT_NAMESPACE
         {
             ECST_S_ASSERT_DT(tag::system::is_list(sstl));
 
-            // TODO: store instance in system_manager for stateful schedulers?
-            // scheduler_type must be movable in that case
-            scheduler_type s;
-
             auto os = bh::overload_linearly(FWD(fs)...);
-            s.execute(context, sstl, os);
+            _scheduler.execute(context, sstl, os);
         }
 
         template <typename TSettings>
