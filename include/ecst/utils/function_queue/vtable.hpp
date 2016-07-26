@@ -10,6 +10,7 @@
 #include "./dependencies.hpp"
 #include "./aliases.hpp"
 
+// TODO: fn_queue namespace
 ECST_NAMESPACE
 {
     /// @brief Namespace dealing with vtable options and construction.
