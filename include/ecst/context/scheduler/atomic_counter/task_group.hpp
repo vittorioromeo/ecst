@@ -33,7 +33,6 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
     public:
         task_group() = default;
-        ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(task_group);
 
         template <typename TID>
         auto& task_by_id(TID id) noexcept
