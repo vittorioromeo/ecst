@@ -11,7 +11,7 @@
 #include "./vtable.hpp"
 
 // TODO:
-ECST_NAMESPACE
+ECST_FUNCTION_QUEUE_NAMESPACE
 {
     namespace impl
     {
@@ -39,4 +39,4 @@ ECST_NAMESPACE
         }
     }
 }
-ECST_NAMESPACE_END
+ECST_FUNCTION_QUEUE_NAMESPACE_END

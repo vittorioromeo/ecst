@@ -18,3 +18,4 @@
 #include "./names/context.hpp"
 #include "./names/inner_parallelism.hpp"
 #include "./names/system_execution_adapter.hpp"
+#include "./names/function_queue.hpp"

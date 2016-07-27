@@ -8,10 +8,10 @@
 #include <ecst/config.hpp>
 #include "./dependencies.hpp"
 
-ECST_NAMESPACE
+ECST_FUNCTION_QUEUE_NAMESPACE
 {
     /// @brief Alias for a function pointer.
     template <typename TSignature>
     using fn_ptr = TSignature*;
 }
-ECST_NAMESPACE_END
+ECST_FUNCTION_QUEUE_NAMESPACE_END

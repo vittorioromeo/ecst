@@ -13,12 +13,14 @@ struct test_struct
     }
 };
 
+using namespace ecst::function_queue;
+
 template <typename TSignature, std::size_t TBufferSize>
 struct function_queue_test_adapter
 {
 private:
     std::vector<std::function<TSignature>> _fn_vec;
-    ecst::fixed_function_queue<TSignature, TBufferSize> _fn_queue;
+    fixed_function_queue<TSignature, TBufferSize> _fn_queue;
 
 public:
     template <typename TF>
@@ -196,7 +198,7 @@ void copy_tests()
         int acc = 0;
         int one = 1;
 
-        ecst::fixed_function_queue<void(int), 512> ta;
+        fixed_function_queue<void(int), 512> ta;
 
         ta.emplace([&acc, px](int x)
             {
@@ -262,7 +264,7 @@ void move_tests()
         int acc = 0;
         int one = 1;
 
-        ecst::fixed_function_queue<void(int), 512> ta;
+        fixed_function_queue<void(int), 512> ta;
 
         ta.emplace([&acc, px = std::move(px) ](int x)
             {
@@ -325,7 +327,7 @@ int main()
 
     test_struct xxx;
 
-    ecst::fixed_function_queue<void(int), 512> f0;
+    fixed_function_queue<void(int), 512> f0;
 
 
     f0.emplace([ xxx, aaa = 100 ](int x)

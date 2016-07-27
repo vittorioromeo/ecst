@@ -13,7 +13,7 @@
 #include "./vtable.hpp"
 #include "./fixed_storage.hpp"
 
-ECST_NAMESPACE
+ECST_FUNCTION_QUEUE_NAMESPACE
 {
     template <typename TSignature, sz_t TBufferSize>
     class fixed_function_queue;
@@ -52,4 +52,4 @@ ECST_NAMESPACE
         }
     };
 }
-ECST_NAMESPACE_END
+ECST_FUNCTION_QUEUE_NAMESPACE_END

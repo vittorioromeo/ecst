@@ -10,8 +10,7 @@
 #include "./dependencies.hpp"
 #include "./aliases.hpp"
 
-// TODO: fn_queue namespace
-ECST_NAMESPACE
+ECST_FUNCTION_QUEUE_NAMESPACE
 {
     /// @brief Namespace dealing with vtable options and construction.
     namespace vtable
@@ -213,4 +212,4 @@ ECST_NAMESPACE
         vtable::option::move_t                 // .
         >;
 }
-ECST_NAMESPACE_END
+ECST_FUNCTION_QUEUE_NAMESPACE_END

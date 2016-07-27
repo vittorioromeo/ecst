@@ -9,7 +9,7 @@
 #include <ecst/aliases.hpp>
 #include "./dependencies.hpp"
 
-ECST_NAMESPACE
+ECST_FUNCTION_QUEUE_NAMESPACE
 {
     /// @brief Round up `x` to the nearest multiple of `multiple`.
     template <typename T0, typename T1>
@@ -22,4 +22,4 @@ ECST_NAMESPACE
         return ((x + multiple - 1) / multiple) * multiple;
     }
 }
-ECST_NAMESPACE_END
+ECST_FUNCTION_QUEUE_NAMESPACE_END
