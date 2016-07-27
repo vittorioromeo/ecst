@@ -322,6 +322,13 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 void move_copy_all_impl(TRhs&& rhs, TOption o)
                 {
                     // TODO: optimize: traverse only once.
+                    /*
+                        // alternates between fn and vt
+                        traverse(
+                            [](auto& vt, auto fn_ptr){ },
+                            [](auto vt_ptr){ }
+                        );
+                    */
 
                     VRM_CORE_STATIC_ASSERT_NM(
                         vtable::has_option(vtable_type{}, o));
