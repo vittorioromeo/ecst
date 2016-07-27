@@ -34,12 +34,14 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 /// @brief Alignment of vtables and callable objects.
                 static constexpr auto alignment = alignof(std::max_align_t);
 
+                /*
                 /// @brief Rounds `x` up to the next multiple of `alignment`.
                 template <typename T>
                 constexpr auto round_up_to_alignment(T x) const noexcept
                 {
                     return multiple_round_up(x, alignment);
                 }
+                */
 
                 // TODO: use in place of `_vtable_ptrs`.
                 static constexpr auto max_vtable_ptrs =
@@ -86,6 +88,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                     return ptr - buffer_ptr();
                 }
 
+                /*
                 /// @brief Given an offset `x`, returns the pointer at that
                 /// offset inside `_buffer`.
                 /// @details Non-`const` version.
@@ -109,20 +112,14 @@ ECST_FUNCTION_QUEUE_NAMESPACE
 
                     return static_cast<const char*>(buffer_ptr() + x);
                 }
+                */
 
                 /// @brief Given a `_buffer` pointer `ptr`, returns the next
                 /// aligned pointer residing inside the buffer.
                 /// @details Non-`const` version.
                 auto get_next_aligned_ptr(char* ptr) noexcept
                 {
-                    // Get the offset of `ptr` inside `_buffer`.
-                    const auto ofb = offset_from_beginning(ptr);
-
-                    // Get the next offset (rounded up to `alignment`).
-                    const auto next_ofb = round_up_to_alignment(ofb);
-
-                    // Convert the new offset to a pointer and return it.
-                    return buffer_ptr_from_offset(next_ofb);
+                    return next_aligned_ptr<alignment>(ptr);
                 }
 
                 /// @brief Given a `_buffer` pointer `ptr`, returns the next
@@ -130,14 +127,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 /// @details `const` version.
                 auto get_next_aligned_ptr(const char* ptr) const noexcept
                 {
-                    // Get the offset of `ptr` inside `_buffer`.
-                    const auto ofb = offset_from_beginning(ptr);
-
-                    // Get the next offset (rounded up to `alignment`).
-                    const auto next_ofb = round_up_to_alignment(ofb);
-
-                    // Convert the new offset to a pointer and return it.
-                    return buffer_ptr_from_offset(next_ofb);
+                    return next_aligned_ptr<alignment>(ptr);
                 }
 
                 /// @brief Given a vtable pointer `vt_ptr` returns the next
@@ -209,16 +199,14 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                     auto& vt = *(reinterpret_cast<vtable_type*>(ptr));
 
                     // Get the aligned position where the callable object will
-                    // be
-                    // emplaced.
+                    // be emplaced.
                     auto fn_start_ptr = ptr + sizeof(vtable_type);
 
                     // Emplace the callable object.
                     ptr = emplace_fn_at(fn_start_ptr, FWD(f));
 
                     // Bind the vtable to the callable object and add it to the
-                    // vtable
-                    // vector.
+                    // vtable vector.
                     bind_vtable_to_fn<TF>(vt);
                     subscribe_vtable(vt);
 

@@ -28,11 +28,12 @@ ECST_FUNCTION_QUEUE_NAMESPACE
 
                 static constexpr auto alignment = alignof(std::max_align_t);
 
+                /*
                 template <typename T>
                 constexpr auto round_up_to_alignment(T x) const noexcept
                 {
                     return multiple_round_up(x, alignment);
-                }
+                }*/
 
             public:
             };

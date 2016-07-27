@@ -59,9 +59,9 @@ ECST_FUNCTION_QUEUE_NAMESPACE
             class maker<TReturn(TArgs...)>
             {
             private:
-                // TODO: fix docs
                 /// @brief Call function pointer type.
                 /// @details The first parameter is the callable object.
+                /// The other parameters are its parameters.
                 using call_fp = fn_ptr<TReturn(char*, TArgs...)>;
 
                 /// @brief Dtor function pointer type.
@@ -69,15 +69,13 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 using dtor_fp = fn_ptr<void(char*)>;
 
                 /// @brief Copy ctor function pointer type.
-                /// @details The first parameter is the vtable.
-                /// The second parameter is the src callable object.
-                /// The third parameter is the dst callable object.
+                /// @details The first parameter is the src callable object.
+                /// The second parameter is the dst callable object.
                 using copy_fp = fn_ptr<void(const char*, char*)>;
 
                 /// @brief Move ctor function pointer type.
-                /// @details The first parameter is the vtable.
-                /// The second parameter is the src callable object.
-                /// The third parameter is the dst callable object.
+                /// @details The first parameter is the src callable object.
+                /// The second parameter is the dst callable object.
                 using move_fp = fn_ptr<void(char*, char*)>;
 
             public:

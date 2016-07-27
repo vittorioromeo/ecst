@@ -154,7 +154,8 @@ TEST_MAIN()
 
     namespace sea = ::ecst::system_execution_adapter;
 
-    auto ctx = ecst::context::make(context_settings);
+    auto xctx = ecst::context::make_uptr(context_settings);
+    auto& ctx = *xctx;
     ctx.step([](auto& proxy)
         {
             proxy.execute_systems_from(stag_movement)(
