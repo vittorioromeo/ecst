@@ -29,16 +29,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
-
+#if 1
         template <typename TSettings>
         class deferred_fns_vector
         {
         private:
             using defer_proxy_type = context::impl::defer::proxy<TSettings>;
+            using fn_type = std::function<void(defer_proxy_type&)>;
 
             /// @brief A "deferred function" is a void-returning `std::function`
-            /// that takes a "defer proxy" by reference as its only parameter.
-            using fn_type = std::function<void(defer_proxy_type&)>;
+            /// that takes a "defer proxy" by reference as its only
+            /// parameter.using fn_type =
+            /// std::function<void(defer_proxy_type&)>;
 
             std::vector<fn_type> _fns;
 
@@ -63,8 +65,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 }
             }
         };
+#else
 
-        /*
         template <typename TSettings>
         class deferred_fns_vector
         {
@@ -73,10 +75,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief A "deferred function" is a void-returning `std::function`
             /// that takes a "defer proxy" by reference as its only parameter.
-            using fn_type = std::function<void(defer_proxy_type&)>;
+            using que_type =
+                function_queue::fixed_function_queue<void(defer_proxy_type&),
+                    1024 * 1024 * 10>;
 
-            function_queue::fixed_function_queue<void(defer_proxy_type&),
-                1024 * 1024 * 10> _fns;
+
+            que_type _fns;
 
         public:
             void clear() noexcept
@@ -96,7 +100,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 _fns.call_all(proxy);
             }
         };
-*/
+#endif
+
         // TODO: use function_queue
 
         /// @brief A "system state" is a storage class bound to a particular

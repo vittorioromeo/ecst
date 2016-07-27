@@ -18,18 +18,5 @@ ECST_FUNCTION_QUEUE_NAMESPACE
     {
         return aligned_ptr<TAlignment>(ptr + 1);
     }
-
-    /*
-    /// @brief Round up `x` to the nearest multiple of `multiple`.
-    template <typename T0, typename T1>
-    constexpr auto multiple_round_up(T0 x, T1 multiple) noexcept
-    {
-        ECST_S_ASSERT(std::is_arithmetic<T0>{});
-        ECST_S_ASSERT(std::is_arithmetic<T1>{});
-
-        VRM_CORE_CONSTEXPR_ASSERT(multiple != 0);
-        return ((x + multiple - 1) / multiple) * multiple;
-    }
-    */
 }
 ECST_FUNCTION_QUEUE_NAMESPACE_END

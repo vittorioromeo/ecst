@@ -154,8 +154,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
         template <typename TOption, typename TVTable, typename... Ts>
         void exec_fp(TOption o, TVTable& vt, Ts&&... xs)
         {
-            auto& fp = bh::at_key(vt, o);
-            (*fp)(FWD(xs)...);
+            (*bh::at_key(vt, o))(FWD(xs)...);
         }
 
         template <typename TVTable, typename TOption>

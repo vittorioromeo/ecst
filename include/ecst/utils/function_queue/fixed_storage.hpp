@@ -6,6 +6,7 @@
 #pragma once
 
 #include <ecst/config.hpp>
+#include <ecst/utils/sparse_int_set.hpp>
 #include "./dependencies.hpp"
 #include "./aliases.hpp"
 #include "./vtable.hpp"
@@ -34,29 +35,27 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 /// @brief Alignment of vtables and callable objects.
                 static constexpr auto alignment = alignof(std::max_align_t);
 
-                /*
-                /// @brief Rounds `x` up to the next multiple of `alignment`.
-                template <typename T>
-                constexpr auto round_up_to_alignment(T x) const noexcept
-                {
-                    return multiple_round_up(x, alignment);
-                }
-                */
-
                 // TODO: use in place of `_vtable_ptrs`.
                 static constexpr auto max_vtable_ptrs =
-                    sizeof(vtable_type*) / buffer_size;
+                    buffer_size / sizeof(vtable_type*);
+
+                // TODO:
+                std::array<vtable_type*, max_vtable_ptrs> _vtable_ptrs;
 
                 /// @brief Fixed buffer that stores vtables and callable
                 /// objects.
                 std::aligned_storage_t<buffer_size, alignment> _buffer;
 
+                // TODO:
                 /// @brief List of vtable pointers.
                 /// @details The vtables are stored in `_buffer`.
-                std::vector<vtable_type*> _vtable_ptrs;
+                //  std::vector<vtable_type*> _vtable_ptrs;
 
                 /// @brief Next free spot inside `_buffer`.
                 char* _next;
+
+                // TODO:
+                sz_t _next_vp_idx;
 
                 /// @brief Returns the address of `_buffer`.
                 /// @details Non-`const` version.
@@ -87,32 +86,6 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 {
                     return ptr - buffer_ptr();
                 }
-
-                /*
-                /// @brief Given an offset `x`, returns the pointer at that
-                /// offset inside `_buffer`.
-                /// @details Non-`const` version.
-                template <typename T>
-                auto buffer_ptr_from_offset(T x) noexcept
-                {
-                    ECST_S_ASSERT(std::is_arithmetic<T>{});
-                    ECST_S_ASSERT(std::is_unsigned<T>{});
-
-                    return static_cast<char*>(buffer_ptr() + x);
-                }
-
-                /// @brief Given an offset `x`, returns the pointer at that
-                /// offset inside `_buffer`.
-                /// @details `const` version.
-                template <typename T>
-                auto buffer_ptr_from_offset(T x) const noexcept
-                {
-                    ECST_S_ASSERT(std::is_arithmetic<T>{});
-                    ECST_S_ASSERT(std::is_unsigned<T>{});
-
-                    return static_cast<const char*>(buffer_ptr() + x);
-                }
-                */
 
                 /// @brief Given a `_buffer` pointer `ptr`, returns the next
                 /// aligned pointer residing inside the buffer.
@@ -183,7 +156,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
 
                 void subscribe_vtable(vtable_type& vt)
                 {
-                    _vtable_ptrs.emplace_back(&vt);
+                    _vtable_ptrs[_next_vp_idx++] = &vt;
                 }
 
                 template <typename TF>
@@ -198,8 +171,8 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                     ptr = emplace_vtable_at(ptr);
                     auto& vt = *(reinterpret_cast<vtable_type*>(ptr));
 
-                    // Get the aligned position where the callable object will
-                    // be emplaced.
+                    // Get the position where the callable object will be
+                    // emplaced.
                     auto fn_start_ptr = ptr + sizeof(vtable_type);
 
                     // Emplace the callable object.
@@ -244,19 +217,33 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 template <typename TSelf, typename TF>
                 static void for_vts_impl(TSelf&& self, TF&& f)
                 {
+                    for(sz_t i(0); i < self._next_vp_idx; ++i)
+                    {
+                        f(self._vtable_ptrs[i]);
+                    }
+
+                    /*
                     for(auto vt_ptr : self._vtable_ptrs)
                     {
                         f(vt_ptr);
                     }
+                    */
                 }
 
                 template <typename TSelf, typename TF>
                 static void for_fns_impl(TSelf&& self, TF&& f)
                 {
+                    self.for_vts_impl(self, [&self, f = FWD(f) ](auto vt_ptr)
+                        {
+                            self.call_fn_from_vt_ptr(vt_ptr, f);
+                        });
+
+                    /*
                     for(auto vt_ptr : self._vtable_ptrs)
                     {
                         self.call_fn_from_vt_ptr(vt_ptr, FWD(f));
                     }
+                    */
                 }
 
                 template <typename TF>
@@ -291,11 +278,19 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 void for_fns_reverse(TF&& f)
                 // TODO: noexcept
                 {
+                    ecst::impl::reverse_loop(sz_t(0), _next_vp_idx, // .
+                        [ this, f = FWD(f) ](auto idx)
+                        {
+                            this->call_fn_from_vt_ptr(_vtable_ptrs[idx], f);
+                        });
+
+                    /*
                     for(auto itr = std::rbegin(_vtable_ptrs);
                         itr != std::rend(_vtable_ptrs); ++itr)
                     {
                         call_fn_from_vt_ptr(*itr, FWD(f));
                     }
+                    */
                 }
 
                 void destroy_all()
@@ -349,7 +344,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 }
 
             public:
-                fixed() noexcept : _next{buffer_ptr()}
+                fixed() noexcept : _next{buffer_ptr()}, _next_vp_idx(0)
                 {
                 }
 
@@ -361,7 +356,8 @@ ECST_FUNCTION_QUEUE_NAMESPACE
 
                 fixed(const fixed& rhs)
                     : _vtable_ptrs{rhs._vtable_ptrs},
-                      _next{buffer_ptr() + offset_from_beginning(rhs._next)}
+                      _next{buffer_ptr() + offset_from_beginning(rhs._next)},
+                      _next_vp_idx{rhs._next_vp_idx}
                 {
                     copy_all(rhs);
                 }
@@ -370,6 +366,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 {
                     _vtable_ptrs = rhs._vtable_ptrs;
                     _next = buffer_ptr() + offset_from_beginning(rhs._next);
+                    _next_vp_idx = rhs._next_vp_idx;
                     copy_all(rhs);
 
                     return *this;
@@ -378,7 +375,8 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 fixed(fixed&& rhs)
                     // Cannot move `_vtable_ptrs` as they contain dtor fn ptrs.
                     : _vtable_ptrs{rhs._vtable_ptrs},
-                      _next{buffer_ptr() + offset_from_beginning(rhs._next)}
+                      _next{buffer_ptr() + offset_from_beginning(rhs._next)},
+                      _next_vp_idx{rhs._next_vp_idx}
                 {
                     move_all(rhs);
                 }
@@ -388,6 +386,7 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                     // Cannot move `_vtable_ptrs` as they contain dtor fn ptrs.
                     _vtable_ptrs = rhs._vtable_ptrs;
                     _next = buffer_ptr() + offset_from_beginning(rhs._next);
+                    _next_vp_idx = rhs._next_vp_idx;
                     move_all(rhs);
 
                     return *this;
@@ -414,7 +413,8 @@ ECST_FUNCTION_QUEUE_NAMESPACE
                 void clear()
                 {
                     destroy_all();
-                    _vtable_ptrs.clear();
+                    // _vtable_ptrs.clear();
+                    _next_vp_idx = 0;
                     _next = buffer_ptr();
                 }
             };
