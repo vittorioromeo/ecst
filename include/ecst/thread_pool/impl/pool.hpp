@@ -71,8 +71,6 @@ namespace etp
             initialize_workers(worker_count);
         }
 
-        ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(pool);
-
         ~pool()
         {
             // Busy wait for all workers to be initialized.
