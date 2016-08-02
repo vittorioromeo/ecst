@@ -295,9 +295,11 @@ namespace example
 
             static constexpr sz_t cell_count = grid_width * grid_height;
 
-            // The grid is a simple 1D array of cells.
-            // A cell is a vector of entity IDs.
-            using cell_type = std::vector<ecst::entity_id>;
+            struct cell_type
+            {
+                std::vector<ecst::entity_id> _v;
+            };
+
             std::array<std::array<cell_type, grid_height>, grid_width> _grid;
 
             // Clear all cells from the particles.
@@ -307,14 +309,14 @@ namespace example
                 {
                     for(auto& c : y)
                     {
-                        c.clear();
+                        c._v.clear();
                     }
                 }
             }
 
             auto& cell_by_idxs(sz_t x, sz_t y) noexcept
             {
-                return _grid[x + offset][y + offset];
+                return _grid[x + offset][y + offset]._v;
             }
 
             // Given an `sp_data`, emplaces an entity ID in a target cell.
@@ -801,7 +803,7 @@ namespace example
                     [&rt](auto&, auto& va)
                     {
                         // TODO:
-                        if(true)
+                        if(false)
                         {
                             rt.draw(va.data(), va.size(),
                                 sf::PrimitiveType::Triangles,
