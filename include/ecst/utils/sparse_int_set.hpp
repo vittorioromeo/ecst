@@ -21,6 +21,51 @@ ECST_NAMESPACE
 
     namespace impl
     {
+        // TODO: inferface for benchmarks
+        /*
+        struct adapted_bool_vec : public std::bitset<60000>
+        {
+            // using std::vector<bool>::vector;
+
+            template <typename T>
+            bool add(T x)
+            {
+                this->set(x, true);
+                return true;
+            }
+
+            template <typename T>
+            bool erase(T x)
+            {
+                this->set(x, false);
+                return true;
+            }
+
+            void clear()
+            {
+                this->reset();
+            }
+
+            template <typename TF>
+            void for_each(TF&& f)
+            {
+                for(sz_t i(0); i < 60000; ++i)
+                {
+                    if(this->test(i))
+                    {
+                        f(entity_id(i));
+                    }
+                }
+            }
+
+            template <typename T>
+            auto at(T x) const
+            {
+                return x;
+            }
+        };
+        */
+
         template <typename TSettings>
         auto dispatch_set_type() noexcept
         {
