@@ -370,6 +370,9 @@ namespace example
 
 // TODO: seems to be faster!
 #if 1
+                // TODO: nice syntax for subtask-related-state?
+                // TODO: generalize data.output() (?)
+                // e.g.:  data.state()._es
                 std::vector<ecst::entity_id> es;
                 es.reserve(data.entity_count());
 
