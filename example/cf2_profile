@@ -5,7 +5,7 @@ time g++ -std=c++14 \
         -I"/home/vittorioromeo/OHWorkspace/vrm_core/include" \
         -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
         -W -Wall -Wextra -pedantic \
-        -O2 -DNDEBUG \
+        -O3 -DNDEBUG \
         -g \
         -lpthread \
         -lsfml-system -lsfml-graphics -lsfml-window \
@@ -13,7 +13,7 @@ time g++ -std=c++14 \
         $1 -o /tmp/x.x &> error.out
 
 if [ $? == 0 ]; then
-    echo "Compiled." && cat ./error.out | ./simplify_error.py 0 && valgrind --tool=callgrind --demangle=yes /tmp/x.x "${@:2}" 
+    echo "Compiled." && cat ./error.out | ./simplify_error.py 0 && valgrind --tool=callgrind --demangle=yes --simulate-cache=yes --cacheuse=yes /tmp/x.x "${@:2}" 
 else
     echo "Failed." && cat ./error.out | ./simplify_error.py 0
 fi

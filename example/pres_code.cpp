@@ -368,7 +368,44 @@ namespace example
                 auto& o = data.output();
                 o.clear();
 
+// TODO: seems to be faster!
+#if 1
+                std::vector<ecst::entity_id> es;
+                es.reserve(data.entity_count());
+
                 // For every entity in the subtask...
+                data.for_entities([&](auto eid)
+                    {
+                        es.emplace_back(eid);
+                    });
+
+                std::sort(es.begin(), es.end(), [this, &data](auto a, auto b)
+                    {
+                        const auto& pa = data.get(ct::position, a)._v;
+                        const auto& pb = data.get(ct::position, b)._v;
+
+                        if(this->idx(pa.x) != this->idx(pb.x))
+                        {
+                            return pa.x < pb.x;
+                        }
+
+                        return pa.y < pb.y;
+                    });
+
+                for(auto eid : es)
+                {
+                    // Access component data.
+                    const auto& p = data.get(ct::position, eid)._v;
+                    const auto& c = data.get(ct::circle, eid)._radius;
+
+                    // Figure out the broadphase cell and emplace an
+                    // `sp_data` instance in the output vector.
+                    this->for_cells_of(p, c, [eid, &o](auto cx, auto cy)
+                        {
+                            o.emplace_back(eid, cx, cy);
+                        });
+                }
+#else
                 data.for_entities([&](auto eid)
                     {
                         // Access component data.
@@ -382,6 +419,7 @@ namespace example
                                 o.emplace_back(eid, cx, cy);
                             });
                     });
+#endif
             }
         };
 
@@ -399,6 +437,55 @@ namespace example
                 // Get a reference to the `spatial_partition` system.
                 auto& sp = data.system(st::spatial_partition);
 
+// TODO: seems to be slower
+#if 0
+                std::vector<ecst::entity_id> es;
+                es.reserve(data.entity_count());
+
+                data.for_entities([&](auto eid)
+                    {
+                        es.emplace_back(eid);
+                    });
+
+                std::sort(es.begin(), es.end(), [&](auto a, auto b)
+                    {
+                        const auto& pa = data.get(ct::position, a)._v;
+                        const auto& pb = data.get(ct::position, b)._v;
+
+                        if(sp.idx(pa.x) != sp.idx(pb.x))
+                        {
+                            return pa.x < pb.x;
+                        }
+
+                        return pa.y < pb.y;
+                    });
+
+                for(auto eid : es)
+                {
+                    // Access the component data.
+                    auto& p0 = data.get(ct::position, eid)._v;
+                    const auto& r0 = data.get(ct::circle, eid)._radius;
+
+                    // Access the grid cell containing position `p0`.
+                    auto& cell = sp.cell_by_pos(p0);
+
+                    // For every unique entity ID pair...
+                    for_unique_pairs(cell, eid, [&](auto eid2)
+                        {
+                            // Access the second particle's component data.
+                            auto& p1 = data.get(ct::position, eid2)._v;
+                            const auto& r1 = data.get(ct::circle, eid2)._radius;
+
+                            // Check for a circle-circle collision.
+                            auto sd = distance(p0, p1);
+                            if(sd <= r0 + r1)
+                            {
+                                // Emplace a `contact` in the output.
+                                out.emplace_back(eid, eid2, sd);
+                            }
+                        });
+                }
+#else
                 // For every entity in the subtask...
                 data.for_entities([&](auto eid)
                     {
@@ -426,6 +513,7 @@ namespace example
                                 }
                             });
                     });
+#endif
             }
         };
 
@@ -803,7 +891,7 @@ namespace example
                     [&rt](auto&, auto& va)
                     {
                         // TODO:
-                        if(false)
+                        if(true)
                         {
                             rt.draw(va.data(), va.size(),
                                 sf::PrimitiveType::Triangles,
