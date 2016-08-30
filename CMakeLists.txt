@@ -17,6 +17,23 @@ vrm_cmake_init_project(ecst)
 vrm_cmake_find_extlib(vrm_pp)
 vrm_cmake_find_extlib(vrm_core)
 
+# TODO: improve/remove MinGW devel environment setup
+set(WIN_MINGW_DEVEL true)
+if(DEFINED WIN_MINGW_DEVEL)
+#{
+    add_definitions("-DECST_USE_MEGANZ_MINGW_THREAD")
+
+    find_package(SFML)
+    find_package(Boost 1.60.0 COMPONENTS thread)
+
+    link_directories("${CMAKE_SOURCE_DIR}/../SFML/lib/")
+
+    include_directories("${CMAKE_SOURCE_DIR}/../SFML/include/")
+    include_directories("${CMAKE_SOURCE_DIR}/../hana/include/")
+    include_directories(${Boost_INCLUDE_DIRS})
+#}
+endif()
+
 # Alias the include directory.
 set(ECST_INC_DIR "${ECST_SOURCE_DIR}/include/")
 include_directories("${ECST_INC_DIR}")
@@ -37,8 +54,16 @@ vrm_cmake_header_only_install_glob("${ECST_INC_DIR}" "include")
 # vrm_cmake_add_common_compiler_flags_suggest_attribute()
 
 add_executable(particles "${ECST_SOURCE_DIR}/example/particles.cpp")
-target_link_libraries(particles pthread)
-
 add_executable(pres_code "${ECST_SOURCE_DIR}/example/pres_code.cpp")
-# target_link_libraries(pres_code boost_system boost_thread sfml-system sfml-graphics sfml-window)
-target_link_libraries(pres_code pthread sfml-system sfml-graphics sfml-window)
+
+if(DEFINED WIN_MINGW_DEVEL)
+#{
+    target_link_libraries(particles boost_system boost_thread)
+    target_link_libraries(pres_code boost_system boost_thread sfml-system sfml-graphics sfml-window)
+#}
+else()
+#{
+    target_link_libraries(particles pthread)
+    target_link_libraries(pres_code pthread sfml-system sfml-graphics sfml-window)
+#}
+endif()

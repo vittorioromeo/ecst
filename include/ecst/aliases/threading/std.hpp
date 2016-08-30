@@ -7,16 +7,18 @@
 
 #include <ecst/config.hpp>
 
-// TODO: remove
-/*
+#ifdef ECST_USE_MEGANZ_MINGW_THREAD
+
+#pragma GCC system_header
+
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 
 // https://github.com/meganz/mingw-std-threads
-#include <mingw.thread.h>
-#include <mingw.mutex.h>
-#include <mingw.condition_variable.h>
+#include "./third_party/mingw-std-threads/mingw.thread.h"
+#include "./third_party/mingw-std-threads/mingw.mutex.h"
+#include "./third_party/mingw-std-threads/mingw.condition_variable.h"
 
 #define BOOST_THREAD_PROVIDES_FUTURE 1
 #include <boost/thread/future.hpp>
@@ -34,7 +36,8 @@ namespace std
 }
 
 #define _GLIBCXX_FUTURE 1
-*/
+
+#endif
 
 #include <chrono>
 #include <thread>
