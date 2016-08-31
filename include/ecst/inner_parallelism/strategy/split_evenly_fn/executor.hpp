@@ -29,6 +29,8 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                     auto split_count = getter();
                     auto per_split = inst.subscribed_count() / split_count;
 
+                    ECST_ASSERT_OP(inst.subscribed_count(), >=, split_count);
+
                     ELOG(                                                   // .
                         debug::lo_instance_parallelism()                    // .
                             << "split_evenly_fn:(" << inst.system_id()      // .
