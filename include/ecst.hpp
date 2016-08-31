@@ -49,3 +49,6 @@
 
 // Implementation of make functions (default settings).
 #include "./ecst/make_inl.hpp"
+
+// TODO: write tests for empty instances and for instances becoming empty after
+// N steps
