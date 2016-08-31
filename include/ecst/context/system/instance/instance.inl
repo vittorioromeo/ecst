@@ -123,12 +123,18 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
+    void instance<TSettings, TSystemSignature>::prepare_single_subtask()
+    {
+        _sm.clear_and_prepare(1);
+    }
+
+    template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_single( // .
         TContext & ctx, TF & f                                  // .
         )
     {
-        _sm.clear_and_prepare(1);
+        prepare_single_subtask();
 
         // Create single-subtask data proxy.
         auto dp = data_proxy::make_single<TSystemSignature>(*this, ctx);

@@ -114,6 +114,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
+        // TODO: docs
+        void prepare_single_subtask();
+
         /// @brief Clears and allocates subtask states.
         /// @details Executes a subtask in the current thread and forwards `n -
         /// 1` subtasks to the thread pool. The `n` value must be at least `1`.
