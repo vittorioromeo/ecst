@@ -34,14 +34,20 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto ECST_PURE_FN instance<TSettings, TSystemSignature>::entity_range_count(
         sz_t i_begin, sz_t i_end) const noexcept
     {
+        // Assert range validity.
+        ECST_ASSERT_OP(i_begin, <=, i_end);
+
         return i_end - i_begin;
     }
 
     template <typename TSettings, typename TSystemSignature>
-    auto ECST_PURE_FN instance<TSettings,
-        TSystemSignature>::other_entity_range_count(sz_t i_begin, sz_t i_end)
-        const noexcept
+    auto ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::other_entity_range_count(
+        sz_t i_begin, sz_t i_end) const noexcept
     {
+        // Assert range validity.
+        ECST_ASSERT_OP(i_begin, <=, i_end);
+
         return (i_begin - sz_t(0)) + (subscribed_count() - i_end);
     }
 
@@ -57,8 +63,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     void instance<TSettings, TSystemSignature>::for_entities(
         sz_t i_begin, sz_t i_end, TF && f)
     {
-        // Assert that the range contains entities.
-        ECST_ASSERT_OP(i_end, >, i_begin);
+        // Note: it makes sense to call this function even on empty ranges -
+        // imagine a user-defined function that does some bookkeeping before
+        // calling any of the entity iteration functions.
+
+        // Assert range validity.
+        ECST_ASSERT_OP(i_begin, <=, i_end);
 
         for(sz_t i = i_begin; i < i_end; ++i)
         {
@@ -71,8 +81,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     void instance<TSettings, TSystemSignature>::for_other_entities(
         sz_t i_begin, sz_t i_end, TF && f)
     {
-        // Assert that the range contains entities.
-        ECST_ASSERT_OP(i_end, >, i_begin);
+        // Note: it makes sense to call this function even on empty ranges -
+        // imagine a user-defined function that does some bookkeeping before
+        // calling any of the entity iteration functions.
+
+        // Assert range validity.
+        ECST_ASSERT_OP(i_begin, <=, i_end);
 
         for(sz_t i = 0; i < i_begin; ++i)
         {
