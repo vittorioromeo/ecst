@@ -20,6 +20,9 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                 template <typename TInstance, typename TContext, typename TF>
                 void execute(TInstance& inst, TContext&, TF&& f)
                 {
+                    // Clean/allocate space for a state and an eventual output.
+                    inst.prepare_single_subtask();
+
                     // Immediately execute `f` in the zero-th state, with a
                     // range of entities equal to `[0, subscribed_count)`.
                     f(0, 0, inst.subscribed_count());
