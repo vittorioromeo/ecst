@@ -18,7 +18,7 @@ vrm_cmake_find_extlib(vrm_pp)
 vrm_cmake_find_extlib(vrm_core)
 
 # TODO: improve/remove MinGW devel environment setup
-set(WIN_MINGW_DEVEL true)
+# set(WIN_MINGW_DEVEL true)
 if(DEFINED WIN_MINGW_DEVEL)
 #{
     add_definitions("-DECST_USE_MEGANZ_MINGW_THREAD")
