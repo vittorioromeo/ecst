@@ -18,12 +18,12 @@ set_target_properties(HEADER_ONLY_TARGET3 PROPERTIES LINKER_LANGUAGE CXX)
 # Generate all the header unit tests.
 # vrm_cmake_generate_public_header_tests_glob("*.hpp" "${ECST_SOURCE_DIR}/include")
 
-# Link `pthread` to every generated header test.
-foreach(_x IN LISTS vrm_cmake_out)
-#{
-    target_link_libraries(${_x} pthread)
-#}
-endforeach()
+# # Link `pthread` to every generated header test.
+# foreach(_x IN LISTS vrm_cmake_out)
+# #{
+#     target_link_libraries(${_x} pthread)
+# #}
+# endforeach()
 
 # Generate all the unit tests.
 vrm_cmake_generate_unit_tests_glob("${ECST_SOURCE_DIR}/test/*.cpp")
@@ -31,6 +31,14 @@ vrm_cmake_generate_unit_tests_glob("${ECST_SOURCE_DIR}/test/*.cpp")
 # Link `pthread` to every generated test.
 foreach(_x IN LISTS vrm_cmake_out)
 #{
-    target_link_libraries(${_x} pthread)
+    if(DEFINED WIN_MINGW_DEVEL)
+    #{
+        target_link_libraries(${_x} boost_system boost_thread)
+    #}
+    else()
+    #{
+        target_link_libraries(${_x} pthread)
+    #}
+    endif()
 #}
 endforeach()
