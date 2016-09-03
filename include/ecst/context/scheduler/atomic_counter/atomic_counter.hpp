@@ -81,15 +81,15 @@ ECST_SCHEDULER_NAMESPACE
             // Aggregates the required synchronization objects.
             counter_blocker b(chain_size);
 
-            // Starts every independent task and waits until the remaining tasks
-            // counter reaches zero. We forward `f` into the lambda here, then
-            // refer to it everywhere else.
-            b.execute_and_wait_until_zero([this, &ctx, &b, &f, sstl]() mutable
-                {
-                    // TODO: avoid the reset call?
-                    my_task_group tg;
-                    this->reset(tg);
+            // Create task group.
+            my_task_group tg;
 
+            // Starts every independent task and waits until the remaining tasks
+            // counter reaches zero.
+            b.execute_and_wait_until_zero(
+                [this, &tg, &ctx, &b, &f, sstl]() mutable
+                {
+                    this->reset(tg);
                     this->start_execution(tg, ctx, sstl, b, f);
                 });
         }
