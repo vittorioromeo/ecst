@@ -5,5 +5,4 @@
 
 #pragma once
 
-#include "./executor_proxy/impl.hpp"
-#include "./executor_proxy/make.hpp"
+#include "./proxy/data/impl.inl"

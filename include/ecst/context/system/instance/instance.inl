@@ -6,8 +6,7 @@
 #pragma once
 
 #include "./instance.hpp"
-#include "./executor_proxy.hpp"
-#include "./data_proxy.hpp"
+#include "./proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -27,8 +26,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
-        : _sm{*this}, _bitset{bitset::make_from_system_signature(
-                          TSystemSignature{}, TSettings{})}
     {
         ELOG(                                                          // .
             debug::lo_system_bitset() << "(" << system_id()            // .
@@ -41,7 +38,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TF>
     decltype(auto) instance<TSettings, TSystemSignature>::for_states(TF && f)
     {
-        return _sm.for_states(FWD(f));
+        return this->state_manager().for_states(FWD(f));
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -94,7 +91,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // Prepare `n` states, but set the counter to `n - 1` since one of the
         // subtasks will be executed in the current thread.
-        _sm.clear_and_prepare(n);
+        this->state_manager().clear_and_prepare(n);
         counter_blocker b{n - 1};
 
         // Function accepting a callable object which will be executed in a
@@ -125,7 +122,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     void instance<TSettings, TSystemSignature>::prepare_single_subtask()
     {
-        _sm.clear_and_prepare(1);
+        this->state_manager().clear_and_prepare(1);
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -158,7 +155,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             f(dp);
         };
 
-        _parallel_executor.execute(*this, ctx, std::move(st));
+        this->parallel_executor().execute(*this, ctx, std::move(st));
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -197,17 +194,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    const auto& instance<TSettings, TSystemSignature>::bitset() const noexcept
-    {
-        return _bitset;
-    }
-
-    template <typename TSettings, typename TSystemSignature>
     template <typename TBitset>
     auto ECST_PURE_FN instance<TSettings, TSystemSignature>::matches_bitset(
         const TBitset& b) const noexcept
     {
-        return _bitset.contains(b);
+        return this->bitset().contains(b);
     }
 
     template <typename TSettings, typename TSystemSignature>

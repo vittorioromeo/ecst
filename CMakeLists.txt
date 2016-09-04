@@ -38,6 +38,11 @@ endif()
 set(ECST_INC_DIR "${ECST_SOURCE_DIR}/include/")
 include_directories("${ECST_INC_DIR}")
 
+# TODO: comment
+include_directories("/home/vittorioromeo/OHWorkspace/ecst/include")
+include_directories("/home/vittorioromeo/OHWorkspace/ecst/include/")
+include_directories("/home/vittorioromeo/OHWorkspace/ecst")
+
 # Other compiler flags.
 vrm_cmake_add_common_compiler_flags()
 

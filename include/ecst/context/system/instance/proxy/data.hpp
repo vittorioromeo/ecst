@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./data_proxy/impl.hpp"
-#include "./data_proxy/make.hpp"
+#include "./data/impl.hpp"
+#include "./data/make.hpp"

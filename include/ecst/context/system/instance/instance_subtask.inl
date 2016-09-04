@@ -20,7 +20,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto& ECST_PURE_FN instance<TSettings, TSystemSignature>::nth_state(
         sz_t n) noexcept
     {
-        return _sm.get(n);
+        return this->state_manager().get(n);
     }
 
     template <typename TSettings, typename TSystemSignature>
