@@ -15,19 +15,31 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 {
     namespace impl
     {
+        /// @brief Type of the system tag used by an instance with `TSettings`
+        /// and `TSystemSignature` template parameters.
+        template <typename TSettings, typename TSystemSignature>
+        using instance_system_tag_type =
+            signature::system::tag_type<TSystemSignature>;
+
+        /// @brief Type of the system used by an instance with `TSettings` and
+        /// `TSystemSignature` template parameters.
+        template <typename TSettings, typename TSystemSignature>
+        using instance_system_type = tag::system::unwrap<
+            instance_system_tag_type<TSettings, TSystemSignature>>;
+
+        /// @brief TODO:
+        /// @details Uses EBO for the stored system.
         template <typename TSettings, typename TSystemSignature>
         class instance_base
+            : public instance_system_type<TSettings, TSystemSignature>
         {
         public:
             using system_tag_type =
-                signature::system::tag_type<TSystemSignature>;
+                instance_system_tag_type<TSettings, TSystemSignature>;
 
-            using system_type = tag::system::unwrap<system_tag_type>;
+            using system_type =
+                instance_system_type<TSettings, TSystemSignature>;
 
-        private:
-            system_type _system;
-
-        public:
             /// @brief Returns a reference to the stored system instance.
             auto& system() noexcept;
 
