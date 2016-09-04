@@ -71,7 +71,7 @@ barrassingly parallel” computations.
 
     * This has come up before in the past. The answer is no - see [issue #8](https://github.com/SuperV1234/ecst/issues/8).
 
-* *"I'm trying to **read/write to/from** my component, but I'm getting a compilation error. What is happening?*"
+* *"I'm trying to read/write to/from my component, but I'm getting a compilation error. What is happening?*"
 
     * Systems need to know at compile-time which component types they will access and how *(read-only or write access)*. This has to be specified when defining *system signatures*. See [issue #4](https://github.com/SuperV1234/ecst/issues/4) for more info.
 
