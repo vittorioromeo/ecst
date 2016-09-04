@@ -1,284 +1,100 @@
-# ecst
+Entity-Component-System Library (Header Only !!)
+================================================
 
-**Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library. 
+**Experimental & work-in-progress** C++14 multithreaded compile-time entity-component-system library.
 
-**ecst** was developed as my BCS graduation project. [The thesis can be found here](https://github.com/SuperV1234/bcs_thesis). An earlier version of the library was presented at **C++Now 2016**: slides available on [SuperV1234/cppnow2016](https://github.com/SuperV1234/cppnow2016).
+Successful development of complex real-time applications and games requires a flexible and efficient
+entity management system. As a project becomes more intricate, it’s critical to find an elegant way
+to compose objects in order to prevent code repetition, improve modularity and open up powerful
+optimization possibilities.
 
-## Build instructions
+The Entity-Component-System architectural pattern was designed to achieve the aforementioned
+benefits, by separating data from logic.
 
-1. Acquire and install [`boost::hana`](http://www.boost.org/doc/libs/1_61_0/libs/hana/doc/html/index.html).
-2. Clone the repository.
-3. Execute the `./init-repository.sh` script.
-4. Create a build directory and execute CMake:
+* Entities can be composed of small, reusable, and generic components.
+* Components can be stored in contiguous memory areas, thus improving data locality and cache-
+friendliness.
+* Application logic can be easily parallelized and abstracted away from the objects themselves and
+their storage policies.
+* The state of the application can be serialized and shared over the network with less effort.
+* A more modular, generic and easily-testable codebase.
 
-    ```bash
-    mkdir ./build
-    cd ./build
-    cmake ..
-    ```
+**"ecst"** was developed as my BCS graduation project.
 
-*(Some examples may require [SFML](https://sfml-dev.org) to be installed.)*
+---------------------------------------------------------------------------------------------------
+# Getting Started
+* [Build Instructions](BUILD_INSTRUCTIONS.md)
+* [Code Sample](CODE_SAMPLE.md)
+* [LICENSE](LICENSE)
 
-## Code sample
+---------------------------------------------------------------------------------------------------
+# More Information
+* [Accompanying Thesis](https://github.com/SuperV1234/bcs_thesis)
+* [Slides](https://github.com/SuperV1234/cppnow2016)
+ * NOTE: These are accompanying an earlier version of the library was that presented at **C++Now
+2016**pdf
 
-```cpp
-#include <ecst.hpp>
+## Terminology
+* **Entities:** defined by Adam Martin (see thesis) as “fundamental conceptual building blocks” of a
+system, which represent concrete application ob-jects. They have no application-specific data or
+logic.
 
-// Define some components.
-namespace c
-{
-    // Components are simple classes, usually POD structs. There is no need
-    // for components to derive from a "base component" class or to satisfy
-    // a particular interface.
+* **Components:** small, reusable, types that compose entities. Again, cit-ing Adam Martin in (see
+thesis), a component type “labels an entity as possess-ing a particular aspect”. Components store
+data but do not contain any logic.
 
-    struct position
-    {
-        vec2f _v;
-    };
+* **Systems:** providers of implementation logic for entities possessing a specific set of component
+types.
 
-    struct velocity
-    {
-        vec2f _v;
-    };
+* **Outer parallelism** is the term used in ECST which defines the concept of running multiple
+systems that do not depend on each other in parallel. Its implementation details will be analyzed in
+Chapter 10 (see thesis). Conceptually, an implicit directed acyclic graph is created at compile-time
+thanks to the knowledge of system dependencies. The execution of the implicit DAG is handled by a
+system scheduler type specified during settings definition.
 
-    struct acceleration
-    {
-        vec2f _v;
-    };
-}
+* **Inner parallelism**
+Other that running separate systems in parallel, ECST supports splitting a single system into
+multiple sub-tasks, which can be executed on separate threads. Many systems, such as the ones that
+represent functionally pure com- putations, do not contain side-effects that modify their own state
+or that define interactions between the subscribed entities: these are prime examples of “em-
+barrassingly parallel” computations.
 
-// Define component tags.
-namespace ct
-{
-    namespace sc = ecst::signature::component;
+---------------------------------------------------------------------------------------------------
+# FAQ #
+**Q** Where can I find documentation for the API?
 
-    constexpr auto position = ecst::tag::component::v<c::position>;
-    constexpr auto velocity = ecst::tag::component::v<c::velocity>;
-    constexpr auto acceleration = ecst::tag::component::v<c::acceleration>;
-}
+**A:** [issue](https://github.com/SuperV1234/ecst/issues/10)
 
-// Define some systems.
-namespace s
-{
-    // Systems are simple classes as well, that do not need to satisfy any
-    // particular interface. They can store data and have any method the
-    // user desires.
+**Q:** Can we have components that aren't default constructible?
 
-    // This system accelerates the subscribed particles.
-    struct acceleration
-    {
-        // The `process` method is not hardcoded or specially recognized by
-        // ECST in any way. Using a lambda in the execution code, we can
-        // tell an ECST context to execute a particular method (also
-        // forwarding extra arguments to it).
+**A:** This has come up before in the past, and no. More information can be found in the [original
+issue.](https://github.com/SuperV1234/ecst/issues/8)
 
-        // The `data` parameter is a proxy object generated by the system
-        // execution strategy that abstracts away the eventual underlying
-        // parallelism.
+**Q:** I'm trying to **read/write to/from** my component, but I'm getting a compilation error. What
+is happening?
 
-        template <typename TData>
-        void process(ft dt, TData& data)
-        {
-            // Notice that the code below does not know anything about the
-            // multithreading strategy employed by the system: the same
-            // syntax works with any kind (or lack) of parallel execution.
-            data.for_entities([&](auto eid)
-                {
-                    auto& v = data.get(ct::velocity, eid)._v;
-                    const auto& a = data.get(ct::acceleration, eid)._v;
+**A:** Systems need to indicate (statically) which components that system will read from / write
+too. You do this when your defining your "system signature list".
+[more info](https://github.com/SuperV1234/ecst/issues/4)
 
-                    v += a * dt;
-                });
-        }
-    };
+**Q:** Is it possible to iterate over the components attached to entities, without being inside of
+a system's process function?
 
-    // This system moves the subscribed particles.
-    struct velocity
-    {
-        template <typename TData>
-        void process(ft dt, TData& data)
-        {
-            data.for_entities([&](auto eid)
-                {
-                    auto& p = data.get(ct::position, eid)._v;
-                    const auto& v = data.get(ct::velocity, eid)._v;
+**A:** [issue](https://github.com/SuperV1234/ecst/issues/9#issuecomment-244577591)
 
-                    p += v * dt;
-                });
-        }
-    };
-}
+**Q:** How do control whether my system runs in parallel, or as a single thread?
 
-// Setup compile-time settings.
-namespace ecst_setup
-{
-    // Builds and returns a "component signature list".
-    constexpr auto make_csl()
-    {
-        namespace sc = ecst::signature::component;
-        namespace slc = ecst::signature_list::component;
+**A:** During construction of the system signature list, invoke the
+[allow_inner_parallelism()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L118)
+or
+[singlethreaded()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L128)
 
-        // Store `c::acceleration`, `c::velocity` and `c::position` in
-        // three separate contiguous buffers (SoA).
-        constexpr auto cs_acceleration =
-            sc::make(ct::acceleration).contiguous_buffer();
+**Q:** What is the difference between making my system single-threaded vs disabling inner
+paralellism?
 
-        constexpr auto cs_velocity =
-            sc::make(ct::velocity).contiguous_buffer();
+**A:** todo
 
-        constexpr auto cs_position =
-            sc::make(ct::position).contiguous_buffer();
-
-        // Build and return the "component signature list".
-        return slc::make(cs_acceleration, cs_velocity, cs_position);
-
-        // Components can be stored in multiple ways, and users
-        // can define their complex storage types. Here's an example
-        // of "AoS" storage:
-        /*
-            constexpr auto cs_aos_physics =
-                sc::make(ct::acceleration, ct::velocity, ct::position)
-                    .contiguous_buffer();
-        */
-    }
-
-    // Builds and returns a "system signature list".
-    constexpr auto make_ssl()
-    {
-        // Signature namespace aliases.
-        namespace ss = ecst::signature::system;
-        namespace sls = ecst::signature_list::system;
-
-        // Inner parallelism aliases and definitions.
-        namespace ips = ecst::inner_parallelism::strategy;
-        namespace ipc = ecst::inner_parallelism::composer;
-
-        // "Split processing evenly between cores."
-        constexpr auto split_evenly_per_core =
-            ips::split_evenly_fn::v_cores();
-
-        // Acceleration system.
-        // * Multithreaded.
-        // * No dependencies.
-        constexpr auto ssig_acceleration =
-            ss::make(st::acceleration)
-                .parallelism(split_evenly_per_core)
-                .read(ct::acceleration)
-                .write(ct::velocity);
-
-        // Velocity system.
-        // * Multithreaded.
-        constexpr auto ssig_velocity =
-            ss::make(st::velocity)
-                .parallelism(split_evenly_per_core)
-                .dependencies(st::acceleration)
-                .read(ct::velocity)
-                .write(ct::position);
-
-        // Build and return the "system signature list".
-        return sls::make(ssig_acceleration, ssig_velocity);
-    }
-}
-
-// Create a particle and return its unique ID.
-template <typename TProxy>
-auto mk_particle(TProxy& proxy, const vec2f& position)
-{
-    auto eid = proxy.create_entity();
-
-    auto& ca = proxy.add_component(ct::acceleration, eid);
-    ca._v.y = 1;
-
-    auto& cv = proxy.add_component(ct::velocity, eid);
-    cv._v = rndvec2f(-3, 3);
-
-    return eid;
-}
-
-
-int main()
-{
-    // Namespace aliases.
-    using namespace ecst_setup;
-    namespace cs = ecst::settings;
-    namespace ss = ecst::scheduler;
-    namespace sea = ecst::system_execution_adapter;
-
-    // Define ECST context settings.
-    constexpr auto s =
-        ecst::settings::make()
-            .allow_inner_parallelism()
-            .fixed_entity_limit(ecst::sz_v<10000>)
-            .component_signatures(make_csl())
-            .system_signatures(make_ssl())
-            .scheduler(cs::scheduler<ss::s_atomic_counter>);
-
-    // Create an ECST context.
-    auto ctx = ecst::context::make_uptr(s);
-
-    // Initialize context with some entities.
-    ctx->step([&](auto& proxy)
-        {
-            for(sz_t i = 0; i < 1000; ++i)
-            {
-                mk_particle(proxy, random_position());
-            }
-        });
-
-    // "Game loop."
-    while(true)
-    {
-        auto dt = delta_time();
-
-        ctx->step([dt](auto& proxy)
-            {
-                // Start executing a chain of systems from `st::acceleration`:
-                proxy.execute_systems_from(st::acceleration)(
-                    // Match systems in the chain by tag...
-                    sea::t(st::acceleration, st::velocity, st::position)
-                    // ...and execute the same logic for every parallel subtask:
-                        .for_subtasks([dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            })
-                    );
-
-                // Need more control? Here's an additional example:
-                proxy.execute_systems_from(st::acceleration)(
-                    sea::t(st::acceleration, st::velocity)
-                        .for_subtasks([dt](auto& s, auto& data)
-                            {
-                                s.process(dt, data);
-                            }),
-                    sea::t(st::position).detailed_instance(
-                        [&proxy, dt](auto& instance, auto& executor)
-                            {
-                                // Access system `instance` details:
-                                std::cout << instance.subscribed().size() << "\n";
-                                auto& s(instance.system());
-
-                                do_something_before();
-
-                                executor.for_subtasks([&s, dt](auto& data)
-                                    {
-                                        s.process(dt, data);
-                                    });
-
-                                do_something_after();
-                            })
-                    );
-            },
-            // Refresh events can be caught and handled sequentially.
-            ecst::refresh_event::on_subscribe(st::acceleration,
-                [](auto& system, auto eid)
-                {
-                    log() << "Entity #" << eid 
-                          << " subscribed to acceleration system.\n".
-                }),
-            ecst::refresh_event::on_reclaim([](auto eid)
-                {
-                    log() << "Entity #" << eid << " reclaimed.\n".
-                }));
-    }
-}
-```
+---------------------------------------------------------------------------------------------------
+# More Links
+* [Current Issues](https://github.com/SuperV1234/ecst/issues)
+* [Resolved Issues](https://github.com/SuperV1234/ecst/issues?q=is%3Aissue+is%3Aclosed)
