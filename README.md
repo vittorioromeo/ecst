@@ -73,7 +73,7 @@ barrassingly parallel” computations.
 
 * *"I'm trying to **read/write to/from** my component, but I'm getting a compilation error. What is happening?*"
 
-    * Systems need to know at compile-time which component types they will access and how *(read-only or write access)*. This has to be specified when defining *system signature lists*. See [issue #4](https://github.com/SuperV1234/ecst/issues/4) for more info.
+    * Systems need to know at compile-time which component types they will access and how *(read-only or write access)*. This has to be specified when defining *system signatures*. See [issue #4](https://github.com/SuperV1234/ecst/issues/4) for more info.
 
 * *"Is it possible to iterate over the components attached to entities, without being inside of a system's process function?"*
 
@@ -81,7 +81,7 @@ barrassingly parallel” computations.
 
 * *"How do control whether my system runs in parallel, or as a single thread?*"
 
-    * When defining system signature lists, enable *inner parallelism* by calling [allow_inner_parallelism()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L118) or disable it by calling [singlethreaded()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L128). Inner parallelism strategies can be customized and composed at compile-time.
+    * Context-wide *inner parallelism* must be enabled by calling [allow_inner_parallelism()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L118) in order to allow systems to be split in multiple *sub-tasks*. Inner parallelism strategies can be customized and composed at compile-time for particular systems, during *system signature* definition.
 
 *  *"What is the difference between making my system single-threaded vs disabling inner paralellism?"*
 
