@@ -52,12 +52,6 @@ using ft = float;
 
 namespace example
 {
-    // Boundaries of the simulation.
-    constexpr auto left_bound = 0;
-    constexpr auto right_bound = 1440;
-    constexpr auto top_bound = 0;
-    constexpr auto bottom_bound = 900;
-
     // Data of a collision contact.
     struct contact
     {
@@ -126,20 +120,6 @@ namespace example
             float _v;
         };
     }
-
-    // In order to avoid the annoying `data.template <component_type>` syntax
-    // and to have an uniform "type-value encoding" interface both in the
-    // implementation and user code, we define component and system "tags".
-
-    // These "tags" are empty `constexpr` objects that wrap the type of the
-    // component/system in a value, which ECST's functions accept:
-    /*
-        // Traditional:
-        data.template get<c::position>(eid);
-
-        // With tags:
-        data.get(ct::position, eid);
-    */
 }
 
 // Component tags, in namespace `example::ct`.
@@ -149,12 +129,6 @@ EXAMPLE_COMPONENT_TAG(position);
 EXAMPLE_COMPONENT_TAG(circle);
 EXAMPLE_COMPONENT_TAG(color);
 EXAMPLE_COMPONENT_TAG(life);
-
-// A macro is used to define tags to suppress "unused variable" warnings and
-// to avoid code repetition. Essentially, it expands to:
-/*
-    constexpr auto x = ecst::tag::component::vc::x>;
-*/
 
 // System tags, in namespace `example::st`.
 EXAMPLE_SYSTEM_TAG(acceleration);
@@ -384,10 +358,10 @@ namespace example
     }
 
     // Compile-time `std::size_t` entity limit.
-    constexpr auto entity_limit = ecst::sz_v<65536>;
+    constexpr auto entity_limit = ecst::sz_v<10000>;
 
     // Compile-time initial particle count.
-    constexpr auto entity_count = ecst::sz_v<10000>;
+    constexpr auto entity_count = ecst::sz_v<5000>;
 
     namespace ecst_setup
     {
