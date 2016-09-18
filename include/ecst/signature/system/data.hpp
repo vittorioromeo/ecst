@@ -165,7 +165,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     /// @brief Returns `true` if `TSystemSignature` has a non-empty data output
     /// type.
     template <typename TSystemSignature>
-    constexpr auto has_data_output()
+    constexpr auto has_subtask_state_data()
     {
         return !std::is_same<output_type<TSystemSignature>,
             impl::output_impl<impl::empty_output_type>>{};
