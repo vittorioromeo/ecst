@@ -413,10 +413,9 @@ namespace example
             constexpr auto none = ips::none::v();
 
             // TODO:
-            constexpr auto split_evenly_per_core =
-                    ips::split_evenly_fn::v_cores()          ; // .
-                //ipc::none_below_threshold::v(ecst::sz_v<100>, // .
-                  //  );
+            constexpr auto split_evenly_per_core =            // .
+                ipc::none_below_threshold::v(ecst::sz_v<100>, // .
+                    ips::split_evenly_fn::v_cores());
 
             // Acceleration system.
             // * Multithreaded.
