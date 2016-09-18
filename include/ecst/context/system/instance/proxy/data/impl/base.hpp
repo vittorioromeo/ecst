@@ -35,8 +35,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             context_type& _context;
 
         private:
-            auto& state_wrapper() noexcept;
-            auto& state() noexcept;
+            auto& subtask_state_wrapper() noexcept;
+            auto& subtask_state() noexcept;
             auto& output_data() noexcept;
 
             /// @brief Returns `true` if it's safe to iterate through

@@ -39,7 +39,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief Returns a reference to the state associated with this
             /// subtask.
-            auto& state_wrapper() noexcept;
+            auto& subtask_state_wrapper() noexcept;
 
         public:
             multi(TInstance& instance, TContext& context, sz_t state_idx,

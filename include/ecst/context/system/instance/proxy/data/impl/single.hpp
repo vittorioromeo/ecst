@@ -31,7 +31,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief Returns a reference to the state associated with this
             /// subtask.
-            auto& state_wrapper() noexcept;
+            auto& subtask_state_wrapper() noexcept;
 
         public:
             using system_signature_type =

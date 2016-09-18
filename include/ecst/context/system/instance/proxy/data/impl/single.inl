@@ -17,7 +17,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     namespace data_proxy
     {
         ECST_IMPL_DP_SINGLE_TEMPLATE
-        auto& ECST_IMPL_DP_SINGLE::state_wrapper() noexcept
+        auto& ECST_IMPL_DP_SINGLE::subtask_state_wrapper() noexcept
         {
             return this->_instance.nth_state(0);
         }

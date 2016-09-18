@@ -18,22 +18,22 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     namespace data_proxy
     {
         ECST_IMPL_DP_BASE_TEMPLATE
-        auto& ECST_IMPL_DP_BASE::state_wrapper() noexcept
+        auto& ECST_IMPL_DP_BASE::subtask_state_wrapper() noexcept
         {
             // CRTP is used to efficiently get the state index.
-            return vrmc::to_derived<TDerived>(*this).state_wrapper();
+            return vrmc::to_derived<TDerived>(*this).subtask_state_wrapper();
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
-        auto& ECST_IMPL_DP_BASE::state() noexcept
+        auto& ECST_IMPL_DP_BASE::subtask_state() noexcept
         {
-            return state_wrapper().as_state();
+            return subtask_state_wrapper().as_state();
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
         auto& ECST_IMPL_DP_BASE::output_data() noexcept
         {
-            return state_wrapper().as_data();
+            return subtask_state_wrapper().as_data();
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
@@ -95,13 +95,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TF>
         void ECST_IMPL_DP_BASE::defer(TF&& f)
         {
-            state()._deferred_fns.add(FWD(f));
+            subtask_state()._deferred_fns.add(FWD(f));
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
         void ECST_IMPL_DP_BASE::kill_entity(entity_id eid)
         {
-            state()._to_kill.add(eid);
+            subtask_state()._to_kill.add(eid);
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE

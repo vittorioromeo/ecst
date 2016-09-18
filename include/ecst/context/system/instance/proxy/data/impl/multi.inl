@@ -27,7 +27,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         }
 
         ECST_IMPL_DP_MULTI_TEMPLATE
-        auto& ECST_IMPL_DP_MULTI::state_wrapper() noexcept
+        auto& ECST_IMPL_DP_MULTI::subtask_state_wrapper() noexcept
         {
             return this->_instance.nth_state(_state_idx);
         }
