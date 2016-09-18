@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear; clear; clear;
-../../example/c_debug0 $1 ; cat ./error.out | ../../example/simplify_error.py && /tmp/x.x
+../../example/c_debug0 $1 && /tmp/x.x

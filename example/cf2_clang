@@ -17,10 +17,10 @@ time clang++ -std=c++14 \
         -lsfml-graphics \
         -lsfml-window \
         -fdiagnostics-color=always \
-        $1 -o /tmp/x.x &> error.out
+        $1 -o /tmp/x.x |& camomilla
 
 if [ $? == 0 ]; then
-    echo "Compiled." && cat ./error.out | ./simplify_error.py 0 && /tmp/x.x "${@:2}"
+    echo "Compiled." && /tmp/x.x "${@:2}" 
 else
-    echo "Failed." && cat ./error.out | ./simplify_error.py 0
+    echo "Failed."
 fi
