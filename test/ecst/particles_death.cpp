@@ -358,10 +358,10 @@ namespace example
     }
 
     // Compile-time `std::size_t` entity limit.
-    constexpr auto entity_limit = ecst::sz_v<10000>;
+    constexpr auto entity_limit = ecst::sz_v<5000>;
 
     // Compile-time initial particle count.
-    constexpr auto entity_count = ecst::sz_v<5000>;
+    constexpr auto entity_count = ecst::sz_v<4000>;
 
     namespace ecst_setup
     {
@@ -411,8 +411,12 @@ namespace example
             namespace ips = ecst::inner_parallelism::strategy;
             namespace ipc = ecst::inner_parallelism::composer;
             constexpr auto none = ips::none::v();
+
+            // TODO:
             constexpr auto split_evenly_per_core =
-                ips::split_evenly_fn::v_cores();
+                    ips::split_evenly_fn::v_cores()          ; // .
+                //ipc::none_below_threshold::v(ecst::sz_v<100>, // .
+                  //  );
 
             // Acceleration system.
             // * Multithreaded.
@@ -552,8 +556,8 @@ namespace example
             });
     }
 
-    template <typename TContext, typename TRenderTarget>
-    void update_ctx(TContext& ctx, TRenderTarget& rt, ft dt)
+    template <typename TContext>
+    void update_ctx(TContext& ctx, ft dt)
     {
         namespace sea = ::ecst::system_execution_adapter;
 
@@ -563,7 +567,7 @@ namespace example
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
-        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
+        ctx.step([dt, &ft_tags, &nonft_tags](auto& proxy)
             {
                 proxy.execute_systems()(
                     ft_tags.for_subtasks([dt](auto& s, auto& data)
@@ -597,33 +601,29 @@ namespace example
                             }));
 
                 proxy.for_system_outputs(st::render_colored_circle,
-                    [&rt](auto&, auto& va)
+                    [](auto&, auto&)
                     {
-                        (void)va;
-                        (void)rt;
                     });
             });
     }
 
     auto test_impl_f = [](auto& ctx)
     {
-        int rt = 0;
-
         init_ctx(ctx);
 
         for(int i = 0; i < 100; ++i)
         {
-            update_ctx(ctx, rt, 0.5f);
+            update_ctx(ctx, 0.5f);
         }
 
         while(ctx.any_entity_in(st::acceleration))
         {
-            update_ctx(ctx, rt, 0.5f);
+            update_ctx(ctx, 0.5f);
         }
 
         for(int i = 0; i < 100; ++i)
         {
-            update_ctx(ctx, rt, 0.5f);
+            update_ctx(ctx, 0.5f);
         }
     };
 }
