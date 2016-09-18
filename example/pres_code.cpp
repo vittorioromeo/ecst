@@ -709,7 +709,9 @@ namespace example
             namespace ipc = ecst::inner_parallelism::composer;
             constexpr auto none = ips::none::v();
             constexpr auto split_evenly_per_core =
-                ips::split_evenly_fn::v_cores();
+                ipc::none_below_threshold::v(ecst::sz_v<100>, // .
+                    ips::split_evenly_fn::v_cores()           // .
+                    );
 
             // Acceleration system.
             // * Multithreaded.
