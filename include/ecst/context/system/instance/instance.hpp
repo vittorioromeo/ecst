@@ -7,116 +7,11 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/utils/sparse_int_set.hpp>
-#include <ecst/mp.hpp>
-#include <ecst/signature.hpp>
-#include <ecst/signature_list.hpp>
-#include <ecst/inner_parallelism.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/types.hpp>
-#include <ecst/context/bitset.hpp>
-#include "./base.hpp"
-#include "../state.hpp"
+#include "./stateless.hpp"
+#include "./stateful.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
-    // TODO:
-    // TODO: `component_instance` ?
-    // TODO: what about non-stateful component instances?
-    template <typename TSettings, typename TSystemSignature>
-    class stateless_instance
-        : public impl::instance_base<TSettings, TSystemSignature>
-    {
-    private:
-        using base_type = impl::instance_base<TSettings, TSystemSignature>;
-
-    public:
-        using system_tag_type = typename base_type::system_tag_type;
-        using system_type = typename base_type::system_type;
-
-    protected:
-        using this_type = stateless_instance<TSettings, TSystemSignature>;
-        using bitset_type = bitset::dispatch<TSettings>;
-
-        using parallel_parameters_type = // .
-            signature::system::parallelism_type<TSystemSignature>;
-
-        using parallel_executor_type = // .
-            inner_parallelism::executor_type<parallel_parameters_type>;
-
-        bitset_type _bitset;
-        parallel_executor_type _parallel_executor;
-
-    public:
-        stateless_instance() noexcept
-            : _bitset{bitset::make_from_system_signature(
-                  TSystemSignature{}, TSettings{})}
-        {
-        }
-
-    protected:
-        const auto& bitset() const noexcept
-        {
-            return _bitset;
-        }
-
-        auto& parallel_executor() noexcept
-        {
-            return _parallel_executor;
-        }
-
-        const auto& parallel_executor() const noexcept
-        {
-            return _parallel_executor;
-        }
-    };
-
-    // TODO:
-    // TODO: `component_instance` ?
-    // TODO: what about non-stateful component instances?
-    template <typename TSettings, typename TSystemSignature>
-    class stateful_instance
-        : public stateless_instance<TSettings, TSystemSignature>
-    {
-    private:
-        using base_type = stateless_instance<TSettings, TSystemSignature>;
-
-    public:
-        using system_tag_type = typename base_type::system_tag_type;
-        using system_type = typename base_type::system_type;
-
-    protected:
-        using this_type = stateful_instance<TSettings, TSystemSignature>;
-        using bitset_type = typename base_type::bitset_type;
-
-        using state_manager_type = // .
-            impl::state_manager::data<this_type, TSettings, TSystemSignature>;
-
-        using parallel_parameters_type = // .
-            typename base_type::parallel_parameters_type;
-
-        using parallel_executor_type = // .
-            typename base_type::parallel_executor_type;
-
-        state_manager_type _sm;
-
-    public:
-        stateful_instance() noexcept : _sm{*this}
-        {
-        }
-
-    protected:
-        auto& state_manager() noexcept
-        {
-            return _sm;
-        }
-
-        const auto& state_manager() const noexcept
-        {
-            return _sm;
-        }
-    };
-
     // TODO: rename to `entity_instance` or something similar
     /// @brief System instance.
     /// @details Contains:

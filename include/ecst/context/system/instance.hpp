@@ -7,6 +7,8 @@
 
 #include "./instance/proxy.hpp"
 #include "./instance/base.hpp"
+#include "./instance/stateless.hpp"
+#include "./instance/stateful.hpp"
 #include "./instance/instance.hpp"
 
 #include "./instance/base.inl"
