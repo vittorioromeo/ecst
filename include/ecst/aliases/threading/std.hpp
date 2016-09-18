@@ -7,6 +7,8 @@
 
 #include <ecst/config.hpp>
 
+// If this macro is defined, `mingw-std-threads` will be used to implement
+// `std::thread`, `std::mutex` and `std::condition_variable`.
 #ifdef ECST_USE_MEGANZ_MINGW_THREAD
 
 #pragma GCC system_header
@@ -19,21 +21,6 @@
 #include "./third_party/mingw-std-threads/mingw.thread.h"
 #include "./third_party/mingw-std-threads/mingw.mutex.h"
 #include "./third_party/mingw-std-threads/mingw.condition_variable.h"
-
-#define BOOST_THREAD_PROVIDES_FUTURE 1
-#include <boost/thread/future.hpp>
-
-namespace std
-{
-    using boost::future;
-    using boost::launch;
-
-    template <typename... Ts>
-    auto async(Ts&&... xs)
-    {
-        return boost::async(std::forward<Ts>(xs)...);
-    }
-}
 
 #define _GLIBCXX_FUTURE 1
 
