@@ -108,7 +108,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         auto& ECST_IMPL_DP_BASE::output() noexcept
         {
             ECST_S_ASSERT(
-                signature::system::has_data_output<system_signature_type>());
+                signature::system::has_subtask_state_data<system_signature_type>());
 
             return subtask_state_data();
         }
