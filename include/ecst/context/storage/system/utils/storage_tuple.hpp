@@ -19,9 +19,46 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
     {
         return bh::transform(ssl, [](auto ssig)
             {
+                // TODO: dispatch depending on system type
                 using ssig_type = decltype(ssig);
-                return mp::type_c<
-                    context::system::instance<TSettings, ssig_type>>;
+                auto uws = mp::unwrapped(ssig);
+
+                using namespace context;
+                using namespace signature::system;
+
+                // TODO: avoid all this wrapping/unwrapping
+
+                return static_if(uws.is_kind(
+                                     signature::system::impl::kind::stateless))
+                    .then([](auto s)
+                        {
+                            return mp::type_c< // .
+                                context::system::stateless_instance<TSettings,
+                                    decltype(mp::wrap(s))> // .
+                                >;
+                        })
+                    .else_if(
+                        uws.is_kind(signature::system::impl::kind::stateful))
+                    .then([](auto s)
+                        {
+                            return mp::type_c< // .
+                                context::system::stateful_instance<TSettings,
+                                    decltype(mp::wrap(s))> // .
+                                >;
+                        })
+                    .else_if(uws.is_kind(signature::system::impl::kind::entity))
+                    .then([](auto s)
+                        {
+                            return mp::type_c< // .
+                                context::system::instance<TSettings,
+                                    decltype(mp::wrap(s))> // .
+                                >;
+                        })
+                    .else_([](auto)
+                        {
+                            struct nope;
+                            return nope{};
+                        })(uws);
             });
     }
 

@@ -91,8 +91,6 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 return s_write_ctag_list();
             }
 
-
-
         public:
             template <typename TNewParallelism>
             constexpr auto parallelism(TNewParallelism new_parallelism) const
@@ -125,6 +123,39 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             constexpr auto output(TNewOutput new_output) const noexcept
             {
                 return change_self(keys::output, new_output);
+            }
+
+            constexpr auto stateless() const noexcept
+            {
+                // TODO: validate constraints (no output)
+                return change_self(keys::kind, kind::stateless);
+            }
+
+            constexpr auto stateful() const noexcept
+            {
+                // TODO: validate constraints (no output)
+                return change_self(keys::kind, kind::stateful);
+            }
+
+            constexpr auto entity() const noexcept
+            {
+                // TODO: validate constraints (no output)
+                return change_self(keys::kind, kind::entity);
+            }
+
+            // TODO: should be private
+            constexpr auto get_kind() const noexcept
+            {
+                return TOptions{}.at(keys::kind);
+            }
+
+            // TODO: should be private
+            template <typename T>
+            constexpr auto is_kind(T) const noexcept
+            {
+                return bool_v<                                         // .
+                    std::is_same<T, ECST_DECAY_DECLTYPE(get_kind())>{} // .
+                    >;
             }
         };
     }

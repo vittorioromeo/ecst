@@ -47,20 +47,40 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         public:
             base(instance_type& instance, context_type& context) noexcept;
 
+            // Available for:
+            // * Stateless instances;
+            // * Stateful instances;
+            // * Entity instances.
             template <typename TComponentTag>
             decltype(auto) get(TComponentTag ct, entity_id eid) noexcept;
 
+            // Available for:
+            // * Stateful instances;
+            // * Entity instances.
             template <typename TF>
             void defer(TF&& f);
 
+            // Available for:
+            // * Entity instances.
             void kill_entity(entity_id eid);
 
             // TODO: enable if, rename?
+            // Available for:
+            // * Stateful instances;
+            // * Entity instances.
             auto& output() noexcept;
 
+            // Available for:
+            // * Stateless instances;
+            // * Stateful instances;
+            // * Entity instances.
             template <typename TSystemTag>
             auto& system(TSystemTag st) noexcept;
 
+            // Available for:
+            // * Stateless instances;
+            // * Stateful instances;
+            // * Entity instances.
             template <typename TSystemTag, typename TF>
             decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept;
         };

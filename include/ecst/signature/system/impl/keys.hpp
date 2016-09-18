@@ -21,6 +21,29 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             constexpr auto read_components = sz_v<2>;
             constexpr auto write_components = sz_v<3>;
             constexpr auto output = sz_v<4>;
+
+            // TODO: rename?
+            constexpr auto kind = sz_v<5>;
+        }
+
+        // TODO: move, docs, rename
+        namespace kind
+        {
+            struct stateless_t
+            {
+            };
+
+            struct stateful_t
+            {
+            };
+
+            struct entity_t
+            {
+            };
+
+            constexpr stateless_t stateless{};
+            constexpr stateful_t stateful{};
+            constexpr entity_t entity{};
         }
     }
 }
