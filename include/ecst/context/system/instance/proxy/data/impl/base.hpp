@@ -37,7 +37,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         private:
             auto& subtask_state_wrapper() noexcept;
             auto& subtask_state() noexcept;
-            auto& output_data() noexcept;
+            auto& subtask_state_data() noexcept;
 
             /// @brief Returns `true` if it's safe to iterate through
             /// `TSystem`'s output values.

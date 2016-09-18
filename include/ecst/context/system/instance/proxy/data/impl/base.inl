@@ -31,7 +31,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
-        auto& ECST_IMPL_DP_BASE::output_data() noexcept
+        auto& ECST_IMPL_DP_BASE::subtask_state_data() noexcept
         {
             return subtask_state_wrapper().as_data();
         }
@@ -110,7 +110,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             ECST_S_ASSERT(
                 signature::system::has_data_output<system_signature_type>());
 
-            return output_data();
+            return subtask_state_data();
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
