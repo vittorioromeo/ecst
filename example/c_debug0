@@ -16,4 +16,4 @@ time clang++ -std=c++14 \
         -lsfml-graphics \
         -lsfml-window \
         -Wno-unused-variable \
-        $1 -o /tmp/x.x |& camomilla && echo "Compiled." && /tmp/x.x "${@:2}"
+        $1 -o /tmp/x.x |& ./ecst_camomilla.sh && echo "Compiled." && /tmp/x.x "${@:2}"

@@ -1,0 +1,32 @@
+{
+    "namespaceReplacements":
+    {
+        "vrm::core": "vrmc",
+        "ecst": "",
+        "system_execution_adapter": "sea",
+        "context": "ctx",
+        "tag::system": "tag_s",
+        "tag::component": "tag_c",
+        "std": "",
+        "__cxx..": "cxx",
+        "boost::hana": "bh",
+        "boost::fusion": "bf",
+        "boost::spirit": "bs",
+        "impl": "_",
+        "implementation": "_",
+        "detail": "_"
+    },
+
+    "genericReplacements":
+    {
+        "integral_constant": "ic",
+        "lambda\\(": "[?](",
+        "size_t": "sz_t",
+        "unsigned ": "u",
+        "long unsigned": "ul",
+        "unsigned long": "ul",
+        "type_impl": "type",
+        "tag_impl": "tag",
+        "forward": "fwd"
+    }
+}

@@ -17,7 +17,7 @@ time clang++ -std=c++14 \
         -lsfml-graphics \
         -lsfml-window \
         -fdiagnostics-color=always \
-        $1 -o /tmp/x.x |& camomilla
+        $1 -o /tmp/x.x |& ./ecst_camomilla.sh
 
 if [ $? == 0 ]; then
     echo "Compiled." && /tmp/x.x "${@:2}" 

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear; clear; clear;
-../../example/cf2_clang $1 && /tmp/x.x
+(cd ../../example/ && ./cf2_clang "../test/ecst/$1" && /tmp/x.x)

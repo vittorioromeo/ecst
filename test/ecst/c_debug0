@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear; clear; clear;
-../../example/c_debug0 $1 && /tmp/x.x
+(cd ../../example/ && ./c_debug0 "../test/ecst/$1" && /tmp/x.x)

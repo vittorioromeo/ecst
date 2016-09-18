@@ -19,4 +19,4 @@ time g++ -std=c++14 \
         -lsfml-system \
         -lsfml-graphics \
         -lsfml-window \
-        $1 -o /tmp/x.x |& camomilla && echo "Compiled." && /tmp/x.x "${@:2}"
+        $1 -o /tmp/x.x |& ./ecst_camomilla.sh && echo "Compiled." && /tmp/x.x "${@:2}"

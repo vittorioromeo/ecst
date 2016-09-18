@@ -1,4 +1,4 @@
 #!/bin/bash
 
 clear; clear; clear;
-../../example/cf_valgrind $1 && valgrind /tmp/x.x
+(cd ../../example/ && ./cf_valgrind "../test/ecst/$1" && valgrind /tmp/x.x)
