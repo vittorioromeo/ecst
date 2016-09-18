@@ -18,7 +18,7 @@ ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
         constexpr auto v(TEntityThreshold, TStrategyGreater)
         {
             constexpr auto none_fallback = // .
-                ecst::inner_parallelism::strategy::none::v();
+                inner_parallelism::strategy::none::v();
 
             return fixed_threshold::v( // .
                 TEntityThreshold{},    // .
