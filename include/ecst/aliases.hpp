@@ -10,4 +10,4 @@
 #include "./aliases/threading.hpp"
 #include "./aliases/vrmc.hpp"
 #include "./aliases/hana.hpp"
-#include "./aliases/bitset.hpp"
+#include "./aliases/dense_bitset.hpp"

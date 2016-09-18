@@ -15,7 +15,7 @@ ECST_NAMESPACE
     {
         /// @brief Dense bitset.
         template <sz_t TN>
-        using bitset = std::bitset<TN>;
+        using dense_bitset = std::bitset<TN>;
     }
 }
 ECST_NAMESPACE_END

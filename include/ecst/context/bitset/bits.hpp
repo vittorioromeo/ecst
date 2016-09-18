@@ -38,7 +38,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
                 return component_count();
             }
 
-            using bitset_type = ecst::impl::bitset<total_count()>;
+            using bitset_type = ecst::impl::dense_bitset<total_count()>;
 
             template <typename TID>
             static constexpr auto valid_component_id(TID id) noexcept
