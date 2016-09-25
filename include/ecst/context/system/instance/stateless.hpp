@@ -35,7 +35,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     protected:
         using this_type = stateless_instance<TSettings, TSystemSignature>;
-        using bitset_type = bitset::dispatch<TSettings>;
 
         using parallel_parameters_type = // .
             signature::system::parallelism_type<TSystemSignature>;
@@ -43,45 +42,10 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
-        // TODO: bitset should only be in entity instances !!
-        bitset_type _bitset;
-
         parallel_executor_type _parallel_executor;
 
     public:
-        stateless_instance() noexcept
-            : _bitset{bitset::make_from_system_signature(
-                  TSystemSignature{}, TSettings{})}
-        {
-        }
-
-        // TODO: SFINAE away before calling
-        // Intentionally a no-op.
-        template <typename TF>
-        void for_states(TF&&) noexcept
-        {
-        }
-
-        // TODO: SFINAE away before calling
-        // Intentionally a no-op.
-        auto subscribe(entity_id) noexcept
-        {
-            return false;
-        }
-
-        // TODO: SFINAE away before calling
-        // Intentionally a no-op.
-        auto unsubscribe(entity_id) noexcept
-        {
-            return false;
-        }
-
-
-        template <typename TBitset>
-        auto ECST_PURE_FN matches_bitset(const TBitset& b) const noexcept
-        {
-            return this->bitset().contains(b);
-        }
+        stateless_instance() = default;
 
         // TODO: implement
         template <typename TContext, typename TF>
@@ -93,11 +57,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
 
     protected:
-        const auto& bitset() const noexcept
-        {
-            return _bitset;
-        }
-
         auto& parallel_executor() noexcept
         {
             return _parallel_executor;

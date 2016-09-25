@@ -28,7 +28,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     protected:
         using this_type = stateful_instance<TSettings, TSystemSignature>;
-        using bitset_type = typename base_type::bitset_type;
 
         using state_manager_type = // .
             impl::state_manager::data<this_type, TSettings, TSystemSignature>;

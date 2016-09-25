@@ -41,6 +41,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             using system_type =
                 instance_system_type<TSettings, TSystemSignature>;
 
+            instance_base() = default;
+
+            // Prevent copies.
+            instance_base(const instance_base&) = delete;
+            instance_base& operator=(const instance_base&) = delete;
+
+            // Allow moves.
+            instance_base(instance_base&&) = default;
+            instance_base& operator=(instance_base&&) = default;
+
             /// @brief Returns a reference to the stored system instance.
             auto& system() noexcept;
 
@@ -52,6 +62,24 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             {
                 return signature_type{};
             }
+
+            template <typename TSystem>
+            constexpr auto system_is() const noexcept
+            {
+                return std::is_same<system_type, TSystem>{};
+            }
+
+            template <typename TKind>
+            constexpr auto kind_is(TKind kind) const noexcept
+            {
+                return signature().is_kind(kind);
+            }
+
+            // TODO:
+            // constexpr auto is_stateless() const noexcept
+            // {
+            //     return std::is_same<ECST_DECAY_DECLTYPE(
+            // }
         };
 
         // TODO: component-only systems with no knowledge of entities for SIMD

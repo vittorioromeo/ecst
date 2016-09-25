@@ -43,7 +43,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using this_type = instance<TSettings, TSystemSignature>;
         using set_type = dispatch_set<TSettings>;
 
-        using bitset_type = typename base_type::bitset_type;
         using state_manager_type = typename base_type::state_manager_type;
 
         using parallel_parameters_type = // .
@@ -52,7 +51,16 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             typename base_type::parallel_executor_type;
 
+        using bitset_type = bitset::dispatch<TSettings>;
+
         set_type _subscribed;
+        bitset_type _bitset;
+
+
+        const auto& bitset() const noexcept
+        {
+            return _bitset;
+        }
 
     public:
         auto& subscribed() noexcept;
@@ -64,6 +72,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return signature_list::system::id_by_type<system_type>(
                 settings::system_signature_list(TSettings{}));
+        }
+
+        template <typename TBitset>
+        auto ECST_PURE_FN matches_bitset(const TBitset& b) const noexcept
+        {
+            return this->bitset().contains(b);
         }
 
         instance();

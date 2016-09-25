@@ -20,6 +20,12 @@ ECST_CONTEXT_NAMESPACE
 {
     namespace impl
     {
+        // TODO:
+        // Kind aliases.
+        constexpr auto k_stateless = signature::system::impl::kind::stateless;
+        constexpr auto k_stateful = signature::system::impl::kind::stateful;
+        constexpr auto k_entity = signature::system::impl::kind::entity;
+
         /// @brief Class managing systems and threads.
         /// @details Contains a thread pool, and a system storage.
         template <typename TSettings>
@@ -47,8 +53,101 @@ ECST_CONTEXT_NAMESPACE
                 std::make_unique<thread_pool>()};
 
             system_storage_type _system_storage;
-
             scheduler_type _scheduler;
+
+            // TODO: to inl
+            constexpr static auto provider_all_instances() noexcept
+            {
+                return [](auto&& ss, auto&&... xs)
+                {
+                    ss.for_all_instances(FWD(xs)...);
+                };
+            }
+
+            // TODO: to inl
+            template <typename TKind>
+            constexpr static auto provider_instances_of_kind(
+                TKind kind) noexcept
+            {
+                return [&kind](auto&& ss, auto&&... xs)
+                {
+                    ss.for_instances_of_kind(kind, FWD(xs)...);
+                };
+            }
+
+            // TODO: to inl
+            constexpr static auto counter_all_instances() noexcept
+            {
+                return [](auto&& ss)
+                {
+                    return ss.all_instances_count();
+                };
+            }
+
+            // TODO: to inl
+            template <typename TKind>
+            constexpr static auto counter_instances_of_kind(TKind kind) noexcept
+            {
+                return [&kind](auto&& ss)
+                {
+                    return ss.instances_of_kind_count(kind);
+                };
+            }
+
+            // TODO: to inl
+            template <typename TSelf, typename TFInstanceProvider, typename TF>
+            static void for_instances_sequential_impl(
+                TSelf&& self, TFInstanceProvider&& f_instance_provider, TF&& f)
+            {
+                f_instance_provider(self._system_storage, FWD(f));
+            }
+
+            // TODO: to inl
+            template <typename TSelf, typename TFInstanceCounter,
+                typename TFInstanceProvider, typename TF>
+            static void for_instances_parallel_impl(TSelf&& self,
+                TFInstanceCounter&& f_instance_counter,
+                TFInstanceProvider&& f_instance_provider, TF&& f)
+            {
+                // Block until `f` has been called on all instances.
+                counter_blocker b{f_instance_counter(self._system_storage)};
+                b.execute_and_wait_until_zero(
+                    [&self, &f_instance_provider, &b, f = FWD(f) ]
+                    {
+                        f_instance_provider(self._system_storage,
+                            [&self, &b, &f](auto& system)
+                            {
+                                // Use of multithreading:
+                                // * Unsubscribe dead entities from instances.
+                                // * Match new/modified entities to instances.
+                                self.post_in_thread_pool([&b, &system, &f]
+                                    {
+                                        f(system);
+                                        b.decrement_and_notify_one();
+                                    });
+                            });
+                    });
+            }
+
+            template <typename TFPar, typename TFSeq>
+            static auto for_instances_dispatch_impl(
+                TFPar&& f_par, TFSeq&& f_seq) noexcept
+            {
+                return [ f_par = FWD(f_par), f_seq = FWD(f_seq) ](auto&& f)
+                {
+                    static_if(
+                        settings::refresh_parallelism_allowed<settings_type>())
+                        .then([&f_par](auto&& xf)
+                            {
+                                f_par(FWD(xf));
+                            })
+                        .else_([&f_seq](auto&& xf)
+                            {
+                                f_seq(FWD(xf));
+                            })(FWD(f));
+                };
+            }
+
 
         public:
             /// @brief Executes `f` on all systems, sequentially.

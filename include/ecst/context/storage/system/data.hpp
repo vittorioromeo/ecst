@@ -44,8 +44,25 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
 
             storage_type _storage;
 
+            /// @brief Returns a reference to the instance storing a `TSystem`
+            /// instance.
+            template <typename TSystem, typename TSelf>
+            static auto& instance_impl(TSelf&& self) noexcept
+            {
+                // Find the index of the first instance storing `TSystem`.
+                // Assumes that at least one instances does so.
+                auto idx = mp::list::index_of_first_matching(self._storage,
+                    [](const auto& x)
+                    {
+                        return x.template system_is<TSystem>();
+                    });
+
+                // Return a reference to it.
+                return bh::at(self._storage, idx);
+            }
+
         public:
-            auto system_count() const noexcept
+            constexpr auto system_count() const noexcept
             {
                 return bh::size(ssl_type{});
             }
@@ -53,31 +70,13 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             template <typename TSystem>
             auto& instance() noexcept
             {
-                auto idx =
-                    mp::list::index_of_first_matching(_storage, [](auto&& x)
-                        {
-                            using inner_st =
-                                typename ECST_DECAY_DECLTYPE(x)::system_type;
-
-                            return std::is_same<inner_st, TSystem>{};
-                        });
-
-                return bh::at(_storage, idx);
+                return instance_impl<TSystem>(*this);
             }
 
             template <typename TSystem>
             const auto& instance() const noexcept
             {
-                auto idx =
-                    mp::list::index_of_first_matching(_storage, [](auto&& x)
-                        {
-                            using inner_st =
-                                typename ECST_DECAY_DECLTYPE(x)::system_type;
-
-                            return std::is_same<inner_st, TSystem>{};
-                        });
-
-                return bh::at(_storage, idx);
+                return instance_impl<TSystem>(*this);
             }
 
             template <typename TSystemID>
@@ -105,10 +104,53 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                     signature::system::tag_type<TSystemSignature>{});
             }
 
-            template <typename TF>
-            void for_instances(TF&& f)
+        private:
+            template <typename TSelf, typename TF>
+            static void for_all_instances_impl(TSelf&& self, TF&& f)
             {
-                bh::for_each(_storage, f);
+                bh::for_each(self._storage, f);
+            }
+
+            template <typename TSelf, typename TKind, typename TF>
+            static void for_instances_of_kind_impl(
+                TSelf&& self, TKind kind, TF&& f)
+            {
+                // TODO: probably slow
+                bh::for_each(self._storage, [&kind, &f](auto&& x)
+                    {
+                        static_if(x.kind_is(kind))
+                            .then([&f](auto&& y)
+                                {
+                                    f(FWD(y));
+                                })(FWD(x));
+                    });
+            }
+
+        public:
+            template <typename TF>
+            void for_all_instances(TF&& f)
+            {
+                for_all_instances_impl(*this, FWD(f));
+            }
+
+            template <typename TKind, typename TF>
+            void for_instances_of_kind(TKind kind, TF&& f)
+            {
+                for_instances_of_kind_impl(*this, kind, FWD(f));
+            }
+
+            constexpr auto all_instances_count() const noexcept
+            {
+                return system_count();
+            }
+
+            template <typename TKind>
+            constexpr auto instances_of_kind_count(TKind kind) const noexcept
+            {
+                return bh::count_if(_storage, [&kind](auto&& x)
+                    {
+                        return x.kind_is(kind);
+                    });
             }
         };
     }
