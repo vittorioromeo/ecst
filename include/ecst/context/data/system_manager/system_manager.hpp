@@ -65,13 +65,13 @@ ECST_CONTEXT_NAMESPACE
             }
 
             // TODO: to inl
-            template <typename TKind>
+            template <typename... TKinds>
             constexpr static auto provider_instances_of_kind(
-                TKind kind) noexcept
+                TKinds... kinds) noexcept
             {
-                return [&kind](auto&& ss, auto&&... xs)
+                return [&kinds...](auto&& ss, auto&&... xs)
                 {
-                    ss.for_instances_of_kind(kind, FWD(xs)...);
+                    ss.for_instances_of_kind(kinds..., FWD(xs)...);
                 };
             }
 

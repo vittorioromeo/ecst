@@ -111,14 +111,15 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 bh::for_each(self._storage, f);
             }
 
-            template <typename TSelf, typename TKind, typename TF>
+            template <typename TSelf, typename TF, typename... TKinds>
             static void for_instances_of_kind_impl(
-                TSelf&& self, TKind kind, TF&& f)
+                TSelf&& self, TF&& f, TKinds... kind)
             {
                 // TODO: probably slow
                 bh::for_each(self._storage, [&kind, &f](auto&& x)
                     {
-                        static_if(x.kind_is(kind))
+                        static_if(
+                            bh::any(bh::make_basic_tuple(x.kind_is(kinds)...)))
                             .then([&f](auto&& y)
                                 {
                                     f(FWD(y));
@@ -133,10 +134,10 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 for_all_instances_impl(*this, FWD(f));
             }
 
-            template <typename TKind, typename TF>
-            void for_instances_of_kind(TKind kind, TF&& f)
+            template <typename TF, typename... TKinds>
+            void for_instances_of_kind(TF&& f, TKinds... kinds)
             {
-                for_instances_of_kind_impl(*this, kind, FWD(f));
+                for_instances_of_kind_impl(*this, FWD(f), kinds...);
             }
 
             constexpr auto all_instances_count() const noexcept
@@ -144,12 +145,14 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 return system_count();
             }
 
-            template <typename TKind>
-            constexpr auto instances_of_kind_count(TKind kind) const noexcept
+            template <typename... TKinds>
+            constexpr auto instances_of_kind_count(TKinds... kinds) const
+                noexcept
             {
                 return bh::count_if(_storage, [&kind](auto&& x)
                     {
-                        return x.kind_is(kind);
+                        return bh::any(
+                            bh::make_basic_tuple(x.kind_is(kinds)...));
                     });
             }
         };
