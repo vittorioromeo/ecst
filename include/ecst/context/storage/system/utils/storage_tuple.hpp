@@ -20,7 +20,6 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
         return bh::transform(ssl, [](auto ssig)
             {
                 // TODO: dispatch depending on system type
-                using ssig_type = decltype(ssig);
                 auto uws = mp::unwrapped(ssig);
 
                 using namespace context;

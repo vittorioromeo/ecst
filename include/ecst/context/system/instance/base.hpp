@@ -33,6 +33,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             : public instance_system_type<TSettings, TSystemSignature>
         {
         public:
+            using signature_type = mp::unwrap<TSystemSignature>;
+
             using system_tag_type =
                 instance_system_tag_type<TSettings, TSystemSignature>;
 
@@ -44,6 +46,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
             /// @brief Returns a const reference to the stored system instance.
             const auto& system() const noexcept;
+
+            // TODO:
+            constexpr auto signature() const noexcept
+            {
+                return signature_type{};
+            }
         };
 
         // TODO: component-only systems with no knowledge of entities for SIMD

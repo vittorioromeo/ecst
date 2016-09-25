@@ -35,18 +35,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    template <typename TF>
-    decltype(auto) instance<TSettings, TSystemSignature>::for_states(TF && f)
-    {
-        return this->state_manager().for_states(FWD(f));
-    }
-
-    template <typename TSettings, typename TSystemSignature>
     template <typename TProxy>
     void instance<TSettings, TSystemSignature>::execute_deferred_fns(
         TProxy & proxy)
     {
-        for_states([&proxy](auto& s)
+        this->for_states([&proxy](auto& s)
             {
                 s.as_state()._deferred_fns.execute_all(proxy);
             });
@@ -56,7 +49,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TF>
     decltype(auto) instance<TSettings, TSystemSignature>::for_outputs(TF && f)
     {
-        return for_states([this, &f](auto& s)
+        return this->for_states([this, &f](auto& s)
             {
                 f(this->system(), s.as_data());
             });
@@ -191,14 +184,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         // Call the user `(instance&, executor&)` function.
         f(*this, ep);
-    }
-
-    template <typename TSettings, typename TSystemSignature>
-    template <typename TBitset>
-    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::matches_bitset(
-        const TBitset& b) const noexcept
-    {
-        return this->bitset().contains(b);
     }
 
     template <typename TSettings, typename TSystemSignature>

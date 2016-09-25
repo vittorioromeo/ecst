@@ -64,6 +64,24 @@ ECST_CONTEXT_NAMESPACE
             template <typename TF>
             void for_instances_dispatch(TF&& f);
 
+            /// @brief Executes `f` on stateful systems, sequentially.
+            template <typename TF>
+            void for_stateful_instances_sequential(TF&& f);
+
+            /// @brief Executes `f` on all entity systems, sequentially.
+            template <typename TF>
+            void for_entity_instances_sequential(TF&& f);
+
+            /// @brief Executes `f` on all entity systems, in parallel.
+            template <typename TF>
+            void for_entity_instances_parallel(TF&& f);
+
+            /// @brief Executes `f` on all entity systems, in parallel if
+            /// enabled by settings, sequentially otherwise.
+            template <typename TF>
+            void for_entity_instances_dispatch(TF&& f);
+
+
             template <typename TF>
             auto post_in_thread_pool(TF&& f);
 

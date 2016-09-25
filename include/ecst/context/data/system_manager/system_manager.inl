@@ -58,6 +58,77 @@ ECST_CONTEXT_NAMESPACE
                     })(FWD(f));
         }
 
+        // TODO: cleanup
+        template <typename TSettings>
+        template <typename TF>
+        void system_manager<TSettings>::for_stateful_instances_sequential(
+            TF&& f)
+        {
+            constexpr auto sfilter = signature::system::impl::kind::stateful;
+
+            for_instances_sequential([&sfilter, &f](auto&& x)
+                {
+                    static_if(x.signature().is_kind(sfilter))
+                        .then([&f](auto&& y)
+                            {
+                                f(y);
+                            })(x);
+                });
+        }
+
+        // TODO: cleanup
+        template <typename TSettings>
+        template <typename TF>
+        void system_manager<TSettings>::for_entity_instances_sequential(TF&& f)
+        {
+            constexpr auto sfilter = signature::system::impl::kind::entity;
+
+            for_instances_sequential(&sfilter, [&f](auto&& x)
+                {
+                    static_if(x.signature().is_kind(sfilter))
+                        .then([&f](auto&& y)
+                            {
+                                f(y);
+                            })(x);
+                });
+        }
+
+        // TODO: cleanup
+        template <typename TSettings>
+        template <typename TF>
+        void system_manager<TSettings>::for_entity_instances_parallel(TF&& f)
+        {
+            constexpr auto sfilter = signature::system::impl::kind::entity;
+
+            for_instances_parallel([&sfilter, &f](auto&& x)
+                {
+                    static_if(x.signature().is_kind(sfilter))
+                        .then([&f](auto&& y)
+                            {
+                                f(y);
+                            })(x);
+                });
+        }
+
+        // TODO: cleanup
+        template <typename TSettings>
+        template <typename TF>
+        void system_manager<TSettings>::for_entity_instances_dispatch(TF&& f)
+        {
+            // constexpr auto sfilter = signature::system::impl::kind::entity;
+
+            static_if(settings::refresh_parallelism_allowed<settings_type>())
+                .then([this](auto&& xf)
+                    {
+                        this->for_entity_instances_parallel(FWD(xf));
+                    })
+                .else_([this](auto&& xf)
+                    {
+                        this->for_entity_instances_sequential(FWD(xf));
+                    })(FWD(f));
+        }
+
+
         template <typename TSettings>
         template <typename TF>
         auto system_manager<TSettings>::post_in_thread_pool(TF&& f)

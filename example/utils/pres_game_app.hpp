@@ -45,6 +45,7 @@ namespace example
                 if(focus &&
                     sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
                 {
+                    /*
                     _ctx.step([](auto& proxy)
                         {
                             proxy.instance(st::acceleration)
@@ -60,6 +61,7 @@ namespace example
                                         v.y = rndf(-100, -25);
                                     });
                         });
+                        */
                 }
 
 

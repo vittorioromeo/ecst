@@ -68,7 +68,8 @@ ECST_CONTEXT_NAMESPACE
             defer_proxy_type defer_proxy{*this, rs};
 
             // Sequentially execute every deferred function.
-            this->for_instances_sequential([&defer_proxy](auto& instance)
+            this->for_stateful_instances_sequential(
+                [&defer_proxy](auto& instance)
                 {
                     instance.for_states([&defer_proxy](auto& s)
                         {
@@ -91,7 +92,7 @@ ECST_CONTEXT_NAMESPACE
 
             // Sequentially add entities to kill in the main refresh state
             // sparse set, and clear instance subtask states.
-            this->for_instances_sequential([&rs](auto& instance)
+            this->for_stateful_instances_sequential([&rs](auto& instance)
                 {
                     instance.for_states([&rs](auto& s)
                         {
@@ -109,7 +110,8 @@ ECST_CONTEXT_NAMESPACE
             // to iterate over `rs` twice.)
 
             // Unsubscribe dead entities from instances, in parallel.
-            this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
+            this->for_entity_instances_dispatch(
+                [this, &rs, &f_refresh](auto& instance)
                 {
                     rs._to_kill.for_each([&instance, &f_refresh](entity_id eid)
                         {
@@ -142,7 +144,8 @@ ECST_CONTEXT_NAMESPACE
                 );
 
             // Match new/modified entities to instances, in parallel.
-            this->for_instances_dispatch([this, &rs, &f_refresh](auto& instance)
+            this->for_entity_instances_dispatch(
+                [this, &rs, &f_refresh](auto& instance)
                 {
                     rs._to_match.for_each(
                         [this, &rs, &instance, &f_refresh](entity_id eid)

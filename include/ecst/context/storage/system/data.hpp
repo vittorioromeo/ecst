@@ -24,7 +24,7 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             using ssl_type =
                 decltype(settings::system_signature_list(TSettings{}));
 
-            using storage_type = mp::list::unwrap_tuple<
+            using storage_type = mp::list::unwrap_bh_tuple<
                 system_storage_tuple_type<TSettings, ssl_type>>;
 
             template <typename TSystem>
@@ -53,21 +53,37 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             template <typename TSystem>
             auto& instance() noexcept
             {
-                return std::get<instance_for<system_signature_for<TSystem>>>(
-                    _storage);
+                auto idx =
+                    mp::list::index_of_first_matching(_storage, [](auto&& x)
+                        {
+                            using inner_st =
+                                typename ECST_DECAY_DECLTYPE(x)::system_type;
+
+                            return std::is_same<inner_st, TSystem>{};
+                        });
+
+                return bh::at(_storage, idx);
             }
 
             template <typename TSystem>
             const auto& instance() const noexcept
             {
-                return std::get<instance_for<system_signature_for<TSystem>>>(
-                    _storage);
+                auto idx =
+                    mp::list::index_of_first_matching(_storage, [](auto&& x)
+                        {
+                            using inner_st =
+                                typename ECST_DECAY_DECLTYPE(x)::system_type;
+
+                            return std::is_same<inner_st, TSystem>{};
+                        });
+
+                return bh::at(_storage, idx);
             }
 
             template <typename TSystemID>
-            auto& instance_by_id(TSystemID) noexcept
+            auto& instance_by_id(TSystemID sid) noexcept
             {
-                return std::get<TSystemID{}>(_storage);
+                return bh::at(_storage, sid);
             }
 
             template <typename TSystemTag>

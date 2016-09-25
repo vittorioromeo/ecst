@@ -74,10 +74,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         instance(instance&&) = default;
         instance& operator=(instance&&) = default;
 
-        /// @brief Executes `f` on all subtask states.
-        template <typename TF>
-        decltype(auto) for_states(TF&& f);
-
         /// @brief Executes all subtask states' deferred functions.
         template <typename TProxy>
         void execute_deferred_fns(TProxy& proxy);
@@ -94,9 +90,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
         /// @brief Unsubscribes `eid` from the system.
         auto unsubscribe(entity_id eid);
-
-        template <typename TBitset>
-        auto matches_bitset(const TBitset& b) const noexcept;
 
     public:
         // TODO: docs

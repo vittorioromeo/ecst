@@ -43,7 +43,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         using parallel_executor_type = // .
             inner_parallelism::executor_type<parallel_parameters_type>;
 
+        // TODO: bitset should only be in entity instances !!
         bitset_type _bitset;
+
         parallel_executor_type _parallel_executor;
 
     public:
@@ -52,6 +54,43 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                   TSystemSignature{}, TSettings{})}
         {
         }
+
+        // TODO: SFINAE away before calling
+        // Intentionally a no-op.
+        template <typename TF>
+        void for_states(TF&&) noexcept
+        {
+        }
+
+        // TODO: SFINAE away before calling
+        // Intentionally a no-op.
+        auto subscribe(entity_id) noexcept
+        {
+            return false;
+        }
+
+        // TODO: SFINAE away before calling
+        // Intentionally a no-op.
+        auto unsubscribe(entity_id) noexcept
+        {
+            return false;
+        }
+
+
+        template <typename TBitset>
+        auto ECST_PURE_FN matches_bitset(const TBitset& b) const noexcept
+        {
+            return this->bitset().contains(b);
+        }
+
+        // TODO: implement
+        template <typename TContext, typename TF>
+        void execute(TContext& ctx, TF& f)
+        {
+            (void)ctx;
+            (void)f;
+        }
+
 
     protected:
         const auto& bitset() const noexcept

@@ -46,6 +46,13 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
         }
 
+        /// @brief Executes `f` on all subtask states.
+        template <typename TF>
+        decltype(auto) for_states(TF&& f)
+        {
+            return this->state_manager().for_states(FWD(f));
+        }
+
     protected:
         auto& state_manager() noexcept
         {
