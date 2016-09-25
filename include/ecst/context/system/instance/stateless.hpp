@@ -55,7 +55,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             (void)f;
         }
 
-
     protected:
         auto& parallel_executor() noexcept
         {
