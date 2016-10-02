@@ -19,16 +19,23 @@ ECST_CONTEXT_NAMESPACE
         template <typename TF>
         void system_manager<TSettings>::for_instances_sequential(TF&& f)
         {
-            for_instances_sequential_impl(
-                *this, provider_all_instances(), FWD(f));
+            for_instances_sequential_impl( // .
+                *this,                     // .
+                provider_all_instances(),  // .
+                FWD(f)                     // .
+                );
         }
 
         template <typename TSettings>
         template <typename TF>
         void system_manager<TSettings>::for_instances_parallel(TF&& f)
         {
-            for_instances_parallel_impl(*this, counter_all_instances(),
-                provider_all_instances(), FWD(f));
+            for_instances_parallel_impl(  // .
+                *this,                    // .
+                counter_all_instances(),  // .
+                provider_all_instances(), // .
+                FWD(f)                    // .
+                );
         }
 
         template <typename TSettings>
@@ -51,8 +58,11 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::for_stateful_instances_sequential(
             TF&& f)
         {
-            for_instances_sequential_impl(
-                *this, provider_instances_of_kind(k_stateful), FWD(f));
+            for_instances_sequential_impl(                        // .
+                *this,                                            // .
+                provider_instances_of_kind(k_entity, k_stateful), // .
+                FWD(f)                                            // .
+                );
         }
 
         // TODO: cleanup
@@ -60,17 +70,23 @@ ECST_CONTEXT_NAMESPACE
         template <typename TF>
         void system_manager<TSettings>::for_entity_instances_sequential(TF&& f)
         {
-            for_instances_sequential_impl(
-                *this, provider_instances_of_kind(k_entity), FWD(f));
+            for_instances_sequential_impl(            // .
+                *this,                                // .
+                provider_instances_of_kind(k_entity), // .
+                FWD(f)                                // .
+                );
         }
 
         template <typename TSettings>
         template <typename TF>
         void system_manager<TSettings>::for_entity_instances_parallel(TF&& f)
         {
-            for_instances_parallel_impl(*this,
-                counter_instances_of_kind(k_entity),
-                provider_instances_of_kind(k_entity), FWD(f));
+            for_instances_parallel_impl(              // .
+                *this,                                // .
+                counter_instances_of_kind(k_entity),  // .
+                provider_instances_of_kind(k_entity), // .
+                FWD(f)                                // .
+                );
         }
 
         // TODO: cleanup

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "./instance.hpp"
-#include "./proxy.hpp"
+#include "../proxy.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {

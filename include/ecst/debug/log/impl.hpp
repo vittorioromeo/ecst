@@ -71,8 +71,8 @@ ECST_DEBUG_NAMESPACE
         /* 03 */ constexpr auto component_memory = off<3>;
         /* 04 */ constexpr auto thread_pool = off<4>;
         /* 05 */ constexpr auto instance = off<5>;
-        /* 06 */ constexpr auto instance_parallelism = on<6>;
-        /* 07 */ constexpr auto context_refresh = off<7>;
+        /* 06 */ constexpr auto instance_parallelism = off<6>;
+        /* 07 */ constexpr auto context_refresh = on<7>;
         /* 08 */ constexpr auto system_bitset = off<8>;
         /* 09 */ constexpr auto system_match = off<9>;
         /* 10 */ constexpr auto metadata_bitset = off<10>;

@@ -5,4 +5,6 @@
 
 #pragma once
 
-#include "./stateless/stateless.hpp"
+#include "./entity/instance.hpp"
+#include "./entity/instance.inl"
+#include "./entity/instance_subtask.inl"

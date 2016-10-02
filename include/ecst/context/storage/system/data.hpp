@@ -111,19 +111,17 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 bh::for_each(self._storage, f);
             }
 
-            template <typename TSelf, typename TF, typename... TKinds>
-            static void for_instances_of_kind_impl(
-                TSelf&& self, TF&& f, TKinds... kind)
+            template <typename TSelf, typename TF, typename TKind>
+            static void for_instances_of_kind_impl(TSelf&& self, TF&& f, TKind)
             {
                 // TODO: probably slow
-                bh::for_each(self._storage, [&kind, &f](auto&& x)
+                bh::for_each(self._storage, [&f](auto& x)
                     {
-                        static_if(
-                            bh::any(bh::make_basic_tuple(x.kind_is(kinds)...)))
-                            .then([&f](auto&& y)
+                        static_if(x.kind_is(TKind{}))
+                            .then([&f](auto& y)
                                 {
-                                    f(FWD(y));
-                                })(FWD(x));
+                                    f(y);
+                                })(x);
                     });
             }
 
@@ -134,10 +132,10 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 for_all_instances_impl(*this, FWD(f));
             }
 
-            template <typename TF, typename... TKinds>
-            void for_instances_of_kind(TF&& f, TKinds... kinds)
+            template <typename TF, typename TKind>
+            void for_instances_of_kind(TF&& f, TKind kind)
             {
-                for_instances_of_kind_impl(*this, FWD(f), kinds...);
+                for_instances_of_kind_impl(*this, FWD(f), kind);
             }
 
             constexpr auto all_instances_count() const noexcept
@@ -145,14 +143,12 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
                 return system_count();
             }
 
-            template <typename... TKinds>
-            constexpr auto instances_of_kind_count(TKinds... kinds) const
-                noexcept
+            template <typename TKind>
+            constexpr auto instances_of_kind_count(TKind kind) const noexcept
             {
                 return bh::count_if(_storage, [&kind](auto&& x)
                     {
-                        return bh::any(
-                            bh::make_basic_tuple(x.kind_is(kinds)...));
+                        return x.kind_is(kind);
                     });
             }
         };

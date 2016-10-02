@@ -60,7 +60,7 @@ ECST_CONTEXT_NAMESPACE
             {
                 return [](auto&& ss, auto&&... xs)
                 {
-                    ss.for_all_instances(FWD(xs)...);
+                    ss.for_all_instances(xs...);
                 };
             }
 
@@ -69,9 +69,11 @@ ECST_CONTEXT_NAMESPACE
             constexpr static auto provider_instances_of_kind(
                 TKinds... kinds) noexcept
             {
-                return [&kinds...](auto&& ss, auto&&... xs)
+                return [kinds...](auto&& ss, auto&& f)
                 {
-                    ss.for_instances_of_kind(kinds..., FWD(xs)...);
+                    // TODO:
+                    std::initializer_list<int>{
+                        (ss.for_instances_of_kind(f, kinds), 0)...};
                 };
             }
 
@@ -85,12 +87,14 @@ ECST_CONTEXT_NAMESPACE
             }
 
             // TODO: to inl
-            template <typename TKind>
-            constexpr static auto counter_instances_of_kind(TKind kind) noexcept
+            template <typename... TKinds>
+            constexpr static auto counter_instances_of_kind(
+                TKinds... kinds) noexcept
             {
-                return [&kind](auto&& ss)
+                return [kinds...](auto&& ss)
                 {
-                    return ss.instances_of_kind_count(kind);
+                    return bh::sum<sz_t>(bh::make_basic_tuple(
+                        ss.instances_of_kind_count(kinds)...));
                 };
             }
 
@@ -112,10 +116,9 @@ ECST_CONTEXT_NAMESPACE
                 // Block until `f` has been called on all instances.
                 counter_blocker b{f_instance_counter(self._system_storage)};
                 b.execute_and_wait_until_zero(
-                    [&self, &f_instance_provider, &b, f = FWD(f) ]
+                    [&self, ip = FWD(f_instance_provider), &b, f = FWD(f) ]
                     {
-                        f_instance_provider(self._system_storage,
-                            [&self, &b, &f](auto& system)
+                        ip(self._system_storage, [&self, &b, &f](auto& system)
                             {
                                 // Use of multithreading:
                                 // * Unsubscribe dead entities from instances.
@@ -147,7 +150,6 @@ ECST_CONTEXT_NAMESPACE
                             })(FWD(f));
                 };
             }
-
 
         public:
             /// @brief Executes `f` on all systems, sequentially.

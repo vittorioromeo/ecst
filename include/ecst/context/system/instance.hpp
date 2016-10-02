@@ -9,9 +9,6 @@
 #include "./instance/base.hpp"
 #include "./instance/stateless.hpp"
 #include "./instance/stateful.hpp"
-#include "./instance/instance.hpp"
+#include "./instance/entity.hpp"
 
-#include "./instance/base.inl"
-#include "./instance/instance.inl"
-#include "./instance/instance_subtask.inl"
 #include "./instance/proxy.inl"

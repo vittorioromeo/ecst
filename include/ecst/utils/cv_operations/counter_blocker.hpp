@@ -9,6 +9,7 @@
 
 ECST_NAMESPACE
 {
+    // TODO: rename to latch
     /// @brief Data structure containing synchronization primitives required for
     /// a "blocking counter" with an `std::condition_variable` and `std::mutex`.
     class counter_blocker

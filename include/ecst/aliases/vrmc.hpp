@@ -7,6 +7,7 @@
 
 #include <vrm/core/type_aliases.hpp>
 #include <vrm/core/static_if.hpp>
+#include <vrm/core/for_args.hpp>
 #include <ecst/config.hpp>
 
 ECST_NAMESPACE
@@ -21,6 +22,7 @@ ECST_NAMESPACE
     using vrmc::int_;
     using vrmc::int_v;
     using vrmc::static_if;
+    using vrmc::for_args;
     using vrmc::likely;
     using vrmc::unlikely;
 }

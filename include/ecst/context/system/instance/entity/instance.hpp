@@ -7,8 +7,8 @@
 
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include "./stateless.hpp"
-#include "./stateful.hpp"
+#include "../stateless.hpp"
+#include "../stateful.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
