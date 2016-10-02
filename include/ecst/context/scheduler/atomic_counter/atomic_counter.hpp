@@ -44,9 +44,9 @@ ECST_SCHEDULER_NAMESPACE
         }
 
         template <typename TContext, typename TStartSystemTagList,
-            typename TBlocker, typename TF>
+            typename TLatch, typename TF>
         void start_execution(my_task_group& tg, TContext& ctx,
-            TStartSystemTagList sstl, TBlocker& b, TF& f)
+            TStartSystemTagList sstl, TLatch& b, TF& f)
         {
             namespace sls = signature_list::system;
 
@@ -79,7 +79,7 @@ ECST_SCHEDULER_NAMESPACE
                 signature_list::system::chain_size(ssl(), sstl));
 
             // Aggregates the required synchronization objects.
-            counter_blocker b(chain_size);
+            latch b(chain_size);
 
             // Create task group.
             my_task_group tg;

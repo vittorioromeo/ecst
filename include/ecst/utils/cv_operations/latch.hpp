@@ -12,7 +12,7 @@ ECST_NAMESPACE
     // TODO: rename to latch
     /// @brief Data structure containing synchronization primitives required for
     /// a "blocking counter" with an `std::condition_variable` and `std::mutex`.
-    class counter_blocker
+    class latch
     {
     private:
         impl::cv_type _cv;
@@ -20,9 +20,8 @@ ECST_NAMESPACE
         impl::counter_type _counter;
 
     public:
-        /// @brief Constructs a counter blocker with `initial_count` counter
-        /// value.
-        counter_blocker(impl::counter_inner_type initial_count) noexcept;
+        /// @brief Constructs a latch with `initial_count` counter value.
+        latch(impl::counter_inner_type initial_count) noexcept;
 
         /// @brief Decrements the counter and notifies one thread waiting on the
         /// `condition_variable`.

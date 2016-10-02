@@ -87,7 +87,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // Prepare `n` states, but set the counter to `n - 1` since one of the
         // subtasks will be executed in the current thread.
         this->state_manager().clear_and_prepare(n);
-        counter_blocker b{n - 1};
+        latch b{n - 1};
 
         // Function accepting a callable object which will be executed in a
         // separate thread. Intended to be called from inner parallelism

@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./cv_operations/cv_operations.hpp"
-#include "./cv_operations/counter_blocker.hpp"
-#include "./cv_operations/counter_blocker.inl"
+#include "./cv_operations/latch.hpp"
+#include "./cv_operations/latch.inl"

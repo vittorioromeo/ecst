@@ -114,7 +114,7 @@ ECST_CONTEXT_NAMESPACE
                 TFInstanceProvider&& f_instance_provider, TF&& f)
             {
                 // Block until `f` has been called on all instances.
-                counter_blocker b{f_instance_counter(self._system_storage)};
+                latch b{f_instance_counter(self._system_storage)};
                 b.execute_and_wait_until_zero(
                     [&self, ip = FWD(f_instance_provider), &b, f = FWD(f) ]
                     {

@@ -33,19 +33,19 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         /// @param sp Parent context scheduler proxy.
         /// @param f Function that will be passed to the system context for
         /// execution.
-        template <                    // .
-            typename TTaskGroup,      // .
-            typename TCounterBlocker, // .
-            typename TID,             // .
-            typename TContext,        // .
-            typename TF               // .
+        template <               // .
+            typename TTaskGroup, // .
+            typename TLatch,     // .
+            typename TID,        // .
+            typename TContext,   // .
+            typename TF          // .
             >
-        void run(               // .
-            TTaskGroup& tg,     // .
-            TCounterBlocker& b, // .
-            TID my_id,          // .
-            TContext& sp,       // .
-            TF& f               // .
+        void run(           // .
+            TTaskGroup& tg, // .
+            TLatch& b,      // .
+            TID my_id,      // .
+            TContext& sp,   // .
+            TF& f           // .
             );
     };
 }

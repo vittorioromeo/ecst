@@ -14,16 +14,16 @@
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {
     template <typename TDependencyData>
-    template <                    // .
-        typename TTaskGroup,      // .
-        typename TCounterBlocker, // .
-        typename TID,             // .
-        typename TContext,        // .
-        typename TF               // .
+    template <               // .
+        typename TTaskGroup, // .
+        typename TLatch,     // .
+        typename TID,        // .
+        typename TContext,   // .
+        typename TF          // .
         >
     void task<TDependencyData>::run( // .
         TTaskGroup & tg,             // .
-        TCounterBlocker & b,         // .
+        TLatch & b,                  // .
         TID my_id,                   // .
         TContext & ctx,              // .
         TF & f                       // .
