@@ -716,19 +716,11 @@ namespace example
             // Acceleration system.
             // * Multithreaded.
             // * No dependencies.
-            // constexpr auto ssig_acceleration =          // .
-            //     ss::make(st::acceleration)              // .
-            //         .parallelism(split_evenly_per_core) // .
-            //         .read(ct::acceleration)             // .
-            //         .write(ct::velocity);               // .
-
             constexpr auto ssig_acceleration =          // .
                 ss::make(st::acceleration)              // .
-                    .stateless()                        // .
                     .parallelism(split_evenly_per_core) // .
                     .read(ct::acceleration)             // .
                     .write(ct::velocity);               // .
-
 
             // Velocity system.
             // * Multithreaded.

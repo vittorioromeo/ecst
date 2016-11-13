@@ -51,6 +51,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TContext, typename TF>
         void execute(TContext& ctx, TF& f)
         {
+            // TODO: should probably have its own executor_proxy
             (void)ctx;
             (void)f;
         }

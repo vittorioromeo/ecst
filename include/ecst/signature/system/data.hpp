@@ -153,8 +153,9 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             template <typename T>
             constexpr auto is_kind(T) const noexcept
             {
-                return bool_v<                                         // .
-                    std::is_same<T, ECST_DECAY_DECLTYPE(get_kind())>{} // .
+                return bool_v< // .
+                    std::is_same<std::decay_t<T>,
+                        ECST_DECAY_DECLTYPE(get_kind())>{} // .
                     >;
             }
         };
