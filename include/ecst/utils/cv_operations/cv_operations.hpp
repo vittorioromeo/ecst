@@ -42,12 +42,12 @@ ECST_NAMESPACE
         void decrement_cv_counter_then(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
-            access_cv_counter(mutex, cv, c, [&f](auto& x_cv, auto& x_c)
+            access_cv_counter(mutex, cv, c, [&f](auto& y_cv, auto& x_c)
                 {
                     ECST_ASSERT(x_c > 0);
                     --x_c;
 
-                    f(x_cv);
+                    f(y_cv);
                 });
         }
 
