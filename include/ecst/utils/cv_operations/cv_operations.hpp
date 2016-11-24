@@ -96,6 +96,13 @@ ECST_NAMESPACE
                 },
                 FWD(f));
         }
+
+        void wait_counter(
+            mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
+        {
+            unique_lock_type l(mutex);
+            cv.wait(l, [&c]{ return c == 0; });
+        }
     }
 }
 ECST_NAMESPACE_END

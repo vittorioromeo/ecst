@@ -16,6 +16,11 @@ ECST_NAMESPACE
     {
     }
 
+    void latch::count_down() noexcept
+    {
+        --_counter;
+    }
+
     void latch::decrement_and_notify_one() noexcept
     {
         impl::decrement_cv_counter_and_notify_one(_mutex, _cv, _counter);
@@ -32,6 +37,10 @@ ECST_NAMESPACE
     {
         impl::execute_and_wait_until_counter_zero(
             _mutex, _cv, _counter, FWD(f));
+    }
+
+    void latch::wait() noexcept {
+        impl::wait_counter(_mutex, _cv, _counter);
     }
 }
 ECST_NAMESPACE_END
