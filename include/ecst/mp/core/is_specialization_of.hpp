@@ -9,6 +9,8 @@
 #include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
 
+// TODO: move to vrm_core
+
 ECST_MP_NAMESPACE
 {
     template <template <typename...> class TTemplate, typename T>
