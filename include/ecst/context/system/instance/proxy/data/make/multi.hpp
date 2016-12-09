@@ -17,7 +17,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             typename TInstance,        // .
             typename... Ts             // .
             >
-        auto ECST_PURE_FN make_multi(TInstance& inst, TContext& ctx, Ts&&... xs)
+        auto ECST_PURE_FN make_multi(
+            TInstance& inst, TContext& ctx, Ts&&... xs) noexcept
         {
             return multi<TSystemSignature, TContext, TInstance>(
                 inst, ctx, FWD(xs)...);

@@ -18,7 +18,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             typename... Ts             // .
             >
         auto ECST_PURE_FN make_single(
-            TInstance& inst, TContext& ctx, Ts&&... xs)
+            TInstance& inst, TContext& ctx, Ts&&... xs) noexcept
         {
             return single<TSystemSignature, TContext, TInstance>(
                 inst, ctx, FWD(xs)...);

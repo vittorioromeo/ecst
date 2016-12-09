@@ -97,7 +97,7 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSettings>
             template <typename TComponentTag>
             decltype(auto) ECST_PURE_FN proxy<TSettings>::get_component(
-                TComponentTag ct, entity_id eid)
+                TComponentTag ct, entity_id eid) noexcept
             {
                 return _context.get_component(ct, eid);
             }
