@@ -16,7 +16,7 @@ ECST_MP_NAMESPACE
 #if defined(VRM_CORE_COMPILER_GCC)
         template <typename T>
         using is_map_impl =
-            is_specialization_of<mp::map::impl::type_map, std::decay_t<T>>;
+            is_specialization_of_t<std::decay_t<T>, mp::map::impl::type_map>;
 #else
         template <typename T>
         using is_map_impl = bool_<true>;

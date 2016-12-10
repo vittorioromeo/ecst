@@ -19,7 +19,7 @@ ECST_TAG_COMPONENT_NAMESPACE
         };
 
         template <typename T>
-        constexpr auto is_tag_impl = mp::is_specialization_of_v<tag_impl, T>;
+        constexpr auto is_tag_impl = is_specialization_of_v<T, tag_impl>;
     }
 
     /// @brief Template variable wrapping a component type into a `tag`.
@@ -28,7 +28,7 @@ ECST_TAG_COMPONENT_NAMESPACE
 
     /// @brief Returns a tag from a component reference.
     template <typename TComponent>
-    constexpr auto make(TComponent && ) noexcept
+    constexpr auto make(TComponent &&) noexcept
     {
         return v<decay_t<TComponent>>;
     }

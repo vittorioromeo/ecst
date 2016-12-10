@@ -72,7 +72,7 @@ ECST_CONTEXT_NAMESPACE
                 return [kinds...](auto&& ss, auto&& f)
                 {
                     // TODO:
-                    std::initializer_list<int>{
+                    (void)std::initializer_list<int>{
                         (ss.for_instances_of_kind(f, kinds), 0)...};
                 };
             }

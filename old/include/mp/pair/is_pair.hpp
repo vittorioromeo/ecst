@@ -15,7 +15,7 @@ ECST_MP_NAMESPACE
     {
         template <typename T>
         using is_pair_impl =
-            is_specialization_of<mp::list::impl::type_list, std::decay_t<T>>;
+            is_specialization_of_t<std::decay_t<T>, mp::list::impl::type_list>;
     }
 
     template <typename T>

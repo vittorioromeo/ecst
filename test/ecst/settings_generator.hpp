@@ -29,17 +29,14 @@ namespace test
             (void)ssl;
 
             // List of threading policies.
-            constexpr auto l_threading = mp::list::make( // .
+            auto l_threading = mp::list::make( // .
                 ecst::settings::impl::v_allow_inner_parallelism,
                 ecst::settings::impl::v_disallow_inner_parallelism);
 
             // List of storage policies.
-            constexpr auto l_storage = mp::list::make( // .
+            auto l_storage = mp::list::make( // .
                 ecst::settings::fixed<decltype(ec){}>,
                 ecst::settings::dynamic<500>);
-
-            (void)l_threading;
-            (void)l_storage;
 
             return bh::fold_right(l_threading, mp::list::empty_v,
                 [=](auto x_threading, auto xacc)

@@ -19,7 +19,7 @@ ECST_TAG_SYSTEM_NAMESPACE
         };
 
         template <typename T>
-        constexpr auto is_tag_impl = mp::is_specialization_of_v<tag_impl, T>;
+        constexpr auto is_tag_impl = is_specialization_of_v<T, tag_impl>;
     }
 
     /// @brief Template variable wrapping a system type into a `tag`.
@@ -28,7 +28,7 @@ ECST_TAG_SYSTEM_NAMESPACE
 
     /// @brief Returns a tag from a system reference.
     template <typename TSystem>
-    constexpr auto make(TSystem && ) noexcept
+    constexpr auto make(TSystem &&) noexcept
     {
         return v<decay_t<TSystem>>;
     }

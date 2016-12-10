@@ -88,15 +88,15 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto has_fixed_capacity() const noexcept
             {
                 auto es = _map.at(keys::entity_storage);
-                return mp::is_specialization_of<impl::fixed_impl,
-                    ECST_DECAY_DECLTYPE(es)>{};
+                return is_specialization_of_v<ECST_DECAY_DECLTYPE(es),
+                    impl::fixed_impl>;
             }
 
             constexpr auto has_dynamic_capacity() const noexcept
             {
                 auto es = _map.at(keys::entity_storage);
-                return mp::is_specialization_of<impl::dynamic_impl,
-                    ECST_DECAY_DECLTYPE(es)>{};
+                return is_specialization_of_v<ECST_DECAY_DECLTYPE(es),
+                    impl::dynamic_impl>;
             }
 
             constexpr auto get_fixed_capacity() const noexcept
@@ -172,16 +172,14 @@ ECST_SETTINGS_NAMESPACE
         TSettings && s, TFFixed && f_fixed, TFDynamic && f_dynamic)
     {
         return static_if(s.has_fixed_capacity())
-            .then([f_fixed = FWD(f_fixed)](auto xs)
-                {
-                    auto capacity = xs.get_fixed_capacity();
-                    return f_fixed(capacity);
-                })
-            .else_([f_dynamic = FWD(f_dynamic)](auto xs)
-                {
-                    auto initial_capacity = xs.get_dynamic_capacity();
-                    return f_dynamic(initial_capacity);
-                })(s);
+            .then([f_fixed = FWD(f_fixed)](auto xs) {
+                auto capacity = xs.get_fixed_capacity();
+                return f_fixed(capacity);
+            })
+            .else_([f_dynamic = FWD(f_dynamic)](auto xs) {
+                auto initial_capacity = xs.get_dynamic_capacity();
+                return f_dynamic(initial_capacity);
+            })(s);
     }
 
     template <typename TSettings>

@@ -25,5 +25,7 @@ ECST_NAMESPACE
     using vrmc::for_args;
     using vrmc::likely;
     using vrmc::unlikely;
+    using vrmc::is_specialization_of_t;
+    using vrmc::is_specialization_of_v;
 }
 ECST_NAMESPACE_END

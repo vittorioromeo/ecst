@@ -14,7 +14,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
     namespace impl
     {
         template <typename T>
-        using valid_impl = mp::is_specialization_of<impl::data, T>;
+        using valid_impl = is_specialization_of_t<T, impl::data>;
 
         struct valid_t
         {

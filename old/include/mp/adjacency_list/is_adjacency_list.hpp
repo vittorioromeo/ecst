@@ -15,9 +15,8 @@ ECST_MP_NAMESPACE
     {
 #if defined(VRM_CORE_COMPILER_GCC)
         template <typename T>
-        using is_adjacency_list_impl =
-            is_specialization_of<mp::adjacency_list::impl::type_adjacency_list,
-                std::decay_t<T>>;
+        using is_adjacency_list_impl = is_specialization_of_t<std::decay_t<T>,
+            mp::adjacency_list::impl::type_adjacency_list>;
 #else
         template <typename T>
         using is_adjacency_list_impl = bool_<true>;
