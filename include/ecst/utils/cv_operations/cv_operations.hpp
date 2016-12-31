@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <utility>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <utility>
 
 ECST_NAMESPACE
 {
@@ -27,7 +27,7 @@ ECST_NAMESPACE
         /// @brief Accesses `cv` and `c` through a `lock_guard` on `mutex`, and
         /// calls `f(cv, c)`.
         template <typename TF>
-        void access_cv_counter(
+        inline void access_cv_counter(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
             lock_guard_type l(mutex);
@@ -39,42 +39,37 @@ ECST_NAMESPACE
 
         /// @brief Decrements `c` through `mutex`, and calls `f(cv)`.
         template <typename TF>
-        void decrement_cv_counter_then(
+        inline void decrement_cv_counter_then(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
-            access_cv_counter(mutex, cv, c, [&f](auto& x_cv, auto& x_c)
-                {
-                    ECST_ASSERT(x_c > 0);
-                    --x_c;
+            access_cv_counter(mutex, cv, c, [&f](auto& x_cv, auto& x_c) {
+                ECST_ASSERT(x_c > 0);
+                --x_c;
 
-                    f(x_cv);
-                });
+                f(x_cv);
+            });
         }
 
         /// @brief Decrements `c` through `mutex`, and calls `cv.notify_one()`.
-        void decrement_cv_counter_and_notify_one(
+        inline void decrement_cv_counter_and_notify_one(
             mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
         {
-            decrement_cv_counter_then(mutex, cv, c, [](auto& x_cv)
-                {
-                    x_cv.notify_one();
-                });
+            decrement_cv_counter_then(
+                mutex, cv, c, [](auto& x_cv) { x_cv.notify_one(); });
         }
 
         /// @brief Decrements `c` through `mutex`, and calls `cv.notify_all()`.
-        void decrement_cv_counter_and_notify_all(
+        inline void decrement_cv_counter_and_notify_all(
             mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
         {
-            decrement_cv_counter_then(mutex, cv, c, [](auto& x_cv)
-                {
-                    x_cv.notify_all();
-                });
+            decrement_cv_counter_then(
+                mutex, cv, c, [](auto& x_cv) { x_cv.notify_all(); });
         }
 
         /// @brief Executes `f`, locks `mutex`, and waits until `predicate`
         /// is `true` through `cv`.
         template <typename TPredicate, typename TF>
-        void execute_and_wait_until(mutex_type& mutex, cv_type& cv,
+        inline void execute_and_wait_until(mutex_type& mutex, cv_type& cv,
             TPredicate&& predicate, TF&& f) noexcept
         {
             f();
@@ -86,15 +81,10 @@ ECST_NAMESPACE
         /// @brief Locks `mutex`, executes `f` and waits until `c` is zero
         /// through `cv`.
         template <typename TF>
-        void execute_and_wait_until_counter_zero(
+        inline void execute_and_wait_until_counter_zero(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
-            execute_and_wait_until(mutex, cv,
-                [&c]
-                {
-                    return c == 0;
-                },
-                FWD(f));
+            execute_and_wait_until(mutex, cv, [&c] { return c == 0; }, FWD(f));
         }
     }
 }
