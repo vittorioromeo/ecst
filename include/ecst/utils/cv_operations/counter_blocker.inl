@@ -5,29 +5,29 @@
 
 #pragma once
 
-#include "./cv_operations.hpp"
 #include "./counter_blocker.hpp"
+#include "./cv_operations.hpp"
 
 ECST_NAMESPACE
 {
-    counter_blocker::counter_blocker(
+    inline counter_blocker::counter_blocker(
         impl::counter_inner_type initial_count) noexcept
         : _counter{initial_count}
     {
     }
 
-    void counter_blocker::decrement_and_notify_one() noexcept
+    inline void counter_blocker::decrement_and_notify_one() noexcept
     {
         impl::decrement_cv_counter_and_notify_one(_mutex, _cv, _counter);
     }
 
-    void counter_blocker::decrement_and_notify_all() noexcept
+    inline void counter_blocker::decrement_and_notify_all() noexcept
     {
         impl::decrement_cv_counter_and_notify_all(_mutex, _cv, _counter);
     }
 
     template <typename TF>
-    void counter_blocker::execute_and_wait_until_zero(TF && f) noexcept(
+    inline void counter_blocker::execute_and_wait_until_zero(TF && f) noexcept(
         noexcept(f()))
     {
         impl::execute_and_wait_until_counter_zero(
