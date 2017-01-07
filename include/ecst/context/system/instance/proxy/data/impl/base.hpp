@@ -57,6 +57,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             // Available for:
             // * Stateful instances;
             // * Entity instances.
+            template<typename TComponentTag>
+            auto has(TComponentTag ct, entity_id eid) const noexcept;
+
             template <typename TF>
             void defer(TF&& f);
 

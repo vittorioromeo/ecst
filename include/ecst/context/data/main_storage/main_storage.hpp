@@ -40,6 +40,9 @@ ECST_CONTEXT_NAMESPACE
             template <typename TComponent>
             decltype(auto) get_component(entity_id) noexcept;
 
+            template <typename TComponentTag>
+            auto has_component(entity_id) const noexcept;
+
             template <typename TComponent>
             void remove_component(entity_id) noexcept;
 
@@ -48,6 +51,7 @@ ECST_CONTEXT_NAMESPACE
 
         public:
             auto& metadata(entity_id) noexcept;
+            auto& metadata(entity_id) const noexcept;
             auto valid_handle(const handle& h) const noexcept;
 
             entity_id create_entity();
@@ -61,6 +65,9 @@ ECST_CONTEXT_NAMESPACE
 
             template <typename TComponentTag>
             decltype(auto) get_component(TComponentTag, entity_id) noexcept;
+
+            template <typename TComponentTag>
+            auto has_component(TComponentTag, entity_id) const noexcept;
 
             template <typename TComponentTag>
             void remove_component(TComponentTag, entity_id) noexcept;
