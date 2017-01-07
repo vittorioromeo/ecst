@@ -21,6 +21,13 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
+        auto& ECST_PURE_FN main_storage<TSettings>::metadata(
+            entity_id eid) const noexcept
+        {
+            return _entity_storage.get_metadata(eid);
+        }
+
+        template <typename TSettings>
         auto main_storage<TSettings>::valid_handle(const handle& h) const
             noexcept
         {
@@ -76,6 +83,13 @@ ECST_CONTEXT_NAMESPACE
 
         template <typename TSettings>
         template <typename TComponent>
+        auto main_storage<TSettings>::has_component(entity_id eid) const noexcept
+        {
+            return metadata(eid).template has_component<TComponent>();
+        }
+
+        template <typename TSettings>
+        template <typename TComponent>
         void main_storage<TSettings>::remove_component(entity_id eid) noexcept
         {
             metadata(eid).template remove_component<TComponent>();
@@ -95,6 +109,14 @@ ECST_CONTEXT_NAMESPACE
             TComponentTag, entity_id eid) noexcept
         {
             return get_component<component_from_tag<TComponentTag>>(eid);
+        }
+
+        template <typename TSettings>
+        template <typename TComponentTag>
+        auto main_storage<TSettings>::has_component(
+            TComponentTag, entity_id eid) const noexcept
+        {
+            return has_component<component_from_tag<TComponentTag>>(eid);
         }
 
         template <typename TSettings>

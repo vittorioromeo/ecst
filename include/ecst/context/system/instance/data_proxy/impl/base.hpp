@@ -50,6 +50,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TComponentTag>
             decltype(auto) get(TComponentTag ct, entity_id eid) noexcept;
 
+            template<typename TComponentTag>
+            auto has(TComponentTag ct, entity_id eid) const noexcept;
+
             template <typename TF>
             void defer(TF&& f);
 
