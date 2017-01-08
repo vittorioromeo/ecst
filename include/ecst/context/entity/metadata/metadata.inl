@@ -34,7 +34,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 
         template <typename TBitset, typename TChunkMetadata>
         template <typename TComponent>
-        auto metadata<TBitset, TChunkMetadata>::del_component() noexcept
+        auto metadata<TBitset, TChunkMetadata>::remove_component() noexcept
         {
             return _bitset.template set_component<TComponent>(false);
         }
