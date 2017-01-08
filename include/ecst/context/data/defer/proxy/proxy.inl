@@ -104,6 +104,14 @@ ECST_CONTEXT_NAMESPACE
 
             template <typename TSettings>
             template <typename TComponentTag>
+            auto proxy<TSettings>::has_component(
+                TComponentTag ct, entity_id eid) const noexcept
+            {
+                return _context.has_component(ct, eid);
+            }
+
+            template <typename TSettings>
+            template <typename TComponentTag>
             void proxy<TSettings>::remove_component(
                 TComponentTag ct, entity_id eid) noexcept
             {

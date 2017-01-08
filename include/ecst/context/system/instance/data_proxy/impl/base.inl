@@ -92,6 +92,14 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
+        template <typename TComponentTag>
+        auto ECST_IMPL_DP_BASE::has(
+            TComponentTag ct, entity_id eid) const noexcept
+        {
+            return _context.has_component(ct, eid);
+        }
+
+        ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TF>
         void ECST_IMPL_DP_BASE::defer(TF&& f)
         {

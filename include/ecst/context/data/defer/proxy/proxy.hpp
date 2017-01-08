@@ -78,6 +78,9 @@ ECST_CONTEXT_NAMESPACE
                 decltype(auto) get_component(TComponentTag, entity_id);
 
                 template <typename TComponentTag>
+                auto has_component(TComponentTag, entity_id) const noexcept;
+
+                template <typename TComponentTag>
                 void remove_component(TComponentTag, entity_id) noexcept;
 
                 template <typename TSystemTag>
