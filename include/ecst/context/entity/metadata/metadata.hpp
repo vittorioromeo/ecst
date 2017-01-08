@@ -42,7 +42,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             void reset() noexcept;
 
             template <typename TComponent>
-            auto del_component() noexcept;
+            auto remove_component() noexcept;
 
             /// @brief Returns `true` if the entity has the `TComponent` bit.
             template <typename TComponent>
