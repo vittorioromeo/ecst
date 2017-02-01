@@ -118,7 +118,7 @@ namespace example
 
     namespace sea = ::ecst::system_execution_adapter;
 
-    auto execute_systems = [&](auto& proxy)
+    auto execute_systems = [](auto& proxy)
     {
         proxy.execute_systems_from(st::s0, st::s1)( // .
             sea::all().for_subtasks([](auto& s, auto& data)
