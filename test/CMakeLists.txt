@@ -28,9 +28,37 @@ set_target_properties(HEADER_ONLY_TARGET3 PROPERTIES LINKER_LANGUAGE CXX)
 # Generate all the unit tests.
 vrm_cmake_generate_unit_tests_glob("${ECST_SOURCE_DIR}/test/*.cpp")
 
+macro(pthread_pls)
+target_link_libraries(${vrm_cmake_out} pthread)
+endmacro()
+
 # Link `pthread` to every generated test.
 foreach(_x IN LISTS vrm_cmake_out)
 #{
+    target_compile_options(${_x} PUBLIC "-fdiagnostics-color=always")
+
+    if(${AUGMENT_TESTS})
+    #{
+        vrm_cmake_augment_test_asan(${_x})
+        pthread_pls()
+
+        vrm_cmake_augment_test_ofast(${vrm_cmake_out})
+        pthread_pls()
+
+        vrm_cmake_augment_test_ubsan(${_x})
+        pthread_pls()
+
+        vrm_cmake_augment_test_ofast(${vrm_cmake_out})
+        pthread_pls()
+
+        vrm_cmake_augment_test_tsan(${_x})
+        pthread_pls()
+
+        vrm_cmake_augment_test_ofast(${vrm_cmake_out})
+        pthread_pls()
+    #}
+    endif()
+
     if(DEFINED WIN_MINGW_DEVEL)
     #{
         target_link_libraries(${_x} boost_system boost_thread)
