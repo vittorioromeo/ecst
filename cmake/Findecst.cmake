@@ -12,7 +12,7 @@
 find_path(
     ECST_INCLUDE_DIR
 
-    NAMES ecst/include/ecst.hpp
+    NAMES ecst.hpp
     DOC "Include directory for the ecst library"
 
     PATH_SUFFIXES include/
