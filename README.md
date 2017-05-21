@@ -1,9 +1,23 @@
-
-
-
 # ecst
 
-**Experimental & work-in-progress** C++14 multithreaded compile-time [Entity-Component-System](https://en.wikipedia.org/wiki/Entity_component_system) header-only library.
+> **Experimental & work-in-progress C++14 multithreaded compile-time [Entity-Component-System](https://en.wikipedia.org/wiki/Entity_component_system) header-only library.**
+
+[![stability][badge.stability]][stability]
+[![license][badge.license]][license]
+[![gratipay][badge.gratipay]][gratipay]
+![badge.cpp](https://img.shields.io/badge/c++-14-ff69b4.svg?style=flat-square)
+
+[badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[badge.license]: http://img.shields.io/badge/license-afl%203.0-blue.svg?style=flat-square
+[badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg?style=flat-square
+
+[stability]: http://github.com/badges/stability-badges
+[license]: https://github.com/SuperV1234/ecst/blob/master/LICENSE
+[gratipay]: https://gratipay.com/~SuperV1234/
+
+
+
+## Overview
 
 Successful development of complex real-time applications and games requires a flexible and efficient entity management system. As a project becomes more intricate, it’s critical to find an elegant way to compose objects in order to prevent code repetition, improve modularity and open up powerful optimization possibilities.
 
