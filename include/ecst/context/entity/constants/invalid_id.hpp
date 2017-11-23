@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <limits>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
+#include <limits>
 
 ECST_CONTEXT_ENTITY_NAMESPACE
 {
@@ -20,7 +20,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     }
 
     /// @brief Returns `true` if `eid` is a valid entity ID.
-    auto ECST_CONST_FN is_valid_id(entity_id eid) noexcept
+    inline auto ECST_CONST_FN is_valid_id(entity_id eid) noexcept
     {
         return eid != impl::invalid_id;
     }

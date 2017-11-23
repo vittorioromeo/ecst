@@ -5,22 +5,23 @@
 
 #pragma once
 
-#include "./handle.hpp"
 #include "../constants.hpp"
+#include "./handle.hpp"
 
 ECST_CONTEXT_ENTITY_NAMESPACE
 {
     namespace impl
     {
-        handle::handle() noexcept : _id{invalid_id}
+        inline handle::handle() noexcept : _id{invalid_id}
         {
         }
 
-        handle::handle(uninitialized_handle_init) noexcept
+        inline handle::handle(uninitialized_handle_init) noexcept
         {
         }
 
-        handle::handle(entity_id id, counter ctr) noexcept : _id{id}, _ctr{ctr}
+        inline handle::handle(entity_id id, counter ctr) noexcept
+            : _id{id}, _ctr{ctr}
         {
         }
     }

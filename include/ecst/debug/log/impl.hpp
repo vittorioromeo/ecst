@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <vrm/core/make_array.hpp>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./elog.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <vrm/core/make_array.hpp>
 
 #if defined(ECST_LOG_ENABLED)
 #include <iostream>
@@ -18,13 +18,13 @@ ECST_DEBUG_NAMESPACE
 {
     namespace impl
     {
-        auto& ECST_CONST_FN last_log() noexcept
+        inline auto& ECST_CONST_FN last_log() noexcept
         {
             static int res = -1;
             return res;
         }
 
-        const auto& ECST_CONST_FN tstrings() noexcept
+        inline const auto& ECST_CONST_FN tstrings() noexcept
         {
             static auto res = vrmc::make_array( // .
                 /* 00 */ "      ENTITY",        // .
@@ -53,14 +53,14 @@ ECST_DEBUG_NAMESPACE
         {
         };
 
-        auto& ECST_CONST_FN fake_cout() noexcept
+        inline auto& ECST_CONST_FN fake_cout() noexcept
         {
             static fake_cout_obj res;
             return res;
         }
 
         template <typename T>
-        auto& operator<<(fake_cout_obj& o, T&&) noexcept
+        inline auto& operator<<(fake_cout_obj& o, T&&) noexcept
         {
             return o;
         }
@@ -78,32 +78,28 @@ ECST_DEBUG_NAMESPACE
         /* 10 */ constexpr auto metadata_bitset = off<10>;
 
         template <typename TType>
-        auto& log(TType) noexcept
+        inline auto& log(TType) noexcept
         {
             return static_if(bool_v<(TType::value >= 0)>)
-                .then([]() -> auto&
-                    {
+                .then([]() -> auto& {
 #if defined(ECST_LOG_ENABLED)
 
-                        constexpr auto logt = TType::value;
+                    constexpr auto logt = TType::value;
 
-                        if(last_log() != logt)
-                        {
-                            std::cout << "\n";
-                        }
-
-                        last_log() = logt;
-
-                        return std::cout << "[" << tstrings()[TType::value]
-                                         << "]\t";
-#else
-                        return fake_cout();
-#endif
-                    })
-                .else_([]() -> auto&
+                    if(last_log() != logt)
                     {
-                        return fake_cout();
-                    })();
+                        std::cout << "\n";
+                    }
+
+                    last_log() = logt;
+
+                    return std::cout << "[" << tstrings()[TType::value]
+                                     << "]\t";
+#else
+                    return fake_cout();
+#endif
+                })
+                .else_([]() -> auto& { return fake_cout(); })();
         }
     }
 }

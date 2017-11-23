@@ -1,9 +1,23 @@
-
-
-
 # ecst
 
-**Experimental & work-in-progress** C++14 multithreaded compile-time [Entity-Component-System](https://en.wikipedia.org/wiki/Entity_component_system) header-only library.
+> **Experimental & work-in-progress C++14 multithreaded compile-time [Entity-Component-System](https://en.wikipedia.org/wiki/Entity_component_system) header-only library.**
+
+[![stability][badge.stability]][stability]
+[![license][badge.license]][license]
+[![gratipay][badge.gratipay]][gratipay]
+![badge.cpp](https://img.shields.io/badge/c++-14-ff69b4.svg?style=flat-square)
+
+[badge.stability]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
+[badge.license]: http://img.shields.io/badge/license-afl%203.0-blue.svg?style=flat-square
+[badge.gratipay]: https://img.shields.io/gratipay/user/SuperV1234.svg?style=flat-square
+
+[stability]: http://github.com/badges/stability-badges
+[license]: https://github.com/SuperV1234/ecst/blob/master/LICENSE
+[gratipay]: https://gratipay.com/~SuperV1234/
+
+
+
+## Overview
 
 Successful development of complex real-time applications and games requires a flexible and efficient entity management system. As a project becomes more intricate, it’s critical to find an elegant way to compose objects in order to prevent code repetition, improve modularity and open up powerful optimization possibilities.
 
@@ -56,8 +70,7 @@ their storage policies.
 * **Outer parallelism:** term used in ECST which defines the concept of running multiple systems that do not depend on each other in parallel. Its implementation details will be analyzed in Chapter 10 *(see thesis)*. Conceptually, an implicit directed acyclic graph is created at compile-time thanks to the knowledge of system dependencies. The execution of the implicit DAG is handled by a
 system scheduler type specified during settings definition.
 
-* **Inner parallelism:** other that running separate systems in parallel, ECST supports splitting a single system into multiple sub-tasks, which can be executed on separate threads. Many systems, such as the ones that represent functionally pure com- putations, do not contain side-effects that modify their own state or that define interactions between the subscribed entities: these are prime examples of “em-
-barrassingly parallel” computations. 
+* **Inner parallelism:** other that running separate systems in parallel, ECST supports splitting a single system into multiple sub-tasks, which can be executed on separate threads. Many systems, such as the ones that represent functionally pure com- putations, do not contain side-effects that modify their own state or that define interactions between the subscribed entities: these are prime examples of “embarrassingly parallel” computations. 
 
 ---------------------------------------------------------------------------------------------------
 
