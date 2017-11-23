@@ -25,11 +25,13 @@ ECST_MP_LIST_NAMESPACE
 
     // Returns the index of `x` in `l`.
     template <typename TList, typename T>
-    constexpr auto index_of(TList&&, T && x) noexcept
+    constexpr auto index_of(TList l, T && x) noexcept
     {
-        using Pred = decltype(bh::equal.to(x));
-        using Pack = typename bh::detail::make_pack<TList>::type;
-        return bh::size_c<bh::detail::index_if<Pred, Pack>::value>;
+        auto size = decltype(bh::size(l)){};
+        auto dropped = decltype(bh::size(
+            bh::drop_while(l, bh::not_equal.to(x)))){};
+
+        return size - dropped;
     }
 
     // Right-folds over a sequence, also passing the current index.
