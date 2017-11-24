@@ -22,6 +22,8 @@ ECST_NAMESPACE
         /// @brief Constructs a latch with `initial_count` counter value.
         latch(impl::counter_inner_type initial_count) noexcept;
 
+        void count_down() noexcept;
+
         /// @brief Decrements the counter and notifies one thread waiting on the
         /// `condition_variable`.
         /// @details Asserts `_counter` to be greater than zero.
@@ -38,6 +40,8 @@ ECST_NAMESPACE
         /// will decrement the counter to zero.
         template <typename TF>
         void execute_and_wait_until_zero(TF&& f) noexcept(noexcept(f()));
+
+        void wait() noexcept;
     };
 }
 ECST_NAMESPACE_END

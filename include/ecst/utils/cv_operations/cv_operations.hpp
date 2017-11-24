@@ -87,6 +87,13 @@ ECST_NAMESPACE
         {
             execute_and_wait_until(mutex, cv, [&c] { return c == 0; }, FWD(f));
         }
+
+        void wait_counter(
+            mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
+        {
+            unique_lock_type l(mutex);
+            cv.wait(l, [&c]{ return c == 0; });
+        }
     }
 }
 ECST_NAMESPACE_END
