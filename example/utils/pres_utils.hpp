@@ -24,7 +24,7 @@
         namespace ct                                          \
         {                                                     \
             constexpr auto x = ecst::tag::component::v<c::x>; \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+            void VRM_CORE_UNUSED_FN               VRM_PP_CAT( \
                 x, __LINE__, warning_suppressor)()            \
             {                                                 \
                 (void) x;                                     \
@@ -44,7 +44,7 @@
         namespace st                                          \
         {                                                     \
             constexpr auto x = ecst::tag::system::v<s::x>;    \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+            void VRM_CORE_UNUSED_FN               VRM_PP_CAT( \
                 x, __LINE__, warning_suppressor)()            \
             {                                                 \
                 (void) x;                                     \

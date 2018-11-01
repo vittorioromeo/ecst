@@ -16,12 +16,15 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     namespace impl
     {
         template <typename TBitset, typename TChunkMetadata>
-        class metadata : public TChunkMetadata
+        class metadata
         {
             template <typename>
             friend class ::ecst::context::storage::entity::impl::data;
 
         private:
+        // TODO
+            TChunkMetadata _metadata;
+
             /// @brief Bitset keeping track of the components of the entity.
             TBitset _bitset;
 
