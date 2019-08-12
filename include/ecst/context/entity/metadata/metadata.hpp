@@ -16,7 +16,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     namespace impl
     {
         template <typename TBitset, typename TChunkMetadata>
-        class metadata
+        class metadata : public TChunkMetadata
         {
             template <typename>
             friend class ::ecst::context::storage::entity::impl::data;
