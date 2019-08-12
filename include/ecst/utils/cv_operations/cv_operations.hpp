@@ -42,13 +42,12 @@ ECST_NAMESPACE
         inline void decrement_cv_counter_then(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
-            access_cv_counter(mutex, cv, c, [&f](auto& y_cv, auto& x_c)
-                {
-                    ECST_ASSERT(x_c > 0);
-                    --x_c;
+            access_cv_counter(mutex, cv, c, [&f](auto& y_cv, auto& x_c) {
+                ECST_ASSERT(x_c > 0);
+                --x_c;
 
-                    f(y_cv);
-                });
+                f(y_cv);
+            });
         }
 
         /// @brief Decrements `c` through `mutex`, and calls `cv.notify_one()`.
@@ -85,8 +84,9 @@ ECST_NAMESPACE
         inline void execute_and_wait_until_counter_zero(
             mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
         {
-            execute_and_wait_until(mutex, cv, [&c] { return c == 0; }, FWD(f));
+            execute_and_wait_until(
+                mutex, cv, [&c] { return c == 0; }, FWD(f));
         }
-    }
+    } // namespace impl
 }
 ECST_NAMESPACE_END

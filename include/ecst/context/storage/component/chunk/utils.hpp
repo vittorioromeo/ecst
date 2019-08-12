@@ -16,6 +16,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         /// @details Stored in a tuple, inside entity metadata.
         template <typename TChunk>
         using metadata = typename TChunk::metadata;
-    }
+    } // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

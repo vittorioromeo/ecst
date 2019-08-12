@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "../split_evenly_fn.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -23,13 +23,13 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                     return TSubtaskCount{};
                 }
             };
-        }
+        } // namespace impl
 
         template <typename TSubtaskCount>
         constexpr auto v(TSubtaskCount)
         {
             return split_evenly_fn::v(impl::v_subtask_count<TSubtaskCount>{});
         }
-    }
+    } // namespace split_evenly
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

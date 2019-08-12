@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./impl/base.hpp"
-#include "./impl/single.hpp"
 #include "./impl/multi.hpp"
+#include "./impl/single.hpp"

@@ -5,10 +5,10 @@
 
 #pragma once
 
+#include "./bf_traversal.hpp"
+#include "./dependents.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include "./dependents.hpp"
-#include "./bf_traversal.hpp"
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -21,7 +21,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         {
             return bf_traversal::execute(id_list(ssl, parent_list), ssl);
         }
-    }
+    } // namespace impl
 
     /// @brief Returns the set of dependent IDs of `parent`.
     template <typename TSystemSignatureList, typename TStartSystemSignatureList>

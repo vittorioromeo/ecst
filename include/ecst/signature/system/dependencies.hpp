@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/mp/list.hpp>
 #include "./data.hpp"
 #include "./valid.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/mp/list.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -37,7 +37,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 return dependency_count(ss) == mp::sz_v<0>;
             }
         };
-    }
+    } // namespace impl
 
     /// @brief Returns `true` if `ss` is independent.
     constexpr impl::independent_t indepedent{};

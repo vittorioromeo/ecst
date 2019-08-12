@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/mp/list.hpp>
 #include "./id.hpp"
 #include "./id_list.hpp"
+#include <ecst/config.hpp>
+#include <ecst/mp/list.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {

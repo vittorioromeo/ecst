@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./make.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -17,6 +17,6 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
         {
             return impl::parameters{};
         }
-    }
+    } // namespace none
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

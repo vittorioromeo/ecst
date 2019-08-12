@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include "./data.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
-#include "./data.hpp"
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {

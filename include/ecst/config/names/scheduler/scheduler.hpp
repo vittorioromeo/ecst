@@ -10,7 +10,7 @@
 #define ECST_IMPL_SCHEDULER_NAMESPACE \
     ECST_NAMESPACE                    \
     {                                 \
-    namespace scheduler
+        namespace scheduler
 
 #define ECST_IMPL_SCHEDULER_NAMESPACE_END \
     }                                     \

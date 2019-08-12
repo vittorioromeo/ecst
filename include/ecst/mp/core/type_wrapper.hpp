@@ -37,7 +37,7 @@ ECST_MP_NAMESPACE
                 return type_c<T>;
             }
         };
-    }
+    } // namespace impl
 
     /// @brief Returns a default-constructed instance of the inner type wrapped
     /// by a `type_c`.

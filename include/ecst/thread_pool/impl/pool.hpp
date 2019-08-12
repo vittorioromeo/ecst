@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <vector>
-#include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/hardware.hpp>
 #include "./types.hpp"
 #include "./worker.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/hardware.hpp>
+#include <ecst/utils.hpp>
+#include <vector>
 
 namespace etp
 {
@@ -40,9 +40,7 @@ namespace etp
         /// be destroyed.
         void post_dummy_task()
         {
-            post([]
-                {
-                });
+            post([] {});
         }
 
         /// @brief Creates and starts `n` workers, also initializing the
@@ -104,4 +102,4 @@ namespace etp
             _queue.enqueue(std::move(f));
         }
     };
-}
+} // namespace etp

@@ -10,7 +10,7 @@
 #define ECST_IMPL_INNER_PARALLELISM_COMPOSER_NAMESPACE \
     ECST_INNER_PARALLELISM_NAMESPACE                   \
     {                                                  \
-    namespace composer
+        namespace composer
 
 #define ECST_IMPL_INNER_PARALLELISM_COMPOSER_NAMESPACE_END \
     }                                                      \

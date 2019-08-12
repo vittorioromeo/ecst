@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <type_traits>
-#include <ecst/config.hpp>
+#include "./chunk.hpp"
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/settings.hpp>
-#include "./chunk.hpp"
+#include <type_traits>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -37,9 +37,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             template <typename TComponentTag>
             constexpr auto chunk_idx(TComponentTag ct) noexcept
             {
-                return mp::list::index_of_first_matching(_chunk_tuple,
-                    [ct](auto& c)
-                    {
+                return mp::list::index_of_first_matching(
+                    _chunk_tuple, [ct](auto& c) {
                         using chunk_type = ECST_DECAY_DECLTYPE(c);
 
                         using chunk_component_tag_list_type = // .
@@ -74,8 +73,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 entity_id eid, const TEntityChunkMetadata& ecm)
             {
                 return chunk_fn_impl(ct, FWD(self), ecm,
-                    [ct, eid](auto& chunk, const auto& md) -> decltype(auto)
-                    {
+                    [ct, eid](auto& chunk, const auto& md) -> decltype(auto) {
                         return chunk.get(ct, eid, md);
                     });
             }
@@ -88,11 +86,10 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 ELOG(                                                    // .
                     debug::lo_component() << "Creating for eID: " << eid // .
                                           << "\n";                       // .
-                    );
+                );
 
                 return chunk_fn_impl(ct, FWD(self), ecm,
-                    [ct, eid](auto& chunk, auto& md) -> decltype(auto)
-                    {
+                    [ct, eid](auto& chunk, auto& md) -> decltype(auto) {
                         return chunk.add(ct, eid, md);
                     });
             }
@@ -122,6 +119,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 return add_impl(ct, *this, FWD(xs)...);
             }
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

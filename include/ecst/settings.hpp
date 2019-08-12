@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "./settings/data_settings.hpp"
 #include "./settings/data.hpp"
+#include "./settings/data_settings.hpp"
 #include "./settings/make.hpp"
 #include "./settings/str.hpp"

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <type_traits>
 #include <ecst/config.hpp>
+#include <type_traits>
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -18,7 +18,7 @@ ECST_SETTINGS_NAMESPACE
             template <typename TSettings>
             using instantiate = TScheduler<TSettings>;
         };
-    }
+    } // namespace impl
 
     template <template <typename> class TScheduler>
     constexpr auto scheduler = impl::scheduler_wrapper<TScheduler>{};

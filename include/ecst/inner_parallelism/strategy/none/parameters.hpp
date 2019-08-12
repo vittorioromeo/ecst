@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./executor.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -20,7 +20,7 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                 template <typename TParameters>
                 using executor_type = executor<TParameters>;
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace none
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

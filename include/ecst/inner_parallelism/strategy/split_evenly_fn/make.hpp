@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/hardware.hpp>
 #include "./parameters.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/hardware.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -30,12 +30,12 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                     return ecst::hardware::status::core_count();
                 }
             };
-        }
+        } // namespace impl
 
         constexpr auto v_cores()
         {
             return v(impl::v_cores_getter{});
         }
-    }
+    } // namespace split_evenly_fn
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

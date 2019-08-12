@@ -10,7 +10,7 @@
 #define ECST_IMPL_CONTEXT_BITSET_NAMESPACE \
     ECST_CONTEXT_NAMESPACE                 \
     {                                      \
-    namespace bitset
+        namespace bitset
 
 #define ECST_IMPL_CONTEXT_BITSET_NAMESPACE_END \
     }                                          \

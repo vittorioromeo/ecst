@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/component/signature.hpp>
 

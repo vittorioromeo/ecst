@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./fixed_threshold/executor.hpp"
-#include "./fixed_threshold/parameters.hpp"
 #include "./fixed_threshold/make.hpp"
+#include "./fixed_threshold/parameters.hpp"

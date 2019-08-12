@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include <ecst/config/names/scheduler/scheduler.hpp>
 #include <ecst/config/names/scheduler/atomic_counter.hpp>
+#include <ecst/config/names/scheduler/scheduler.hpp>

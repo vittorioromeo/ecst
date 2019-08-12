@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
+#include "./task.hpp"
+#include "./task_dependency_data.hpp"
+#include "./task_group.hpp"
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
-#include "./task_dependency_data.hpp"
-#include "./task.hpp"
-#include "./task_group.hpp"
 
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {
@@ -26,8 +26,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 
         // For every ID inside `ssl`...
         sls::for_ids(
-            [&tg, &ssl](auto s_id)
-            {
+            [&tg, &ssl](auto s_id) {
                 // Retrieve the system signature.
                 auto s_sig = sls::signature_by_id(ssl, s_id);
 
@@ -49,19 +48,18 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             namespace ss = signature::system;
             namespace sls = signature_list::system;
 
-            return bh::transform(ssl, [=](auto ss)
-                {
-                    // Get the list of dependent IDs of `ss`.
-                    auto dependent_ids = sls::dependent_ids_list(ssl, ss);
-                    using dep_list_type = decltype(dependent_ids);
+            return bh::transform(ssl, [=](auto ss) {
+                // Get the list of dependent IDs of `ss`.
+                auto dependent_ids = sls::dependent_ids_list(ssl, ss);
+                using dep_list_type = decltype(dependent_ids);
 
-                    // Use the list to compute the task type.
-                    using dep_data_type = task_dependency_data<dep_list_type>;
-                    using task_type = task<dep_data_type>;
+                // Use the list to compute the task type.
+                using dep_data_type = task_dependency_data<dep_list_type>;
+                using task_type = task<dep_data_type>;
 
-                    // Wrap the task type.
-                    return mp::type_c<task_type>;
-                });
+                // Wrap the task type.
+                return mp::type_c<task_type>;
+            });
         }
 
         /// @brief Type of task group for a specific system signature list.
@@ -73,6 +71,6 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                 decltype(task_group_transformer(TSSL{})) // .
                 >                                        // .
             >;
-    }
+    } // namespace impl
 }
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END

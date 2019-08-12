@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -28,7 +28,7 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                     f(0, 0, inst.subscribed_count());
                 }
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace none
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

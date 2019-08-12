@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -20,7 +20,7 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto system_signature_list = sz_v<3>;
             constexpr auto scheduler = sz_v<4>;
             constexpr auto refresh_parallelism = sz_v<5>;
-        }
-    }
+        } // namespace keys
+    }     // namespace impl
 }
 ECST_SETTINGS_NAMESPACE_END

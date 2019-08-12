@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include "../stateless.hpp"
 #include "../../state.hpp"
+#include "../stateless.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {

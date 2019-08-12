@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include <boost/hana/ext/std/tuple.hpp>
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
-#include <boost/hana/ext/std/tuple.hpp>
 
 ECST_MP_LIST_NAMESPACE
 {
@@ -30,7 +30,7 @@ ECST_MP_LIST_NAMESPACE
         {
             using type = bh::tuple<typename Ts::type...>;
         };
-    }
+    } // namespace impl
 
     /// @brief Unwraps a `type_list<type_c<xs>...>` into an `std::tuple<xs...>`.
     template <typename T>

@@ -7,7 +7,7 @@
 
 #include "./aliases/assert.hpp"
 #include "./aliases/attributes.hpp"
+#include "./aliases/dense_bitset.hpp"
+#include "./aliases/hana.hpp"
 #include "./aliases/threading.hpp"
 #include "./aliases/vrmc.hpp"
-#include "./aliases/hana.hpp"
-#include "./aliases/dense_bitset.hpp"

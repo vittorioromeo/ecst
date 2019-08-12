@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "./data_settings/multithreading.hpp"
 #include "./data_settings/entity_storage.hpp"
-#include "./data_settings/scheduler.hpp"
+#include "./data_settings/multithreading.hpp"
 #include "./data_settings/refresh.hpp"
+#include "./data_settings/scheduler.hpp"

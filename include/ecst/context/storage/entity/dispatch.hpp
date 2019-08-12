@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/entity.hpp>
 #include "./container.hpp"
 #include "./data.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/entity.hpp>
+#include <ecst/settings.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 {
@@ -19,17 +19,16 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
         template <typename TSettings>
         auto dispatch_tw(TSettings s) noexcept
         {
-            return settings::dispatch_on_storage_type(s,
-                [](auto fixed_capacity)
-                {
+            return settings::dispatch_on_storage_type(
+                s,
+                [](auto fixed_capacity) {
                     return mp::type_c<                            // .
                         impl::fixed_entity_storage<               // .
                             context::entity::dispatch<TSettings>, // .
                             fixed_capacity>                       // .
                         >;
                 },
-                [](auto)
-                {
+                [](auto) {
                     return mp::type_c<                           // .
                         impl::dynamic_entity_storage<TSettings,  // .
                             context::entity::dispatch<TSettings> // .
@@ -37,7 +36,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                         >;
                 });
         }
-    }
+    } // namespace impl
 
     /// @brief Dispatches between a fixed or a dynamic entity storage, depending
     /// on the user settings.

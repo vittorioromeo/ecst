@@ -5,17 +5,17 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
+#include "../base.hpp"
 #include <ecst/aliases.hpp>
-#include <ecst/utils/sparse_int_set.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/bitset.hpp>
+#include <ecst/context/types.hpp>
+#include <ecst/inner_parallelism.hpp>
 #include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
-#include <ecst/inner_parallelism.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/types.hpp>
-#include <ecst/context/bitset.hpp>
-#include "../base.hpp"
+#include <ecst/utils/sparse_int_set.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {

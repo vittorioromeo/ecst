@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/debug.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/signature/system.hpp>
 #include "../state.hpp"
+#include <ecst/debug.hpp>
+#include <ecst/signature/system.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -61,7 +61,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     return _state;
                 }
             };
-        }
-    }
+        } // namespace state_manager
+    }     // namespace impl
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

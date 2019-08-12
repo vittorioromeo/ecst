@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/utils.hpp>
 #include "./base.hpp"
+#include <ecst/utils.hpp>
 
 #define ECST_IMPL_DP_SINGLE_BASE                \
     base<TSystemSignature, TContext, TInstance, \
@@ -70,7 +70,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @brief Returns the index of the current subtask.
             constexpr auto subtask_index() const noexcept;
         };
-    }
+    } // namespace data_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 

@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
 #include "./task_dependency_data.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/utils.hpp>
 
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {
@@ -46,7 +46,7 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             TID my_id,      // .
             TContext& sp,   // .
             TF& f           // .
-            );
+        );
     };
 }
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END

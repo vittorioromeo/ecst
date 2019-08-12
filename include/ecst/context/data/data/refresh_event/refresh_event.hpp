@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 // TODO: generalize with system execution adapters, something like:
 /*
@@ -36,7 +36,7 @@ ECST_NAMESPACE
             constexpr subscribed_t subscribed{};
             constexpr unsubscribed_t unsubscribed{};
             constexpr reclaimed_t reclaimed{};
-        }
+        } // namespace impl
 
         /// @brief Calls a provided `(instance_type&, id)` function `f` when an
         /// entity is subscribed to a system.
@@ -67,6 +67,6 @@ ECST_NAMESPACE
         /// @details Not thread-safe.(May be invoked by multiple threads.)
         template <typename TSystemTag, typename TF>
         auto on_unsubscribe(TSystemTag st, TF&& f) noexcept;
-    }
+    } // namespace refresh_event
 }
 ECST_NAMESPACE_END

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/tag/system.hpp>
 
@@ -28,7 +28,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         /// @brief Evaluates to true if `T` is a valid wrapped output type.
         template <typename T>
         constexpr auto is_valid_output = is_specialization_of_v<T, output_impl>;
-    }
+    } // namespace impl
 
     /// @brief Wrapper for the system's output type `T`.
     template <typename T>

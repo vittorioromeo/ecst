@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "./instance/proxy.hpp"
 #include "./instance/base.hpp"
-#include "./instance/stateless.hpp"
-#include "./instance/stateful.hpp"
 #include "./instance/entity.hpp"
+#include "./instance/proxy.hpp"
+#include "./instance/stateful.hpp"
+#include "./instance/stateless.hpp"
 
 #include "./instance/proxy.inl"

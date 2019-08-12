@@ -10,7 +10,7 @@
 #define ECST_IMPL_SYSTEM_IDS_CONTEXT_NAMESPACE \
     ECST_NAMESPACE                             \
     {                                          \
-    namespace system_ids_context
+        namespace system_ids_context
 
 #define ECST_IMPL_SYSTEM_IDS_CONTEXT_NAMESPACE_END \
     }                                              \

@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./split_every_n/executor.hpp"
-#include "./split_every_n/parameters.hpp"
 #include "./split_every_n/make.hpp"
+#include "./split_every_n/parameters.hpp"

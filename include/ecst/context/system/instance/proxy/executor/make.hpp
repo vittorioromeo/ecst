@@ -17,6 +17,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return data<TInstance, decay_t<TFs>...>{instance, FWD(fs)...};
         }
-    }
+    } // namespace executor_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

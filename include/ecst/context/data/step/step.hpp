@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "../defer.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -35,7 +35,7 @@ ECST_CONTEXT_NAMESPACE
 
                 auto execute_systems() noexcept;
             };
-        }
-    }
+        } // namespace step
+    }     // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

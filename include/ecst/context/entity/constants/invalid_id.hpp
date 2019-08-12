@@ -17,7 +17,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
         /// @brief Invalid entity ID used for invalid handles.
         constexpr auto invalid_id = std::numeric_limits<
             vrmc::underlying_if_strong_typedef_type<entity_id>>::max();
-    }
+    } // namespace impl
 
     /// @brief Returns `true` if `eid` is a valid entity ID.
     inline auto ECST_CONST_FN is_valid_id(entity_id eid) noexcept

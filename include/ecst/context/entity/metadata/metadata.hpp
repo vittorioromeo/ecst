@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/context/types.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/bitset.hpp>
 #include <ecst/context/storage/component.hpp>
+#include <ecst/context/types.hpp>
 
 ECST_CONTEXT_ENTITY_NAMESPACE
 {
@@ -71,6 +71,6 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             /// @brief Returns the component bitset.
             const auto& bitset() const noexcept;
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_ENTITY_NAMESPACE_END

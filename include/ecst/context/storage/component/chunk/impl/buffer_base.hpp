@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/debug.hpp>
-#include <ecst/context/types.hpp>
 #include "../type.hpp"
 #include "../utils.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/types.hpp>
+#include <ecst/debug.hpp>
+#include <ecst/settings.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -85,7 +85,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                     return this->get(ct, eid, m);
                 }
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

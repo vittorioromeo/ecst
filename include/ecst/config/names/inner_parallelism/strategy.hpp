@@ -10,7 +10,7 @@
 #define ECST_IMPL_INNER_PARALLELISM_STRATEGY_NAMESPACE \
     ECST_INNER_PARALLELISM_NAMESPACE                   \
     {                                                  \
-    namespace strategy
+        namespace strategy
 
 #define ECST_IMPL_INNER_PARALLELISM_STRATEGY_NAMESPACE_END \
     }                                                      \

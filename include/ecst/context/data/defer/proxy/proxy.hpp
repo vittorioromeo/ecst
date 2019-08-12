@@ -5,16 +5,16 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/thread_pool.hpp>
-#include <ecst/mp.hpp>
-#include <ecst/signature_list.hpp>
-#include <ecst/settings.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/bitset.hpp>
 #include <ecst/context/scheduler.hpp>
-#include <ecst/context/system.hpp>
 #include <ecst/context/storage.hpp>
+#include <ecst/context/system.hpp>
+#include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
+#include <ecst/signature_list.hpp>
+#include <ecst/thread_pool.hpp>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -101,7 +101,7 @@ ECST_CONTEXT_NAMESPACE
                 template <typename TSystemTag>
                 auto any_entity_in(TSystemTag) const noexcept;
             };
-        }
-    }
+        } // namespace defer
+    }     // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

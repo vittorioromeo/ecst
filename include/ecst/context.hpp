@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include "./context/types.hpp"
 #include "./context/bitset.hpp"
-#include "./context/system.hpp"
+#include "./context/context.hpp"
 #include "./context/entity.hpp"
 #include "./context/storage.hpp"
-#include "./context/context.hpp"
+#include "./context/system.hpp"
+#include "./context/types.hpp"

@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./executor.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -28,7 +28,7 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                     return TSubtaskCountGetter{};
                 }
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace split_evenly_fn
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

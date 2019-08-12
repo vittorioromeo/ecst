@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <vrm/core/config.hpp>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <vrm/core/config.hpp>
 
 ECST_HARDWARE_NAMESPACE
 {
@@ -25,6 +25,6 @@ ECST_HARDWARE_NAMESPACE
         {
             return core_count() > 0;
         }
-    }
+    } // namespace status
 }
 ECST_HARDWARE_NAMESPACE_END

@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include <array>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/signature/system.hpp>
-#include <ecst/context/types.hpp>
 #include "./state_storage.hpp"
+#include <array>
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/types.hpp>
+#include <ecst/settings.hpp>
+#include <ecst/signature/system.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -82,7 +82,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                     return _ss_arr[i];
                 }
             };
-        }
-    }
+        } // namespace state_manager
+    }     // namespace impl
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

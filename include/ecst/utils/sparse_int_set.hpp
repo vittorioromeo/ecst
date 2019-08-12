@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <vrm/core/type_aliases.hpp>
-#include <vrm/core/experimental/sparse_set.hpp>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
+#include <ecst/settings.hpp>
+#include <vrm/core/experimental/sparse_set.hpp>
+#include <vrm/core/type_aliases.hpp>
 
 ECST_NAMESPACE
 {
@@ -69,21 +69,18 @@ ECST_NAMESPACE
         template <typename TSettings>
         auto dispatch_set_type() noexcept
         {
-            return settings::dispatch_on_storage_type(TSettings{},
-                [](auto fixed_capacity)
-                {
+            return settings::dispatch_on_storage_type(
+                TSettings{},
+                [](auto fixed_capacity) {
                     return mp::type_c<fixed_set<fixed_capacity>>;
                 },
-                [](auto)
-                {
-                    return mp::type_c<dynamic_set>;
-                });
+                [](auto) { return mp::type_c<dynamic_set>; });
         }
 
         template <typename TSettings>
         using dispatch_set =
             mp::unwrap<decltype(dispatch_set_type<TSettings>())>;
-    }
+    } // namespace impl
 
     using impl::dispatch_set;
 
@@ -93,30 +90,28 @@ ECST_NAMESPACE
         template <typename T, typename TF>
         auto reverse_loop(T i_begin, T i_end, TF&& f) noexcept( // .
             noexcept(f(std::declval<T>()))                      // .
-            )
+        )
         {
             for(T i = i_end; i-- > i_begin;)
             {
                 f(i);
             }
         }
-    }
+    } // namespace impl
 
     template <typename TSet, typename T>
     void add_range_in_set_reverse(TSet & set, T i_begin, T i_end) noexcept( // .
         noexcept(set.unchecked_add(std::declval<T>()))                      // .
-        )
+    )
     {
-        impl::reverse_loop(i_begin, i_end, [&set](auto i)
-            {
-                set.unchecked_add(i);
-            });
+        impl::reverse_loop(
+            i_begin, i_end, [&set](auto i) { set.unchecked_add(i); });
     }
 
     template <typename TSet, typename T>
     void add_range_in_set_forward(TSet & set, T i_begin, T i_end) noexcept( // .
         noexcept(set.unchecked_add(std::declval<T>()))                      // .
-        )
+    )
     {
         for(T i(i_begin); i < i_end; ++i)
         {

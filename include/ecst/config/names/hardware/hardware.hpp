@@ -10,7 +10,7 @@
 #define ECST_IMPL_HARDWARE_NAMESPACE \
     ECST_NAMESPACE                   \
     {                                \
-    namespace hardware
+        namespace hardware
 
 #define ECST_IMPL_HARDWARE_NAMESPACE_END \
     }                                    \

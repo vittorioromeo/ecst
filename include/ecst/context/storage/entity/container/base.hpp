@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include <vector>
-#include <vrm/core/experimental/sparse_set.hpp>
-#include <vrm/core/experimental/resizable_buffer.hpp>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/debug.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
+#include <ecst/debug.hpp>
+#include <ecst/utils.hpp>
+#include <vector>
+#include <vrm/core/experimental/resizable_buffer.hpp>
+#include <vrm/core/experimental/sparse_set.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 {
@@ -107,7 +107,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                     return push_free_id(eid);
                 }
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace container
 }
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -22,8 +22,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         public:
             template <typename TFwdFExecution>
             data(TInstance& instance, TFwdFExecution&& execution) noexcept
-                : _instance{instance},
-                  _execution(FWD(execution))
+                : _instance{instance}, _execution(FWD(execution))
             {
             }
 
@@ -53,6 +52,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 return _instance.system();
             }
         };
-    }
+    } // namespace executor_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

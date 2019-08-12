@@ -23,6 +23,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             return multi<TSystemSignature, TContext, TInstance>(
                 inst, ctx, FWD(xs)...);
         }
-    }
+    } // namespace data_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

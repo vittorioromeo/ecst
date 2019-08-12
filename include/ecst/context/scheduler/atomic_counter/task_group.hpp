@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
 #include "./task.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/utils.hpp>
 
 ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
 {

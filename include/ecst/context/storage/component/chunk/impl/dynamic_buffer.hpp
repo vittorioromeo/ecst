@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <vector>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./buffer_base.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <vector>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -19,7 +19,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             struct dynamic_buffer_metadata
             {
             };
-        }
+        } // namespace impl
 
 #define ECST_IMPL_DYNAMIC_BUFFER_BASE_TYPE                          \
     impl::buffer_base<dynamic_buffer<TSettings, TComponentTagList>, \
@@ -52,7 +52,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                         << i // .
                         << ") (from " << _data.size() << " to " << target
                         << ")\n"; // .
-                    );
+                );
 
                 _data.resize(target);
 
@@ -66,7 +66,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                         << (_data.capacity() * sizeof(component_tuple_type)) /
                                1024.f / 1024.f // .
                         << "MB\n";             // .
-                    );
+                );
             }
 
             void grow_if_required(sz_t i)
@@ -83,6 +83,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 grow_to(settings_type{}.get_dynamic_capacity());
             }
         };
-    }
+    } // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

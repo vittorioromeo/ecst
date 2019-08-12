@@ -10,7 +10,7 @@
 #define ECST_IMPL_SCHEDULER_ATOMIC_COUNTER_NAMESPACE \
     ECST_SCHEDULER_NAMESPACE                         \
     {                                                \
-    namespace atomic_counter
+        namespace atomic_counter
 
 #define ECST_IMPL_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END \
     }                                                    \

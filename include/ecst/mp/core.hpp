@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./core/aliases.hpp"
-#include "./core/type_wrapper.hpp"
 #include "./core/comparers.hpp"
+#include "./core/type_wrapper.hpp"

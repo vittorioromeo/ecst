@@ -5,16 +5,16 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/thread_pool.hpp>
-#include <ecst/mp.hpp>
-#include <ecst/tag.hpp>
-#include <ecst/signature_list.hpp>
-#include <ecst/settings.hpp>
 #include "./task_group.hpp"
 #include "./utils.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
+#include <ecst/signature_list.hpp>
+#include <ecst/tag.hpp>
+#include <ecst/thread_pool.hpp>
+#include <ecst/utils.hpp>
 
 ECST_SCHEDULER_NAMESPACE
 {
@@ -22,7 +22,7 @@ ECST_SCHEDULER_NAMESPACE
     {
         /// @brief Namespace alias for the `atomic_counter` scheduler.
         namespace sac = ecst::scheduler::atomic_counter;
-    }
+    } // namespace impl
 
     /// @brief System execution scheduler based on a runtime atomic counter.
     template <typename TSettings>
@@ -54,17 +54,15 @@ ECST_SCHEDULER_NAMESPACE
             static_assert(tag::system::is_list(sstl));
             ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
 
-            bh::for_each(sstl, [this, &tg, &ctx, &b, &f](auto st) mutable
-                {
-                    auto sid = sls::id_by_tag(this->ssl(), st);
+            bh::for_each(sstl, [this, &tg, &ctx, &b, &f](auto st) mutable {
+                auto sid = sls::id_by_tag(this->ssl(), st);
 
-                    // Use of multithreading:
-                    // * Execute multiple indepedent systems in parallel.
-                    ctx.post_in_thread_pool([sid, &tg, &ctx, &b, &f]() mutable
-                        {
-                            tg.start_from_task_id(b, sid, ctx, f);
-                        });
+                // Use of multithreading:
+                // * Execute multiple indepedent systems in parallel.
+                ctx.post_in_thread_pool([sid, &tg, &ctx, &b, &f]() mutable {
+                    tg.start_from_task_id(b, sid, ctx, f);
                 });
+            });
         }
 
     public:
@@ -87,8 +85,7 @@ ECST_SCHEDULER_NAMESPACE
             // Starts every independent task and waits until the remaining tasks
             // counter reaches zero.
             b.execute_and_wait_until_zero(
-                [this, &tg, &ctx, &b, &f, sstl]() mutable
-                {
+                [this, &tg, &ctx, &b, &f, sstl]() mutable {
                     this->reset(tg);
                     this->start_execution(tg, ctx, sstl, b, f);
                 });

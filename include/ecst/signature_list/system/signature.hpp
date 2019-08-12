@@ -7,9 +7,9 @@
 
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include <ecst/tag/system.hpp>
 #include <ecst/signature/system/tag_of.hpp>
 #include <ecst/signature_list/system/is_signature_list.hpp>
+#include <ecst/tag/system.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -22,13 +22,12 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(valid(ssl));
             ECST_S_ASSERT_DT(tag::system::valid(st));
 
-            return *bh::find_if(ssl, [st](auto x_ssig)
-                {
-                    return mp::same_type_decay(
-                        signature::system::tag_of(x_ssig), st);
-                });
+            return *bh::find_if(ssl, [st](auto x_ssig) {
+                return mp::same_type_decay(
+                    signature::system::tag_of(x_ssig), st);
+            });
         }
-    }
+    } // namespace impl
 
     /// @brief Given a system tag `st`, returns its signature.
     template <typename TSystemSignatureList, typename TSystemTag>

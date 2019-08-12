@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
+#include "./impl/predicate_holder.hpp"
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 #include <ecst/signature.hpp>
-#include "./impl/predicate_holder.hpp"
 
 ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
 {
@@ -33,8 +33,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
     constexpr auto t(TSystemTags... sts) noexcept
     {
         // Predicate.
-        auto p = [sts...](auto& system) mutable
-        {
+        auto p = [sts...](auto& system) mutable {
             // Tag of the system currently being analyzed.
             auto system_tag = tag::system::make(system);
 

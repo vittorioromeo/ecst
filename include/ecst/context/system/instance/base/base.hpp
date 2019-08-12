@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/tag.hpp>
+#include <ecst/config.hpp>
 #include <ecst/signature/system.hpp>
+#include <ecst/tag.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -100,6 +100,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 * SIMD support, etc
                 * (necessary?) is it just execution_step?
         */
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <boost/hana.hpp>
+#include <ecst/config.hpp>
 
 ECST_NAMESPACE
 {

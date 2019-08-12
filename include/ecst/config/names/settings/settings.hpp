@@ -10,7 +10,7 @@
 #define ECST_IMPL_SETTINGS_NAMESPACE \
     ECST_NAMESPACE                   \
     {                                \
-    namespace settings
+        namespace settings
 
 #define ECST_IMPL_SETTINGS_NAMESPACE_END \
     }                                    \

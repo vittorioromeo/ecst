@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <array>
-#include <vrm/core/experimental/sparse_set.hpp>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./base.hpp"
+#include <array>
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <vrm/core/experimental/sparse_set.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 {
@@ -46,6 +46,6 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                     _free_ids, entity_id{0}, entity_id{TCapacity});
             }
         };
-    }
+    } // namespace container
 }
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END

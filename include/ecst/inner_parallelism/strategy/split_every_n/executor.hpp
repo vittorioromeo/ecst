@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/signature.hpp>
+#include <ecst/config.hpp>
 #include <ecst/debug.hpp>
-#include <ecst/utils/cv_operations.hpp>
 #include <ecst/inner_parallelism/utils.hpp>
+#include <ecst/signature.hpp>
+#include <ecst/utils/cv_operations.hpp>
 
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
 {
@@ -38,14 +38,14 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
                             << inst.subscribed_count()                      // .
                             << "\n\tper_split=" << per_split                // .
                             << "\n\tsplit_count=" << split_count << "\n\n"; // .
-                        );
+                    );
 
                     // Executes all subtasks. Blocks until completed.
                     utils::prepare_execute_wait_subtasks( // .
                         inst, ctx, split_count, per_split, f);
                 }
             };
-        }
-    }
+        } // namespace impl
+    }     // namespace split_every_n
 }
 ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END

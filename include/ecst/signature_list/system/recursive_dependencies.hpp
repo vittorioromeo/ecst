@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include "./id.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include "./id.hpp"
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -22,13 +22,11 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
                 signature_list::system::dependencies_ids_list(ssl, ss);
 
             // Recursive step implementation.
-            auto step = [=](auto self, auto curr_list)
-            {
+            auto step = [=](auto self, auto curr_list) {
                 return bh::concat( //
                     curr_list,     // .
-                    bh::fold_right(curr_list, mp::list::empty_v,
-                        [=](auto xid, auto acc)
-                        {
+                    bh::fold_right(
+                        curr_list, mp::list::empty_v, [=](auto xid, auto acc) {
                             auto xsig = signature_by_id(ssl, xid);
                             auto new_list = dependencies_ids_list(ssl, xsig);
 
@@ -39,7 +37,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             // Start the recursion.
             return bh::unique(bh::sort(bh::fix(step)(dependencies_list)));
         }
-    }
+    } // namespace impl
 
     /// @brief Returns a list of the IDs of all dependencies (recursively) of
     /// `ss`.
@@ -61,7 +59,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 
             return bh::contains(recursive_dependency_id_list(ssl, ss), ds_id);
         }
-    }
+    } // namespace impl
 
     /// @brief Returns `true` if `ds` is in the recursive dependency list of
     /// `ss`.

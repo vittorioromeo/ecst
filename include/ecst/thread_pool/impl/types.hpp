@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
 #include "../third_party.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/utils.hpp>
 
 namespace etp
 {
@@ -18,4 +18,4 @@ namespace etp
     using task_queue = moodycamel::BlockingConcurrentQueue<task>;
     using task_queue_consumer_token = moodycamel::ConsumerToken;
     using task_queue_producer_token = moodycamel::ProducerToken;
-}
+} // namespace etp

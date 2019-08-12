@@ -10,7 +10,7 @@
 #define ECST_IMPL_CONTEXT_SYSTEM_NAMESPACE \
     ECST_CONTEXT_NAMESPACE                 \
     {                                      \
-    namespace system
+        namespace system
 
 #define ECST_IMPL_CONTEXT_SYSTEM_NAMESPACE_END \
     }                                          \

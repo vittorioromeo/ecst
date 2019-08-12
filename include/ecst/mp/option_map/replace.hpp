@@ -40,6 +40,6 @@ ECST_MP_OPTION_MAP_NAMESPACE
         };
 
         constexpr replace_t replace{};
-    }
+    } // namespace impl
 }
 ECST_MP_OPTION_MAP_NAMESPACE_END

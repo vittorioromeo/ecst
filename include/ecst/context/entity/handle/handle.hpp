@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
@@ -57,7 +57,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             handle(handle&&) noexcept = default;
             handle& operator=(handle&&) noexcept = default;
         };
-    }
+    } // namespace impl
 
     /// @brief Special `constexpr` value that can be passed to `handle`'s
     /// constructor to create uninitialized handles.

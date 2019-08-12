@@ -10,7 +10,7 @@
 #define ECST_IMPL_INNER_PARALLELISM_NAMESPACE \
     ECST_NAMESPACE                            \
     {                                         \
-    namespace inner_parallelism
+        namespace inner_parallelism
 
 #define ECST_IMPL_INNER_PARALLELISM_NAMESPACE_END \
     }                                             \

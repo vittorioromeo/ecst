@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include "./data.hpp"
+#include <ecst/config.hpp>
 
 ECST_SETTINGS_NAMESPACE
 {

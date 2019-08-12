@@ -10,7 +10,7 @@
 #define ECST_IMPL_SIGNATURE_NAMESPACE \
     ECST_NAMESPACE                    \
     {                                 \
-    namespace signature
+        namespace signature
 
 #define ECST_IMPL_SIGNATURE_NAMESPACE_END \
     }                                     \

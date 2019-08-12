@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "./storage/storage.hpp"
 #include "./storage/component.hpp"
 #include "./storage/entity.hpp"
+#include "./storage/storage.hpp"
 #include "./storage/system.hpp"

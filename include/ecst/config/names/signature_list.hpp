@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include <ecst/config/names/signature_list/signature_list.hpp>
 #include <ecst/config/names/signature_list/component.hpp>
+#include <ecst/config/names/signature_list/signature_list.hpp>
 #include <ecst/config/names/signature_list/system.hpp>

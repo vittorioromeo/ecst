@@ -5,10 +5,10 @@
 
 #pragma once
 
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <type_traits>
 #include <vrm/pp/cat.hpp>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 
 ECST_NAMESPACE
 {
@@ -26,7 +26,7 @@ ECST_NAMESPACE
 
             ECST_ALWAYS_INLINE ~scope_guard() noexcept(   // .
                 noexcept(std::declval<TF>().operator()()) // .
-                )
+            )
             {
                 this->operator()();
             }
@@ -38,7 +38,7 @@ ECST_NAMESPACE
         {
             return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
         }
-    }
+    } // namespace impl
 }
 ECST_NAMESPACE_END
 

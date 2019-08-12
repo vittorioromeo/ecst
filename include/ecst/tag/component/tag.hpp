@@ -20,7 +20,7 @@ ECST_TAG_COMPONENT_NAMESPACE
 
         template <typename T>
         constexpr auto is_tag_impl = is_specialization_of_v<T, tag_impl>;
-    }
+    } // namespace impl
 
     /// @brief Template variable wrapping a component type into a `tag`.
     template <typename TComponent>
@@ -43,7 +43,7 @@ ECST_TAG_COMPONENT_NAMESPACE
                 return mp::list::all_variadic(is_tag_impl<Ts>...);
             }
         };
-    }
+    } // namespace impl
 
     /// @brief Evaluates to true if all `xs...` are component tags.
     constexpr impl::valid_t valid{};

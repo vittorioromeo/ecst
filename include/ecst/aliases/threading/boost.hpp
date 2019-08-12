@@ -8,19 +8,19 @@
 #include <ecst/config.hpp>
 
 #pragma GCC system_header
-#include <boost/thread.hpp>
 #include <boost/atomic.hpp>
 #include <boost/chrono.hpp>
+#include <boost/thread.hpp>
 
 ECST_NAMESPACE
 {
     namespace this_thread = boost::this_thread;
     namespace chrono = boost::chrono;
-    using boost::thread;
-    using boost::mutex;
     using boost::atomic;
     using boost::condition_variable;
     using boost::lock_guard;
+    using boost::mutex;
+    using boost::thread;
     using boost::unique_lock;
 }
 ECST_NAMESPACE_END

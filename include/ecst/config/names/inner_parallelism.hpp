@@ -5,6 +5,6 @@
 
 #pragma once
 
+#include "./inner_parallelism/composer.hpp"
 #include "./inner_parallelism/inner_parallelism.hpp"
 #include "./inner_parallelism/strategy.hpp"
-#include "./inner_parallelism/composer.hpp"

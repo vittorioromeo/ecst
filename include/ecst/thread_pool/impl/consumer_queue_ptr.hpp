@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include "./types.hpp"
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
-#include "./types.hpp"
 
 namespace etp
 {
@@ -19,8 +19,8 @@ namespace etp
         task_queue_consumer_token _ctok;
 
     public:
-        consumer_queue_ptr(task_queue& queue) noexcept : _queue{&queue},
-                                                         _ctok{queue}
+        consumer_queue_ptr(task_queue& queue) noexcept
+            : _queue{&queue}, _ctok{queue}
         {
         }
 
@@ -29,8 +29,7 @@ namespace etp
         consumer_queue_ptr& operator=(const consumer_queue_ptr&) = delete;
 
         consumer_queue_ptr(consumer_queue_ptr&& rhs) noexcept
-            : _queue{rhs._queue},
-              _ctok{*_queue}
+            : _queue{rhs._queue}, _ctok{*_queue}
         {
         }
 
@@ -59,4 +58,4 @@ namespace etp
             return _queue;
         }
     };
-}
+} // namespace etp

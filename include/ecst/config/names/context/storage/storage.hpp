@@ -10,7 +10,7 @@
 #define ECST_IMPL_CONTEXT_STORAGE_NAMESPACE \
     ECST_CONTEXT_NAMESPACE                  \
     {                                       \
-    namespace storage
+        namespace storage
 
 #define ECST_IMPL_CONTEXT_STORAGE_NAMESPACE_END \
     }                                           \

@@ -5,6 +5,6 @@
 
 #pragma once
 
+#include "./metadata/dispatch.hpp"
 #include "./metadata/metadata.hpp"
 #include "./metadata/metadata.inl"
-#include "./metadata/dispatch.hpp"

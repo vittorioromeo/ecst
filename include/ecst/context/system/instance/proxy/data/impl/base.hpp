@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/types.hpp>
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
-#include <ecst/context/types.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -57,7 +57,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             // Available for:
             // * Stateful instances;
             // * Entity instances.
-            template<typename TComponentTag>
+            template <typename TComponentTag>
             auto has(TComponentTag ct, entity_id eid) const noexcept;
 
             template <typename TF>
@@ -87,6 +87,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             template <typename TSystemTag, typename TF>
             decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept;
         };
-    }
+    } // namespace data_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
-#include <ecst/settings.hpp>
 #include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
 
 ECST_CONTEXT_BITSET_NAMESPACE
 {
@@ -72,6 +72,6 @@ ECST_CONTEXT_BITSET_NAMESPACE
                 return bit >= mp::sz_v<0> && bit < component_count();
             }
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_BITSET_NAMESPACE_END

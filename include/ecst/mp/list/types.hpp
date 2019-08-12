@@ -18,7 +18,7 @@ ECST_MP_LIST_NAMESPACE
 
         // An empty list is an empty `type_list`.
         using empty_type_list = type_list<>;
-    }
+    } // namespace impl
 
     // Type of `type_list<Ts...>`.
     template <typename... Ts>

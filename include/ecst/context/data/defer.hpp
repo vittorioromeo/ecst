@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./defer/refresh_state.hpp"
 #include "./defer/proxy.hpp"
+#include "./defer/refresh_state.hpp"

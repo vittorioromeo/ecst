@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <type_traits>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
+#include <type_traits>
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -25,7 +25,7 @@ ECST_SETTINGS_NAMESPACE
         {
             using initial_size = TInitialSize;
         };
-    }
+    } // namespace impl
 
     template <sz_t TSize>
     constexpr impl::fixed_impl<mp::sz_t_<TSize>> fixed{};

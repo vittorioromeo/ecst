@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 
 ECST_INNER_PARALLELISM_NAMESPACE
@@ -55,8 +55,7 @@ ECST_INNER_PARALLELISM_NAMESPACE
 
             // Bind the `rist` (run in separate thread) adapter to the execution
             // function, which will generate entity subranges.
-            auto ef = [&](auto& rist) mutable
-            {
+            auto ef = [&](auto& rist) mutable {
                 // Builds and runs the subtasks.
                 utils::execute_split_runtime(
                     inst.subscribed_count(), per_split, split_count, rist, f);
@@ -65,6 +64,6 @@ ECST_INNER_PARALLELISM_NAMESPACE
             // Prepare states, run subtasks and block until done.
             inst.prepare_and_wait_subtasks(ctx, split_count, ef);
         }
-    }
+    } // namespace utils
 }
 ECST_INNER_PARALLELISM_NAMESPACE_END

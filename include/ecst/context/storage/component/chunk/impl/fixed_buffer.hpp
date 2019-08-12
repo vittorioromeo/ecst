@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <array>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./buffer_base.hpp"
+#include <array>
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -19,7 +19,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             struct fixed_buffer_metadata
             {
             };
-        }
+        } // namespace impl
 
 #define ECST_IMPL_FIXED_BUFFER_BASE_TYPE                   \
     impl::buffer_base<fixed_buffer<TComponentTagList, TN>, \
@@ -45,6 +45,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             {
             }
         };
-    }
+    } // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

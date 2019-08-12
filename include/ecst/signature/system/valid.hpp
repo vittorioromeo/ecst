@@ -24,7 +24,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                 return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
             }
         };
-    }
+    } // namespace impl
 
     /// @brief Evaluates to true if all `Ts...` are system signatures.
     constexpr impl::valid_t valid{};

@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./component/data.hpp"
-#include "./component/valid.hpp"
 #include "./component/make.hpp"
+#include "./component/valid.hpp"

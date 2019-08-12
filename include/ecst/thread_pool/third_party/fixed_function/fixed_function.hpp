@@ -1,22 +1,22 @@
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_NAMESPACE
 {
     /**
-            * @brief The fixed_function<R(ARGS...), storage_size> class
+     * @brief The fixed_function<R(ARGS...), storage_size> class
      * implements
-            * functional object.
-            * This function is analog of 'std::function' with limited
+     * functional object.
+     * This function is analog of 'std::function' with limited
      * capabilities:
-            *  - It supports only move semantics.
-            *  - The size of functional objects is limited to storage size.
-            * Due to limitations above it is much faster on creation and copying
-         * than
-            * std::function.
-            */
+     *  - It supports only move semantics.
+     *  - The size of functional objects is limited to storage size.
+     * Due to limitations above it is much faster on creation and copying
+     * than
+     * std::function.
+     */
     template <typename TSignature, sz_t TStorageSize = 64>
     class fixed_function;
 
@@ -34,8 +34,7 @@ ECST_NAMESPACE
         using method_type = ret_type (*)(storage_type*, fn_ptr_type, Ts...);
         using alloc_type = void (*)(storage_type*, void* object_ptr);
 
-        union
-        {
+        union {
             storage_type _storage;
             fn_ptr_type _function_ptr;
         };
@@ -72,9 +71,8 @@ ECST_NAMESPACE
         }
 
     public:
-        fixed_function() noexcept : _function_ptr{nullptr},
-                                    _method_ptr{nullptr},
-                                    _alloc_ptr{nullptr}
+        fixed_function() noexcept
+            : _function_ptr{nullptr}, _method_ptr{nullptr}, _alloc_ptr{nullptr}
         {
         }
 
@@ -94,13 +92,11 @@ ECST_NAMESPACE
             static_assert(std::is_move_constructible<unref_type>{},
                 "Should be of movable type");
 
-            _method_ptr = [](storage_type* s, fn_ptr_type, Ts... xs)
-            {
+            _method_ptr = [](storage_type* s, fn_ptr_type, Ts... xs) {
                 return vrmc::storage_cast<unref_type>(s)->operator()(xs...);
             };
 
-            _alloc_ptr = [](storage_type* s, void* o)
-            {
+            _alloc_ptr = [](storage_type* s, void* o) {
                 if(o)
                 {
                     new(s) unref_type(std::move(*static_cast<unref_type*>(o)));
@@ -122,8 +118,7 @@ ECST_NAMESPACE
         fixed_function(TFReturn (*f)(TFs...)) noexcept : fixed_function()
         {
             _function_ptr = f;
-            _method_ptr = [](storage_type*, fn_ptr_type xf, Ts... xs)
-            {
+            _method_ptr = [](storage_type*, fn_ptr_type xf, Ts... xs) {
                 return static_cast<decltype(f)>(xf)(xs...);
             };
         }

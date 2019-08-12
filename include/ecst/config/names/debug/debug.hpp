@@ -10,7 +10,7 @@
 #define ECST_IMPL_DEBUG_NAMESPACE \
     ECST_NAMESPACE                \
     {                             \
-    namespace debug
+        namespace debug
 
 #define ECST_IMPL_DEBUG_NAMESPACE_END \
     }                                 \

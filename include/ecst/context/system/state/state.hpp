@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <vector>
-#include <functional>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/utils/sparse_int_set.hpp>
+#include <functional>
+#include <vector>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -20,7 +20,7 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSettings>
             class proxy;
         }
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END
 
@@ -84,6 +84,6 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 _deferred_fns.clear();
             }
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END

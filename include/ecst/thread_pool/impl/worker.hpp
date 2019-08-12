@@ -5,10 +5,10 @@
 
 #pragma once
 
+#include "./consumer_queue_ptr.hpp"
+#include "./types.hpp"
 #include <ecst/aliases.hpp>
 #include <ecst/utils.hpp>
-#include "./types.hpp"
-#include "./consumer_queue_ptr.hpp"
 
 namespace etp
 {
@@ -71,15 +71,14 @@ namespace etp
             ECST_ASSERT_NS(_state == state::uninitialized);
 
             // Start the worker thread.
-            _thread = ecst::thread([this, &remaining_inits]
-                {
-                    // Set the running flag and signal the pool the thread has
-                    // been initialized.
-                    _state = state::running;
-                    (--remaining_inits);
+            _thread = ecst::thread([this, &remaining_inits] {
+                // Set the running flag and signal the pool the thread has
+                // been initialized.
+                _state = state::running;
+                (--remaining_inits);
 
-                    run();
-                });
+                run();
+            });
         }
 
         /// @brief Sets the running flag to false, preventing the worker to
@@ -105,4 +104,4 @@ namespace etp
             return _state == state::finished;
         }
     };
-}
+} // namespace etp

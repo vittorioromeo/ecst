@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 #include <ecst/signature.hpp>
 
@@ -25,7 +25,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
                         decay_t<TInstance>>()  // .
                         .system()              // .
                     )                          // .
-                );
+            );
 
             template <typename TPredicateResult>
             using enabler = std::enable_if_t<TPredicateResult{}, void>;
@@ -47,6 +47,6 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
             template <typename TF>
             constexpr auto for_subtasks(TF&& f) noexcept;
         };
-    }
+    } // namespace impl
 }
 ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE_END

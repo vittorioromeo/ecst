@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/tag/system.hpp>
 
@@ -24,7 +24,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
             // TODO: rename?
             constexpr auto kind = sz_v<5>;
-        }
+        } // namespace keys
 
         // TODO: move, docs, rename
         namespace kind
@@ -44,7 +44,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             constexpr stateless_t stateless{};
             constexpr stateful_t stateful{};
             constexpr entity_t entity{};
-        }
-    }
+        } // namespace kind
+    }     // namespace impl
 }
 ECST_SIGNATURE_SYSTEM_NAMESPACE_END

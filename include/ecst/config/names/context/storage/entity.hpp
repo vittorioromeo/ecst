@@ -10,7 +10,7 @@
 #define ECST_IMPL_CONTEXT_STORAGE_ENTITY_NAMESPACE \
     ECST_CONTEXT_STORAGE_NAMESPACE                 \
     {                                              \
-    namespace entity
+        namespace entity
 
 #define ECST_IMPL_CONTEXT_STORAGE_ENTITY_NAMESPACE_END \
     }                                                  \

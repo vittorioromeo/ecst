@@ -10,7 +10,7 @@
 #define ECST_IMPL_SYSTEM_EXECUTION_ADAPTER_NAMESPACE \
     ECST_NAMESPACE                                   \
     {                                                \
-    namespace system_execution_adapter
+        namespace system_execution_adapter
 
 #define ECST_IMPL_SYSTEM_EXECUTION_ADAPTER_NAMESPACE_END \
     }                                                    \

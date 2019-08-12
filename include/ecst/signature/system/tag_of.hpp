@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/tag/system.hpp>
 #include <ecst/signature/system/valid.hpp>
+#include <ecst/tag/system.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {

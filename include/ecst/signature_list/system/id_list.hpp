@@ -18,12 +18,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         auto id_list_impl(
             TSystemSignatureList ssl, TPickedSystemSignatureList pssl)
         {
-            return bh::transform(pssl, [ssl](auto x_sig)
-                {
-                    return id_by_signature(ssl, x_sig);
-                });
+            return bh::transform(pssl,
+                [ssl](auto x_sig) { return id_by_signature(ssl, x_sig); });
         }
-    }
+    } // namespace impl
 
     /// @brief Returns the list of `pssl` system IDs inside a system signature
     /// list from `ssl`.
@@ -56,12 +54,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             TSystemSignatureList ssl, TSystemSignature ss)
         {
             auto tag_list = signature::system::dependencies_as_tag_list(ss);
-            return bh::transform(tag_list, [=](auto x_tag)
-                {
-                    return id_by_tag(ssl, x_tag);
-                });
+            return bh::transform(
+                tag_list, [=](auto x_tag) { return id_by_tag(ssl, x_tag); });
         }
-    }
+    } // namespace impl
 
     /// @brief Given a signature list and a signature, returns the list of the
     /// signature's dependencies, as IDs.

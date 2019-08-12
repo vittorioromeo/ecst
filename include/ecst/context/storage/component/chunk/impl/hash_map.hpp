@@ -8,10 +8,10 @@
 /*
 #pragma once
 
-#include <unordered_map>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
+#include <unordered_map>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {

@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
+#include "./bits.hpp"
+#include "./data.hpp"
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
 #include <ecst/settings.hpp>
 #include <ecst/tag.hpp>
-#include "./bits.hpp"
-#include "./data.hpp"
 
 ECST_CONTEXT_BITSET_NAMESPACE
 {
@@ -24,11 +24,10 @@ ECST_CONTEXT_BITSET_NAMESPACE
         ECST_S_ASSERT_DT(tag::component::is_list(scl));
         auto csl = settings::component_signature_list(s);
 
-        bh::for_each(scl, [&](auto ct)
-            {
-                auto id(signature_list::component::id_by_tag(csl, ct));
-                bitset.set_component_by_id(id, true);
-            });
+        bh::for_each(scl, [&](auto ct) {
+            auto id(signature_list::component::id_by_tag(csl, ct));
+            bitset.set_component_by_id(id, true);
+        });
     }
 
     /// @brief Returns a bitset filled with `scl`'s component bits.

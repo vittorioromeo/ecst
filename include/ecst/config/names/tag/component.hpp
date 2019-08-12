@@ -10,7 +10,7 @@
 #define ECST_IMPL_TAG_COMPONENT_NAMESPACE \
     ECST_TAG_NAMESPACE                    \
     {                                     \
-    namespace component
+        namespace component
 
 #define ECST_IMPL_TAG_COMPONENT_NAMESPACE_END \
     }                                         \

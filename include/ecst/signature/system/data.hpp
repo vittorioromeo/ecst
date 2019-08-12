@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/mp.hpp>
-#include <ecst/tag/system.hpp>
 #include "./impl/keys.hpp"
 #include "./impl/output_wrapper.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/mp.hpp>
+#include <ecst/tag/system.hpp>
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {
@@ -159,7 +159,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
                     >;
             }
         };
-    }
+    } // namespace impl
 
     template <typename TSystemSignature> // .
     using tag_type =                     // .

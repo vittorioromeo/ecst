@@ -19,7 +19,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             using component_tuple_type =
                 mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
                     TComponentTagList{})>;
-        }
-    }
+        } // namespace impl
+    }     // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

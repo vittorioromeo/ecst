@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/context/types.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/debug.hpp>
 #include "./bits.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/types.hpp>
+#include <ecst/debug.hpp>
+#include <ecst/settings.hpp>
 
 ECST_CONTEXT_BITSET_NAMESPACE
 {
@@ -60,7 +60,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
                 ELOG(                                                     // .
                     debug::lo_metadata_bitset() << "Setting bit #" << bit // .
                                                 << " to " << x << "\n";   // .
-                    );
+                );
 
                 _bitset.set(bit, x);
             }
@@ -76,7 +76,7 @@ ECST_CONTEXT_BITSET_NAMESPACE
                 return _bitset.to_string();
             }
         };
-    }
+    } // namespace impl
 
     template <typename TSettings>
     using dispatch = impl::data<TSettings>;

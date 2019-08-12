@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include "./data.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include "./data.hpp"
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
 {
@@ -24,7 +24,7 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
                 return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
             }
         };
-    }
+    } // namespace impl
 
     /// @brief Evaluates to true if all `Ts...` are component signatures.
     constexpr impl::valid_t valid{};

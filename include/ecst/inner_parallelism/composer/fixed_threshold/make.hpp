@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./parameters.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
 {
@@ -26,6 +26,6 @@ ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
                 TStrategyLower       // .
                 >{};
         }
-    }
+    } // namespace fixed_threshold
 }
 ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE_END

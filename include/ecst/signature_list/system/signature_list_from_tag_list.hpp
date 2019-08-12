@@ -17,12 +17,10 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         auto signature_list_from_tag_list_impl(
             TSystemSignatureList ssl, TSystemTagList stl) noexcept
         {
-            return bh::transform(stl, [ssl](auto st)
-                {
-                    return signature_by_tag(ssl, st);
-                });
+            return bh::transform(
+                stl, [ssl](auto st) { return signature_by_tag(ssl, st); });
         }
-    }
+    } // namespace impl
 
     /// @brief Given a system signature list `ssl` and a list of system tags
     /// `stl`, returns a list of every tag in `stl` transformed to a signature.

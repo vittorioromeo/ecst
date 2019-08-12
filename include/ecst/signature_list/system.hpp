@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include "./system/is_signature_list.hpp"
-#include "./system/make.hpp"
-#include "./system/signature.hpp"
+#include "./system/bf_traversal.hpp"
+#include "./system/dependents.hpp"
 #include "./system/id.hpp"
 #include "./system/id_list.hpp"
-#include "./system/signature_list_from_tag_list.hpp"
-#include "./system/dependents.hpp"
-#include "./system/bf_traversal.hpp"
-#include "./system/recursive_dependents.hpp"
 #include "./system/independent.hpp"
+#include "./system/is_signature_list.hpp"
+#include "./system/make.hpp"
 #include "./system/recursive_dependencies.hpp"
+#include "./system/recursive_dependents.hpp"
+#include "./system/signature.hpp"
+#include "./system/signature_list_from_tag_list.hpp"

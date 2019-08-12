@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/entity.hpp>
 #include "./container.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/entity.hpp>
+#include <ecst/settings.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 {
@@ -49,7 +49,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 
                 ELOG(                                                       // .
                     debug::lo_entity() << "Created (eID: " << res << ")\n"; // .
-                    );
+                );
 
                 ECST_ASSERT(alive(res));
                 ECST_ASSERT(context::entity::is_valid_id(res));
@@ -68,7 +68,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
             {
                 ELOG(                                               // .
                     debug::lo_entity() << "Creating handle for:\n"; // .
-                    );
+                );
 
                 return create_handle(create_entity());
             }
@@ -97,9 +97,9 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
             auto reclaim(entity_id eid)
             {
                 ELOG( // .
-                    debug::lo_entity() << "Reclaimed (eID: " << eid
-                                       << ")\n"; // .
-                    );
+                    debug::lo_entity()
+                        << "Reclaimed (eID: " << eid << ")\n"; // .
+                );
 
 #if defined(ECST_LOG_ENABLED)
                 if(!alive(eid))
@@ -107,7 +107,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                     ELOG(                                                // .
                         debug::lo_entity() << "Reclaiming (eID: " << eid // .
                                            << ") twice\n";               // .
-                        );
+                    );
                 }
 #endif
 
@@ -139,6 +139,6 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
         using fixed_entity_storage = data<               // .
             container::fixed<TEntityMetadata, TCapacity> // .
             >;
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END

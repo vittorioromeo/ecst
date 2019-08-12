@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
-#include "./impl/types.hpp"
 #include "./impl/consumer_queue_ptr.hpp"
-#include "./impl/worker.hpp"
 #include "./impl/pool.hpp"
+#include "./impl/types.hpp"
+#include "./impl/worker.hpp"
 
 ECST_NAMESPACE
 {

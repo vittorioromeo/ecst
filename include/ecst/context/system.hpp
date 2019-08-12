@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./system/state.hpp"
 #include "./system/instance.hpp"
+#include "./system/state.hpp"

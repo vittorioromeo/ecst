@@ -10,7 +10,7 @@
 #define ECST_IMPL_MP_NAMESPACE \
     ECST_NAMESPACE             \
     {                          \
-    namespace mp
+        namespace mp
 
 #define ECST_IMPL_MP_NAMESPACE_END \
     }                              \

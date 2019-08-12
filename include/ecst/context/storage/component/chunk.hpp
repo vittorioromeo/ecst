@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "./chunk/utils.hpp"
 #include "./chunk/impl.hpp"
-#include "./chunk/type.hpp"
 #include "./chunk/tuple.hpp"
+#include "./chunk/type.hpp"
+#include "./chunk/utils.hpp"

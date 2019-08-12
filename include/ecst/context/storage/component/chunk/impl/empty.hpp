@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -17,7 +17,7 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             struct empty_metadata
             {
             };
-        }
+        } // namespace impl
 
         template <typename TComponentTagList>
         class empty
@@ -31,6 +31,6 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             {
             }
         };
-    }
+    } // namespace chunk
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include "../fixed_threshold.hpp"
 #include "../../strategy/none.hpp"
+#include "../fixed_threshold.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
 {
@@ -24,8 +24,8 @@ ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
                 TEntityThreshold{},    // .
                 TStrategyGreater{},    // .
                 none_fallback          // .
-                );
+            );
         }
-    }
+    } // namespace none_below_threshold
 }
 ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE_END

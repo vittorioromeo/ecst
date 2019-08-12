@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <vector>
-#include <vrm/core/experimental/sparse_set.hpp>
-#include <vrm/core/experimental/resizable_buffer.hpp>
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
 #include "./base.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <vector>
+#include <vrm/core/experimental/resizable_buffer.hpp>
+#include <vrm/core/experimental/sparse_set.hpp>
 
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 {
@@ -50,7 +50,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                         << "Growing dynamic entity container (from "
                         << _capacity                         // .
                         << " to " << _capacity + n << ")\n"; // .
-                    );
+                );
 
                 add_range_in_set_reverse(
                     _free_ids, entity_id{_capacity}, entity_id{_capacity + n});
@@ -65,7 +65,7 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
                         << (new_capacity * sizeof(entity_metadata_type)) /
                                1024.f / 1024.f // .
                         << "MB\n";             // .
-                    );
+                );
             }
 
             void grow()
@@ -94,6 +94,6 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
 
             ECST_DEFINE_DEFAULT_MOVE_ONLY_OPERATIONS(dynamic);
         };
-    }
+    } // namespace container
 }
 ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END

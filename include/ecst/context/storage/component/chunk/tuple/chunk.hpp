@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/mp/list.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/storage/component/chunk/type.hpp>
+#include <ecst/mp/list.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
 {
@@ -16,10 +16,8 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
     auto make_chunk_tuple(TSettings s) noexcept
     {
         auto csl = settings::component_signature_list(s);
-        return bh::transform(csl, [s](auto cs)
-            {
-                return mp::unwrapped(cs).make_storage_type(s);
-            });
+        return bh::transform(csl,
+            [s](auto cs) { return mp::unwrapped(cs).make_storage_type(s); });
     }
 }
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

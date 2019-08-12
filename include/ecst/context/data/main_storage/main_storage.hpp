@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/storage.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -81,6 +81,6 @@ ECST_CONTEXT_NAMESPACE
             auto alive(entity_id) const noexcept;
             auto alive(const handle&) const noexcept;
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

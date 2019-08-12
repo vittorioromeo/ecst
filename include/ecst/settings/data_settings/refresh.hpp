@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <type_traits>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
+#include <type_traits>
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -32,7 +32,7 @@ ECST_SETTINGS_NAMESPACE
             /// policy.
             template <typename T>
             constexpr auto is = std::is_base_of<base, T>{};
-        }
+        } // namespace refresh_parallelism
 
         template <typename TRefreshParallelism>
         constexpr auto allows_refresh_parallelism()
@@ -42,7 +42,7 @@ ECST_SETTINGS_NAMESPACE
                 TRefreshParallelism           //
                 >{};
         }
-    }
+    } // namespace impl
 
     constexpr auto allow_refresh_parallelism =
         impl::refresh_parallelism::enabled{};

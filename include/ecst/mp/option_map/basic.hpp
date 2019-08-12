@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/mp/list.hpp>
 #include "./replace.hpp"
+#include <ecst/mp/list.hpp>
 
 ECST_MP_OPTION_MAP_NAMESPACE
 {
@@ -54,7 +54,7 @@ ECST_MP_OPTION_MAP_NAMESPACE
                 return data<ECST_DECAY_DECLTYPE(new_map)>{};
             }
         };
-    }
+    } // namespace impl
 
     constexpr auto make() noexcept
     {

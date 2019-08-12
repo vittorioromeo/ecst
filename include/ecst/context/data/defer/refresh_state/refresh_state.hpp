@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
 ECST_CONTEXT_NAMESPACE
@@ -27,7 +27,7 @@ ECST_CONTEXT_NAMESPACE
 
                 void clear() noexcept;
             };
-        }
-    }
+        } // namespace defer
+    }     // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

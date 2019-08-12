@@ -10,7 +10,7 @@
 #define ECST_IMPL_TAG_SYSTEM_NAMESPACE \
     ECST_TAG_NAMESPACE                 \
     {                                  \
-    namespace system
+        namespace system
 
 #define ECST_IMPL_TAG_SYSTEM_NAMESPACE_END \
     }                                      \

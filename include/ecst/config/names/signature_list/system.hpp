@@ -10,7 +10,7 @@
 #define ECST_IMPL_SIGNATURE_LIST_SYSTEM_NAMESPACE \
     ECST_SIGNATURE_LIST_NAMESPACE                 \
     {                                             \
-    namespace system
+        namespace system
 
 #define ECST_IMPL_SIGNATURE_LIST_SYSTEM_NAMESPACE_END \
     }                                                 \

@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <utility>
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <utility>
 
 ECST_NAMESPACE
 {

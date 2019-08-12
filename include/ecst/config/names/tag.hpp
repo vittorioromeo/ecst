@@ -5,6 +5,6 @@
 
 #pragma once
 
-#include "./tag/tag.hpp"
 #include "./tag/component.hpp"
 #include "./tag/system.hpp"
+#include "./tag/tag.hpp"

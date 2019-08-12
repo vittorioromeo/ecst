@@ -34,7 +34,7 @@ ECST_MP_NAMESPACE
                 return same_type{}(decay_t<T1>{}, decay_t<T0>{});
             }
         };
-    }
+    } // namespace impl
 
     // Variable template aliases.
     constexpr impl::same_type same_type{};

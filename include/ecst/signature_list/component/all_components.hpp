@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/component/signature.hpp>
 
@@ -17,12 +17,10 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         template <typename TComponentSignatureList>
         auto all_components_impl(TComponentSignatureList&& csl) noexcept
         {
-            return bh::flatten(bh::transform(csl, [](auto cs)
-                {
-                    return mp::unwrapped(cs).tag_list();
-                }));
+            return bh::flatten(bh::transform(
+                csl, [](auto cs) { return mp::unwrapped(cs).tag_list(); }));
         }
-    }
+    } // namespace impl
 
     template <typename TComponentSignatureList>
     constexpr auto all_components(TComponentSignatureList csl) noexcept

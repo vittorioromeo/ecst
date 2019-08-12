@@ -74,7 +74,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             /// @brief Returns the index of the current subtask.
             auto subtask_index() const noexcept;
         };
-    }
+    } // namespace data_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 

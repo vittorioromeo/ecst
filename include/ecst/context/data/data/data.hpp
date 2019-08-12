@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include "./refresh_event.hpp"
-#include "../system_manager.hpp"
+#include "../defer.hpp"
 #include "../main_storage.hpp"
 #include "../step.hpp"
-#include "../defer.hpp"
+#include "../system_manager.hpp"
+#include "./refresh_event.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -62,6 +62,6 @@ ECST_CONTEXT_NAMESPACE
             template <typename TFStep, typename... TFsRefresh>
             auto step(TFStep&& f_step, TFsRefresh&&... fs_refresh);
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

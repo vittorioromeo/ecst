@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./bitset/bits.hpp"
-#include "./bitset/data.hpp"
 #include "./bitset/builder.hpp"
+#include "./bitset/data.hpp"

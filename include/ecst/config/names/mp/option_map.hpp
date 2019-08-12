@@ -10,7 +10,7 @@
 #define ECST_IMPL_MP_OPTION_MAP_NAMESPACE \
     ECST_MP_NAMESPACE                     \
     {                                     \
-    namespace option_map
+        namespace option_map
 
 #define ECST_IMPL_MP_OPTION_MAP_NAMESPACE_END \
     }                                         \

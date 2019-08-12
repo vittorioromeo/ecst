@@ -5,9 +5,9 @@
 
 #pragma once
 
+#include "./data.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
-#include "./data.hpp"
 
 ECST_SIGNATURE_SYSTEM_NAMESPACE
 {

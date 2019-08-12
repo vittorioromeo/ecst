@@ -5,5 +5,5 @@
 
 #pragma once
 
-#include "./type/tuple.hpp"
 #include "./type/component_tuple.hpp"
+#include "./type/tuple.hpp"
