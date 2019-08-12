@@ -6,8 +6,8 @@
 #pragma once
 
 #include <array>
-#include <vrm/core/type_aliases.hpp>
 #include <vrm/core/assert.hpp>
+#include <vrm/core/type_aliases.hpp>
 
 // #define EXAMPLE_USE_STD_FLOOR_CEIL 1
 
@@ -70,24 +70,20 @@ namespace example
 
         const auto& sin_table() noexcept
         {
-            static trig_table<trig_table_precision> result{[](auto x)
-                {
-                    return std::sin(x);
-                }};
+            static trig_table<trig_table_precision> result{
+                [](auto x) { return std::sin(x); }};
 
             return result;
         }
 
         const auto& cos_table() noexcept
         {
-            static trig_table<trig_table_precision> result{[](auto x)
-                {
-                    return std::cos(x);
-                }};
+            static trig_table<trig_table_precision> result{
+                [](auto x) { return std::cos(x); }};
 
             return result;
         }
-    }
+    } // namespace impl
 
     auto tbl_sin(float mX) noexcept
     {
@@ -98,4 +94,4 @@ namespace example
     {
         return impl::cos_table().get(mX);
     }
-}
+} // namespace example

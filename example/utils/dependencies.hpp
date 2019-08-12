@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <random>
 #include <iostream>
+#include <random>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -24,8 +24,8 @@ namespace example
     using vec2f = sf::Vector2f;
     using vec2i = sf::Vector2i;
     using vec2u = sf::Vector2u;
-}
+} // namespace example
 
 #include "../boilerplate.hpp"
-#include "./trig.hpp"
 #include "./pres_utils.hpp"
+#include "./trig.hpp"

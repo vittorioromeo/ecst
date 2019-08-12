@@ -3,15 +3,15 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <ecst.hpp>
 #include "../test/ecst/settings_generator.hpp"
+#include <ecst.hpp>
 
 namespace example
 {
     using ft = float;
 
-    using vrm::core::uint;
     using vrm::core::sz_t;
+    using vrm::core::uint;
 
     namespace component
     {
@@ -51,7 +51,7 @@ namespace example
         {
             float _v;
         };
-    }
+    } // namespace component
 
     namespace c = example::component;
 
@@ -66,7 +66,7 @@ namespace example
         constexpr auto color = tag::component::v<c::color>;
         constexpr auto circle_shape = tag::component::v<c::circle_shape>;
         constexpr auto life = tag::component::v<c::life>;
-    }
+    } // namespace ct
 
     namespace actions
     {
@@ -111,7 +111,7 @@ namespace example
 
             cs._radius = l._v * 0.2f;
         }
-    }
+    } // namespace actions
 
 
 #define SYS_TAG(x)                                          \
@@ -139,12 +139,11 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& v = data.get(ct::velocity, eid);
-                        const auto& c = data.get(ct::curve, eid);
-                        actions::curve(dt, v, c);
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& v = data.get(ct::velocity, eid);
+                    const auto& c = data.get(ct::curve, eid);
+                    actions::curve(dt, v, c);
+                });
             }
         };
 
@@ -166,36 +165,32 @@ namespace example
                 auto& va = data.output();
                 va.clear();
 
-                data.for_entities([this, &va, &data](auto eid)
+                data.for_entities([this, &va, &data](auto eid) {
+                    const auto& p = data.get(ct::position, eid);
+                    // const auto& c = data.get(ct::color, eid);
+                    auto& cs = data.get(ct::circle_shape, eid);
+
+                    // actions::update_circle(cs, p, c);
+
+                    auto mk_triangle = [this, &va, &data, &p, &cs](auto, auto) {
+                        // va.emplace_back(1);
+                        // va.emplace_back(2);
+                        // va.emplace_back(3);
+
+                        // va.emplace_back(p0, color);
+                        // va.emplace_back(p1, color);
+                        // va.emplace_back(p2, color);
+                    };
+
+                    float tau = 6.28f;
+                    sz_t precision = 3;
+                    float inc = tau / precision;
+
+                    for(sz_t i = 0; i < precision; ++i)
                     {
-                        const auto& p = data.get(ct::position, eid);
-                        // const auto& c = data.get(ct::color, eid);
-                        auto& cs = data.get(ct::circle_shape, eid);
-
-                        // actions::update_circle(cs, p, c);
-
-                        auto mk_triangle = [this, &va, &data, &p, &cs](
-                            auto, auto)
-                        {
-
-                            // va.emplace_back(1);
-                            // va.emplace_back(2);
-                            // va.emplace_back(3);
-
-                            // va.emplace_back(p0, color);
-                            // va.emplace_back(p1, color);
-                            // va.emplace_back(p2, color);
-                        };
-
-                        float tau = 6.28f;
-                        sz_t precision = 3;
-                        float inc = tau / precision;
-
-                        for(sz_t i = 0; i < precision; ++i)
-                        {
-                            mk_triangle(inc * i, inc * (i + 1));
-                        }
-                    });
+                        mk_triangle(inc * i, inc * (i + 1));
+                    }
+                });
             }
         };
 
@@ -207,12 +202,11 @@ namespace example
                 (void)dt;
 
 
-                data.for_entities([&](auto eid)
-                    {
-                        auto& v = data.get(ct::velocity, eid);
-                        const auto& a = data.get(ct::acceleration, eid);
-                        actions::accelerate(dt, v, a);
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& v = data.get(ct::velocity, eid);
+                    const auto& a = data.get(ct::acceleration, eid);
+                    actions::accelerate(dt, v, a);
+                });
             }
         };
 
@@ -222,16 +216,14 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_previous_outputs(st::acceleration, [](auto&, auto&&)
-                    {
-                    });
+                data.for_previous_outputs(
+                    st::acceleration, [](auto&, auto&&) {});
 
-                data.for_entities([&](auto eid)
-                    {
-                        auto& p = data.get(ct::position, eid);
-                        const auto& v = data.get(ct::velocity, eid);
-                        actions::move(dt, p, v);
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& p = data.get(ct::position, eid);
+                    const auto& v = data.get(ct::velocity, eid);
+                    actions::move(dt, p, v);
+                });
             }
         };
 
@@ -241,16 +233,15 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& l = data.get(ct::life, eid);
-                        actions::hurt(dt, l);
+                data.for_entities([&](auto eid) {
+                    auto& l = data.get(ct::life, eid);
+                    actions::hurt(dt, l);
 
-                        if(l._v <= 0.f)
-                        {
-                            data.kill_entity(eid);
-                        }
-                    });
+                    if(l._v <= 0.f)
+                    {
+                        data.kill_entity(eid);
+                    }
+                });
             }
         };
 
@@ -259,20 +250,19 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        const auto& l = data.get(ct::life, eid);
-                        // auto& c = data.get(ct::color, eid);
-                        auto& cs = data.get(ct::circle_shape, eid);
-                        // actions::fade(c, cs, l);
+                data.for_entities([&](auto eid) {
+                    const auto& l = data.get(ct::life, eid);
+                    // auto& c = data.get(ct::color, eid);
+                    auto& cs = data.get(ct::circle_shape, eid);
+                    // actions::fade(c, cs, l);
 
-                        (void)l;
-                        // (void)c;
-                        (void)cs;
-                    });
+                    (void)l;
+                    // (void)c;
+                    (void)cs;
+                });
             }
         };
-    }
+    } // namespace system
 
 
 
@@ -293,7 +283,7 @@ namespace example
                 cs::make(ct::color),        // .
                 cs::make(ct::circle_shape), // .
                 cs::make(ct::life)          // .
-                );
+            );
         }
 
         constexpr auto make_ssl()
@@ -313,7 +303,7 @@ namespace example
             constexpr auto test_p =                       // .
                 ipc::none_below_threshold::v(sz_v<10000>, // .
                     ips::split_evenly_fn::v_cores()       // .
-                    );
+                );
 
             (void)test_p2;
 
@@ -364,17 +354,14 @@ namespace example
                 ssig_render_colored_circle, // .
                 ssig_life,                  // .
                 ssig_fade                   // .
-                );
+            );
         }
-    }
+    } // namespace ecst_setup
 
     namespace c = example::component;
     namespace s = example::system;
 
-    auto rndf = [](float, float max)
-    {
-        return max;
-    };
+    auto rndf = [](float, float max) { return max; };
 
     template <typename TContext>
     class game_app
@@ -441,43 +428,35 @@ namespace example
 
             namespace sea = ::ecst::system_execution_adapter;
 
-            _ctx.step([this, dt](auto& proxy)
+            _ctx.step([this, dt](auto& proxy) {
+                proxy.system(st::render_colored_circle).prepare();
+
+                proxy.execute_systems_from(st::acceleration, st::life)( // .
+                    sea::t(st::acceleration, st::velocity, st::curve, st::life)
+                        .for_subtasks(
+                            [dt](auto& s, auto& data) { s.process(dt, data); }),
+                    sea::t(st::fade).for_subtasks(
+                        [](auto& s, auto& data) { s.process(data); }),
+                    sea::t(st::render_colored_circle)
+                        .for_subtasks([this, dt](auto& s, auto& data) {
+                            s.process(0, data);
+                        }));
+
+                if(!_ctx.any_entity_in(st::life))
                 {
-                    proxy.system(st::render_colored_circle).prepare();
-
-                    proxy.execute_systems_from(st::acceleration, st::life)( // .
-                        sea::t(
-                            st::acceleration, st::velocity, st::curve, st::life)
-                            .for_subtasks([dt](auto& s, auto& data)
-                                {
-                                    s.process(dt, data);
-                                }),
-                        sea::t(st::fade).for_subtasks([](auto& s, auto& data)
-                            {
-                                s.process(data);
-                            }),
-                        sea::t(st::render_colored_circle)
-                            .for_subtasks([this, dt](auto& s, auto& data)
-                                {
-                                    s.process(0, data);
-                                }));
-
-                    if(!_ctx.any_entity_in(st::life))
-                    {
-                        _running = false;
-                    }
-                });
+                    _running = false;
+                }
+            });
         }
 
         void init()
         {
-            _ctx.step([this](auto& proxy)
+            _ctx.step([this](auto& proxy) {
+                for(sz_t i = 0; i < entity_count; ++i)
                 {
-                    for(sz_t i = 0; i < entity_count; ++i)
-                    {
-                        this->mk_particle(proxy);
-                    }
-                });
+                    this->mk_particle(proxy);
+                }
+            });
 
             init_loops();
         }
@@ -488,15 +467,14 @@ namespace example
             init();
         }
     };
-}
+} // namespace example
 
 int main()
 {
     using namespace example;
     using namespace example::ecst_setup;
 
-    auto test_impl = [&](auto& ctx)
-    {
+    auto test_impl = [&](auto& ctx) {
         using ct = ECST_DECAY_DECLTYPE(ctx);
         game_app<ct> a{ctx};
         (void)a;

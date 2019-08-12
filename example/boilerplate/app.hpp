@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <ecst/config.hpp>
+#include <SFML/Window.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 namespace example
 {
@@ -44,5 +44,5 @@ namespace example
                 return _window;
             }
         };
-    }
-}
+    } // namespace boilerplate
+} // namespace example

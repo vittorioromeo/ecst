@@ -72,9 +72,7 @@ namespace example
         float _dist;
 
         contact(ecst::entity_id e0, ecst::entity_id e1, float dist) noexcept
-            : _e0(e0),
-              _e1(e1),
-              _dist(dist)
+            : _e0(e0), _e1(e1), _dist(dist)
         {
         }
     };
@@ -87,9 +85,7 @@ namespace example
         sz_t _cell_x, _cell_y;
 
         sp_data(ecst::entity_id e, sz_t cell_x, sz_t cell_y) noexcept
-            : _e(e),
-              _cell_x(cell_x),
-              _cell_y(cell_y)
+            : _e(e), _cell_x(cell_x), _cell_y(cell_y)
         {
         }
     };
@@ -130,7 +126,7 @@ namespace example
         {
             float _v;
         };
-    }
+    } // namespace c
 
     // In order to avoid the annoying `data.template <component_type>` syntax
     // and to have an uniform "type-value encoding" interface both in the
@@ -145,7 +141,7 @@ namespace example
         // With tags:
         data.get(ct::position, eid);
     */
-}
+} // namespace example
 
 // Component tags, in namespace `example::ct`.
 EXAMPLE_COMPONENT_TAG(acceleration);
@@ -228,13 +224,12 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& p = data.get(ct::position, eid)._v;
-                        const auto& v = data.get(ct::velocity, eid)._v;
+                data.for_entities([&](auto eid) {
+                    auto& p = data.get(ct::position, eid)._v;
+                    const auto& v = data.get(ct::velocity, eid)._v;
 
-                        p += v * dt;
-                    });
+                    p += v * dt;
+                });
             }
         };
 
@@ -244,42 +239,41 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
+                data.for_entities([&](auto eid) {
+                    auto& p = data.get(ct::position, eid)._v;
+                    auto& v = data.get(ct::velocity, eid)._v;
+                    const auto& radius = data.get(ct::circle, eid)._radius;
+
+                    // Calculate the edge positions of the particle.
+                    auto left = p.x - radius;
+                    auto right = p.x + radius;
+                    auto top = p.y - radius;
+                    auto bottom = p.y + radius;
+
+                    // Move and invert X velocity if necessary.
+                    if(left < left_bound)
                     {
-                        auto& p = data.get(ct::position, eid)._v;
-                        auto& v = data.get(ct::velocity, eid)._v;
-                        const auto& radius = data.get(ct::circle, eid)._radius;
+                        p.x = left_bound + radius;
+                        v.x *= -1;
+                    }
+                    else if(right > right_bound)
+                    {
+                        p.x = right_bound - radius;
+                        v.x *= -1;
+                    }
 
-                        // Calculate the edge positions of the particle.
-                        auto left = p.x - radius;
-                        auto right = p.x + radius;
-                        auto top = p.y - radius;
-                        auto bottom = p.y + radius;
-
-                        // Move and invert X velocity if necessary.
-                        if(left < left_bound)
-                        {
-                            p.x = left_bound + radius;
-                            v.x *= -1;
-                        }
-                        else if(right > right_bound)
-                        {
-                            p.x = right_bound - radius;
-                            v.x *= -1;
-                        }
-
-                        // Move and invert Y velocity if necessary.
-                        if(top < top_bound)
-                        {
-                            p.y = top_bound + radius;
-                            v.y *= -1;
-                        }
-                        else if(bottom > bottom_bound)
-                        {
-                            p.y = bottom_bound - radius;
-                            v.y *= -1;
-                        }
-                    });
+                    // Move and invert Y velocity if necessary.
+                    if(top < top_bound)
+                    {
+                        p.y = top_bound + radius;
+                        v.y *= -1;
+                    }
+                    else if(bottom > bottom_bound)
+                    {
+                        p.y = bottom_bound - radius;
+                        v.y *= -1;
+                    }
+                });
             }
         };
 
@@ -383,23 +377,19 @@ namespace example
                 es.reserve(data.entity_count());
 
                 // For every entity in the subtask...
-                data.for_entities([&](auto eid)
+                data.for_entities([&](auto eid) { es.emplace_back(eid); });
+
+                std::sort(es.begin(), es.end(), [this, &data](auto a, auto b) {
+                    const auto& pa = data.get(ct::position, a)._v;
+                    const auto& pb = data.get(ct::position, b)._v;
+
+                    if(this->idx(pa.x) != this->idx(pb.x))
                     {
-                        es.emplace_back(eid);
-                    });
+                        return pa.x < pb.x;
+                    }
 
-                std::sort(es.begin(), es.end(), [this, &data](auto a, auto b)
-                    {
-                        const auto& pa = data.get(ct::position, a)._v;
-                        const auto& pb = data.get(ct::position, b)._v;
-
-                        if(this->idx(pa.x) != this->idx(pb.x))
-                        {
-                            return pa.x < pb.x;
-                        }
-
-                        return pa.y < pb.y;
-                    });
+                    return pa.y < pb.y;
+                });
 
                 for(auto eid : es)
                 {
@@ -409,25 +399,22 @@ namespace example
 
                     // Figure out the broadphase cell and emplace an
                     // `sp_data` instance in the output vector.
-                    this->for_cells_of(p, c, [eid, &o](auto cx, auto cy)
-                        {
-                            o.emplace_back(eid, cx, cy);
-                        });
+                    this->for_cells_of(p, c, [eid, &o](auto cx, auto cy) {
+                        o.emplace_back(eid, cx, cy);
+                    });
                 }
 #else
-                data.for_entities([&](auto eid)
-                    {
-                        // Access component data.
-                        const auto& p = data.get(ct::position, eid)._v;
-                        const auto& c = data.get(ct::circle, eid)._radius;
+                data.for_entities([&](auto eid) {
+                    // Access component data.
+                    const auto& p = data.get(ct::position, eid)._v;
+                    const auto& c = data.get(ct::circle, eid)._radius;
 
-                        // Figure out the broadphase cell and emplace an
-                        // `sp_data` instance in the output vector.
-                        this->for_cells_of(p, c, [eid, &o](auto cx, auto cy)
-                            {
-                                o.emplace_back(eid, cx, cy);
-                            });
+                    // Figure out the broadphase cell and emplace an
+                    // `sp_data` instance in the output vector.
+                    this->for_cells_of(p, c, [eid, &o](auto cx, auto cy) {
+                        o.emplace_back(eid, cx, cy);
                     });
+                });
 #endif
             }
         };
@@ -496,32 +483,29 @@ namespace example
                 }
 #else
                 // For every entity in the subtask...
-                data.for_entities([&](auto eid)
-                    {
-                        // Access the component data.
-                        auto& p0 = data.get(ct::position, eid)._v;
-                        const auto& r0 = data.get(ct::circle, eid)._radius;
+                data.for_entities([&](auto eid) {
+                    // Access the component data.
+                    auto& p0 = data.get(ct::position, eid)._v;
+                    const auto& r0 = data.get(ct::circle, eid)._radius;
 
-                        // Access the grid cell containing position `p0`.
-                        auto& cell = sp.cell_by_pos(p0);
+                    // Access the grid cell containing position `p0`.
+                    auto& cell = sp.cell_by_pos(p0);
 
-                        // For every unique entity ID pair...
-                        for_unique_pairs(cell, eid, [&](auto eid2)
-                            {
-                                // Access the second particle's component data.
-                                auto& p1 = data.get(ct::position, eid2)._v;
-                                const auto& r1 =
-                                    data.get(ct::circle, eid2)._radius;
+                    // For every unique entity ID pair...
+                    for_unique_pairs(cell, eid, [&](auto eid2) {
+                        // Access the second particle's component data.
+                        auto& p1 = data.get(ct::position, eid2)._v;
+                        const auto& r1 = data.get(ct::circle, eid2)._radius;
 
-                                // Check for a circle-circle collision.
-                                auto sd = distance(p0, p1);
-                                if(sd <= r0 + r1)
-                                {
-                                    // Emplace a `contact` in the output.
-                                    out.emplace_back(eid, eid2, sd);
-                                }
-                            });
+                        // Check for a circle-circle collision.
+                        auto sd = distance(p0, p1);
+                        if(sd <= r0 + r1)
+                        {
+                            // Emplace a `contact` in the output.
+                            out.emplace_back(eid, eid2, sd);
+                        }
                     });
+                });
 #endif
             }
         };
@@ -536,27 +520,24 @@ namespace example
             {
                 // For every output produced by the collision detection
                 // system...
-                data.for_previous_outputs(st::collision,
-                    [&](auto&, const auto& out)
+                data.for_previous_outputs(st::collision, [&](auto&,
+                                                             const auto& out) {
+                    for(const auto& x : out)
                     {
-                        for(const auto& x : out)
-                        {
-                            // Access the f-Dirst particle's data.
-                            auto& p0 = data.get(ct::position, x._e0)._v;
-                            auto& v0 = data.get(ct::velocity, x._e0)._v;
-                            const auto& r0 =
-                                data.get(ct::circle, x._e0)._radius;
+                        // Access the f-Dirst particle's data.
+                        auto& p0 = data.get(ct::position, x._e0)._v;
+                        auto& v0 = data.get(ct::velocity, x._e0)._v;
+                        const auto& r0 = data.get(ct::circle, x._e0)._radius;
 
-                            // Access the second particle's data.
-                            auto& p1 = data.get(ct::position, x._e1)._v;
-                            auto& v1 = data.get(ct::velocity, x._e1)._v;
-                            const auto& r1 =
-                                data.get(ct::circle, x._e1)._radius;
+                        // Access the second particle's data.
+                        auto& p1 = data.get(ct::position, x._e1)._v;
+                        auto& v1 = data.get(ct::velocity, x._e1)._v;
+                        const auto& r1 = data.get(ct::circle, x._e1)._radius;
 
-                            // Solve.
-                            solve_penetration(x._dist, p0, v0, r0, p1, v1, r1);
-                        }
-                    });
+                        // Solve.
+                        solve_penetration(x._dist, p0, v0, r0, p1, v1, r1);
+                    }
+                });
             }
         };
 
@@ -576,36 +557,34 @@ namespace example
                 va.clear();
 
                 // For every entity in the subtask...
-                data.for_entities([this, &data, &va](auto eid)
+                data.for_entities([this, &data, &va](auto eid) {
+                    // Access the component data.
+                    const auto& p0 = data.get(ct::position, eid)._v;
+                    const auto& c = data.get(ct::color, eid)._v;
+                    auto& radius = data.get(ct::circle, eid)._radius;
+
+                    // Function to create and emplace 3 vertices.
+                    auto mk_triangle = [&va, &data, &p0, &c, &radius](
+                                           auto a0, auto a1) {
+                        auto a0cos = radius * tbl_cos(a0);
+                        auto a0sin = radius * tbl_sin(a0);
+                        auto a1cos = radius * tbl_cos(a1);
+                        auto a1sin = radius * tbl_sin(a1);
+
+                        vec2f p1(a0cos + p0.x, a0sin + p0.y);
+                        vec2f p2(a1cos + p0.x, a1sin + p0.y);
+
+                        va.emplace_back(p0, c);
+                        va.emplace_back(p1, c);
+                        va.emplace_back(p2, c);
+                    };
+
+                    // Build a circle.
+                    for(sz_t i = 0; i < precision; ++i)
                     {
-                        // Access the component data.
-                        const auto& p0 = data.get(ct::position, eid)._v;
-                        const auto& c = data.get(ct::color, eid)._v;
-                        auto& radius = data.get(ct::circle, eid)._radius;
-
-                        // Function to create and emplace 3 vertices.
-                        auto mk_triangle = [&va, &data, &p0, &c, &radius](
-                            auto a0, auto a1)
-                        {
-                            auto a0cos = radius * tbl_cos(a0);
-                            auto a0sin = radius * tbl_sin(a0);
-                            auto a1cos = radius * tbl_cos(a1);
-                            auto a1sin = radius * tbl_sin(a1);
-
-                            vec2f p1(a0cos + p0.x, a0sin + p0.y);
-                            vec2f p2(a1cos + p0.x, a1sin + p0.y);
-
-                            va.emplace_back(p0, c);
-                            va.emplace_back(p1, c);
-                            va.emplace_back(p2, c);
-                        };
-
-                        // Build a circle.
-                        for(sz_t i = 0; i < precision; ++i)
-                        {
-                            mk_triangle(inc * i, inc * (i + 1));
-                        }
-                    });
+                        mk_triangle(inc * i, inc * (i + 1));
+                    }
+                });
             }
         };
 
@@ -615,16 +594,15 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& c = data.get(ct::color, eid)._v;
-                        c.r += 50.f * dt;
-                        // float ca = c.a;
-                        // c.a = static_cast<sf::Uint8>(std::fmod(ca, 255.f));
-                        // c.a += dt;
-                        // c.a = c.a % 255;
-                        // std::cout << (int)c.a << "\n";
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& c = data.get(ct::color, eid)._v;
+                    c.r += 50.f * dt;
+                    // float ca = c.a;
+                    // c.a = static_cast<sf::Uint8>(std::fmod(ca, 255.f));
+                    // c.a += dt;
+                    // c.a = c.a % 255;
+                    // std::cout << (int)c.a << "\n";
+                });
             }
         };
 
@@ -634,31 +612,27 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
+                data.for_entities([&](auto eid) {
+                    auto& l = data.get(ct::life, eid)._v;
+                    l -= 10.f * dt;
+
+                    if(l <= 0.f)
                     {
-                        auto& l = data.get(ct::life, eid)._v;
-                        l -= 10.f * dt;
+                        data.kill_entity(eid);
+                        data.defer([](auto& proxy) {
+                            auto random_position = [] {
+                                return vec2f{                      // .
+                                    rndf(left_bound, right_bound), // .
+                                    rndf(top_bound, bottom_bound)};
+                            };
 
-                        if(l <= 0.f)
-                        {
-                            data.kill_entity(eid);
-                            data.defer([](auto& proxy)
-                                {
-                                    auto random_position = []
-                                    {
-                                        return vec2f{                      // .
-                                            rndf(left_bound, right_bound), // .
-                                            rndf(top_bound, bottom_bound)};
-                                    };
-
-                                    mk_particle(
-                                        proxy, random_position(), rndf(1, 4));
-                                });
-                        }
-                    });
+                            mk_particle(proxy, random_position(), rndf(1, 4));
+                        });
+                    }
+                });
             }
         };
-    }
+    } // namespace s
 
     // Compile-time `std::size_t` entity limit.
     constexpr auto entity_limit = ecst::sz_v<65536>;
@@ -700,7 +674,7 @@ namespace example
                 cs_position,     // .
                 cs_rendering,    // .
                 cs_life          // .
-                );
+            );
         }
 
         // Builds and returns a "system signature list".
@@ -807,9 +781,9 @@ namespace example
                 ssig_render_colored_circle, // .
                 ssig_cycle_color,           // .
                 ssig_life                   // .
-                );
+            );
         }
-    }
+    } // namespace ecst_setup
 
     template <typename TProxy>
     void mk_particle(TProxy& proxy, const vec2f& position, float radius)
@@ -838,20 +812,18 @@ namespace example
     template <typename TContext>
     void init_ctx(TContext& ctx)
     {
-        auto random_position = []
-        {
+        auto random_position = [] {
             return vec2f{                      // .
                 rndf(left_bound, right_bound), // .
                 rndf(top_bound, bottom_bound)};
         };
 
-        ctx.step([&](auto& proxy)
+        ctx.step([&](auto& proxy) {
+            for(sz_t i = 0; i < initial_particle_count; ++i)
             {
-                for(sz_t i = 0; i < initial_particle_count; ++i)
-                {
-                    mk_particle(proxy, random_position(), rndf(1, 4));
-                }
-            });
+                mk_particle(proxy, random_position(), rndf(1, 4));
+            }
+        });
     }
 
     template <typename TContext, typename TRenderTarget>
@@ -865,51 +837,40 @@ namespace example
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
-        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy)
-            {
-                proxy.execute_systems()(
-                    ft_tags.for_subtasks([dt](auto& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        }),
-                    nonft_tags.for_subtasks([](auto& s, auto& data)
-                        {
-                            s.process(data);
-                        }),
-                    sea::t(st::spatial_partition)
-                        .detailed_instance([&proxy](auto& i, auto& executor)
+        ctx.step([&rt, dt, &ft_tags, &nonft_tags](auto& proxy) {
+            proxy.execute_systems()(
+                ft_tags.for_subtasks(
+                    [dt](auto& s, auto& data) { s.process(dt, data); }),
+                nonft_tags.for_subtasks(
+                    [](auto& s, auto& data) { s.process(data); }),
+                sea::t(st::spatial_partition)
+                    .detailed_instance([&proxy](auto& i, auto& executor) {
+                        auto& s(i.system());
+                        s.clear_cells();
+
+                        executor.for_subtasks(
+                            [&s](auto& data) { s.process(data); });
+
+                        i.for_outputs([](auto& xs, auto& sp_vector) {
+                            for(const auto& x : sp_vector)
                             {
-                                auto& s(i.system());
-                                s.clear_cells();
+                                xs.add_sp(x);
+                            }
+                        });
+                    }));
 
-                                executor.for_subtasks([&s](auto& data)
-                                    {
-                                        s.process(data);
-                                    });
-
-                                i.for_outputs([](auto& xs, auto& sp_vector)
-                                    {
-                                        for(const auto& x : sp_vector)
-                                        {
-                                            xs.add_sp(x);
-                                        }
-                                    });
-                            }));
-
-                proxy.for_system_outputs(st::render_colored_circle,
-                    [&rt](auto&, auto& va)
-                    {
-                        // TODO:
-                        if(true)
-                        {
-                            rt.draw(va.data(), va.size(),
-                                sf::PrimitiveType::Triangles,
-                                sf::RenderStates::Default);
-                        }
-                    });
+            proxy.for_system_outputs(st::render_colored_circle, [&rt](auto&,
+                                                                    auto& va) {
+                // TODO:
+                if(true)
+                {
+                    rt.draw(va.data(), va.size(), sf::PrimitiveType::Triangles,
+                        sf::RenderStates::Default);
+                }
             });
+        });
     }
-}
+} // namespace example
 
 #include "./utils/pres_game_app.hpp"
 

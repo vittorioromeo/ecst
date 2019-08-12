@@ -94,10 +94,9 @@ namespace example
                     sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
                 {
                     _delay = 0.06f;
-                    _ctx.step([&](auto& proxy)
-                        {
-                            mk_particle(proxy, mpos, rndf(1, 4));
-                        });
+                    _ctx.step([&](auto& proxy) {
+                        mk_particle(proxy, mpos, rndf(1, 4));
+                    });
                 }
 
                 _kill_pls = false;
@@ -112,55 +111,52 @@ namespace example
 
                 std::vector<std::unique_ptr<sf::Drawable>> debug_drawables;
 
-                _ctx.step([&](auto& proxy)
+                _ctx.step([&](auto& proxy) {
+                    auto& sp = proxy.system(st::spatial_partition);
+                    auto& cell = sp.cell_by_pos(mpos);
+                    auto cs = s::spatial_partition::cell_size;
+
+                    if(_kill_pls)
                     {
-                        auto& sp = proxy.system(st::spatial_partition);
-                        auto& cell = sp.cell_by_pos(mpos);
-                        auto cs = s::spatial_partition::cell_size;
-
-                        if(_kill_pls)
+                        for(auto eid : cell)
                         {
-                            for(auto eid : cell)
-                            {
-                                proxy.kill_entity(eid);
-                            }
+                            proxy.kill_entity(eid);
                         }
+                    }
 
-                        if(_draw_grid)
+                    if(_draw_grid)
+                    {
+                        auto rsp = std::make_unique<sf::RectangleShape>();
+                        auto& rs = *rsp;
+                        rs.setFillColor(sf::Color(255, 0, 0, 100));
+                        rs.setOrigin(0, 0);
+                        rs.setSize(vec2f(cs, cs));
+
+                        auto x = std::floor(mpos.x / cs) * cs;
+                        auto y = std::floor(mpos.y / cs) * cs;
+                        rs.setPosition(x, y);
+
+                        debug_drawables.emplace_back(std::move(rsp));
+
+                        for(auto eid : cell)
                         {
-                            auto rsp = std::make_unique<sf::RectangleShape>();
-                            auto& rs = *rsp;
-                            rs.setFillColor(sf::Color(255, 0, 0, 100));
-                            rs.setOrigin(0, 0);
-                            rs.setSize(vec2f(cs, cs));
+                            auto rsp2 = std::make_unique<sf::RectangleShape>();
+                            auto& rs2 = *rsp2;
 
-                            auto x = std::floor(mpos.x / cs) * cs;
-                            auto y = std::floor(mpos.y / cs) * cs;
-                            rs.setPosition(x, y);
+                            const auto& p =
+                                proxy.get_component(ct::position, eid)._v;
 
-                            debug_drawables.emplace_back(std::move(rsp));
+                            const auto& r =
+                                proxy.get_component(ct::circle, eid)._radius;
 
-                            for(auto eid : cell)
-                            {
-                                auto rsp2 =
-                                    std::make_unique<sf::RectangleShape>();
-                                auto& rs2 = *rsp2;
-
-                                const auto& p =
-                                    proxy.get_component(ct::position, eid)._v;
-
-                                const auto& r =
-                                    proxy.get_component(ct::circle, eid)
-                                        ._radius;
-
-                                rs2.setFillColor(sf::Color(0, 255, 255, 130));
-                                rs2.setOrigin(r, r);
-                                rs2.setSize(vec2f(r * 2, r * 2));
-                                rs2.setPosition(p.x, p.y);
-                                debug_drawables.emplace_back(std::move(rsp2));
-                            }
+                            rs2.setFillColor(sf::Color(0, 255, 255, 130));
+                            rs2.setOrigin(r, r);
+                            rs2.setSize(vec2f(r * 2, r * 2));
+                            rs2.setPosition(p.x, p.y);
+                            debug_drawables.emplace_back(std::move(rsp2));
                         }
-                    });
+                    }
+                });
 
                 if(_delay > 0)
                 {
@@ -189,8 +185,8 @@ namespace example
                 auto fps = 1.f / real_dt * 1000.f;
 
                 window().setTitle(std::string{"DT: "} +
-                                  std::to_string(real_dt) + "  |  FPS: " +
-                                  std::to_string(fps));
+                                  std::to_string(real_dt) +
+                                  "  |  FPS: " + std::to_string(fps));
 
 
 
@@ -212,8 +208,7 @@ namespace example
 
     public:
         game_app(sf::RenderWindow& window, TContext& ctx) noexcept
-            : boilerplate::app{window},
-              _ctx{ctx}
+            : boilerplate::app{window}, _ctx{ctx}
         {
             init();
         }
@@ -227,4 +222,4 @@ namespace example
 
         x.run();
     }
-}
+} // namespace example

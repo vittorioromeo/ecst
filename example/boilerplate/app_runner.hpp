@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include <functional>
-#include <string>
-#include <memory>
-#include <vrm/core/assert.hpp>
-#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
-#include <ecst/config.hpp>
+#include <SFML/Window.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <functional>
+#include <memory>
+#include <string>
+#include <vrm/core/assert.hpp>
 
 namespace example
 {
@@ -33,8 +33,7 @@ namespace example
             inline app_runner(const std::string& title, std::size_t width,
                 std::size_t height, Ts&&... xs) noexcept
             {
-                _run_fn = [this, title, width, height, &xs...]
-                {
+                _run_fn = [this, title, width, height, &xs...] {
                     if(_window.isOpen()) _window.close();
 
                     _window.create(sf::VideoMode(width, height), title,
@@ -46,7 +45,6 @@ namespace example
 #endif
                     delete _app;
                     _app = new T(_window, FWD(xs)...);
-
                 };
             }
 
@@ -66,5 +64,5 @@ namespace example
                 this->_run_fn();
             }
         };
-    }
-}
+    } // namespace boilerplate
+} // namespace example
