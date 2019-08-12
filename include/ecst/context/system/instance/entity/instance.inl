@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "./instance.hpp"
 #include "../proxy.hpp"
+#include "./instance.hpp"
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {
@@ -33,7 +33,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             debug::lo_system_bitset() << "(" << system_id()            // .
                                       << ") bitset: " << _bitset.str() // .
                                       << "\n";                         // .
-            );
+        );
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -41,20 +41,17 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     void instance<TSettings, TSystemSignature>::execute_deferred_fns(
         TProxy & proxy)
     {
-        this->for_states([&proxy](auto& s)
-            {
-                s.as_state()._deferred_fns.execute_all(proxy);
-            });
+        this->for_states([&proxy](auto& s) {
+            s.as_state()._deferred_fns.execute_all(proxy);
+        });
     }
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
     decltype(auto) instance<TSettings, TSystemSignature>::for_outputs(TF && f)
     {
-        return this->for_states([this, &f](auto& s)
-            {
-                f(this->system(), s.as_data());
-            });
+        return this->for_states(
+            [this, &f](auto& s) { f(this->system(), s.as_data()); });
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -92,26 +89,21 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         // Function accepting a callable object which will be executed in a
         // separate thread. Intended to be called from inner parallelism
         // strategy executors.
-        auto run_in_separate_thread = [this, &ctx, &b](auto& xf)
-        {
-            return [this, &b, &ctx, &xf](auto&&... xs) mutable
-            {
+        auto run_in_separate_thread = [this, &ctx, &b](auto& xf) {
+            return [this, &b, &ctx, &xf](auto&&... xs) mutable {
                 // Use of multithreading:
                 // * Run subtask slices in separate threads.
-                ctx.post_in_thread_pool([&xf, &b, xs...]() mutable
-                    {
-                        xf(FWD(xs)...);
-                        b.decrement_and_notify_all();
-                    });
+                ctx.post_in_thread_pool([&xf, &b, xs...]() mutable {
+                    xf(FWD(xs)...);
+                    b.decrement_and_notify_all();
+                });
             };
         };
 
         // Runs the parallel executor and waits until the remaining subtasks
         // counter is zero.
-        b.execute_and_wait_until_zero([&f, &run_in_separate_thread]
-            {
-                f(run_in_separate_thread);
-            });
+        b.execute_and_wait_until_zero(
+            [&f, &run_in_separate_thread] { f(run_in_separate_thread); });
     }
 
     template <typename TSettings, typename TSystemSignature>
@@ -124,7 +116,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_single( // .
         TContext & ctx, TF & f                                  // .
-        )
+    )
     {
         prepare_single_subtask();
 
@@ -137,18 +129,17 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_in_parallel( // .
         TContext & ctx, TF & f                                       // .
-        )
+    )
     {
-        auto st = [ this, &ctx, f = FWD(f) ] // .
-            (auto split_idx, auto i_begin, auto i_end) mutable
-        {
-            // Create multi data proxy.
-            auto dp = data_proxy::make_multi<TSystemSignature>(
-                *this, ctx, split_idx, i_begin, i_end);
+        auto st = [this, &ctx, f = FWD(f)] // .
+            (auto split_idx, auto i_begin, auto i_end) mutable {
+                // Create multi data proxy.
+                auto dp = data_proxy::make_multi<TSystemSignature>(
+                    *this, ctx, split_idx, i_begin, i_end);
 
-            // Execute the bound slice.
-            f(dp);
-        };
+                // Execute the bound slice.
+                f(dp);
+            };
 
         this->parallel_executor().execute(*this, ctx, std::move(st));
     }
@@ -158,17 +149,15 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     auto instance<TSettings, TSystemSignature>::execution_dispatch(
         TContext & ctx) noexcept
     {
-        return [this, &ctx](auto&& f)
-        {
-            return static_if(settings::inner_parallelism_allowed(TSettings{}))
-                .then([this, &ctx](auto&& xf)
-                    {
-                        return this->execute_in_parallel(ctx, FWD(xf));
-                    })
-                .else_([this, &ctx](auto&& xf)
-                    {
-                        return this->execute_single(ctx, FWD(xf));
-                    })(FWD(f));
+        return [this, &ctx](auto&& f) {
+            if constexpr(settings::inner_parallelism_allowed(TSettings{}))
+            {
+                return this->execute_in_parallel(ctx, FWD(f));
+            }
+            else
+            {
+                return this->execute_single(ctx, FWD(f));
+            }
         };
     }
 
@@ -176,7 +165,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
         TContext & ctx, TF & f                           // .
-        )
+    )
     {
         // Bind the dispatch function to `ctx`.
         auto bound_dispatch = execution_dispatch(ctx);

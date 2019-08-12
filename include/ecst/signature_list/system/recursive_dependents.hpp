@@ -38,7 +38,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     constexpr auto chain_size(
         TSystemSignatureList ssl, TStartSystemTagList sstl)
     {
-        ECST_S_ASSERT(tag::system::is_list(sstl));
+        static_assert(tag::system::is_list(sstl));
         return bh::size(recursive_dependents_id_list(
             ssl, signature_list_from_tag_list(ssl, sstl)));
     }

@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <sstream>
-#include <ecst/config.hpp>
 #include "./data.hpp"
+#include <ecst/config.hpp>
+#include <sstream>
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -19,13 +19,12 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "entity storage: ";
 
-            settings::dispatch_on_storage_type(TSettings{},
-                [&oss](auto fixed_capacity)
-                {
+            settings::dispatch_on_storage_type(
+                TSettings{},
+                [&oss](auto fixed_capacity) {
                     oss << "fixed (capacity: " << fixed_capacity << ")";
                 },
-                [&oss](auto initial_capacity)
-                {
+                [&oss](auto initial_capacity) {
                     oss << "dynamic (initial: " << initial_capacity << ")";
                 });
 
@@ -38,18 +37,17 @@ ECST_SETTINGS_NAMESPACE
             std::ostringstream oss;
             oss << "multithreading: ";
 
-            static_if(settings::inner_parallelism_allowed(TSettings{}))
-                .then([&oss](auto)
-                    {
-                        oss << "allows inner parallelism";
-                    })
-                .else_([&oss](auto)
-                    {
-                        oss << "disallows inner parallelism";
-                    })(TSettings{});
+            if constexpr(settings::inner_parallelism_allowed(TSettings{}))
+            {
+                oss << "allows inner parallelism";
+            }
+            else
+            {
+                oss << "disallows inner parallelism";
+            }
 
             return oss.str();
         }
-    }
+    } // namespace str
 }
 ECST_SETTINGS_NAMESPACE_END

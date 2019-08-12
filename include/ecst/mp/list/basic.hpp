@@ -28,8 +28,8 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto index_of(TList l, T && x) noexcept
     {
         auto size = decltype(bh::size(l)){};
-        auto dropped = decltype(bh::size(
-            bh::drop_while(l, bh::not_equal.to(x)))){};
+        auto dropped =
+            decltype(bh::size(bh::drop_while(l, bh::not_equal.to(x)))){};
 
         return size - dropped;
     }
@@ -41,8 +41,7 @@ ECST_MP_LIST_NAMESPACE
     {
         return bh::second(bh::fold_right(FWD(seq),
             bh::make_pair(bh::size(seq) - sz_v<1>, FWD(acc)),
-            [&f](auto&& x, auto&& idx_acc_pair)
-            {
+            [&f](auto&& x, auto&& idx_acc_pair) {
                 auto curr_idx = bh::first(FWD(idx_acc_pair));
                 auto curr_acc = bh::second(FWD(idx_acc_pair));
 
@@ -54,15 +53,14 @@ ECST_MP_LIST_NAMESPACE
     template <typename TSeq, typename T, typename TCondition>
     constexpr auto append_if(TSeq && seq, T && x, TCondition && c) noexcept
     {
-        return static_if(c)
-            .then([](auto&& x_seq, auto&& x_x)
-                {
-                    return bh::append(FWD(x_seq), FWD(x_x));
-                })
-            .else_([](auto&& x_seq, auto&&)
-                {
-                    return x_seq;
-                })(FWD(seq), FWD(x));
+        if constexpr(c)
+        {
+            return bh::append(FWD(seq), FWD(x));
+        }
+        else
+        {
+            return seq;
+        }
     }
 
     // Returns the index of the first element `x` of `t` satisfying `p(x)`.
@@ -70,9 +68,8 @@ ECST_MP_LIST_NAMESPACE
     constexpr auto index_of_first_matching(
         TTuple && t, TPredicate && p) noexcept
     {
-        auto res = indexed_fold_right(FWD(t), empty_v,
-            [&p](auto&& x, auto acc, auto idx)
-            {
+        auto res = indexed_fold_right(
+            FWD(t), empty_v, [&p](auto&& x, auto acc, auto idx) {
                 return append_if(acc, idx, p(x));
             });
 

@@ -59,7 +59,7 @@ ECST_NAMESPACE
                 using system_type = typename decay_t<TInstance>::system_type;
 
                 constexpr auto system_tag = tag::system::v<system_type>;
-                ECST_S_ASSERT(tag::system::valid(system_tag));
+                static_assert(tag::system::valid(system_tag));
 
                 return std::is_same<ECST_DECAY_DECLTYPE(system_tag),
                     decay_t<TSystemTagToCheck>>{};

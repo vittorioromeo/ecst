@@ -88,10 +88,10 @@ ECST_NAMESPACE
         {
             using unref_type = std::remove_reference_t<TFFwd>;
 
-            ECST_S_ASSERT_M(sizeof(unref_type) < storage_size,
+            static_assert(sizeof(unref_type) < storage_size,
                 "functional object doesn't fit into internal storage");
 
-            ECST_S_ASSERT_M(std::is_move_constructible<unref_type>{},
+            static_assert(std::is_move_constructible<unref_type>{},
                 "Should be of movable type");
 
             _method_ptr = [](storage_type* s, fn_ptr_type, Ts... xs)

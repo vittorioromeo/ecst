@@ -50,7 +50,7 @@ namespace system_execution_builder
                 template <typename... TSystemTags>
                 auto match_tags(TSystemTags... sts) const noexcept
                 {
-                    ECST_S_ASSERT(sizeof...(sts) > 0);
+                    static_assert(sizeof...(sts) > 0);
 
                 }
 

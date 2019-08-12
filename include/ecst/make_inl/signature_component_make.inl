@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp.hpp>
 #include <ecst/context/storage/component/chunk.hpp>
+#include <ecst/mp.hpp>
 #include <ecst/signature/component/data.hpp>
 
 ECST_SIGNATURE_COMPONENT_NAMESPACE
@@ -23,16 +23,15 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             {
                 namespace sc = context::storage::component;
 
-                return settings::dispatch_on_storage_type(s,
-                    [](auto fixed_capacity)
-                    {
+                return settings::dispatch_on_storage_type(
+                    s,
+                    [](auto fixed_capacity) {
                         return mp::type_c< // .
                             sc::chunk::fixed_buffer<TComponentTagList,
                                 ECST_DECAY_DECLTYPE(fixed_capacity)> // .
                             >;
                     },
-                    [](auto)
-                    {
+                    [](auto) {
                         return mp::type_c< // .
                             sc::chunk::dynamic_buffer<TSettings,
                                 TComponentTagList> // .
@@ -63,29 +62,26 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             {
                 namespace sc = context::storage::component;
 
-                auto all_empty = bh::all_of(ctl, [](auto ct)
-                    {
-                        using component_type =
-                            tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
+                auto all_empty = bh::all_of(ctl, [](auto ct) {
+                    using component_type =
+                        tag::component::unwrap<ECST_DECAY_DECLTYPE(ct)>;
 
-                        return std::is_empty<component_type>{};
-                    });
+                    return std::is_empty<component_type>{};
+                });
 
-                return static_if(ECST_DECAY_DECLTYPE(all_empty){})
-                    .then([]
-                        {
-                            return empty_maker;
-                        })
-                    .else_([]
-                        {
-                            return contiguous_buffer_maker;
-                        })()
-                    .make_type(s, ctl);
+                if constexpr(ECST_DECAY_DECLTYPE(all_empty){})
+                {
+                    return empty_maker.make_type(s, ctl);
+                }
+                else
+                {
+                    return contiguous_buffer_maker.make_type(s, ctl);
+                }
             }
         };
 
         constexpr default_maker_dispatch_t default_maker{};
-    }
+    } // namespace impl
 
     template <typename... TComponentTags>
     constexpr auto make(TComponentTags... cts) noexcept
@@ -105,11 +101,11 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
     namespace impl
     {
         template <typename TComponentTagList, typename TOptions>
-        constexpr auto data<TComponentTagList, TOptions>::contiguous_buffer()
-            const noexcept
+        constexpr auto
+        data<TComponentTagList, TOptions>::contiguous_buffer() const noexcept
         {
             return change_self(keys::storage, contiguous_buffer_maker);
         }
-    }
+    } // namespace impl
 }
 ECST_SIGNATURE_COMPONENT_NAMESPACE_END

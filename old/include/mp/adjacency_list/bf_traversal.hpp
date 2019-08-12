@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/adjacency_list/start_nodes.hpp>
 #include <ecst/mp/adjacency_list/mutate.hpp>
+#include <ecst/mp/adjacency_list/start_nodes.hpp>
 
 ECST_MP_ADJACENCY_LIST_NAMESPACE
 {
@@ -21,7 +21,7 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
                 auto snl = start_node_list(al);
                 return pair::make(snl, snl);
             }
-        }
+        } // namespace impl
 
         template <typename TAList>
         constexpr auto make(TAList al)
@@ -74,25 +74,22 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
                 auto popped_queue = list::pop_front(queue(c));
                 auto neighbors = neighbors_of(al, node);
 
-                auto unvisited_neighbors =
-                    list::remove_matching(neighbors, [=](auto x_nbr)
-                        {
-                            return is_visited(c, x_nbr);
-                        });
+                auto unvisited_neighbors = list::remove_matching(neighbors,
+                    [=](auto x_nbr) { return is_visited(c, x_nbr); });
 
                 auto new_visited = list::cat(visited(c), unvisited_neighbors);
                 auto new_queue = list::cat(popped_queue, unvisited_neighbors);
 
                 return pair::make(new_queue, new_visited);
             }
-        }
+        } // namespace impl
 
         template <typename TBFTContext, typename TAList>
         constexpr auto step_forward(TBFTContext c, TAList al)
         {
             return decltype(impl::step_forward_impl(c, al)){};
         }
-    }
+    } // namespace bf_traversal_context
 
     namespace impl
     {
@@ -101,25 +98,19 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         {
             namespace btfc = bf_traversal_context;
 
-            auto step = [=](auto self, auto ctx)
-            {
-                return static_if(btfc::is_queue_empty(ctx))
-                    .then([=](auto)
-                        {
+            auto step = [=](auto self, auto ctx) {
+                if constexpr(!btfc::is_queue_empty(ctx))
+                {
+                    auto node = btfc::top_node(ctx);
+                    f(node);
 
-                        })
-                    .else_([=](auto x_ctx)
-                        {
-                            auto node = btfc::top_node(x_ctx);
-                            f(node);
-
-                            return self(btfc::step_forward(x_ctx, al));
-                        })(ctx);
+                    return self(btfc::step_forward(ctx, al));
+                };
             };
 
             y_combinator(step)(btfc::make(al));
         }
-    }
+    } // namespace impl
 
     template <typename TAList, typename TF>
     void runtime_bf_traversal(TAList al, TF f)

@@ -6,9 +6,9 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/edge.hpp>
-#include <ecst/mp/adjacency_list/ndp.hpp>
 #include <ecst/mp/adjacency_list/edges.hpp>
+#include <ecst/mp/adjacency_list/ndp.hpp>
+#include <ecst/mp/edge.hpp>
 
 ECST_MP_ADJACENCY_LIST_NAMESPACE
 {
@@ -17,10 +17,8 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         template <typename TNDPList, typename TNode>
         constexpr auto find_ndp_with_goal_from_ndl_list(TNDPList ndpl, TNode n)
         {
-            return list::find_if(ndpl, [=](auto ndp)
-                {
-                    return same_type_decay(ndp_goal(ndp), n);
-                });
+            return list::find_if(ndpl,
+                [=](auto ndp) { return same_type_decay(ndp_goal(ndp), n); });
         }
 
         template <typename TALKVP, typename TNode>
@@ -33,27 +31,25 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         template <typename TAList, typename TNode>
         constexpr auto edges_ending_at_impl(TAList al, TNode n)
         {
-            return list::fold_l(list::empty_v,
-                [=](auto acc, auto x_kvp)
-                {
+            return list::fold_l(
+                list::empty_v,
+                [=](auto acc, auto x_kvp) {
                     // Find `n` in the list of goals of `x_kvp`.
                     auto ndp =
                         find_ndp_with_goal_from_ndl_list(map::value(x_kvp), n);
 
-                    return static_if(is_null(ndp))
-                        .then([=](auto)
-                            {
-                                return acc;
-                            })
-                        .else_([=](auto x_ndp)
-                            {
-                                return list::append(
-                                    acc, to_edge(map::key(x_kvp), x_ndp));
-                            })(ndp);
+                    if constexpr(is_null(ndp))
+                    {
+                        return acc;
+                    }
+                    else
+                    {
+                        return list::append(acc, to_edge(map::key(x_kvp), ndp));
+                    };
                 },
                 impl::unwrap(al));
         }
-    }
+    } // namespace impl
 
     /// @brief Returns a list of edges ending at `n`.
     /// @details Does not currently support multiple edges with same start/goal

@@ -39,7 +39,7 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(tag::system::valid(TTag{}));
 
             // TODO:
-            // ECST_S_ASSERT(parallelism::is_valid<TParallelism>);
+            // static_assert(parallelism::is_valid<TParallelism>);
 
             // Assert dependency list validity.
             ECST_S_ASSERT_DT(tag::system::is_list(tag_dependency_list_type{}));

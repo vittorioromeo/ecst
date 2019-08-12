@@ -8,7 +8,7 @@
 #include "./dependencies.hpp"
 
 /*
-    struct VRM_CORE_UNUSED_FN VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
+    struct [[maybe_unused]] VRM_PP_CAT(ss, __LINE__, semicolon_suppressor) \
     {                                                                       \
     }
 */
@@ -24,33 +24,33 @@
         namespace ct                                          \
         {                                                     \
             constexpr auto x = ecst::tag::component::v<c::x>; \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+            [[maybe_unused]] void VRM_PP_CAT(                 \
                 x, __LINE__, warning_suppressor)()            \
             {                                                 \
-                (void) x;                                     \
+                (void)x;                                      \
             }                                                 \
         }                                                     \
     }                                                         \
     ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
 
-#define EXAMPLE_SYSTEM_TAG(x)                                 \
-                                                              \
-    namespace example                                         \
-    {                                                         \
-        namespace s                                           \
-        {                                                     \
-            struct x;                                         \
-        }                                                     \
-        namespace st                                          \
-        {                                                     \
-            constexpr auto x = ecst::tag::system::v<s::x>;    \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
-                x, __LINE__, warning_suppressor)()            \
-            {                                                 \
-                (void) x;                                     \
-            }                                                 \
-        }                                                     \
-    }                                                         \
+#define EXAMPLE_SYSTEM_TAG(x)                              \
+                                                           \
+    namespace example                                      \
+    {                                                      \
+        namespace s                                        \
+        {                                                  \
+            struct x;                                      \
+        }                                                  \
+        namespace st                                       \
+        {                                                  \
+            constexpr auto x = ecst::tag::system::v<s::x>; \
+            [[maybe_unused]] void VRM_PP_CAT(              \
+                x, __LINE__, warning_suppressor)()         \
+            {                                              \
+                (void)x;                                   \
+            }                                              \
+        }                                                  \
+    }                                                      \
     ECST_SPECIALIZE_SYSTEM_NAME(example::s::x)
 
 namespace example
@@ -58,14 +58,12 @@ namespace example
     std::random_device rnd_device;
     std::default_random_engine rnd_gen{rnd_device()};
 
-    auto rndf = [](float min, float max)
-    {
+    auto rndf = [](float min, float max) {
         using dist_t = std::uniform_real_distribution<float>;
         return dist_t(min, max)(rnd_gen);
     };
 
-    auto rndvec2f = [](float min, float max)
-    {
+    auto rndvec2f = [](float min, float max) {
         return vec2f{rndf(min, max), rndf(min, max)};
     };
 
@@ -121,4 +119,4 @@ namespace example
             f(eid2);
         }
     }
-}
+} // namespace example

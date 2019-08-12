@@ -3,8 +3,8 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <ecst.hpp>
 #include "./settings_generator.hpp"
+#include <ecst.hpp>
 
 #define EXAMPLE_COMPONENT_TAG(x)                              \
                                                               \
@@ -17,33 +17,33 @@
         namespace ct                                          \
         {                                                     \
             constexpr auto x = ecst::tag::component::v<c::x>; \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
+            [[maybe_unused]] void VRM_PP_CAT(   \
                 x, __LINE__, warning_suppressor)()            \
             {                                                 \
-                (void) x;                                     \
+                (void)x;                                      \
             }                                                 \
         }                                                     \
     }                                                         \
     ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
 
-#define EXAMPLE_SYSTEM_TAG(x)                                 \
-                                                              \
-    namespace example                                         \
-    {                                                         \
-        namespace s                                           \
-        {                                                     \
-            struct x;                                         \
-        }                                                     \
-        namespace st                                          \
-        {                                                     \
-            constexpr auto x = ecst::tag::system::v<s::x>;    \
-            void VRM_CORE_UNUSED_FN ECST_CONST_FN VRM_PP_CAT( \
-                x, __LINE__, warning_suppressor)()            \
-            {                                                 \
-                (void) x;                                     \
-            }                                                 \
-        }                                                     \
-    }                                                         \
+#define EXAMPLE_SYSTEM_TAG(x)                               \
+                                                            \
+    namespace example                                       \
+    {                                                       \
+        namespace s                                         \
+        {                                                   \
+            struct x;                                       \
+        }                                                   \
+        namespace st                                        \
+        {                                                   \
+            constexpr auto x = ecst::tag::system::v<s::x>;  \
+            [[maybe_unused]] void VRM_PP_CAT( \
+                x, __LINE__, warning_suppressor)()          \
+            {                                               \
+                (void)x;                                    \
+            }                                               \
+        }                                                   \
+    }                                                       \
     ECST_SPECIALIZE_SYSTEM_NAME(example::s::x)
 
 using ecst::sz_t;
@@ -62,9 +62,7 @@ namespace example
         float _dist;
 
         contact(ecst::entity_id e0, ecst::entity_id e1, float dist) noexcept
-            : _e0(e0),
-              _e1(e1),
-              _dist(dist)
+            : _e0(e0), _e1(e1), _dist(dist)
         {
         }
     };
@@ -77,9 +75,7 @@ namespace example
         sz_t _cell_x, _cell_y;
 
         sp_data(ecst::entity_id e, sz_t cell_x, sz_t cell_y) noexcept
-            : _e(e),
-              _cell_x(cell_x),
-              _cell_y(cell_y)
+            : _e(e), _cell_x(cell_x), _cell_y(cell_y)
         {
         }
     };
@@ -119,8 +115,8 @@ namespace example
         {
             float _v;
         };
-    }
-}
+    } // namespace c
+} // namespace example
 
 // Component tags, in namespace `example::ct`.
 EXAMPLE_COMPONENT_TAG(acceleration);
@@ -162,13 +158,12 @@ namespace example
                 // Notice that the code below does not know anything about the
                 // multithreading strategy employed by the system: the same
                 // syntax works with any kind (or lack) of parallel execution.
-                data.for_entities([&](auto eid)
-                    {
-                        auto& v = data.get(ct::velocity, eid)._v;
-                        const auto& a = data.get(ct::acceleration, eid)._v;
+                data.for_entities([&](auto eid) {
+                    auto& v = data.get(ct::velocity, eid)._v;
+                    const auto& a = data.get(ct::acceleration, eid)._v;
 
-                        v += a * dt;
-                    });
+                    v += a * dt;
+                });
             }
         };
 
@@ -178,13 +173,12 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& p = data.get(ct::position, eid)._v;
-                        const auto& v = data.get(ct::velocity, eid)._v;
+                data.for_entities([&](auto eid) {
+                    auto& p = data.get(ct::position, eid)._v;
+                    const auto& v = data.get(ct::velocity, eid)._v;
 
-                        p += v * dt;
-                    });
+                    p += v * dt;
+                });
             }
         };
 
@@ -194,16 +188,15 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& p = data.get(ct::position, eid)._v;
-                        auto& v = data.get(ct::velocity, eid)._v;
-                        const auto& radius = data.get(ct::circle, eid)._radius;
+                data.for_entities([&](auto eid) {
+                    auto& p = data.get(ct::position, eid)._v;
+                    auto& v = data.get(ct::velocity, eid)._v;
+                    const auto& radius = data.get(ct::circle, eid)._radius;
 
-                        (void)p;
-                        (void)v;
-                        (void)radius;
-                    });
+                    (void)p;
+                    (void)v;
+                    (void)radius;
+                });
             }
         };
 
@@ -220,15 +213,14 @@ namespace example
                 auto& o = data.output();
                 o.clear();
 
-                data.for_entities([&](auto eid)
-                    {
-                        // Access component data.
-                        const auto& p = data.get(ct::position, eid)._v;
-                        const auto& c = data.get(ct::circle, eid)._radius;
+                data.for_entities([&](auto eid) {
+                    // Access component data.
+                    const auto& p = data.get(ct::position, eid)._v;
+                    const auto& c = data.get(ct::circle, eid)._radius;
 
-                        (void)p;
-                        (void)c;
-                    });
+                    (void)p;
+                    (void)c;
+                });
             }
         };
 
@@ -247,15 +239,14 @@ namespace example
                 auto& sp = data.system(st::spatial_partition);
 
                 // For every entity in the subtask...
-                data.for_entities([&](auto eid)
-                    {
-                        // Access the component data.
-                        auto& p0 = data.get(ct::position, eid)._v;
-                        const auto& r0 = data.get(ct::circle, eid)._radius;
-                        (void)p0;
-                        (void)r0;
-                        (void)sp;
-                    });
+                data.for_entities([&](auto eid) {
+                    // Access the component data.
+                    auto& p0 = data.get(ct::position, eid)._v;
+                    const auto& r0 = data.get(ct::circle, eid)._radius;
+                    (void)p0;
+                    (void)r0;
+                    (void)sp;
+                });
             }
         };
 
@@ -269,31 +260,28 @@ namespace example
             {
                 // For every output produced by the collision detection
                 // system...
-                data.for_previous_outputs(st::collision,
-                    [&](auto&, const auto& out)
+                data.for_previous_outputs(st::collision, [&](auto&,
+                                                             const auto& out) {
+                    for(const auto& x : out)
                     {
-                        for(const auto& x : out)
-                        {
-                            // Access the f-Dirst particle's data.
-                            auto& p0 = data.get(ct::position, x._e0)._v;
-                            auto& v0 = data.get(ct::velocity, x._e0)._v;
-                            const auto& r0 =
-                                data.get(ct::circle, x._e0)._radius;
+                        // Access the f-Dirst particle's data.
+                        auto& p0 = data.get(ct::position, x._e0)._v;
+                        auto& v0 = data.get(ct::velocity, x._e0)._v;
+                        const auto& r0 = data.get(ct::circle, x._e0)._radius;
 
-                            // Access the second particle's data.
-                            auto& p1 = data.get(ct::position, x._e1)._v;
-                            auto& v1 = data.get(ct::velocity, x._e1)._v;
-                            const auto& r1 =
-                                data.get(ct::circle, x._e1)._radius;
+                        // Access the second particle's data.
+                        auto& p1 = data.get(ct::position, x._e1)._v;
+                        auto& v1 = data.get(ct::velocity, x._e1)._v;
+                        const auto& r1 = data.get(ct::circle, x._e1)._radius;
 
-                            (void)p0;
-                            (void)v0;
-                            (void)r0;
-                            (void)p1;
-                            (void)v1;
-                            (void)r1;
-                        }
-                    });
+                        (void)p0;
+                        (void)v0;
+                        (void)r0;
+                        (void)p1;
+                        (void)v1;
+                        (void)r1;
+                    }
+                });
             }
         };
 
@@ -313,15 +301,14 @@ namespace example
                 va.clear();
 
                 // For every entity in the subtask...
-                data.for_entities([this, &data, &va](auto eid)
-                    {
-                        // Access the component data.
-                        const auto& p0 = data.get(ct::position, eid)._v;
-                        auto& radius = data.get(ct::circle, eid)._radius;
+                data.for_entities([this, &data, &va](auto eid) {
+                    // Access the component data.
+                    const auto& p0 = data.get(ct::position, eid)._v;
+                    auto& radius = data.get(ct::circle, eid)._radius;
 
-                        (void)p0;
-                        (void)radius;
-                    });
+                    (void)p0;
+                    (void)radius;
+                });
             }
         };
 
@@ -330,11 +317,10 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        (void)eid;
-                        (void)dt;
-                    });
+                data.for_entities([&](auto eid) {
+                    (void)eid;
+                    (void)dt;
+                });
             }
         };
 
@@ -343,19 +329,18 @@ namespace example
             template <typename TData>
             void process(ft dt, TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& l = data.get(ct::life, eid)._v;
-                        l -= 10.f * dt;
+                data.for_entities([&](auto eid) {
+                    auto& l = data.get(ct::life, eid)._v;
+                    l -= 10.f * dt;
 
-                        if(l <= 0.f)
-                        {
-                            data.kill_entity(eid);
-                        }
-                    });
+                    if(l <= 0.f)
+                    {
+                        data.kill_entity(eid);
+                    }
+                });
             }
         };
-    }
+    } // namespace s
 
     // Compile-time `std::size_t` entity limit.
     constexpr auto entity_limit = ecst::sz_v<5000>;
@@ -397,7 +382,7 @@ namespace example
                 cs_position,     // .
                 cs_rendering,    // .
                 cs_life          // .
-                );
+            );
         }
 
         // Builds and returns a "system signature list".
@@ -506,15 +491,14 @@ namespace example
                 ssig_render_colored_circle, // .
                 ssig_cycle_color,           // .
                 ssig_life                   // .
-                );
+            );
         }
-    }
+    } // namespace ecst_setup
 
     std::random_device rnd_device;
     std::default_random_engine rnd_gen{rnd_device()};
 
-    auto rndf = [](float min, float max)
-    {
+    auto rndf = [](float min, float max) {
         using dist_t = std::uniform_real_distribution<float>;
         return dist_t(min, max)(rnd_gen);
     };
@@ -546,13 +530,12 @@ namespace example
     template <typename TContext>
     void init_ctx(TContext& ctx)
     {
-        ctx.step([&](auto& proxy)
+        ctx.step([&](auto& proxy) {
+            for(sz_t i = 0; i < entity_count; ++i)
             {
-                for(sz_t i = 0; i < entity_count; ++i)
-                {
-                    mk_particle(proxy, rndf(1, 4), rndf(1, 4));
-                }
-            });
+                mk_particle(proxy, rndf(1, 4), rndf(1, 4));
+            }
+        });
     }
 
     template <typename TContext>
@@ -566,48 +549,36 @@ namespace example
         auto nonft_tags = sea::t(st::keep_in_bounds, st::collision,
             st::solve_contacts, st::render_colored_circle);
 
-        ctx.step([dt, &ft_tags, &nonft_tags](auto& proxy)
-            {
-                proxy.execute_systems()(
-                    ft_tags.for_subtasks([dt](auto& s, auto& data)
-                        {
-                            s.process(dt, data);
-                        }),
-                    nonft_tags.for_subtasks([](auto& s, auto& data)
-                        {
-                            s.process(data);
-                        }),
-                    sea::t(st::spatial_partition)
-                        .detailed_instance([&proxy](auto& i, auto& executor)
+        ctx.step([dt, &ft_tags, &nonft_tags](auto& proxy) {
+            proxy.execute_systems()(
+                ft_tags.for_subtasks(
+                    [dt](auto& s, auto& data) { s.process(dt, data); }),
+                nonft_tags.for_subtasks(
+                    [](auto& s, auto& data) { s.process(data); }),
+                sea::t(st::spatial_partition)
+                    .detailed_instance([&proxy](auto& i, auto& executor) {
+                        auto& s(i.system());
+                        // s.clear_cells();
+                        (void)s;
+
+                        executor.for_subtasks(
+                            [&s](auto& data) { s.process(data); });
+
+                        i.for_outputs([](auto& xs, auto& sp_vector) {
+                            (void)xs;
+                            for(const auto& x : sp_vector)
                             {
-                                auto& s(i.system());
-                                // s.clear_cells();
-                                (void)s;
+                                (void)x;
+                            }
+                        });
+                    }));
 
-                                executor.for_subtasks([&s](auto& data)
-                                    {
-                                        s.process(data);
-                                    });
-
-                                i.for_outputs([](auto& xs, auto& sp_vector)
-                                    {
-                                        (void)xs;
-                                        for(const auto& x : sp_vector)
-                                        {
-                                            (void)x;
-                                        }
-                                    });
-                            }));
-
-                proxy.for_system_outputs(st::render_colored_circle,
-                    [](auto&, auto&)
-                    {
-                    });
-            });
+            proxy.for_system_outputs(
+                st::render_colored_circle, [](auto&, auto&) {});
+        });
     }
 
-    auto test_impl_f = [](auto& ctx)
-    {
+    auto test_impl_f = [](auto& ctx) {
         init_ctx(ctx);
 
         for(int i = 0; i < 100; ++i)
@@ -625,7 +596,7 @@ namespace example
             update_ctx(ctx, 0.5f);
         }
     };
-}
+} // namespace example
 
 
 int main()

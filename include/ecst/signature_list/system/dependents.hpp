@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/mp/list.hpp>
 #include "./id.hpp"
 #include "./id_list.hpp"
+#include <ecst/config.hpp>
+#include <ecst/mp/list.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -19,10 +19,9 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return bh::transform(stl, [ssl](auto x)
-            {
-                return signature_list::system::signature_by_tag(ssl, x);
-            });
+        return bh::transform(stl, [ssl](auto x) {
+            return signature_list::system::signature_by_tag(ssl, x);
+        });
     }
 
     /// @brief Given a list of system tags, returns a list of system IDs.
@@ -32,10 +31,9 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return bh::transform(stl, [ssl](auto x)
-            {
-                return signature_list::system::id_by_tag(ssl, x);
-            });
+        return bh::transform(stl, [ssl](auto x) {
+            return signature_list::system::id_by_tag(ssl, x);
+        });
     }
 
     /// @brief Returns the set of IDs `parent` depends on.
@@ -60,25 +58,24 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto parent_id = sls::id_by_signature(ssl, parent);
 
             // Build a list of dependent IDs.
-            return bh::fold_right(ssl, mp::list::empty_v, [=](auto ss, auto acc)
-                {
+            return bh::fold_right(
+                ssl, mp::list::empty_v, [=](auto ss, auto acc) {
                     // Check if the ID of `parent` is in the list of `ss`'s
                     // depedendencies.
                     auto dl = sls::dependencies_as_id_list(ssl, ss);
-                    return static_if(bh::contains(dl, parent_id))
-                        .then([=](auto x_acc)
-                            {
-                                // If so, add `ss`'s ID to the result list.
-                                auto ss_id = sls::id_by_signature(ssl, ss);
-                                return bh::append(x_acc, ss_id);
-                            })
-                        .else_([=](auto x_acc)
-                            {
-                                return x_acc;
-                            })(acc);
+                    if constexpr(bh::contains(dl, parent_id))
+                    {
+                        // If so, add `ss`'s ID to the result list.
+                        auto ss_id = sls::id_by_signature(ssl, ss);
+                        return bh::append(acc, ss_id);
+                    }
+                    else
+                    {
+                        return acc;
+                    }
                 });
         }
-    }
+    } // namespace impl
 
     /// @brief Returns the set of dependent IDs of `parent`.
     template <typename TSystemSignatureList, typename TSystemSignature>

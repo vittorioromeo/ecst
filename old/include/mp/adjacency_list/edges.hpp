@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/edge.hpp>
 #include <ecst/mp/adjacency_list/ndp.hpp>
+#include <ecst/mp/edge.hpp>
 
 ECST_MP_ADJACENCY_LIST_NAMESPACE
 {
@@ -18,17 +18,16 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         {
             auto res = map::find_first_by_key(impl::unwrap(al), TNode{});
 
-            return static_if(is_null(res))
-                .then([](auto)
-                    {
-                        return list::empty_v;
-                    })
-                .else_([=](auto xres)
-                    {
-                        return impl::to_edge_list(TNode{}, xres);
-                    })(res);
+            if constexpr(is_null(res))
+            {
+                return list::empty_v;
+            }
+            else
+            {
+                return impl::to_edge_list(TNode{}, res);
+            }
         }
-    }
+    } // namespace impl
 
     /// @brief Returns a list of edges starting from `n`.
     template <typename TAList, typename TNode>
@@ -44,13 +43,9 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         {
             auto edges = edges_starting_from(l, n);
             return list::transform(
-                [](auto xe)
-                {
-                    return edge::goal(xe);
-                },
-                edges);
+                [](auto xe) { return edge::goal(xe); }, edges);
         }
-    }
+    } // namespace impl
 
     /// @brief Returns the list of neighbor nodes starting from `n`.
     template <typename TAList, typename TNode>
@@ -71,10 +66,8 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
     constexpr auto edges_connecting(TAList al, TN0 n0, TN1 n1)
     {
         auto esf = edges_starting_from(al, n0);
-        return list::filter(esf, [=](auto xe)
-            {
-                return edge::goal_is(xe, n1);
-            });
+        return list::filter(
+            esf, [=](auto xe) { return edge::goal_is(xe, n1); });
     }
 
     /// @brief Returns the count of all edges connecting `n0` to `n1`.

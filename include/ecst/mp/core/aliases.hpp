@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
 ECST_MP_NAMESPACE
 {
@@ -18,6 +18,5 @@ ECST_MP_NAMESPACE
 
     using ecst::int_;
     using ecst::int_v;
-    using ecst::static_if;
 }
 ECST_MP_NAMESPACE_END

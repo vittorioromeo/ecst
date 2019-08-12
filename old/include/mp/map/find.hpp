@@ -6,9 +6,9 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/pair.hpp>
 #include <ecst/mp/map/basic.hpp>
 #include <ecst/mp/map/picker.hpp>
+#include <ecst/mp/pair.hpp>
 
 ECST_MP_MAP_NAMESPACE
 {
@@ -19,21 +19,20 @@ ECST_MP_MAP_NAMESPACE
         {
             (void)c;
 
-            return list::fold_l_with_index(list::empty_v,
-                [=](auto i, auto acc, auto xp)
-                {
+            return list::fold_l_with_index(
+                list::empty_v,
+                [=](auto i, auto acc, auto xp) {
                     ECST_S_ASSERT_DT(pair::valid(xp));
 
                     // Pass both index and current value to comparer.
-                    return static_if(c(xp))
-                        .then([=](auto xi, auto xacc)
-                            {
-                                return list::append(xacc, xi);
-                            })
-                        .else_([=](auto, auto xacc)
-                            {
-                                return xacc;
-                            })(i, acc);
+                    if constexpr
+                    {
+                        return list::append(acc, i);
+                    }
+                    else
+                    {
+                        return acc;
+                    }
                 },
                 m);
         }
@@ -67,7 +66,7 @@ ECST_MP_MAP_NAMESPACE
         {
             return count_by_comparer_impl(m, by_value(v));
         }
-    }
+    } // namespace impl
 
     template <typename TMap, typename TKey>
     constexpr auto find_all_indices_by_key(TMap m, TKey k)
@@ -105,7 +104,7 @@ ECST_MP_MAP_NAMESPACE
         {
             return find_first_index_by_comparer_impl(m, by_value(v));
         }
-    }
+    } // namespace impl
 
     template <typename TMap, typename TKey>
     constexpr auto find_first_index_by_key(TMap m, TKey k)
@@ -129,11 +128,7 @@ ECST_MP_MAP_NAMESPACE
             (void)c;
 
             auto indices(find_all_indices_by_comparer_impl(TMap{}, c));
-            return list::transform(
-                [=](auto xi)
-                {
-                    return pk(list::at(m, xi));
-                },
+            return list::transform([=](auto xi) { return pk(list::at(m, xi)); },
                 decltype(indices){});
         }
 
@@ -160,7 +155,7 @@ ECST_MP_MAP_NAMESPACE
         {
             return list::null_if_empty_or_head(find_all_by_value_impl(m, v));
         }
-    }
+    } // namespace impl
 
     template <typename TMap, typename TKey>
     constexpr auto find_all_by_key(TMap m, TKey k)

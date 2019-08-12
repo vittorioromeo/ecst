@@ -16,30 +16,28 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         constexpr auto transform_list_if_existing_at(TAList al, TN0 n0, TF f)
         {
             auto n0i = start_node_idx_or_null(al, n0);
-            return static_if(is_null(n0i))
-                .then([=](auto xal, auto)
-                    {
-                        // There is no such edge - do nothing.
-                        return xal;
-                    })
-                .else_([=](auto xal, auto xn0i)
-                    {
-                        return f(xal, xn0i);
-                    })(al, n0i);
+            if constexpr(is_null(n0i))
+            {
+                // There is no such edge - do nothing.
+                return al;
+            }
+            else
+            {
+                return f(al, n0i);
+            }
         }
 
         template <typename TAList, typename TN0, typename TN1, typename TData>
         constexpr auto remove_directed_edge_impl(
             TAList al, TN0 n0, TN1 n1, TData d)
         {
-            return transform_list_if_existing_at(al, n0,
-                [=](auto yal, auto yn0i)
-                {
+            return transform_list_if_existing_at(
+                al, n0, [=](auto yal, auto yn0i) {
                     return impl::remove_existing_directed_edge(
                         yal, yn0i, n1, d);
                 });
         }
-    }
+    } // namespace impl
 
     /// @brief Removes the exact `(n0, n1, d)` directed edge, if existent.
     template <typename TAList, typename TN0, typename TN1, typename TData>
@@ -65,7 +63,7 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
             auto al1 = remove_directed_edge(al0, n1, n0, d);
             return al1;
         }
-    }
+    } // namespace impl
 
     /// @brief Removes `(n0, n1, d)`, `(n1, n0, d)` edges, if existent.
     /// @details Does not check for undirected edge validity or duplicates.
@@ -88,19 +86,16 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         template <typename TAList, typename TN0, typename TN1>
         constexpr auto remove_all_directed_edges_impl(TAList al, TN0 n0, TN1 n1)
         {
-            return transform_list_if_existing_at(al, n0,
-                [=](auto yal, auto yn0i)
-                {
-                    return transform_existing_list(yal, yn0i, [=](auto xold_l)
-                        {
-                            return list::remove_matching(xold_l, [=](auto xndp)
-                                {
-                                    return same_type_decay(n1, ndp_goal(xndp));
-                                });
+            return transform_list_if_existing_at(
+                al, n0, [=](auto yal, auto yn0i) {
+                    return transform_existing_list(yal, yn0i, [=](auto xold_l) {
+                        return list::remove_matching(xold_l, [=](auto xndp) {
+                            return same_type_decay(n1, ndp_goal(xndp));
                         });
+                    });
                 });
         }
-    }
+    } // namespace impl
 
     /// @brief Removes all `(n0, n1, _)` directed edges.
     template <typename TAList, typename TN0, typename TN1>
@@ -119,7 +114,7 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
             auto al1 = remove_all_directed_edges(al0, n1, n0);
             return al1;
         }
-    }
+    } // namespace impl
 
     /// @brief Removes all `(n0, n1, _)` and `(n1, n0, _)` edges.
     template <typename TAList, typename TN0, typename TN1>
@@ -133,13 +128,12 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         template <typename TAList, typename TN0>
         constexpr auto remove_all_edges_starting_from_impl(TAList al, TN0 n0)
         {
-            return transform_list_if_existing_at(al, n0,
-                [=](auto yal, auto yn0i)
-                {
+            return transform_list_if_existing_at(
+                al, n0, [=](auto yal, auto yn0i) {
                     return replace_edge_list_at(yal, yn0i, list::empty_v);
                 });
         }
-    }
+    } // namespace impl
 
     template <typename TAList, typename TN0>
     constexpr auto remove_all_edges_starting_from(TAList al, TN0 n0)

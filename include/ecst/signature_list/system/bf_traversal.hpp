@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
@@ -65,10 +65,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             auto neighbors =
                 dependent_ids_list(ssl, signature_by_id(ssl, node));
 
-            auto unvisited_neighbors = bh::remove_if(neighbors, [=](auto x_nbr)
-                {
-                    return is_visited(c, x_nbr);
-                });
+            auto unvisited_neighbors = bh::remove_if(
+                neighbors, [=](auto x_nbr) { return is_visited(c, x_nbr); });
 
             auto new_visited = bh::concat(visited(c), unvisited_neighbors);
             auto new_queue = bh::concat(popped_queue, unvisited_neighbors);
@@ -82,23 +80,20 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             using namespace mp;
             namespace btfc = bf_traversal;
 
-            auto step = [=](auto self, auto&& ctx)
-            {
-                return static_if(btfc::is_queue_empty(ctx))
-                    .then([=](auto)
-                        {
-                            return list::empty_v;
-                        })
-                    .else_([=](auto&& x_ctx)
-                        {
-                            return bh::append(
-                                self(btfc::step_forward(FWD(x_ctx), ssl)),
-                                btfc::top_node(FWD(x_ctx)));
-                        })(FWD(ctx));
+            auto step = [=](auto self, auto&& ctx) {
+                if constexpr(btfc::is_queue_empty(ctx))
+                {
+                    return list::empty_v;
+                }
+                else
+                {
+                    return bh::append(self(btfc::step_forward(FWD(ctx), ssl)),
+                        btfc::top_node(FWD(ctx)));
+                }
             };
 
             return bh::fix(step)(btfc::make(FWD(snl)));
         }
-    }
+    } // namespace bf_traversal
 }
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END

@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/pair/types.hpp>
 #include <ecst/mp/pair/is_pair.hpp>
+#include <ecst/mp/pair/types.hpp>
 
 ECST_MP_PAIR_NAMESPACE
 {
@@ -23,17 +23,16 @@ ECST_MP_PAIR_NAMESPACE
         template <typename TPair>
         constexpr auto valid_impl(TPair p)
         {
-            return static_if(is_pair(p))
-                .then([](auto xp)
-                    {
-                        return bool_v<list::size(decltype(xp){}) == sz_v<2>>;
-                    })
-                .else_([](auto)
-                    {
-                        return bool_v<false>;
-                    })(p);
+            if constexpr(is_pair(p))
+            {
+                return bool_v<list::size(decltype(p){}) == sz_v<2>>;
+            }
+            else
+            {
+                return bool_v<false>;
+            }
         }
-    }
+    } // namespace impl
 
     /// @brief Returns true if `p` is a valid pair.
     template <typename TPair>

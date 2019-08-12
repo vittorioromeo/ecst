@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include <ecst/mp.hpp>
-#include <ecst/signature_list.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/context/system.hpp>
 #include "./utils.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
+#include <ecst/context/system.hpp>
+#include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
+#include <ecst/signature_list.hpp>
 
 ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
 {
@@ -51,9 +51,8 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             {
                 // Find the index of the first instance storing `TSystem`.
                 // Assumes that at least one instances does so.
-                auto idx = mp::list::index_of_first_matching(self._storage,
-                    [](const auto& x)
-                    {
+                auto idx = mp::list::index_of_first_matching(
+                    self._storage, [](const auto& x) {
                         return x.template system_is<TSystem>();
                     });
 
@@ -115,14 +114,12 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             static void for_instances_of_kind_impl(TSelf&& self, TF&& f, TKind)
             {
                 // TODO: probably slow
-                bh::for_each(self._storage, [&f](auto& x)
+                bh::for_each(self._storage, [&f](auto& x) {
+                    if constexpr(x.kind_is(TKind{}))
                     {
-                        static_if(x.kind_is(TKind{}))
-                            .then([&f](auto& y)
-                                {
-                                    f(y);
-                                })(x);
-                    });
+                        f(x);
+                    }
+                });
             }
 
         public:
@@ -146,13 +143,11 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
             template <typename TKind>
             constexpr auto instances_of_kind_count(TKind kind) const noexcept
             {
-                return bh::count_if(_storage, [&kind](auto&& x)
-                    {
-                        return x.kind_is(kind);
-                    });
+                return bh::count_if(
+                    _storage, [&kind](auto&& x) { return x.kind_is(kind); });
             }
         };
-    }
+    } // namespace impl
 
     template <typename TSettings>
     using dispatch = impl::data<TSettings>;

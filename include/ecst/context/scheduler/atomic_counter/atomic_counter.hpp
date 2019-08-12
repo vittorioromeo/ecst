@@ -51,7 +51,7 @@ ECST_SCHEDULER_NAMESPACE
             namespace sls = signature_list::system;
 
             // Execution can only be started from independent systems.
-            ECST_S_ASSERT(tag::system::is_list(sstl));
+            static_assert(tag::system::is_list(sstl));
             ECST_S_ASSERT_DT(sls::independent_tag_list(ssl(), sstl));
 
             bh::for_each(sstl, [this, &tg, &ctx, &b, &f](auto st) mutable
@@ -71,7 +71,7 @@ ECST_SCHEDULER_NAMESPACE
         template <typename TContext, typename TStartSystemTagList, typename TF>
         void execute(TContext& ctx, TStartSystemTagList sstl, TF& f)
         {
-            ECST_S_ASSERT(tag::system::is_list(sstl));
+            static_assert(tag::system::is_list(sstl));
 
             // Number of unique nodes traversed starting from every node in
             // `sstl`.

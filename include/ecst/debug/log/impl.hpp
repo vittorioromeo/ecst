@@ -6,9 +6,9 @@
 #pragma once
 
 #include "./elog.hpp"
+#include <array>
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
-#include <vrm/core/make_array.hpp>
 
 #if defined(ECST_LOG_ENABLED)
 #include <iostream>
@@ -26,19 +26,19 @@ ECST_DEBUG_NAMESPACE
 
         inline const auto& ECST_CONST_FN tstrings() noexcept
         {
-            static auto res = vrmc::make_array( // .
-                /* 00 */ "      ENTITY",        // .
-                /* 01 */ "   COMPONENT",        // .
-                /* 02 */ "   ENTITY M.",        // .
-                /* 03 */ "COMPONENT M.",        // .
-                /* 04 */ " THREAD POOL",        // .
-                /* 05 */ "SYS INSTANCE",        // .
-                /* 06 */ "S.I. PARALL.",        // .
-                /* 07 */ " CTX REFRESH",        // .
-                /* 08 */ "  SYS BITSET",        // .
-                /* 09 */ "   SYS MATCH",        // .
-                /* 10 */ "MDATA BITSET"         // .
-                );
+            static std::array res{
+                /* 00 */ "      ENTITY", // .
+                /* 01 */ "   COMPONENT", // .
+                /* 02 */ "   ENTITY M.", // .
+                /* 03 */ "COMPONENT M.", // .
+                /* 04 */ " THREAD POOL", // .
+                /* 05 */ "SYS INSTANCE", // .
+                /* 06 */ "S.I. PARALL.", // .
+                /* 07 */ " CTX REFRESH", // .
+                /* 08 */ "  SYS BITSET", // .
+                /* 09 */ "   SYS MATCH", // .
+                /* 10 */ "MDATA BITSET"  // .
+            };
 
             return res;
         }
@@ -80,27 +80,29 @@ ECST_DEBUG_NAMESPACE
         template <typename TType>
         inline auto& log(TType) noexcept
         {
-            return static_if(bool_v<(TType::value >= 0)>)
-                .then([]() -> auto& {
+            if constexpr(bool_v<(TType::value >= 0)>)
+            {
 #if defined(ECST_LOG_ENABLED)
 
-                    constexpr auto logt = TType::value;
+                constexpr auto logt = TType::value;
 
-                    if(last_log() != logt)
-                    {
-                        std::cout << "\n";
-                    }
+                if(last_log() != logt)
+                {
+                    std::cout << "\n";
+                }
 
-                    last_log() = logt;
+                last_log() = logt;
 
-                    return std::cout << "[" << tstrings()[TType::value]
-                                     << "]\t";
+                return std::cout << "[" << tstrings()[TType::value] << "]\t";
 #else
-                    return fake_cout();
+                return fake_cout();
 #endif
-                })
-                .else_([]() -> auto& { return fake_cout(); })();
+            }
+            else
+            {
+                return fake_cout();
+            }
         }
-    }
+    } // namespace impl
 }
 ECST_DEBUG_NAMESPACE_END

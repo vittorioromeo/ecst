@@ -6,8 +6,8 @@
 #pragma once
 
 #include <ecst/config.hpp>
-#include <ecst/mp/edge.hpp>
 #include <ecst/mp/adjacency_list/edges.hpp>
+#include <ecst/mp/edge.hpp>
 
 ECST_MP_ADJACENCY_LIST_NAMESPACE
 {
@@ -17,7 +17,7 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         constexpr auto add_goal_to_new_start(TAList al, TN0 n0, TNDPair ndp)
         {
             // Assumes there is no such `n0` start node.
-            ECST_S_ASSERT(!decltype(has_start_node(al, n0)){});
+            static_assert(!decltype(has_start_node(al, n0)){});
 
             // Create key-value pair.
             auto ual = impl::unwrap(al);
@@ -77,10 +77,8 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         constexpr auto add_goal_to_existing_start(
             TAList al, TN0Idx n0i, TNDPair ndp)
         {
-            return transform_existing_list(al, n0i, [=](auto xold_l)
-                {
-                    return list::append(xold_l, ndp);
-                });
+            return transform_existing_list(al, n0i,
+                [=](auto xold_l) { return list::append(xold_l, ndp); });
         }
 
         /// @brief Removes an existing goal-data pair from the edge list at
@@ -92,22 +90,19 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
             TAList al, TN0Idx n0i, TN1 n1, TData d)
         {
             auto target_ndp = pair::make(n1, d);
-            return transform_existing_list(al, n0i, [=](auto xold_l)
-                {
-                    return list::remove_matching(xold_l, [=](auto xndp)
-                        {
-                            return same_type_decay(target_ndp, xndp);
-                        });
+            return transform_existing_list(al, n0i, [=](auto xold_l) {
+                return list::remove_matching(xold_l, [=](auto xndp) {
+                    return same_type_decay(target_ndp, xndp);
                 });
+            });
         }
 
         /// @brief Returns the index of `n0`, if it exists, `null_v` otherwise.
         template <typename TAList, typename TN0>
         constexpr auto start_node_idx_or_null(TAList al, TN0 n0)
         {
-            return list::find_first_index_of_matching(impl::unwrap(al),
-                [=](auto xnl)
-                {
+            return list::find_first_index_of_matching(
+                impl::unwrap(al), [=](auto xnl) {
                     // Find bucket with key `n0`.
                     return same_type_decay(pair::fst(xnl), n0);
                 });
@@ -127,19 +122,18 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
             // Goal node and data pair.
             auto gdp = pair::make(n1, d);
 
-            return static_if(is_null(n0i))
-                .then([=](auto xal, auto)
-                    {
-                        // If there was no such bucket, create one:
-                        // `(start_node, [(goal_node, data)]`
+            if constexpr(is_null(n0i))
+            {
+                // If there was no such bucket, create one:
+                // `(start_node, [(goal_node, data)]`
 
-                        return add_goal_to_new_start(xal, n0, gdp);
-                    })
-                .else_([=](auto xal, auto xn0i)
-                    {
-                        return add_goal_to_existing_start(xal, xn0i, gdp);
-                    })(al, n0i);
+                return add_goal_to_new_start(al, n0, gdp);
+            }
+            else
+            {
+                return add_goal_to_existing_start(al, n0i, gdp);
+            }
         }
-    }
+    } // namespace impl
 }
 ECST_MP_ADJACENCY_LIST_NAMESPACE_END

@@ -5,12 +5,12 @@
 
 #pragma once
 
+#include "./data_settings.hpp"
+#include "./impl/keys.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 #include <ecst/signature_list/component/is_signature_list.hpp>
 #include <ecst/signature_list/system/is_signature_list.hpp>
-#include "./data_settings.hpp"
-#include "./impl/keys.hpp"
 
 ECST_SETTINGS_NAMESPACE
 {
@@ -33,11 +33,11 @@ ECST_SETTINGS_NAMESPACE
 
 #undef TEMP
             // TODO:
-            // ECST_S_ASSERT(threading::is<TMultithreading>);
-            // ECST_S_ASSERT(is_entity_storage<TEntityStorage>);
+            // static_assertthreading::is<TMultithreading>);
+            // static_assertis_entity_storage<TEntityStorage>);
 
 
-            // ECST_S_ASSERT(refresh_parallelism::is<TRefreshParallelism>);
+            // static_assert(refresh_parallelism::is<TRefreshParallelism>);
 
             // TODO: is_scheduler
 
@@ -165,21 +165,23 @@ ECST_SETTINGS_NAMESPACE
 
         template <typename TSettings>
         using ctx_scheduler = typename TSettings::scheduler_type;
-    }
+    } // namespace impl
 
     template <typename TSettings, typename TFFixed, typename TFDynamic>
     auto dispatch_on_storage_type(
         TSettings && s, TFFixed && f_fixed, TFDynamic && f_dynamic)
     {
-        return static_if(s.has_fixed_capacity())
-            .then([f_fixed = FWD(f_fixed)](auto xs) {
-                auto capacity = xs.get_fixed_capacity();
-                return f_fixed(capacity);
-            })
-            .else_([f_dynamic = FWD(f_dynamic)](auto xs) {
-                auto initial_capacity = xs.get_dynamic_capacity();
-                return f_dynamic(initial_capacity);
-            })(s);
+        constexpr bool b = std::decay_t<TSettings>{}.has_fixed_capacity();
+        if constexpr(b)
+        {
+            auto capacity = s.get_fixed_capacity();
+            return f_fixed(capacity);
+        }
+        else
+        {
+            auto initial_capacity = s.get_dynamic_capacity();
+            return f_dynamic(initial_capacity);
+        }
     }
 
     template <typename TSettings>

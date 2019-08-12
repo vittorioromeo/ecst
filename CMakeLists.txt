@@ -14,6 +14,7 @@ include(vrm_cmake)
 
 # Basic project setup.
 vrm_cmake_init_project(ecst)
+vrm_cmake_set_cxxstd(17)
 vrm_cmake_find_extlib(vrm_pp)
 vrm_cmake_find_extlib(vrm_core)
 

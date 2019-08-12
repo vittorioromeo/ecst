@@ -5,16 +5,16 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
 #include <ecst/aliases.hpp>
-#include <ecst/utils.hpp>
-#include <ecst/thread_pool.hpp>
-#include <ecst/settings.hpp>
-#include <ecst/mp.hpp>
+#include <ecst/config.hpp>
 #include <ecst/context/bitset.hpp>
 #include <ecst/context/scheduler.hpp>
-#include <ecst/context/system.hpp>
 #include <ecst/context/storage.hpp>
+#include <ecst/context/system.hpp>
+#include <ecst/mp.hpp>
+#include <ecst/settings.hpp>
+#include <ecst/thread_pool.hpp>
+#include <ecst/utils.hpp>
 
 ECST_CONTEXT_NAMESPACE
 {
@@ -58,8 +58,7 @@ ECST_CONTEXT_NAMESPACE
             // TODO: to inl
             constexpr static auto provider_all_instances() noexcept
             {
-                return [](auto&& ss, auto&&... xs)
-                {
+                return [](auto&& ss, auto&&... xs) {
                     ss.for_all_instances(xs...);
                 };
             }
@@ -69,8 +68,7 @@ ECST_CONTEXT_NAMESPACE
             constexpr static auto provider_instances_of_kind(
                 TKinds... kinds) noexcept
             {
-                return [kinds...](auto&& ss, auto&& f)
-                {
+                return [kinds...](auto&& ss, auto&& f) {
                     // TODO:
                     (void)std::initializer_list<int>{
                         (ss.for_instances_of_kind(f, kinds), 0)...};
@@ -80,10 +78,7 @@ ECST_CONTEXT_NAMESPACE
             // TODO: to inl
             constexpr static auto counter_all_instances() noexcept
             {
-                return [](auto&& ss)
-                {
-                    return ss.all_instances_count();
-                };
+                return [](auto&& ss) { return ss.all_instances_count(); };
             }
 
             // TODO: to inl
@@ -91,8 +86,7 @@ ECST_CONTEXT_NAMESPACE
             constexpr static auto counter_instances_of_kind(
                 TKinds... kinds) noexcept
             {
-                return [kinds...](auto&& ss)
-                {
+                return [kinds...](auto&& ss) {
                     return bh::sum<sz_t>(bh::make_basic_tuple(
                         ss.instances_of_kind_count(kinds)...));
                 };
@@ -116,19 +110,16 @@ ECST_CONTEXT_NAMESPACE
                 // Block until `f` has been called on all instances.
                 latch b{f_instance_counter(self._system_storage)};
                 b.execute_and_wait_until_zero(
-                    [&self, ip = FWD(f_instance_provider), &b, f = FWD(f) ]
-                    {
-                        ip(self._system_storage, [&self, &b, &f](auto& system)
-                            {
-                                // Use of multithreading:
-                                // * Unsubscribe dead entities from instances.
-                                // * Match new/modified entities to instances.
-                                self.post_in_thread_pool([&b, &system, &f]
-                                    {
-                                        f(system);
-                                        b.decrement_and_notify_one();
-                                    });
+                    [&self, ip = FWD(f_instance_provider), &b, f = FWD(f)] {
+                        ip(self._system_storage, [&self, &b, &f](auto& system) {
+                            // Use of multithreading:
+                            // * Unsubscribe dead entities from instances.
+                            // * Match new/modified entities to instances.
+                            self.post_in_thread_pool([&b, &system, &f] {
+                                f(system);
+                                b.decrement_and_notify_one();
                             });
+                        });
                     });
             }
 
@@ -136,18 +127,17 @@ ECST_CONTEXT_NAMESPACE
             static auto for_instances_dispatch_impl(
                 TFPar&& f_par, TFSeq&& f_seq) noexcept
             {
-                return [ f_par = FWD(f_par), f_seq = FWD(f_seq) ](auto&& f)
-                {
-                    static_if(
-                        settings::refresh_parallelism_allowed<settings_type>())
-                        .then([&f_par](auto&& xf)
-                            {
-                                f_par(FWD(xf));
-                            })
-                        .else_([&f_seq](auto&& xf)
-                            {
-                                f_seq(FWD(xf));
-                            })(FWD(f));
+                return [f_par = FWD(f_par), f_seq = FWD(f_seq)](auto&& f) {
+                    if constexpr(settings::refresh_parallelism_allowed<
+                                     settings_type>())
+                    {
+
+                        f_par(FWD(f));
+                    }
+                    else
+                    {
+                        f_seq(FWD(f));
+                    }
                 };
             }
 
@@ -239,6 +229,6 @@ ECST_CONTEXT_NAMESPACE
             // TODO:
             constexpr auto inner_parallelism_allowed() const noexcept;
         };
-    }
+    } // namespace impl
 }
 ECST_CONTEXT_NAMESPACE_END

@@ -37,11 +37,10 @@ struct SPhysics
     {
         // TODO: SIMD?
         m.get_matching(*this, physics_signature)
-            .process([](auto& c_pos, auto& c_vel, auto& c_acc)
-                {
-                    c_vel += c_acc;
-                    c_pos += c_vel;
-                });
+            .process([](auto& c_pos, auto& c_vel, auto& c_acc) {
+                c_vel += c_acc;
+                c_pos += c_vel;
+            });
     }
 };
 
@@ -57,30 +56,26 @@ struct SCollision
     {
         // Get entities divided in subtasks
         m.get_matching(*this, collision_signature)
-            .process_task<collision_task_data>(
-                [](auto& data, auto& xc_pos, auto& xc_hitbox)
-                {
-                    data.contacts.clear();
+            .process_task<collision_task_data>([](auto& data, auto& xc_pos,
+                                                   auto& xc_hitbox) {
+                data.contacts.clear();
 
-                    // Get all entities in a single task
-                    m.get_matching(*this, collision_signature)
-                        .process_unsubdivided([](auto& yc_pos, auto& yc_hitbox)
-                            {
-                                if(collision(
-                                       xc_pos, yc_pos, xc_hitbox, yc_hitbox))
-                                {
-                                    data.contacts.emplace_back(
-                                        xc_pos, yc_pos, metadata);
-                                }
-                            });
-                })
-            .final_step([](auto& tasks)
-                {
-                    contact_list cl;
-                    for(auto& t : tasks) cl.merge_with(t.contacts);
+                // Get all entities in a single task
+                m.get_matching(*this, collision_signature)
+                    .process_unsubdivided([](auto& yc_pos, auto& yc_hitbox) {
+                        if(collision(xc_pos, yc_pos, xc_hitbox, yc_hitbox))
+                        {
+                            data.contacts.emplace_back(
+                                xc_pos, yc_pos, metadata);
+                        }
+                    });
+            })
+            .final_step([](auto& tasks) {
+                contact_list cl;
+                for(auto& t : tasks) cl.merge_with(t.contacts);
 
-                    _final_contact_list = cl;
-                });
+                _final_contact_list = cl;
+            });
     }
 };
 
@@ -108,10 +103,8 @@ struct SContacts
         auto subdivider = const_list_subdivider(cl);
 
         // For each list subdivision -> for each list element -> lambda
-        m.generic_subdivide(subdivider, [](const auto& c)
-            {
-                process_contact(c);
-            });
+        m.generic_subdivide(
+            subdivider, [](const auto& c) { process_contact(c); });
     }
 
     // "Await" return type...
@@ -156,7 +149,7 @@ namespace ct_dag
         auto added = add_to_neighbors(neighbors, nb);
         return make_node(TNode::type{}, added);
     }
-}
+} // namespace ct_dag
 
 template <typename Ts>
 auto steps(Ts... xs)
@@ -199,71 +192,63 @@ void processing_mock(TF continuation_fn)
 
     atomic<bool> has_called_continuation;
 
-    auto recurse = []
-    {
+    auto recurse = [] {
         // Put unparallelizable nodes first
         auto curr_nodes = sort_by_parallelizability(curr_nodes);
 
-        static_for(curr_nodes, [](auto& n)
+        static_for(curr_nodes, [](auto& n) {
+            // Don't process if dependencies not satisfied
+            if(!n.dependencies_satisfied(done))
             {
-                // Don't process if dependencies not satisfied
-                if(!n.dependencies_satisfied(done))
+                return;
+            }
+
+            auto& nd = get_node_data(n);
+
+            // Continuation after a node is done processing
+            auto next_step = [] {
+                auto lock = done_mutex.lock();
+                done[n] = true;
+
+                if(!all_done())
+                // alternatively: `if(has_next_nodes())`
                 {
-                    return;
+                    // Optimization: recurse only on
+                    // forward-neigbors of
+                    // n (instead of iterating all nodes)
+                    recurse();
                 }
-
-                auto& nd = get_node_data(n);
-
-                // Continuation after a node is done processing
-                auto next_step = []
+                else
                 {
-                    auto lock = done_mutex.lock();
-                    done[n] = true;
-
-                    if(!all_done())
-                    // alternatively: `if(has_next_nodes())`
+                    // Final continuation (get out of processing mock)
+                    if(!has_called_continuation)
                     {
-                        // Optimization: recurse only on
-                        // forward-neigbors of
-                        // n (instead of iterating all nodes)
-                        recurse();
+                        continuation_fn();
+                        has_called_continuation = true;
                     }
-                    else
-                    {
-                        // Final continuation (get out of processing mock)
-                        if(!has_called_continuation)
-                        {
-                            continuation_fn();
-                            has_called_continuation = true;
-                        }
-                    }
-                };
-
-                static_if(is_parallelizable(n))
-                {
-                    // Asynchronous continuation
-                    nd.process().then([]
-                        {
-                            next_step();
-                        });
                 }
-                static_else
-                {
-                    // TODO: remove?
-                    // Synchronous continuation
-                    nd.process();
-                    next_step();
-                };
+            };
 
-
-            });
+            if constexpr(is_parallelizable(n))
+            {
+                // Asynchronous continuation
+                nd.process().then([] { next_step(); });
+            }
+            else
+            {
+                // TODO: remove?
+                // Synchronous continuation
+                nd.process();
+                next_step();
+            }
+        });
     };
 
     /*auto recurse2 = [](auto parent)
     {
         auto nlist = all_nodes_depending_on(parent);
 
-        static_if(empty(nlist), [](auto)
+        if constexpr(empty(nlist), [](auto)
         {
             return;
         });
@@ -282,10 +267,7 @@ void processing_mock(TF continuation_fn)
 
 void full_processing_mock()
 {
-    processing_mock([]
-        {
-            post_process();
-        });
+    processing_mock([] { post_process(); });
 }
 
 struct Game
@@ -314,8 +296,6 @@ struct Game
 
     void process()
     {
-        mgr.process().then([]()
-            {
-            });
+        mgr.process().then([]() {});
     }
 };

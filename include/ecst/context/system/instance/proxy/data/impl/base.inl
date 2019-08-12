@@ -54,11 +54,12 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
-        ECST_IMPL_DP_BASE::base(              // .
-            instance_type& instance,          // .
-            context_type& context             // .
-            ) noexcept : _instance{instance}, // .
-                         _context{context}    // .
+        ECST_IMPL_DP_BASE::base(     // .
+            instance_type& instance, // .
+            context_type& context    // .
+            ) noexcept
+            : _instance{instance}, // .
+              _context{context}    // .
         {
         }
 
@@ -73,28 +74,26 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             constexpr auto can_read =
                 signature::system::can_read<TSystemSignature>(ct);
 
-            return static_if(can_write)
-                .then([ ct, eid ](auto& x_ctx) -> auto&
-                    {
-                        return x_ctx.get_component(ct, eid);
-                    })
-                .else_if(can_read)
-                .then([ ct, eid ](auto& x_ctx) -> const auto&
-                    {
-                        return x_ctx.get_component(ct, eid);
-                    })
-                .else_([](auto&)
-                    {
-                        // TODO: nicer error message
-                        struct cant_access_that_component;
-                        return cant_access_that_component{};
-                    })(_context);
+            if constexpr(can_write)
+            {
+                return _context.get_component(ct, eid);
+            }
+            else if(can_read)
+            {
+                return _context.get_component(ct, eid);
+            }
+            else
+            {
+                // TODO: nicer error message
+                struct cant_access_that_component;
+                return cant_access_that_component{};
+            }
         }
 
         ECST_IMPL_DP_BASE_TEMPLATE
         template <typename TComponentTag>
-        auto ECST_IMPL_DP_BASE::has(
-            TComponentTag ct, entity_id eid) const noexcept
+        auto ECST_IMPL_DP_BASE::has(TComponentTag ct, entity_id eid) const
+            noexcept
         {
             return _context.has_component(ct, eid);
         }
@@ -115,8 +114,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         ECST_IMPL_DP_BASE_TEMPLATE
         auto& ECST_IMPL_DP_BASE::output() noexcept
         {
-            ECST_S_ASSERT(
-                signature::system::has_subtask_state_data<system_signature_type>());
+            static_assert(signature::system::has_subtask_state_data<
+                system_signature_type>());
 
             return subtask_state_data();
         }
@@ -136,7 +135,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             ECST_S_ASSERT_DT(can_get_output_of(st));
             return _context.for_system_outputs(st, FWD(f));
         }
-    }
+    } // namespace data_proxy
 }
 ECST_CONTEXT_SYSTEM_NAMESPACE_END
 
