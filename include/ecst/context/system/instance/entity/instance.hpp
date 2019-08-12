@@ -9,6 +9,7 @@
 #include "../stateless.hpp"
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
+#include <ecst/context/system/instance/proxy.hpp>
 
 ECST_CONTEXT_SYSTEM_NAMESPACE
 {

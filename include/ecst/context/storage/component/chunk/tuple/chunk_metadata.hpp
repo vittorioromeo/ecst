@@ -8,6 +8,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 #include <ecst/context/storage/component/chunk/type.hpp>
+#include <ecst/context/storage/component/chunk/utils.hpp>
 #include <ecst/mp/list.hpp>
 
 ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
