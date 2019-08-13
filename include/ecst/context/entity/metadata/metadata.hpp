@@ -16,7 +16,7 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     namespace impl
     {
         template <typename TBitset, typename TChunkMetadata>
-        class metadata : public TChunkMetadata
+        class metadata
         {
             template <typename>
             friend class ::ecst::context::storage::entity::impl::data;
@@ -27,6 +27,9 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 
             /// @brief Validity counter used for handle management.
             counter _counter;
+
+            // TODO:
+            TChunkMetadata _chunkMetadata;
 
             /// @brief Returns the tuple of metadata required to get the
             /// component data from the component storage chunks.
@@ -70,6 +73,12 @@ ECST_CONTEXT_ENTITY_NAMESPACE
 
             /// @brief Returns the component bitset.
             const auto& bitset() const noexcept;
+
+            // TODO:
+            constexpr operator TChunkMetadata() const
+            {
+                return {};
+            }
         };
     } // namespace impl
 }

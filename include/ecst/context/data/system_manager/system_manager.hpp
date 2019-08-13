@@ -70,8 +70,7 @@ ECST_CONTEXT_NAMESPACE
             {
                 return [kinds...](auto&& ss, auto&& f) {
                     // TODO:
-                    (void)std::initializer_list<int>{
-                        (ss.for_instances_of_kind(f, kinds), 0)...};
+                    (ss.for_instances_of_kind(f, kinds), ...);
                 };
             }
 
@@ -131,7 +130,6 @@ ECST_CONTEXT_NAMESPACE
                     if constexpr(settings::refresh_parallelism_allowed<
                                      settings_type>())
                     {
-
                         f_par(FWD(f));
                     }
                     else

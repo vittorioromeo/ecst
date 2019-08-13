@@ -26,41 +26,34 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
 
             // TODO: avoid all this wrapping/unwrapping
 
-            return mp::type_c< // .
-                context::system::stateless_instance<TSettings,
-                    decltype(mp::wrap(uws))> // .
-                >;
-
-            /* TODO: broken
-                        if
-               constexpr(uws.is_kind(signature::system::impl::kind::stateless))
-                        {
-                            return mp::type_c< // .
-                                context::system::stateless_instance<TSettings,
-                                    decltype(mp::wrap(uws))> // .
-                                >;
-                        }
-                        else
-               if(uws.is_kind(signature::system::impl::kind::stateful))
-                        {
-                            return mp::type_c< // .
-                                context::system::stateful_instance<TSettings,
-                                    decltype(mp::wrap(uws))> // .
-                                >;
-                        }
-                        else
-               if(uws.is_kind(signature::system::impl::kind::entity))
-                        {
-                            return mp::type_c< // .
-                                context::system::instance<TSettings,
-                                    decltype(mp::wrap(uws))> // .
-                                >;
-                        }
-                        else
-                        {
-                            struct nope;
-                            return nope{};
-                        } */
+            if constexpr(uws.is_kind(signature::system::impl::kind::stateless))
+            {
+                return mp::type_c< // .
+                    context::system::stateless_instance<TSettings,
+                        decltype(mp::wrap(uws))> // .
+                    >;
+            }
+            else if constexpr(uws.is_kind(
+                                  signature::system::impl::kind::stateful))
+            {
+                return mp::type_c< // .
+                    context::system::stateful_instance<TSettings,
+                        decltype(mp::wrap(uws))> // .
+                    >;
+            }
+            else if constexpr(uws.is_kind(
+                                  signature::system::impl::kind::entity))
+            {
+                return mp::type_c< // .
+                    context::system::instance<TSettings,
+                        decltype(mp::wrap(uws))> // .
+                    >;
+            }
+            else
+            {
+                struct nope;
+                return nope{};
+            }
         });
     }
 

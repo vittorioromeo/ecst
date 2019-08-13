@@ -8,6 +8,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
+#include <ecst/signature_list/system/dependents.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
@@ -81,7 +82,8 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             namespace btfc = bf_traversal;
 
             auto step = [=](auto self, auto&& ctx) {
-                if constexpr(btfc::is_queue_empty(ctx))
+                if constexpr(btfc::is_queue_empty(
+                                 std::decay_t<decltype(ctx)>{}))
                 {
                     return list::empty_v;
                 }

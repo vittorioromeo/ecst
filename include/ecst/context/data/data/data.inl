@@ -111,7 +111,7 @@ ECST_CONTEXT_NAMESPACE
 
             // Unsubscribe dead entities from instances, in parallel.
             this->for_entity_instances_dispatch(
-                [this, &rs, &f_refresh](auto& instance)
+                [&rs, &f_refresh](auto& instance)
                 {
                     rs._to_kill.for_each([&instance, &f_refresh](entity_id eid)
                         {
@@ -126,7 +126,7 @@ ECST_CONTEXT_NAMESPACE
                 });
 
             // Reclaim all killed entities and fire events.
-            rs._to_kill.for_each([this, &f_refresh, &rs](entity_id eid)
+            rs._to_kill.for_each([this, &f_refresh](entity_id eid)
                 {
                     this->reclaim(eid);
                     f_refresh(refresh_event::impl::reclaimed, eid);

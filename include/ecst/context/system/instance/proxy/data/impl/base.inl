@@ -78,7 +78,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             {
                 return _context.get_component(ct, eid);
             }
-            else if(can_read)
+            else if constexpr(can_read)
             {
                 return _context.get_component(ct, eid);
             }

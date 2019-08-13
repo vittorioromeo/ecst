@@ -15,14 +15,14 @@ ECST_CONTEXT_ENTITY_NAMESPACE
         auto& ECST_CONST_FN
         metadata<TBitset, TChunkMetadata>::as_chunk_metadata() noexcept
         {
-            return vrmc::to_base<TChunkMetadata>(*this);
+            return _chunkMetadata;
         }
 
         template <typename TBitset, typename TChunkMetadata>
         const auto& ECST_CONST_FN
         metadata<TBitset, TChunkMetadata>::as_chunk_metadata() const noexcept
         {
-            return vrmc::to_base<TChunkMetadata>(*this);
+            return _chunkMetadata;
         }
 
         template <typename TBitset, typename TChunkMetadata>

@@ -8,6 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/adjacency_list/mutate.hpp>
 #include <ecst/mp/adjacency_list/start_nodes.hpp>
+#include <ecst/signature_list/system.hpp>
 
 ECST_MP_ADJACENCY_LIST_NAMESPACE
 {

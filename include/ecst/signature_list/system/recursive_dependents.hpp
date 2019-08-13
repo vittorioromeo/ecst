@@ -9,6 +9,7 @@
 #include "./dependents.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
+#include <ecst/signature_list/system/signature_list_from_tag_list.hpp>
 
 ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 {
