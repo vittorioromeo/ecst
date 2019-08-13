@@ -7,21 +7,18 @@
 
 #include <ecst/config.hpp>
 
-namespace ecst
+namespace ecst::impl
 {
-    namespace impl
+    /// @brief Empty struct with a `constexpr` variadic `operator()` that
+    /// does nothing.
+    struct do_nothing_t
     {
-        /// @brief Empty struct with a `constexpr` variadic `operator()` that
-        /// does nothing.
-        struct do_nothing_t
+        template <typename... Ts>
+        constexpr auto operator()(Ts&&...) const noexcept
         {
-            template <typename... Ts>
-            constexpr auto operator()(Ts&&...) const noexcept
-            {
-            }
-        };
+        }
+    };
 
-        /// @brief Instance of `do_nothing_t`.
-        constexpr impl::do_nothing_t do_nothing{};
-    } // namespace impl
-} // namespace ecst
+    /// @brief Instance of `do_nothing_t`.
+    constexpr impl::do_nothing_t do_nothing{};
+} // namespace ecst::impl

@@ -10,76 +10,73 @@
 #include <ecst/context/storage.hpp>
 #include <ecst/utils.hpp>
 
-namespace ecst::context
+namespace ecst::context::impl
 {
-    namespace impl
+    template <typename TSettings>
+    class main_storage
     {
-        template <typename TSettings>
-        class main_storage
-        {
-        private:
-            using settings_type = TSettings;
+    private:
+        using settings_type = TSettings;
 
-            using handle = ecst::context::entity::impl::handle;
+        using handle = ecst::context::entity::impl::handle;
 
-            using component_storage_type = // .
-                context::storage::component::dispatch<settings_type>;
+        using component_storage_type = // .
+            context::storage::component::dispatch<settings_type>;
 
-            using entity_storage_type = // .
-                context::storage::entity::dispatch<settings_type>;
+        using entity_storage_type = // .
+            context::storage::entity::dispatch<settings_type>;
 
-            template <typename T>
-            using component_from_tag = tag::component::unwrap<T>;
+        template <typename T>
+        using component_from_tag = tag::component::unwrap<T>;
 
-            component_storage_type _component_storage;
-            entity_storage_type _entity_storage;
+        component_storage_type _component_storage;
+        entity_storage_type _entity_storage;
 
-            template <typename TComponent>
-            decltype(auto) add_component(entity_id);
+        template <typename TComponent>
+        decltype(auto) add_component(entity_id);
 
-            template <typename TComponent>
-            decltype(auto) get_component(entity_id) noexcept;
+        template <typename TComponent>
+        decltype(auto) get_component(entity_id) noexcept;
 
-            template <typename TComponentTag>
-            auto has_component(entity_id) const noexcept;
+        template <typename TComponentTag>
+        auto has_component(entity_id) const noexcept;
 
-            template <typename TComponent>
-            void remove_component(entity_id) noexcept;
+        template <typename TComponent>
+        void remove_component(entity_id) noexcept;
 
-        protected:
-            void reclaim(entity_id) noexcept;
+    protected:
+        void reclaim(entity_id) noexcept;
 
-        public:
-            auto& metadata(entity_id) noexcept;
-            auto& metadata(entity_id) const noexcept;
-            auto valid_handle(const handle& h) const noexcept;
+    public:
+        auto& metadata(entity_id) noexcept;
+        auto& metadata(entity_id) const noexcept;
+        auto valid_handle(const handle& h) const noexcept;
 
-            entity_id create_entity();
-            handle create_handle(entity_id) noexcept;
-            handle create_entity_and_handle();
+        entity_id create_entity();
+        handle create_handle(entity_id) noexcept;
+        handle create_entity_and_handle();
 
-            auto access(const handle&) const noexcept;
+        auto access(const handle&) const noexcept;
 
-            template <typename TComponentTag>
-            decltype(auto) add_component(TComponentTag, entity_id);
+        template <typename TComponentTag>
+        decltype(auto) add_component(TComponentTag, entity_id);
 
-            template <typename TComponentTag>
-            decltype(auto) get_component(TComponentTag, entity_id) noexcept;
+        template <typename TComponentTag>
+        decltype(auto) get_component(TComponentTag, entity_id) noexcept;
 
-            template <typename TComponentTag>
-            auto has_component(TComponentTag, entity_id) const noexcept;
+        template <typename TComponentTag>
+        auto has_component(TComponentTag, entity_id) const noexcept;
 
-            template <typename TComponentTag>
-            void remove_component(TComponentTag, entity_id) noexcept;
+        template <typename TComponentTag>
+        void remove_component(TComponentTag, entity_id) noexcept;
 
-            auto& entity_storage() noexcept;
-            auto& component_storage() noexcept;
+        auto& entity_storage() noexcept;
+        auto& component_storage() noexcept;
 
-            const auto& entity_storage() const noexcept;
-            const auto& component_storage() const noexcept;
+        const auto& entity_storage() const noexcept;
+        const auto& component_storage() const noexcept;
 
-            auto alive(entity_id) const noexcept;
-            auto alive(const handle&) const noexcept;
-        };
-    } // namespace impl
-} // namespace ecst::context
+        auto alive(entity_id) const noexcept;
+        auto alive(const handle&) const noexcept;
+    };
+} // namespace ecst::context::impl

@@ -9,22 +9,19 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::composer
+namespace ecst::inner_parallelism::composer::fixed_threshold
 {
-    namespace fixed_threshold
+    template <                     // .
+        typename TEntityThreshold, // .
+        typename TStrategyGreater, // .
+        typename TStrategyLower    // .
+        >
+    constexpr auto v(TEntityThreshold, TStrategyGreater, TStrategyLower)
     {
-        template <                     // .
-            typename TEntityThreshold, // .
-            typename TStrategyGreater, // .
-            typename TStrategyLower    // .
-            >
-        constexpr auto v(TEntityThreshold, TStrategyGreater, TStrategyLower)
-        {
-            return impl::parameters< // .
-                TEntityThreshold,    // .
-                TStrategyGreater,    // .
-                TStrategyLower       // .
-                >{};
-        }
-    } // namespace fixed_threshold
-} // namespace ecst::inner_parallelism::composer
+        return impl::parameters< // .
+            TEntityThreshold,    // .
+            TStrategyGreater,    // .
+            TStrategyLower       // .
+            >{};
+    }
+} // namespace ecst::inner_parallelism::composer::fixed_threshold

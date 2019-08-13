@@ -7,15 +7,12 @@
 
 #include "./impl.hpp"
 
-namespace ecst::context::system
+namespace ecst::context::system::executor_proxy
 {
-    namespace executor_proxy
+    // TODO: docs/refactor
+    template <typename TInstance, typename... TFs>
+    auto make(TInstance& instance, TFs&&... fs) noexcept
     {
-        // TODO: docs/refactor
-        template <typename TInstance, typename... TFs>
-        auto make(TInstance& instance, TFs&&... fs) noexcept
-        {
-            return data<TInstance, decay_t<TFs>...>{instance, FWD(fs)...};
-        }
-    } // namespace executor_proxy
-} // namespace ecst::context::system
+        return data<TInstance, decay_t<TFs>...>{instance, FWD(fs)...};
+    }
+} // namespace ecst::context::system::executor_proxy

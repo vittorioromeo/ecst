@@ -10,31 +10,28 @@
 #include <ecst/config.hpp>
 #include <ecst/hardware.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_evenly_fn
 {
-    namespace split_evenly_fn
+    template <typename TSubtaskCountGetter>
+    constexpr auto v(TSubtaskCountGetter)
     {
-        template <typename TSubtaskCountGetter>
-        constexpr auto v(TSubtaskCountGetter)
-        {
-            return impl::parameters<TSubtaskCountGetter>{};
-        }
+        return impl::parameters<TSubtaskCountGetter>{};
+    }
 
-        namespace impl
+    namespace impl
+    {
+        struct v_cores_getter
         {
-            struct v_cores_getter
+            auto operator()() const noexcept
             {
-                auto operator()() const noexcept
-                {
-                    ECST_ASSERT(ecst::hardware::status::core_count_known());
-                    return ecst::hardware::status::core_count();
-                }
-            };
-        } // namespace impl
+                ECST_ASSERT(ecst::hardware::status::core_count_known());
+                return ecst::hardware::status::core_count();
+            }
+        };
+    } // namespace impl
 
-        constexpr auto v_cores()
-        {
-            return v(impl::v_cores_getter{});
-        }
-    } // namespace split_evenly_fn
-} // namespace ecst::inner_parallelism::strategy
+    constexpr auto v_cores()
+    {
+        return v(impl::v_cores_getter{});
+    }
+} // namespace ecst::inner_parallelism::strategy::split_evenly_fn

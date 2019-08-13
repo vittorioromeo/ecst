@@ -10,37 +10,33 @@
 #include <type_traits>
 #include <vrm/pp/cat.hpp>
 
-namespace ecst
+namespace ecst::impl
 {
-    namespace impl
+    template <typename TF>
+    struct scope_guard final : TF
     {
-        template <typename TF>
-        struct scope_guard final : TF
+        template <typename TFFwd>
+        ECST_ALWAYS_INLINE scope_guard(TFFwd&& f)              // .
+            noexcept(std::is_nothrow_move_constructible<TF>{}) // .
+            : TF{FWD(f)}
         {
-            template <typename TFFwd>
-            ECST_ALWAYS_INLINE scope_guard(TFFwd&& f)              // .
-                noexcept(std::is_nothrow_move_constructible<TF>{}) // .
-                : TF{FWD(f)}
-            {
-            }
-
-            ECST_ALWAYS_INLINE ~scope_guard() noexcept(   // .
-                noexcept(std::declval<TF>().operator()()) // .
-            )
-            {
-                this->operator()();
-            }
-        };
-
-        template <typename TF>
-        ECST_ALWAYS_INLINE auto make_scope_guard(TF&& f) // .
-            noexcept(std::is_nothrow_move_constructible<TF>{})
-        {
-            return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
         }
-    } // namespace impl
-} // namespace ecst
 
+        ECST_ALWAYS_INLINE ~scope_guard() noexcept(   // .
+            noexcept(std::declval<TF>().operator()()) // .
+        )
+        {
+            this->operator()();
+        }
+    };
+
+    template <typename TF>
+    ECST_ALWAYS_INLINE auto make_scope_guard(TF&& f) // .
+        noexcept(std::is_nothrow_move_constructible<TF>{})
+    {
+        return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
+    }
+} // namespace ecst::impl
 
 /// @brief Given a lambda, creates a scope guard that will execute it upon
 /// exiting the current scope.

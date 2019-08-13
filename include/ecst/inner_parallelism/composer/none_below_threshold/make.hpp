@@ -10,21 +10,18 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::composer
+namespace ecst::inner_parallelism::composer::none_below_threshold
 {
-    namespace none_below_threshold
+    template <typename TEntityThreshold, typename TStrategyGreater>
+    constexpr auto v(TEntityThreshold, TStrategyGreater)
     {
-        template <typename TEntityThreshold, typename TStrategyGreater>
-        constexpr auto v(TEntityThreshold, TStrategyGreater)
-        {
-            constexpr auto none_fallback = // .
-                inner_parallelism::strategy::none::v();
+        constexpr auto none_fallback = // .
+            inner_parallelism::strategy::none::v();
 
-            return fixed_threshold::v( // .
-                TEntityThreshold{},    // .
-                TStrategyGreater{},    // .
-                none_fallback          // .
-            );
-        }
-    } // namespace none_below_threshold
-} // namespace ecst::inner_parallelism::composer
+        return fixed_threshold::v( // .
+            TEntityThreshold{},    // .
+            TStrategyGreater{},    // .
+            none_fallback          // .
+        );
+    }
+} // namespace ecst::inner_parallelism::composer::none_below_threshold

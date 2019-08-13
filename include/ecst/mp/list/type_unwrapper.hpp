@@ -8,6 +8,7 @@
 #include <boost/hana/ext/std/tuple.hpp>
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
+#include <ecst/mp/list/basic.hpp>
 
 namespace ecst::mp::list
 {

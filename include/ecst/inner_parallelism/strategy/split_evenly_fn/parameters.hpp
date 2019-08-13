@@ -9,25 +9,19 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_evenly_fn::impl
 {
-    namespace split_evenly_fn
+    template <                       // .
+        typename TSubtaskCountGetter // .
+        >
+    struct parameters
     {
-        namespace impl
-        {
-            template <                       // .
-                typename TSubtaskCountGetter // .
-                >
-            struct parameters
-            {
-                template <typename TParameters>
-                using executor_type = executor<TParameters>;
+        template <typename TParameters>
+        using executor_type = executor<TParameters>;
 
-                static constexpr auto subtask_count_getter()
-                {
-                    return TSubtaskCountGetter{};
-                }
-            };
-        } // namespace impl
-    }     // namespace split_evenly_fn
-} // namespace ecst::inner_parallelism::strategy
+        static constexpr auto subtask_count_getter()
+        {
+            return TSubtaskCountGetter{};
+        }
+    };
+} // namespace ecst::inner_parallelism::strategy::split_evenly_fn::impl

@@ -12,6 +12,7 @@
 #include <ecst/context/types.hpp>
 #include <ecst/settings.hpp>
 #include <ecst/tag.hpp>
+#include <ecst/signature_list/component/id.hpp>
 
 namespace ecst::context::bitset
 {

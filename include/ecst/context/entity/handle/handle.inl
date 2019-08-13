@@ -8,21 +8,18 @@
 #include "../constants.hpp"
 #include "./handle.hpp"
 
-namespace ecst::context::entity
+namespace ecst::context::entity::impl
 {
-    namespace impl
+    inline handle::handle() noexcept : _id{invalid_id}
     {
-        inline handle::handle() noexcept : _id{invalid_id}
-        {
-        }
+    }
 
-        inline handle::handle(uninitialized_handle_init) noexcept
-        {
-        }
+    inline handle::handle(uninitialized_handle_init) noexcept
+    {
+    }
 
-        inline handle::handle(entity_id id, counter ctr) noexcept
-            : _id{id}, _ctr{ctr}
-        {
-        }
-    } // namespace impl
-} // namespace ecst::context::entity
+    inline handle::handle(entity_id id, counter ctr) noexcept
+        : _id{id}, _ctr{ctr}
+    {
+    }
+} // namespace ecst::context::entity::impl

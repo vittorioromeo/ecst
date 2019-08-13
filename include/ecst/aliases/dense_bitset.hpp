@@ -9,12 +9,9 @@
 #include <ecst/aliases/vrmc.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst
+namespace ecst::impl
 {
-    namespace impl
-    {
-        /// @brief Dense bitset.
-        template <sz_t TN>
-        using dense_bitset = std::bitset<TN>;
-    } // namespace impl
-} // namespace ecst
+    /// @brief Dense bitset.
+    template <sz_t TN>
+    using dense_bitset = std::bitset<TN>;
+} // namespace ecst::impl

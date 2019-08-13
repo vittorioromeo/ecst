@@ -9,17 +9,11 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::none::impl
 {
-    namespace none
+    struct parameters
     {
-        namespace impl
-        {
-            struct parameters
-            {
-                template <typename TParameters>
-                using executor_type = executor<TParameters>;
-            };
-        } // namespace impl
-    }     // namespace none
-} // namespace ecst::inner_parallelism::strategy
+        template <typename TParameters>
+        using executor_type = executor<TParameters>;
+    };
+} // namespace ecst::inner_parallelism::strategy::none::impl

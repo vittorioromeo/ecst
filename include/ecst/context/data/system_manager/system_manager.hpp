@@ -16,216 +16,211 @@
 #include <ecst/thread_pool.hpp>
 #include <ecst/utils.hpp>
 
-namespace ecst::context
+namespace ecst::context::impl
 {
-    namespace impl
+    // TODO:
+    // Kind aliases.
+    constexpr auto k_stateless = signature::system::impl::kind::stateless;
+    constexpr auto k_stateful = signature::system::impl::kind::stateful;
+    constexpr auto k_entity = signature::system::impl::kind::entity;
+
+    /// @brief Class managing systems and threads.
+    /// @details Contains a thread pool, and a system storage.
+    template <typename TSettings>
+    class system_manager
     {
-        // TODO:
-        // Kind aliases.
-        constexpr auto k_stateless = signature::system::impl::kind::stateless;
-        constexpr auto k_stateful = signature::system::impl::kind::stateful;
-        constexpr auto k_entity = signature::system::impl::kind::entity;
+        template <typename>
+        friend class data;
 
-        /// @brief Class managing systems and threads.
-        /// @details Contains a thread pool, and a system storage.
-        template <typename TSettings>
-        class system_manager
+    public:
+        using settings_type = TSettings;
+        using thread_pool = ecst::thread_pool;
+
+        using system_storage_type = // .
+            context::storage::system::dispatch<settings_type>;
+
+        using scheduler_type = // .
+            typename settings::impl::ctx_scheduler<
+                settings_type>::template instantiate<settings_type>;
+
+        template <typename T>
+        using system_from_tag = tag::system::unwrap<T>;
+
+    private:
+        std::unique_ptr<thread_pool> _thread_pool{
+            std::make_unique<thread_pool>()};
+
+        system_storage_type _system_storage;
+        scheduler_type _scheduler;
+
+        // TODO: to inl
+        constexpr static auto provider_all_instances() noexcept
         {
-            template <typename>
-            friend class data;
+            return [](auto&& ss, auto&&... xs) { ss.for_all_instances(xs...); };
+        }
 
-        public:
-            using settings_type = TSettings;
-            using thread_pool = ecst::thread_pool;
+        // TODO: to inl
+        template <typename... TKinds>
+        constexpr static auto provider_instances_of_kind(
+            TKinds... kinds) noexcept
+        {
+            return [kinds...](auto&& ss, auto&& f) {
+                // TODO:
+                (ss.for_instances_of_kind(f, kinds), ...);
+            };
+        }
 
-            using system_storage_type = // .
-                context::storage::system::dispatch<settings_type>;
+        // TODO: to inl
+        constexpr static auto counter_all_instances() noexcept
+        {
+            return [](auto&& ss) { return ss.all_instances_count(); };
+        }
 
-            using scheduler_type = // .
-                typename settings::impl::ctx_scheduler<
-                    settings_type>::template instantiate<settings_type>;
+        // TODO: to inl
+        template <typename... TKinds>
+        constexpr static auto counter_instances_of_kind(
+            TKinds... kinds) noexcept
+        {
+            return [kinds...](auto&& ss) {
+                return bh::sum<sz_t>(
+                    bh::make_basic_tuple(ss.instances_of_kind_count(kinds)...));
+            };
+        }
 
-            template <typename T>
-            using system_from_tag = tag::system::unwrap<T>;
+        // TODO: to inl
+        template <typename TSelf, typename TFInstanceProvider, typename TF>
+        static void for_instances_sequential_impl(
+            TSelf&& self, TFInstanceProvider&& f_instance_provider, TF&& f)
+        {
+            f_instance_provider(self._system_storage, FWD(f));
+        }
 
-        private:
-            std::unique_ptr<thread_pool> _thread_pool{
-                std::make_unique<thread_pool>()};
-
-            system_storage_type _system_storage;
-            scheduler_type _scheduler;
-
-            // TODO: to inl
-            constexpr static auto provider_all_instances() noexcept
-            {
-                return [](auto&& ss, auto&&... xs) {
-                    ss.for_all_instances(xs...);
-                };
-            }
-
-            // TODO: to inl
-            template <typename... TKinds>
-            constexpr static auto provider_instances_of_kind(
-                TKinds... kinds) noexcept
-            {
-                return [kinds...](auto&& ss, auto&& f) {
-                    // TODO:
-                    (ss.for_instances_of_kind(f, kinds), ...);
-                };
-            }
-
-            // TODO: to inl
-            constexpr static auto counter_all_instances() noexcept
-            {
-                return [](auto&& ss) { return ss.all_instances_count(); };
-            }
-
-            // TODO: to inl
-            template <typename... TKinds>
-            constexpr static auto counter_instances_of_kind(
-                TKinds... kinds) noexcept
-            {
-                return [kinds...](auto&& ss) {
-                    return bh::sum<sz_t>(bh::make_basic_tuple(
-                        ss.instances_of_kind_count(kinds)...));
-                };
-            }
-
-            // TODO: to inl
-            template <typename TSelf, typename TFInstanceProvider, typename TF>
-            static void for_instances_sequential_impl(
-                TSelf&& self, TFInstanceProvider&& f_instance_provider, TF&& f)
-            {
-                f_instance_provider(self._system_storage, FWD(f));
-            }
-
-            // TODO: to inl
-            template <typename TSelf, typename TFInstanceCounter,
-                typename TFInstanceProvider, typename TF>
-            static void for_instances_parallel_impl(TSelf&& self,
-                TFInstanceCounter&& f_instance_counter,
-                TFInstanceProvider&& f_instance_provider, TF&& f)
-            {
-                // Block until `f` has been called on all instances.
-                latch b{f_instance_counter(self._system_storage)};
-                b.execute_and_wait_until_zero(
-                    [&self, ip = FWD(f_instance_provider), &b, f = FWD(f)] {
-                        ip(self._system_storage, [&self, &b, &f](auto& system) {
-                            // Use of multithreading:
-                            // * Unsubscribe dead entities from instances.
-                            // * Match new/modified entities to instances.
-                            self.post_in_thread_pool([&b, &system, &f] {
-                                f(system);
-                                b.decrement_and_notify_one();
-                            });
+        // TODO: to inl
+        template <typename TSelf, typename TFInstanceCounter,
+            typename TFInstanceProvider, typename TF>
+        static void for_instances_parallel_impl(TSelf&& self,
+            TFInstanceCounter&& f_instance_counter,
+            TFInstanceProvider&& f_instance_provider, TF&& f)
+        {
+            // Block until `f` has been called on all instances.
+            latch b{f_instance_counter(self._system_storage)};
+            b.execute_and_wait_until_zero(
+                [&self, ip = FWD(f_instance_provider), &b, f = FWD(f)] {
+                    ip(self._system_storage, [&self, &b, &f](auto& system) {
+                        // Use of multithreading:
+                        // * Unsubscribe dead entities from instances.
+                        // * Match new/modified entities to instances.
+                        self.post_in_thread_pool([&b, &system, &f] {
+                            f(system);
+                            b.decrement_and_notify_one();
                         });
                     });
-            }
+                });
+        }
 
-            template <typename TFPar, typename TFSeq>
-            static auto for_instances_dispatch_impl(
-                TFPar&& f_par, TFSeq&& f_seq) noexcept
-            {
-                return [f_par = FWD(f_par), f_seq = FWD(f_seq)](auto&& f) {
-                    if constexpr(settings::refresh_parallelism_allowed<
-                                     settings_type>())
-                    {
-                        f_par(FWD(f));
-                    }
-                    else
-                    {
-                        f_seq(FWD(f));
-                    }
-                };
-            }
+        template <typename TFPar, typename TFSeq>
+        static auto for_instances_dispatch_impl(
+            TFPar&& f_par, TFSeq&& f_seq) noexcept
+        {
+            return [f_par = FWD(f_par), f_seq = FWD(f_seq)](auto&& f) {
+                if constexpr(settings::refresh_parallelism_allowed<
+                                 settings_type>())
+                {
+                    f_par(FWD(f));
+                }
+                else
+                {
+                    f_seq(FWD(f));
+                }
+            };
+        }
 
-        public:
-            /// @brief Executes `f` on all systems, sequentially.
-            template <typename TF>
-            void for_instances_sequential(TF&& f);
+    public:
+        /// @brief Executes `f` on all systems, sequentially.
+        template <typename TF>
+        void for_instances_sequential(TF&& f);
 
-            /// @brief Executes `f` on all systems, in parallel.
-            template <typename TF>
-            void for_instances_parallel(TF&& f);
+        /// @brief Executes `f` on all systems, in parallel.
+        template <typename TF>
+        void for_instances_parallel(TF&& f);
 
-            /// @brief Executes `f` on all systems, in parallel if enabled by
-            /// settings, sequentially otherwise.
-            template <typename TF>
-            void for_instances_dispatch(TF&& f);
+        /// @brief Executes `f` on all systems, in parallel if enabled by
+        /// settings, sequentially otherwise.
+        template <typename TF>
+        void for_instances_dispatch(TF&& f);
 
-            /// @brief Executes `f` on stateful systems, sequentially.
-            template <typename TF>
-            void for_stateful_instances_sequential(TF&& f);
+        /// @brief Executes `f` on stateful systems, sequentially.
+        template <typename TF>
+        void for_stateful_instances_sequential(TF&& f);
 
-            /// @brief Executes `f` on all entity systems, sequentially.
-            template <typename TF>
-            void for_entity_instances_sequential(TF&& f);
+        /// @brief Executes `f` on all entity systems, sequentially.
+        template <typename TF>
+        void for_entity_instances_sequential(TF&& f);
 
-            /// @brief Executes `f` on all entity systems, in parallel.
-            template <typename TF>
-            void for_entity_instances_parallel(TF&& f);
+        /// @brief Executes `f` on all entity systems, in parallel.
+        template <typename TF>
+        void for_entity_instances_parallel(TF&& f);
 
-            /// @brief Executes `f` on all entity systems, in parallel if
-            /// enabled by settings, sequentially otherwise.
-            template <typename TF>
-            void for_entity_instances_dispatch(TF&& f);
+        /// @brief Executes `f` on all entity systems, in parallel if
+        /// enabled by settings, sequentially otherwise.
+        template <typename TF>
+        void for_entity_instances_dispatch(TF&& f);
 
 
-            template <typename TF>
-            auto post_in_thread_pool(TF&& f);
+        template <typename TF>
+        auto post_in_thread_pool(TF&& f);
 
-            template <typename TID>
-            auto& instance_by_id(TID) noexcept;
+        template <typename TID>
+        auto& instance_by_id(TID) noexcept;
 
-        private:
-            /// @brief Executes all the system chains starting with tags in
-            /// `sstl`, overloading `fs...`.
-            template <typename TContext, typename TStartSystemTagList,
-                typename... TFs>
-            void execute_systems_impl(
-                TContext&, TStartSystemTagList sstl, TFs&&... fs);
+    private:
+        /// @brief Executes all the system chains starting with tags in
+        /// `sstl`, overloading `fs...`.
+        template <typename TContext, typename TStartSystemTagList,
+            typename... TFs>
+        void execute_systems_impl(
+            TContext&, TStartSystemTagList sstl, TFs&&... fs);
 
-        protected:
-            /// @brief Returns a variadic lambda accepting system execution
-            /// functions that will be executed on all dependency chains
-            /// starting from `sts...`.
-            template <typename TContext, typename... TStartSystemTags>
-            auto execute_systems_from(
-                TContext& context, TStartSystemTags... sts) noexcept;
+    protected:
+        /// @brief Returns a variadic lambda accepting system execution
+        /// functions that will be executed on all dependency chains
+        /// starting from `sts...`.
+        template <typename TContext, typename... TStartSystemTags>
+        auto execute_systems_from(
+            TContext& context, TStartSystemTags... sts) noexcept;
 
-            /// @brief Returns a variadic lambda accepting system execution
-            /// functions that will be executed on all dependency chains
-            /// starting from all independent systems in the context.
-            template <typename TContext>
-            auto execute_systems(TContext& context) noexcept;
+        /// @brief Returns a variadic lambda accepting system execution
+        /// functions that will be executed on all dependency chains
+        /// starting from all independent systems in the context.
+        template <typename TContext>
+        auto execute_systems(TContext& context) noexcept;
 
-        public:
-            template <typename TSystemTag, typename TF>
-            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
+    public:
+        template <typename TSystemTag, typename TF>
+        decltype(auto) for_system_outputs(TSystemTag, TF&& f);
 
-            template <typename TSystemTag>
-            auto& instance(TSystemTag) noexcept;
+        template <typename TSystemTag>
+        auto& instance(TSystemTag) noexcept;
 
-            template <typename TSystemTag>
-            const auto& instance(TSystemTag) const noexcept;
+        template <typename TSystemTag>
+        const auto& instance(TSystemTag) const noexcept;
 
-            template <typename TSystemTag>
-            auto& system(TSystemTag) noexcept;
+        template <typename TSystemTag>
+        auto& system(TSystemTag) noexcept;
 
-            template <typename TSystemTag>
-            const auto& system(TSystemTag) const noexcept;
+        template <typename TSystemTag>
+        const auto& system(TSystemTag) const noexcept;
 
-            template <typename TSystemTag>
-            auto is_in_system(TSystemTag, entity_id) const noexcept;
+        template <typename TSystemTag>
+        auto is_in_system(TSystemTag, entity_id) const noexcept;
 
-            template <typename TSystemTag>
-            auto count_entities_in(TSystemTag) const noexcept;
+        template <typename TSystemTag>
+        auto count_entities_in(TSystemTag) const noexcept;
 
-            template <typename TSystemTag>
-            auto any_entity_in(TSystemTag) const noexcept;
+        template <typename TSystemTag>
+        auto any_entity_in(TSystemTag) const noexcept;
 
-            // TODO:
-            constexpr auto inner_parallelism_allowed() const noexcept;
-        };
-    } // namespace impl
-} // namespace ecst::context
+        // TODO:
+        constexpr auto inner_parallelism_allowed() const noexcept;
+    };
+} // namespace ecst::context::impl

@@ -7,20 +7,16 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst
+namespace ecst::impl
 {
-    namespace impl
-    {
-        using name_type = const char*;
+    using name_type = const char*;
 
-        template <typename TSystem>
-        constexpr impl::name_type system_name{"unnamed system"};
+    template <typename TSystem>
+    constexpr impl::name_type system_name{"unnamed system"};
 
-        template <typename TComponent>
-        constexpr impl::name_type component_name{"unnamed component"};
-    } // namespace impl
-} // namespace ecst
-
+    template <typename TComponent>
+    constexpr impl::name_type component_name{"unnamed component"};
+} // namespace ecst::impl
 
 #define ECST_IMPL_SPECIALIZE_NAME(type, ...)                            \
                                                                         \

@@ -9,24 +9,18 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-namespace ecst::context
+namespace ecst::context::impl::defer
 {
-    namespace impl
+    template <typename TSettings>
+    class refresh_state
     {
-        namespace defer
-        {
-            template <typename TSettings>
-            class refresh_state
-            {
-            private:
-                using settings_type = TSettings;
-                using set_type = dispatch_set<settings_type>;
+    private:
+        using settings_type = TSettings;
+        using set_type = dispatch_set<settings_type>;
 
-            public:
-                set_type _to_kill, _to_match;
+    public:
+        set_type _to_kill, _to_match;
 
-                void clear() noexcept;
-            };
-        } // namespace defer
-    }     // namespace impl
-} // namespace ecst::context
+        void clear() noexcept;
+    };
+} // namespace ecst::context::impl::defer

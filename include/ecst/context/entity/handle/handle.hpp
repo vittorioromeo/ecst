@@ -9,15 +9,11 @@
 #include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
 
-namespace ecst::context::storage::entity
+namespace ecst::context::storage::entity::impl
 {
-    namespace impl
-    {
-        template <typename TContainer>
-        class data;
-    }
-} // namespace ecst::context::storage::entity
-
+    template <typename TContainer>
+    class data;
+} // namespace ecst::context::storage::entity::impl
 
 namespace ecst::context::entity
 {

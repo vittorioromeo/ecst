@@ -20,7 +20,7 @@ namespace ecst::context::entity
     } // namespace impl
 
     /// @brief Returns `true` if `eid` is a valid entity ID.
-    inline auto ECST_CONST_FN is_valid_id(entity_id eid) noexcept
+    ECST_CONST_FN inline bool is_valid_id(entity_id eid) noexcept
     {
         return eid != impl::invalid_id;
     }

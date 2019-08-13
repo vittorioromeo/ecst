@@ -9,13 +9,10 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::none
 {
-    namespace none
+    constexpr auto v()
     {
-        constexpr auto v()
-        {
-            return impl::parameters{};
-        }
-    } // namespace none
-} // namespace ecst::inner_parallelism::strategy
+        return impl::parameters{};
+    }
+} // namespace ecst::inner_parallelism::strategy::none

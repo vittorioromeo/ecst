@@ -10,95 +10,91 @@
 #include <ecst/signature/system.hpp>
 #include <ecst/tag.hpp>
 
-namespace ecst::context::system
+namespace ecst::context::system::impl
 {
-    namespace impl
+    /// @brief Type of the system tag used by an instance with `TSettings`
+    /// and `TSystemSignature` template parameters.
+    template <typename TSettings, typename TSystemSignature>
+    using instance_system_tag_type =
+        signature::system::tag_type<TSystemSignature>;
+
+    /// @brief Type of the system used by an instance with `TSettings` and
+    /// `TSystemSignature` template parameters.
+    template <typename TSettings, typename TSystemSignature>
+    using instance_system_type = tag::system::unwrap<
+        instance_system_tag_type<TSettings, TSystemSignature>>;
+
+    /// @brief TODO:
+    /// @details Uses EBO for the stored system.
+    template <typename TSettings, typename TSystemSignature>
+    class instance_base
+        : public instance_system_type<TSettings, TSystemSignature>
     {
-        /// @brief Type of the system tag used by an instance with `TSettings`
-        /// and `TSystemSignature` template parameters.
-        template <typename TSettings, typename TSystemSignature>
-        using instance_system_tag_type =
-            signature::system::tag_type<TSystemSignature>;
+    public:
+        using signature_type = mp::unwrap<TSystemSignature>;
 
-        /// @brief Type of the system used by an instance with `TSettings` and
-        /// `TSystemSignature` template parameters.
-        template <typename TSettings, typename TSystemSignature>
-        using instance_system_type = tag::system::unwrap<
-            instance_system_tag_type<TSettings, TSystemSignature>>;
+        using system_tag_type =
+            instance_system_tag_type<TSettings, TSystemSignature>;
 
-        /// @brief TODO:
-        /// @details Uses EBO for the stored system.
-        template <typename TSettings, typename TSystemSignature>
-        class instance_base
-            : public instance_system_type<TSettings, TSystemSignature>
+        using system_type = instance_system_type<TSettings, TSystemSignature>;
+
+        instance_base() = default;
+
+        // Prevent copies.
+        instance_base(const instance_base&) = delete;
+        instance_base& operator=(const instance_base&) = delete;
+
+        // Allow moves.
+        instance_base(instance_base&&) = default;
+        instance_base& operator=(instance_base&&) = default;
+
+        /// @brief Returns a reference to the stored system instance.
+        auto& system() noexcept;
+
+        /// @brief Returns a const reference to the stored system instance.
+        const auto& system() const noexcept;
+
+        // TODO:
+        constexpr auto signature() const noexcept
         {
-        public:
-            using signature_type = mp::unwrap<TSystemSignature>;
+            return signature_type{};
+        }
 
-            using system_tag_type =
-                instance_system_tag_type<TSettings, TSystemSignature>;
+        template <typename TSystem>
+        constexpr auto system_is() const noexcept
+        {
+            return std::is_same<system_type, TSystem>{};
+        }
 
-            using system_type =
-                instance_system_type<TSettings, TSystemSignature>;
+        template <typename TKind>
+        constexpr auto kind_is(TKind kind) const noexcept
+        {
+            return signature().is_kind(kind);
+        }
 
-            instance_base() = default;
+        // TODO:
+        // constexpr auto is_stateless() const noexcept
+        // {
+        //     return std::is_same<ECST_DECAY_DECLTYPE(
+        // }
+    };
 
-            // Prevent copies.
-            instance_base(const instance_base&) = delete;
-            instance_base& operator=(const instance_base&) = delete;
+    // TODO: component-only systems with no knowledge of entities for SIMD
+    // operations (?)
 
-            // Allow moves.
-            instance_base(instance_base&&) = default;
-            instance_base& operator=(instance_base&&) = default;
+    // TODO: hierarchy of instances:
+    /*
+        `execution_step` (base type):
+            * can produce/consume outputs
+            * can have dependencies
+            * can be parallelized (but quite explicitly)
 
-            /// @brief Returns a reference to the stored system instance.
-            auto& system() noexcept;
+        `entity_system : execution_step`: instance
 
-            /// @brief Returns a const reference to the stored system instance.
-            const auto& system() const noexcept;
-
-            // TODO:
-            constexpr auto signature() const noexcept
-            {
-                return signature_type{};
-            }
-
-            template <typename TSystem>
-            constexpr auto system_is() const noexcept
-            {
-                return std::is_same<system_type, TSystem>{};
-            }
-
-            template <typename TKind>
-            constexpr auto kind_is(TKind kind) const noexcept
-            {
-                return signature().is_kind(kind);
-            }
-
-            // TODO:
-            // constexpr auto is_stateless() const noexcept
-            // {
-            //     return std::is_same<ECST_DECAY_DECLTYPE(
-            // }
-        };
-
-        // TODO: component-only systems with no knowledge of entities for SIMD
-        // operations (?)
-
-        // TODO: hierarchy of instances:
-        /*
-            `execution_step` (base type):
-                * can produce/consume outputs
-                * can have dependencies
-                * can be parallelized (but quite explicitly)
-
-            `entity_system : execution_step`: instance
-
-            `component_system : execution_step`:
-                * no knowledge of entities
-                * iterates over component
-                * SIMD support, etc
-                * (necessary?) is it just execution_step?
-        */
-    } // namespace impl
-} // namespace ecst::context::system
+        `component_system : execution_step`:
+            * no knowledge of entities
+            * iterates over component
+            * SIMD support, etc
+            * (necessary?) is it just execution_step?
+    */
+} // namespace ecst::context::system::impl

@@ -14,94 +14,91 @@
 #include <iostream>
 #endif
 
-namespace ecst::debug
+namespace ecst::debug::impl
 {
-    namespace impl
+    inline auto& ECST_CONST_FN last_log() noexcept
     {
-        inline auto& ECST_CONST_FN last_log() noexcept
-        {
-            static int res = -1;
-            return res;
-        }
+        static int res = -1;
+        return res;
+    }
 
-        inline const auto& ECST_CONST_FN tstrings() noexcept
-        {
-            static std::array res{
-                /* 00 */ "      ENTITY", // .
-                /* 01 */ "   COMPONENT", // .
-                /* 02 */ "   ENTITY M.", // .
-                /* 03 */ "COMPONENT M.", // .
-                /* 04 */ " THREAD POOL", // .
-                /* 05 */ "SYS INSTANCE", // .
-                /* 06 */ "S.I. PARALL.", // .
-                /* 07 */ " CTX REFRESH", // .
-                /* 08 */ "  SYS BITSET", // .
-                /* 09 */ "   SYS MATCH", // .
-                /* 10 */ "MDATA BITSET"  // .
-            };
-
-            return res;
-        }
-
-        template <int TN>
-        constexpr auto on = int_v<TN>;
-
-        template <int>
-        constexpr auto off = int_v<-1>;
-
-        struct fake_cout_obj
-        {
+    inline const auto& ECST_CONST_FN tstrings() noexcept
+    {
+        static std::array res{
+            /* 00 */ "      ENTITY", // .
+            /* 01 */ "   COMPONENT", // .
+            /* 02 */ "   ENTITY M.", // .
+            /* 03 */ "COMPONENT M.", // .
+            /* 04 */ " THREAD POOL", // .
+            /* 05 */ "SYS INSTANCE", // .
+            /* 06 */ "S.I. PARALL.", // .
+            /* 07 */ " CTX REFRESH", // .
+            /* 08 */ "  SYS BITSET", // .
+            /* 09 */ "   SYS MATCH", // .
+            /* 10 */ "MDATA BITSET"  // .
         };
 
-        inline auto& ECST_CONST_FN fake_cout() noexcept
-        {
-            static fake_cout_obj res;
-            return res;
-        }
+        return res;
+    }
 
-        template <typename T>
-        inline auto& operator<<(fake_cout_obj& o, T&&) noexcept
-        {
-            return o;
-        }
+    template <int TN>
+    constexpr auto on = int_v<TN>;
 
-        /* 00 */ constexpr auto entity = off<0>;
-        /* 01 */ constexpr auto component = off<1>;
-        /* 02 */ constexpr auto entity_memory = off<2>;
-        /* 03 */ constexpr auto component_memory = off<3>;
-        /* 04 */ constexpr auto thread_pool = off<4>;
-        /* 05 */ constexpr auto instance = off<5>;
-        /* 06 */ constexpr auto instance_parallelism = off<6>;
-        /* 07 */ constexpr auto context_refresh = on<7>;
-        /* 08 */ constexpr auto system_bitset = off<8>;
-        /* 09 */ constexpr auto system_match = off<9>;
-        /* 10 */ constexpr auto metadata_bitset = off<10>;
+    template <int>
+    constexpr auto off = int_v<-1>;
 
-        template <typename TType>
-        inline auto& log(TType) noexcept
+    struct fake_cout_obj
+    {
+    };
+
+    inline auto& ECST_CONST_FN fake_cout() noexcept
+    {
+        static fake_cout_obj res;
+        return res;
+    }
+
+    template <typename T>
+    inline auto& operator<<(fake_cout_obj& o, T&&) noexcept
+    {
+        return o;
+    }
+
+    /* 00 */ constexpr auto entity = off<0>;
+    /* 01 */ constexpr auto component = off<1>;
+    /* 02 */ constexpr auto entity_memory = off<2>;
+    /* 03 */ constexpr auto component_memory = off<3>;
+    /* 04 */ constexpr auto thread_pool = off<4>;
+    /* 05 */ constexpr auto instance = off<5>;
+    /* 06 */ constexpr auto instance_parallelism = off<6>;
+    /* 07 */ constexpr auto context_refresh = on<7>;
+    /* 08 */ constexpr auto system_bitset = off<8>;
+    /* 09 */ constexpr auto system_match = off<9>;
+    /* 10 */ constexpr auto metadata_bitset = off<10>;
+
+    template <typename TType>
+    inline auto& log(TType) noexcept
+    {
+        if constexpr(bool_v<(TType::value >= 0)>)
         {
-            if constexpr(bool_v<(TType::value >= 0)>)
-            {
 #if defined(ECST_LOG_ENABLED)
 
-                constexpr auto logt = TType::value;
+            constexpr auto logt = TType::value;
 
-                if(last_log() != logt)
-                {
-                    std::cout << "\n";
-                }
-
-                last_log() = logt;
-
-                return std::cout << "[" << tstrings()[TType::value] << "]\t";
-#else
-                return fake_cout();
-#endif
-            }
-            else
+            if(last_log() != logt)
             {
-                return fake_cout();
+                std::cout << "\n";
             }
+
+            last_log() = logt;
+
+            return std::cout << "[" << tstrings()[TType::value] << "]\t";
+#else
+            return fake_cout();
+#endif
         }
-    } // namespace impl
-} // namespace ecst::debug
+        else
+        {
+            return fake_cout();
+        }
+    }
+} // namespace ecst::debug::impl

@@ -11,40 +11,34 @@
 #include <ecst/inner_parallelism/utils.hpp>
 #include <ecst/signature.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_evenly_fn::impl
 {
-    namespace split_evenly_fn
+    template <typename TParameters>
+    struct executor
     {
-        namespace impl
+        using parameters = TParameters;
+
+        template <typename TInstance, typename TContext, typename TF>
+        void execute(TInstance& inst, TContext& ctx, TF&& f)
         {
-            template <typename TParameters>
-            struct executor
-            {
-                using parameters = TParameters;
+            auto getter = parameters::subtask_count_getter();
+            auto split_count = getter();
+            auto per_split = inst.subscribed_count() / split_count;
 
-                template <typename TInstance, typename TContext, typename TF>
-                void execute(TInstance& inst, TContext& ctx, TF&& f)
-                {
-                    auto getter = parameters::subtask_count_getter();
-                    auto split_count = getter();
-                    auto per_split = inst.subscribed_count() / split_count;
+            ECST_ASSERT_OP(inst.subscribed_count(), >=, split_count);
 
-                    ECST_ASSERT_OP(inst.subscribed_count(), >=, split_count);
+            ELOG(                                                   // .
+                debug::lo_instance_parallelism()                    // .
+                    << "split_evenly_fn:(" << inst.system_id()      // .
+                    << "):\n\tsubscribed_count()="                  // .
+                    << inst.subscribed_count()                      // .
+                    << "\n\tper_split=" << per_split                // .
+                    << "\n\tsplit_count=" << split_count << "\n\n"; // .
+            );
 
-                    ELOG(                                                   // .
-                        debug::lo_instance_parallelism()                    // .
-                            << "split_evenly_fn:(" << inst.system_id()      // .
-                            << "):\n\tsubscribed_count()="                  // .
-                            << inst.subscribed_count()                      // .
-                            << "\n\tper_split=" << per_split                // .
-                            << "\n\tsplit_count=" << split_count << "\n\n"; // .
-                    );
-
-                    // Executes all subtasks. Blocks until completed.
-                    utils::prepare_execute_wait_subtasks( // .
-                        inst, ctx, split_count, per_split, f);
-                }
-            };
-        } // namespace impl
-    }     // namespace split_evenly_fn
-} // namespace ecst::inner_parallelism::strategy
+            // Executes all subtasks. Blocks until completed.
+            utils::prepare_execute_wait_subtasks( // .
+                inst, ctx, split_count, per_split, f);
+        }
+    };
+} // namespace ecst::inner_parallelism::strategy::split_evenly_fn::impl

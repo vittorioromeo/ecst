@@ -635,7 +635,7 @@ namespace example
     } // namespace s
 
     // Compile-time `std::size_t` entity limit.
-    constexpr auto entity_limit = ecst::sz_v<65536>;
+    constexpr auto entity_limit = ecst::sz_v<65535>;
 
     // Compile-time initial particle count.
     constexpr auto initial_particle_count = ecst::sz_v<50000>;

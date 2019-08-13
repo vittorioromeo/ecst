@@ -7,21 +7,18 @@
 
 #include "./base.hpp"
 
-namespace ecst::context::system
+namespace ecst::context::system::impl
 {
-    namespace impl
+    template <typename TSettings, typename TSystemSignature>
+    auto& instance_base<TSettings, TSystemSignature>::system() noexcept
     {
-        template <typename TSettings, typename TSystemSignature>
-        auto& instance_base<TSettings, TSystemSignature>::system() noexcept
-        {
-            return vrmc::to_base<system_type>(*this);
-        }
+        return vrmc::to_base<system_type>(*this);
+    }
 
-        template <typename TSettings, typename TSystemSignature>
-        const auto& instance_base<TSettings, TSystemSignature>::system() const
-            noexcept
-        {
-            return vrmc::to_base<system_type>(*this);
-        }
-    } // namespace impl
-} // namespace ecst::context::system
+    template <typename TSettings, typename TSystemSignature>
+    const auto& instance_base<TSettings, TSystemSignature>::system() const
+        noexcept
+    {
+        return vrmc::to_base<system_type>(*this);
+    }
+} // namespace ecst::context::system::impl

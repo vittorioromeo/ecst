@@ -8,28 +8,25 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::context::storage::component
+namespace ecst::context::storage::component::chunk
 {
-    namespace chunk
+    namespace impl
     {
-        namespace impl
+        struct empty_metadata
         {
-            struct empty_metadata
-            {
-            };
-        } // namespace impl
-
-        template <typename TComponentTagList>
-        class empty
-        {
-        public:
-            using component_tag_list_type = TComponentTagList;
-            using metadata = impl::empty_metadata;
-
-            template <typename... Ts>
-            void add(Ts&&...)
-            {
-            }
         };
-    } // namespace chunk
-} // namespace ecst::context::storage::component
+    } // namespace impl
+
+    template <typename TComponentTagList>
+    class empty
+    {
+    public:
+        using component_tag_list_type = TComponentTagList;
+        using metadata = impl::empty_metadata;
+
+        template <typename... Ts>
+        void add(Ts&&...)
+        {
+        }
+    };
+} // namespace ecst::context::storage::component::chunk

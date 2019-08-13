@@ -8,17 +8,10 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-namespace ecst::context::storage::component
+namespace ecst::context::storage::component::chunk::impl
 {
-    namespace chunk
-    {
-        namespace impl
-        {
-            // TODO: use bh tuple ?
-            template <typename TComponentTagList>
-            using component_tuple_type =
-                mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(
-                    TComponentTagList{})>;
-        } // namespace impl
-    }     // namespace chunk
-} // namespace ecst::context::storage::component
+    // TODO: use bh tuple ?
+    template <typename TComponentTagList>
+    using component_tuple_type =
+        mp::list::unwrap_tuple<ECST_DECAY_DECLTYPE(TComponentTagList{})>;
+} // namespace ecst::context::storage::component::chunk::impl

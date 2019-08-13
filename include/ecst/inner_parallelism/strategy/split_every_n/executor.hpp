@@ -12,39 +12,33 @@
 #include <ecst/signature.hpp>
 #include <ecst/utils/cv_operations.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_every_n::impl
 {
-    namespace split_every_n
+    template <typename TParameters>
+    struct executor
     {
-        namespace impl
+        using parameters = TParameters;
+
+        template <typename TInstance, typename TContext, typename TF>
+        void execute(TInstance& inst, TContext& ctx, TF&& f)
         {
-            template <typename TParameters>
-            struct executor
-            {
-                using parameters = TParameters;
+            constexpr auto per_split = // .
+                parameters::entities_per_subtask();
 
-                template <typename TInstance, typename TContext, typename TF>
-                void execute(TInstance& inst, TContext& ctx, TF&& f)
-                {
-                    constexpr auto per_split = // .
-                        parameters::entities_per_subtask();
+            auto split_count = inst.subscribed_count() / per_split;
 
-                    auto split_count = inst.subscribed_count() / per_split;
+            ELOG(                                                   // .
+                debug::lo_instance_parallelism()                    // .
+                    << "split_every_n:(" << inst.system_id()        // .
+                    << "):\n\tsubscribed_count()="                  // .
+                    << inst.subscribed_count()                      // .
+                    << "\n\tper_split=" << per_split                // .
+                    << "\n\tsplit_count=" << split_count << "\n\n"; // .
+            );
 
-                    ELOG(                                                   // .
-                        debug::lo_instance_parallelism()                    // .
-                            << "split_every_n:(" << inst.system_id()        // .
-                            << "):\n\tsubscribed_count()="                  // .
-                            << inst.subscribed_count()                      // .
-                            << "\n\tper_split=" << per_split                // .
-                            << "\n\tsplit_count=" << split_count << "\n\n"; // .
-                    );
-
-                    // Executes all subtasks. Blocks until completed.
-                    utils::prepare_execute_wait_subtasks( // .
-                        inst, ctx, split_count, per_split, f);
-                }
-            };
-        } // namespace impl
-    }     // namespace split_every_n
-} // namespace ecst::inner_parallelism::strategy
+            // Executes all subtasks. Blocks until completed.
+            utils::prepare_execute_wait_subtasks( // .
+                inst, ctx, split_count, per_split, f);
+        }
+    };
+} // namespace ecst::inner_parallelism::strategy::split_every_n::impl

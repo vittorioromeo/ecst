@@ -9,23 +9,17 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_every_n::impl
 {
-    namespace split_every_n
+    template <typename TEntitiesPerSubtask>
+    struct parameters
     {
-        namespace impl
-        {
-            template <typename TEntitiesPerSubtask>
-            struct parameters
-            {
-                template <typename TParameters>
-                using executor_type = executor<TParameters>;
+        template <typename TParameters>
+        using executor_type = executor<TParameters>;
 
-                static constexpr auto entities_per_subtask()
-                {
-                    return TEntitiesPerSubtask::value;
-                }
-            };
-        } // namespace impl
-    }     // namespace split_every_n
-} // namespace ecst::inner_parallelism::strategy
+        static constexpr auto entities_per_subtask()
+        {
+            return TEntitiesPerSubtask::value;
+        }
+    };
+} // namespace ecst::inner_parallelism::strategy::split_every_n::impl

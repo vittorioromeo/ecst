@@ -7,21 +7,18 @@
 
 #include "../impl.hpp"
 
-namespace ecst::context::system
+namespace ecst::context::system::data_proxy
 {
-    namespace data_proxy
+    template <                     // .
+        typename TSystemSignature, // .
+        typename TContext,         // .
+        typename TInstance,        // .
+        typename... Ts             // .
+        >
+    auto ECST_PURE_FN make_multi(
+        TInstance& inst, TContext& ctx, Ts&&... xs) noexcept
     {
-        template <                     // .
-            typename TSystemSignature, // .
-            typename TContext,         // .
-            typename TInstance,        // .
-            typename... Ts             // .
-            >
-        auto ECST_PURE_FN make_multi(
-            TInstance& inst, TContext& ctx, Ts&&... xs) noexcept
-        {
-            return multi<TSystemSignature, TContext, TInstance>(
-                inst, ctx, FWD(xs)...);
-        }
-    } // namespace data_proxy
-} // namespace ecst::context::system
+        return multi<TSystemSignature, TContext, TInstance>(
+            inst, ctx, FWD(xs)...);
+    }
+} // namespace ecst::context::system::data_proxy

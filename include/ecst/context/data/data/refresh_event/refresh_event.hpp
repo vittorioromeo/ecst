@@ -14,58 +14,55 @@
     sea::all().on_unsubscribe([](...){...});
 */
 
-namespace ecst
+/// @namespace Contains functions to handle events in `step` calls.
+namespace ecst::refresh_event
 {
-    /// @namespace Contains functions to handle events in `step` calls.
-    namespace refresh_event
+    namespace impl
     {
-        namespace impl
+        struct subscribed_t
         {
-            struct subscribed_t
-            {
-            };
+        };
 
-            struct unsubscribed_t
-            {
-            };
+        struct unsubscribed_t
+        {
+        };
 
-            struct reclaimed_t
-            {
-            };
+        struct reclaimed_t
+        {
+        };
 
-            constexpr subscribed_t subscribed{};
-            constexpr unsubscribed_t unsubscribed{};
-            constexpr reclaimed_t reclaimed{};
-        } // namespace impl
+        constexpr subscribed_t subscribed{};
+        constexpr unsubscribed_t unsubscribed{};
+        constexpr reclaimed_t reclaimed{};
+    } // namespace impl
 
-        /// @brief Calls a provided `(instance_type&, id)` function `f` when an
-        /// entity is subscribed to a system.
-        /// @details Not thread-safe. (May be invoked by multiple threads.)
-        template <typename TF>
-        auto on_subscribe(TF&& f) noexcept;
+    /// @brief Calls a provided `(instance_type&, id)` function `f` when an
+    /// entity is subscribed to a system.
+    /// @details Not thread-safe. (May be invoked by multiple threads.)
+    template <typename TF>
+    auto on_subscribe(TF&& f) noexcept;
 
-        /// @brief Calls a provided `(instance_type&, id)` function `f` when an
-        /// entity is unsubscribed from a system.
-        /// @details Not thread-safe. (May be invoked by multiple threads.)
-        template <typename TF>
-        auto on_unsubscribe(TF&& f) noexcept;
+    /// @brief Calls a provided `(instance_type&, id)` function `f` when an
+    /// entity is unsubscribed from a system.
+    /// @details Not thread-safe. (May be invoked by multiple threads.)
+    template <typename TF>
+    auto on_unsubscribe(TF&& f) noexcept;
 
-        /// @brief Calls a provided `(id)` function `f` when an entity is
-        /// reclaimed.
-        /// @details Thread-safe. (Invoked only by single thread.)
-        template <typename TF>
-        auto on_reclaim(TF&& f) noexcept;
+    /// @brief Calls a provided `(id)` function `f` when an entity is
+    /// reclaimed.
+    /// @details Thread-safe. (Invoked only by single thread.)
+    template <typename TF>
+    auto on_reclaim(TF&& f) noexcept;
 
-        /// @brief Calls a provided `(system_type&, id)` function `f` when an
-        /// entity is subscribed to a system.
-        /// @details Not thread-safe. (May be invoked by multiple threads.)
-        template <typename TSystemTag, typename TF>
-        auto on_subscribe(TSystemTag st, TF&& f) noexcept;
+    /// @brief Calls a provided `(system_type&, id)` function `f` when an
+    /// entity is subscribed to a system.
+    /// @details Not thread-safe. (May be invoked by multiple threads.)
+    template <typename TSystemTag, typename TF>
+    auto on_subscribe(TSystemTag st, TF&& f) noexcept;
 
-        /// @brief Calls a provided `(system_type&, id)` function `f` when an
-        /// entity is unsubscribed from a system.
-        /// @details Not thread-safe.(May be invoked by multiple threads.)
-        template <typename TSystemTag, typename TF>
-        auto on_unsubscribe(TSystemTag st, TF&& f) noexcept;
-    } // namespace refresh_event
-} // namespace ecst
+    /// @brief Calls a provided `(system_type&, id)` function `f` when an
+    /// entity is unsubscribed from a system.
+    /// @details Not thread-safe.(May be invoked by multiple threads.)
+    template <typename TSystemTag, typename TF>
+    auto on_unsubscribe(TSystemTag st, TF&& f) noexcept;
+} // namespace ecst::refresh_event

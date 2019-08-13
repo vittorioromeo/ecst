@@ -7,18 +7,12 @@
 
 #include "./refresh_state.hpp"
 
-namespace ecst::context
+namespace ecst::context::impl::defer
 {
-    namespace impl
+    template <typename TSettings>
+    void refresh_state<TSettings>::clear() noexcept
     {
-        namespace defer
-        {
-            template <typename TSettings>
-            void refresh_state<TSettings>::clear() noexcept
-            {
-                _to_match.clear();
-                _to_kill.clear();
-            }
-        } // namespace defer
-    }     // namespace impl
-} // namespace ecst::context
+        _to_match.clear();
+        _to_kill.clear();
+    }
+} // namespace ecst::context::impl::defer

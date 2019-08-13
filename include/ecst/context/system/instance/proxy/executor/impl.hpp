@@ -8,49 +8,46 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::context::system
+namespace ecst::context::system::executor_proxy
 {
-    namespace executor_proxy
+    template <typename TInstance, typename TFExecution>
+    class data
     {
-        template <typename TInstance, typename TFExecution>
-        class data
+    private:
+        TInstance& _instance;
+        TFExecution _execution;
+
+    public:
+        template <typename TFwdFExecution>
+        data(TInstance& instance, TFwdFExecution&& execution) noexcept
+            : _instance{instance}, _execution(FWD(execution))
         {
-        private:
-            TInstance& _instance;
-            TFExecution _execution;
+        }
 
-        public:
-            template <typename TFwdFExecution>
-            data(TInstance& instance, TFwdFExecution&& execution) noexcept
-                : _instance{instance}, _execution(FWD(execution))
-            {
-            }
+        template <typename TF>
+        auto for_subtasks(TF&& f) noexcept
+        {
+            return _execution(f);
+        }
 
-            template <typename TF>
-            auto for_subtasks(TF&& f) noexcept
-            {
-                return _execution(f);
-            }
+        auto& instance() noexcept
+        {
+            return _instance;
+        }
 
-            auto& instance() noexcept
-            {
-                return _instance;
-            }
+        const auto& instance() const noexcept
+        {
+            return _instance;
+        }
 
-            const auto& instance() const noexcept
-            {
-                return _instance;
-            }
+        auto& system() noexcept
+        {
+            return _instance.system();
+        }
 
-            auto& system() noexcept
-            {
-                return _instance.system();
-            }
-
-            const auto& system() const noexcept
-            {
-                return _instance.system();
-            }
-        };
-    } // namespace executor_proxy
-} // namespace ecst::context::system
+        const auto& system() const noexcept
+        {
+            return _instance.system();
+        }
+    };
+} // namespace ecst::context::system::executor_proxy

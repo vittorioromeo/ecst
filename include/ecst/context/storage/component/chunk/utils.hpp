@@ -8,13 +8,10 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-namespace ecst::context::storage::component
+namespace ecst::context::storage::component::chunk
 {
-    namespace chunk
-    {
-        /// @brief Chunk metadata type.
-        /// @details Stored in a tuple, inside entity metadata.
-        template <typename TChunk>
-        using metadata = typename TChunk::metadata;
-    } // namespace chunk
-} // namespace ecst::context::storage::component
+    /// @brief Chunk metadata type.
+    /// @details Stored in a tuple, inside entity metadata.
+    template <typename TChunk>
+    using metadata = typename TChunk::metadata;
+} // namespace ecst::context::storage::component::chunk

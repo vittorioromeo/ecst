@@ -9,14 +9,11 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::split_every_n
 {
-    namespace split_every_n
+    template <typename TEntitiesPerSubtask>
+    constexpr auto v(TEntitiesPerSubtask)
     {
-        template <typename TEntitiesPerSubtask>
-        constexpr auto v(TEntitiesPerSubtask)
-        {
-            return impl::parameters<TEntitiesPerSubtask>{};
-        }
-    } // namespace split_every_n
-} // namespace ecst::inner_parallelism::strategy
+        return impl::parameters<TEntitiesPerSubtask>{};
+    }
+} // namespace ecst::inner_parallelism::strategy::split_every_n

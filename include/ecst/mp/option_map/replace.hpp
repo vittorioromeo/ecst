@@ -7,38 +7,33 @@
 
 #include <ecst/mp/list.hpp>
 
-namespace ecst::mp::option_map
+namespace ecst::mp::option_map::impl
 {
-    namespace impl
+    // From:
+    // http://stackoverflow.com/questions/37386345
+
+    template <typename NewPair>
+    struct replace_helper_t
     {
-        // From:
-        // http://stackoverflow.com/questions/37386345
+        NewPair const& new_pair;
 
-        template <typename NewPair>
-        struct replace_helper_t
+        template <typename Pair>
+        constexpr decltype(auto) operator()(Pair&& p) const noexcept
         {
-            NewPair const& new_pair;
+            return bh::if_(
+                bh::equal(bh::first(new_pair), bh::first(p)), new_pair, FWD(p));
+        }
+    };
 
-            template <typename Pair>
-            constexpr decltype(auto) operator()(Pair&& p) const noexcept
-            {
-                return bh::if_(bh::equal(bh::first(new_pair), bh::first(p)),
-                    new_pair, FWD(p));
-            }
-        };
-
-        struct replace_t
+    struct replace_t
+    {
+        template <typename Map, typename NewPair>
+        constexpr auto operator()(Map&& m, NewPair&& new_pair) const noexcept
         {
-            template <typename Map, typename NewPair>
-            constexpr auto operator()(Map&& m, NewPair&& new_pair) const
-                noexcept
-            {
-                return bh::unpack(
-                    FWD(m), bh::on(bh::make_map,
-                                replace_helper_t<NewPair>{FWD(new_pair)}));
-            }
-        };
+            return bh::unpack(FWD(m),
+                bh::on(bh::make_map, replace_helper_t<NewPair>{FWD(new_pair)}));
+        }
+    };
 
-        constexpr replace_t replace{};
-    } // namespace impl
-} // namespace ecst::mp::option_map
+    constexpr replace_t replace{};
+} // namespace ecst::mp::option_map::impl

@@ -8,26 +8,21 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-namespace ecst::inner_parallelism::strategy
+namespace ecst::inner_parallelism::strategy::none::impl
 {
-    namespace none
-    {
-        namespace impl
-        {
-            template <typename TParameters>
-            struct executor
-            {
-                template <typename TInstance, typename TContext, typename TF>
-                void execute(TInstance& inst, TContext&, TF&& f)
-                {
-                    // Clean/allocate space for a state and an eventual output.
-                    inst.prepare_single_subtask();
 
-                    // Immediately execute `f` in the zero-th state, with a
-                    // range of entities equal to `[0, subscribed_count)`.
-                    f(0, 0, inst.subscribed_count());
-                }
-            };
-        } // namespace impl
-    }     // namespace none
-} // namespace ecst::inner_parallelism::strategy
+    template <typename TParameters>
+    struct executor
+    {
+        template <typename TInstance, typename TContext, typename TF>
+        void execute(TInstance& inst, TContext&, TF&& f)
+        {
+            // Clean/allocate space for a state and an eventual output.
+            inst.prepare_single_subtask();
+
+            // Immediately execute `f` in the zero-th state, with a
+            // range of entities equal to `[0, subscribed_count)`.
+            f(0, 0, inst.subscribed_count());
+        }
+    };
+} // namespace ecst::inner_parallelism::strategy::none::impl
