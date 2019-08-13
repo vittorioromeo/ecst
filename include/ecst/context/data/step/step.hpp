@@ -9,7 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -37,5 +37,4 @@ ECST_CONTEXT_NAMESPACE
             };
         } // namespace step
     }     // namespace impl
-}
-ECST_CONTEXT_NAMESPACE_END
+} // namespace ecst::context

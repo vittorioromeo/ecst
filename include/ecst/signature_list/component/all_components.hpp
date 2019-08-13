@@ -10,7 +10,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/component/signature.hpp>
 
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
+namespace ecst::signature_list::component
 {
     namespace impl
     {
@@ -27,5 +27,4 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     {
         return decltype(impl::all_components_impl(csl)){};
     }
-}
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature_list::component

@@ -10,7 +10,7 @@
 #include <ecst/context/storage.hpp>
 #include <ecst/utils.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -82,5 +82,4 @@ ECST_CONTEXT_NAMESPACE
             auto alive(const handle&) const noexcept;
         };
     } // namespace impl
-}
-ECST_CONTEXT_NAMESPACE_END
+} // namespace ecst::context

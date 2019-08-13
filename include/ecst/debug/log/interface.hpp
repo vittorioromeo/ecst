@@ -17,13 +17,14 @@
         return impl::log(impl::x);                      \
     }
 
-ECST_DEBUG_NAMESPACE{ECST_IMPL_DEFINE_LO(entity) ECST_IMPL_DEFINE_LO(component)
+namespace ecst::debug
+{ECST_IMPL_DEFINE_LO(entity) ECST_IMPL_DEFINE_LO(component)
         ECST_IMPL_DEFINE_LO(entity_memory) ECST_IMPL_DEFINE_LO(component_memory)
             ECST_IMPL_DEFINE_LO(thread_pool) ECST_IMPL_DEFINE_LO(instance)
                 ECST_IMPL_DEFINE_LO(instance_parallelism) ECST_IMPL_DEFINE_LO(
                     context_refresh) ECST_IMPL_DEFINE_LO(system_bitset)
                     ECST_IMPL_DEFINE_LO(system_match) ECST_IMPL_DEFINE_LO(
-                        metadata_bitset)} ECST_DEBUG_NAMESPACE_END
+
 
 #undef ECST_IMPL_DEFINE_LO
 

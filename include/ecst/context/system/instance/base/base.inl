@@ -7,7 +7,7 @@
 
 #include "./base.hpp"
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace impl
     {
@@ -23,6 +23,5 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return vrmc::to_base<system_type>(*this);
         }
-    }
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context::system

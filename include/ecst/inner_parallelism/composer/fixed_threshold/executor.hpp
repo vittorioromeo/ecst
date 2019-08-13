@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/inner_parallelism/types.hpp>
 
-ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
+namespace ecst::inner_parallelism::composer
 {
     namespace fixed_threshold
     {
@@ -50,5 +50,4 @@ ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE
             };
         } // namespace impl
     }     // namespace fixed_threshold
-}
-ECST_INNER_PARALLELISM_COMPOSER_NAMESPACE_END
+} // namespace ecst::inner_parallelism::composer

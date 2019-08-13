@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature/system.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     /// @brief Builds a system signature list from a variadic amount of system
     /// signatures.
@@ -19,5 +19,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         ECST_S_ASSERT_DT(signature::system::valid(sss...));
         return mp::list::make(mp::wrap(sss)...);
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

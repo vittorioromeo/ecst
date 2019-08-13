@@ -12,7 +12,7 @@
 #include <ecst/signature.hpp>
 #include <ecst/utils/cv_operations.hpp>
 
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
+namespace ecst::inner_parallelism::strategy
 {
     namespace split_every_n
     {
@@ -47,5 +47,4 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             };
         } // namespace impl
     }     // namespace split_every_n
-}
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END
+} // namespace ecst::inner_parallelism::strategy

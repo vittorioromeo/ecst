@@ -141,7 +141,7 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         return decltype(impl::remove_all_edges_starting_from_impl(al, n0)){};
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+
 
 // TODO:
 // * remove_all_edges_arriving_to(n1)

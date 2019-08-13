@@ -12,7 +12,7 @@
 #include <ecst/signature_list/component/is_signature_list.hpp>
 #include <ecst/signature_list/system/is_signature_list.hpp>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     // TODO: cleanup
 
@@ -169,7 +169,7 @@ ECST_SETTINGS_NAMESPACE
 
     template <typename TSettings, typename TFFixed, typename TFDynamic>
     auto dispatch_on_storage_type(
-        TSettings && s, TFFixed && f_fixed, TFDynamic && f_dynamic)
+        TSettings&& s, TFFixed&& f_fixed, TFDynamic&& f_dynamic)
     {
         constexpr bool b = std::decay_t<TSettings>{}.has_fixed_capacity();
         if constexpr(b)
@@ -219,5 +219,4 @@ ECST_SETTINGS_NAMESPACE
             settings::refresh_parallelism<TSettings>       // .
             >();
     }
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

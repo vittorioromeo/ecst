@@ -9,7 +9,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
+namespace ecst::inner_parallelism::strategy
 {
     namespace split_every_n
     {
@@ -19,5 +19,4 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             return impl::parameters<TEntitiesPerSubtask>{};
         }
     } // namespace split_every_n
-}
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END
+} // namespace ecst::inner_parallelism::strategy

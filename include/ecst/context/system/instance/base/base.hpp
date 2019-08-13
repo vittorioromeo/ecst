@@ -10,7 +10,7 @@
 #include <ecst/signature/system.hpp>
 #include <ecst/tag.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace impl
     {
@@ -101,5 +101,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
                 * (necessary?) is it just execution_step?
         */
     } // namespace impl
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

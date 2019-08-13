@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <vrm/core/strong_typedef.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     VRM_CORE_STRONG_TYPEDEF(sz_t, entity_id);
 
@@ -17,5 +17,4 @@ ECST_NAMESPACE
     {
         VRM_CORE_STRONG_TYPEDEF(sz_t, counter);
     }
-}
-ECST_NAMESPACE_END
+} // namespace ecst

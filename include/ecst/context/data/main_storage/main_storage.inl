@@ -7,7 +7,7 @@
 
 #include "./main_storage.hpp"
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -83,7 +83,8 @@ ECST_CONTEXT_NAMESPACE
 
         template <typename TSettings>
         template <typename TComponent>
-        auto main_storage<TSettings>::has_component(entity_id eid) const noexcept
+        auto main_storage<TSettings>::has_component(entity_id eid) const
+            noexcept
         {
             return metadata(eid).template has_component<TComponent>();
         }
@@ -162,6 +163,5 @@ ECST_CONTEXT_NAMESPACE
         {
             return _entity_storage.alive(h);
         }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context

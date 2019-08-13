@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature/component.hpp>
 
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
+namespace ecst::signature_list::component
 {
     template <typename... TComponentSignatures>
     constexpr auto make(TComponentSignatures... css)
@@ -17,5 +17,4 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
         ECST_S_ASSERT_DT(signature::component::valid(css...));
         return mp::list::make(mp::wrap(css)...);
     }
-}
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature_list::component

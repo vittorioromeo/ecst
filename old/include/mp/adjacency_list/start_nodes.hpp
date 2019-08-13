@@ -35,4 +35,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         return list::contains(start_node_list(al), n);
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

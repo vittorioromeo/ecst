@@ -11,7 +11,7 @@
 #include <ecst/signature_list/system/is_signature_list.hpp>
 #include <ecst/tag/system.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace impl
     {
@@ -49,5 +49,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return bh::at(ssl, id);
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

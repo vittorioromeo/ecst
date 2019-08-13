@@ -10,7 +10,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/tag/system.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     namespace impl
     {
@@ -36,5 +36,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
     /// @brief Wrapper for the system's empty output type.
     constexpr auto no_output = output<impl::empty_output_type>;
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

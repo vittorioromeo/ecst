@@ -8,7 +8,7 @@
 #include <boost/hana.hpp>
 #include <ecst/config.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     /// @brief Alias for the `boost::hana` namespace.
     namespace bh = boost::hana;
@@ -16,8 +16,8 @@ ECST_NAMESPACE
     /// @brief Alias for `typename boost::hana::decay<...>::type`.
     template <typename... Ts>
     using decay_t = typename bh::detail::decay<Ts...>::type;
-}
-ECST_NAMESPACE_END
+} // namespace ecst
+
 
 /// @brief Alias for `decay_t<decltype(...)>`.
 #define ECST_DECAY_DECLTYPE(...) ::ecst::decay_t<decltype(__VA_ARGS__)>

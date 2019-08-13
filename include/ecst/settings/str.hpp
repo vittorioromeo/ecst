@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <sstream>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace str
     {
@@ -49,5 +49,4 @@ ECST_SETTINGS_NAMESPACE
             return oss.str();
         }
     } // namespace str
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

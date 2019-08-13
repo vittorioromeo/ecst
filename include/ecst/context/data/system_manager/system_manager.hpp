@@ -16,7 +16,7 @@
 #include <ecst/thread_pool.hpp>
 #include <ecst/utils.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -228,5 +228,4 @@ ECST_CONTEXT_NAMESPACE
             constexpr auto inner_parallelism_allowed() const noexcept;
         };
     } // namespace impl
-}
-ECST_CONTEXT_NAMESPACE_END
+} // namespace ecst::context

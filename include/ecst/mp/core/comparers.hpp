@@ -9,7 +9,7 @@
 #include <ecst/mp/core/aliases.hpp>
 #include <type_traits>
 
-ECST_MP_NAMESPACE
+namespace ecst::mp
 {
     namespace impl
     {
@@ -39,5 +39,4 @@ ECST_MP_NAMESPACE
     // Variable template aliases.
     constexpr impl::same_type same_type{};
     constexpr impl::same_type_decay same_type_decay{};
-}
-ECST_MP_NAMESPACE_END
+} // namespace ecst::mp

@@ -17,7 +17,7 @@
 #include <ecst/signature_list.hpp>
 #include <ecst/utils/sparse_int_set.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     // TODO:
     // TODO: `component_instance` ?
@@ -67,5 +67,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             return _parallel_executor;
         }
     };
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

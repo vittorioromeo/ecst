@@ -39,4 +39,4 @@ ECST_MP_EDGE_NAMESPACE
         return make_from_pair(pair::make(n0, n1));
     }
 }
-ECST_MP_EDGE_NAMESPACE_END
+

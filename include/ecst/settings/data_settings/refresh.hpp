@@ -10,7 +10,7 @@
 #include <ecst/mp/core.hpp>
 #include <type_traits>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace impl
     {
@@ -49,5 +49,4 @@ ECST_SETTINGS_NAMESPACE
 
     constexpr auto disallow_refresh_parallelism =
         impl::refresh_parallelism::disabled{};
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

@@ -13,8 +13,7 @@
 #include "./impl/types.hpp"
 #include "./impl/worker.hpp"
 
-ECST_NAMESPACE
+namespace ecst
 {
     using thread_pool = etp::pool;
 }
-ECST_NAMESPACE_END

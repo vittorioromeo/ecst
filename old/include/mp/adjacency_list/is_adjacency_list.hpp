@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/mp/adjacency_list/types.hpp>
 
-ECST_MP_NAMESPACE
+namespace ecst::mp
 {
     namespace impl
     {
@@ -29,4 +29,4 @@ ECST_MP_NAMESPACE
         return bool_v<impl::is_adjacency_list_impl<T>{}>;
     }
 }
-ECST_MP_NAMESPACE_END
+

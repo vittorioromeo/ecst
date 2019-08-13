@@ -14,7 +14,7 @@
 #include <vrm/core/experimental/resizable_buffer.hpp>
 #include <vrm/core/experimental/sparse_set.hpp>
 
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
+namespace ecst::context::storage::entity
 {
     namespace container
     {
@@ -109,5 +109,4 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
             };
         } // namespace impl
     }     // namespace container
-}
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END
+} // namespace ecst::context::storage::entity

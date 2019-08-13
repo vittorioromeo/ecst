@@ -10,7 +10,7 @@
 #include <ecst/mp/core.hpp>
 #include <type_traits>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace impl
     {
@@ -18,5 +18,4 @@ ECST_SETTINGS_NAMESPACE
         constexpr auto v_allow_inner_parallelism = sz_v<1>;
         constexpr auto v_disallow_inner_parallelism = sz_v<2>;
     } // namespace impl
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

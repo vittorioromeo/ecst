@@ -7,7 +7,7 @@
 
 #include <ecst/context/scheduler/atomic_counter.hpp>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     constexpr auto make()
     {
@@ -28,5 +28,4 @@ ECST_SETTINGS_NAMESPACE
 
         return impl::data<ECST_DECAY_DECLTYPE(d_opts)>{};
     }
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

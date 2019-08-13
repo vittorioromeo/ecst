@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/aliases.hpp>
 #include "../defer.hpp"
 #include "./system_manager.hpp"
+#include <ecst/aliases.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -23,7 +23,7 @@ ECST_CONTEXT_NAMESPACE
                 *this,                     // .
                 provider_all_instances(),  // .
                 FWD(f)                     // .
-                );
+            );
         }
 
         template <typename TSettings>
@@ -35,7 +35,7 @@ ECST_CONTEXT_NAMESPACE
                 counter_all_instances(),  // .
                 provider_all_instances(), // .
                 FWD(f)                    // .
-                );
+            );
         }
 
         template <typename TSettings>
@@ -43,14 +43,9 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::for_instances_dispatch(TF&& f)
         {
             for_instances_dispatch_impl(
-                [this](auto&& xf)
-                {
-                    this->for_instances_parallel(FWD(xf));
-                },
-                [this](auto&& xf)
-                {
-                    this->for_instances_sequential(FWD(xf));
-                })(FWD(f));
+                [this](auto&& xf) { this->for_instances_parallel(FWD(xf)); },
+                [this](auto&& xf) { this->for_instances_sequential(FWD(xf)); })(
+                FWD(f));
         }
 
         template <typename TSettings>
@@ -62,7 +57,7 @@ ECST_CONTEXT_NAMESPACE
                 *this,                                            // .
                 provider_instances_of_kind(k_entity, k_stateful), // .
                 FWD(f)                                            // .
-                );
+            );
         }
 
         // TODO: cleanup
@@ -74,7 +69,7 @@ ECST_CONTEXT_NAMESPACE
                 *this,                                // .
                 provider_instances_of_kind(k_entity), // .
                 FWD(f)                                // .
-                );
+            );
         }
 
         template <typename TSettings>
@@ -86,7 +81,7 @@ ECST_CONTEXT_NAMESPACE
                 counter_instances_of_kind(k_entity),  // .
                 provider_instances_of_kind(k_entity), // .
                 FWD(f)                                // .
-                );
+            );
         }
 
         // TODO: cleanup
@@ -95,12 +90,10 @@ ECST_CONTEXT_NAMESPACE
         void system_manager<TSettings>::for_entity_instances_dispatch(TF&& f)
         {
             for_instances_dispatch_impl(
-                [this](auto&& xf)
-                {
+                [this](auto&& xf) {
                     this->for_entity_instances_parallel(FWD(xf));
                 },
-                [this](auto&& xf)
-                {
+                [this](auto&& xf) {
                     this->for_entity_instances_sequential(FWD(xf));
                 })(FWD(f));
         }
@@ -139,8 +132,7 @@ ECST_CONTEXT_NAMESPACE
             TContext& context, TStartSystemTags... sts) noexcept
         {
             auto sstl = mp::list::make(sts...);
-            return [this, &context, sstl](auto&&... fns)
-            {
+            return [this, &context, sstl](auto&&... fns) {
                 this->execute_systems_impl(context, sstl, FWD(fns)...);
             };
         }
@@ -155,13 +147,10 @@ ECST_CONTEXT_NAMESPACE
             auto independent_ssl =
                 bh::filter(ssl, signature::system::indepedent);
 
-            auto independent_stl = bh::transform(independent_ssl, [](auto ss)
-                {
-                    return signature::system::tag_of(ss);
-                });
+            auto independent_stl = bh::transform(independent_ssl,
+                [](auto ss) { return signature::system::tag_of(ss); });
 
-            return [this, &context, independent_stl](auto&&... fns)
-            {
+            return [this, &context, independent_stl](auto&&... fns) {
                 this->execute_systems_impl(
                     context, independent_stl, FWD(fns)...);
             };
@@ -231,11 +220,10 @@ ECST_CONTEXT_NAMESPACE
         }
 
         template <typename TSettings>
-        constexpr auto system_manager<TSettings>::inner_parallelism_allowed()
-            const noexcept
+        constexpr auto
+        system_manager<TSettings>::inner_parallelism_allowed() const noexcept
         {
             return settings::inner_parallelism_allowed(TSettings{});
         }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context

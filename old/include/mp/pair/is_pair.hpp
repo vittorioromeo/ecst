@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/mp/pair/types.hpp>
 
-ECST_MP_NAMESPACE
+namespace ecst::mp
 {
     namespace impl
     {
@@ -24,4 +24,4 @@ ECST_MP_NAMESPACE
         return bool_v<impl::is_pair_impl<T>{}>;
     }
 }
-ECST_MP_NAMESPACE_END
+

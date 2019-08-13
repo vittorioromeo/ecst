@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace impl
     {
@@ -70,5 +70,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return decltype(impl::has_dependency_recursive_impl(ssl, ss, ds)){};
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

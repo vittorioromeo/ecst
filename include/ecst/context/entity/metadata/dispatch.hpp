@@ -7,7 +7,7 @@
 
 #include "./metadata.hpp"
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+namespace ecst::context::entity
 {
     template <typename TSettings>
     using dispatch = impl::metadata<                                      // .
@@ -15,4 +15,3 @@ ECST_CONTEXT_ENTITY_NAMESPACE
         context::storage::component::chunk_metadata_tuple_type<TSettings> // .
         >;
 }
-ECST_CONTEXT_ENTITY_NAMESPACE_END

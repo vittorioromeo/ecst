@@ -7,7 +7,7 @@
 
 #include "./predicate_holder.hpp"
 
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
+namespace ecst::system_execution_adapter
 {
     namespace impl
     {
@@ -17,8 +17,7 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
             TF&& f) noexcept
         {
             return [f = FWD(f)](auto& instance, auto& executor) mutable
-                ->enabler<predicate_result<decltype(instance)>>
-            {
+                   -> enabler<predicate_result<decltype(instance)>> {
                 f(instance, executor);
             };
         }
@@ -27,9 +26,8 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
         template <typename TF>
         constexpr auto predicate_holder<TPredicate>::detailed(TF&& f) noexcept
         {
-            return detailed_instance([f = FWD(f)](
-                auto& instance, auto& executor) mutable
-                {
+            return detailed_instance(
+                [f = FWD(f)](auto& instance, auto& executor) mutable {
                     f(instance.system(), executor);
                 });
         }
@@ -39,14 +37,10 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
         constexpr auto predicate_holder<TPredicate>::for_subtasks(
             TF&& f) noexcept
         {
-            return detailed([f = FWD(f)](auto& system, auto& executor) mutable
-                {
-                    executor.for_subtasks([&system, &f](auto& data) mutable
-                        {
-                            f(system, data);
-                        });
-                });
+            return detailed([f = FWD(f)](auto& system, auto& executor) mutable {
+                executor.for_subtasks(
+                    [&system, &f](auto& data) mutable { f(system, data); });
+            });
         }
-    }
-}
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::system_execution_adapter

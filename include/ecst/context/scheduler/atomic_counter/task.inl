@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <ecst/config.hpp>
-#include <ecst/aliases.hpp>
-#include "./task_dependency_data.hpp"
 #include "./task.hpp"
+#include "./task_dependency_data.hpp"
 #include "./task_group.hpp"
+#include <ecst/aliases.hpp>
+#include <ecst/config.hpp>
 
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
+namespace ecst::scheduler::atomic_counter
 {
     template <typename TDependencyData>
     template <               // .
@@ -22,12 +22,12 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         typename TF          // .
         >
     void task<TDependencyData>::run( // .
-        TTaskGroup & tg,             // .
-        TLatch & b,                  // .
+        TTaskGroup& tg,              // .
+        TLatch& b,                   // .
         TID my_id,                   // .
-        TContext & ctx,              // .
-        TF & f                       // .
-        )
+        TContext& ctx,               // .
+        TF& f                        // .
+    )
     {
         // Get system instance from task ID.
         auto& s_instance(ctx.instance_by_id(my_id));
@@ -39,27 +39,24 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
         b.decrement_and_notify_one();
 
         // For every dependent task ID...
-        dependency_data().for_dependent_ids([this, &tg, &b, &ctx, &f](auto id)
+        dependency_data().for_dependent_ids([this, &tg, &b, &ctx, &f](auto id) {
+            // ...retrieve the corresponding task.
+            auto& dt = tg.task_by_id(id);
+
+            // Then, inform the task that one of its dependencies (the
+            // current task) has been executed.
+            if(!dt.dependency_data().decrement_and_check())
             {
-                // ...retrieve the corresponding task.
-                auto& dt = tg.task_by_id(id);
+                // Exit if dependencies still need to be processed.
+                return;
+            }
 
-                // Then, inform the task that one of its dependencies (the
-                // current task) has been executed.
-                if(!dt.dependency_data().decrement_and_check())
-                {
-                    // Exit if dependencies still need to be processed.
-                    return;
-                }
-
-                // Recursively run the dependent instance.
-                // Use of multithreading:
-                // * Run children instance tasks in separate thread.
-                ctx.post_in_thread_pool([this, &dt, &tg, &b, &ctx, &f, id]
-                    {
-                        dt.run(tg, b, id, ctx, f);
-                    });
+            // Recursively run the dependent instance.
+            // Use of multithreading:
+            // * Run children instance tasks in separate thread.
+            ctx.post_in_thread_pool([this, &dt, &tg, &b, &ctx, &f, id] {
+                dt.run(tg, b, id, ctx, f);
             });
+        });
     }
-}
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END
+} // namespace ecst::scheduler::atomic_counter

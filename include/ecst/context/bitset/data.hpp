@@ -12,7 +12,7 @@
 #include <ecst/debug.hpp>
 #include <ecst/settings.hpp>
 
-ECST_CONTEXT_BITSET_NAMESPACE
+namespace ecst::context::bitset
 {
     namespace impl
     {
@@ -80,5 +80,4 @@ ECST_CONTEXT_BITSET_NAMESPACE
 
     template <typename TSettings>
     using dispatch = impl::data<TSettings>;
-}
-ECST_CONTEXT_BITSET_NAMESPACE_END
+} // namespace ecst::context::bitset

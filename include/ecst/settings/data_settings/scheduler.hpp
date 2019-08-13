@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <type_traits>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace impl
     {
@@ -22,5 +22,4 @@ ECST_SETTINGS_NAMESPACE
 
     template <template <typename> class TScheduler>
     constexpr auto scheduler = impl::scheduler_wrapper<TScheduler>{};
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

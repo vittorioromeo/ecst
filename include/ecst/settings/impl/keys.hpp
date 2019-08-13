@@ -8,7 +8,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace impl
     {
@@ -22,5 +22,4 @@ ECST_SETTINGS_NAMESPACE
             constexpr auto refresh_parallelism = sz_v<5>;
         } // namespace keys
     }     // namespace impl
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

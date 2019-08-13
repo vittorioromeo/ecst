@@ -8,9 +8,8 @@
 #include "./data.hpp"
 #include <ecst/config.hpp>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     /// @brief Creates default settings for an `ecst::context`.
     constexpr auto make();
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

@@ -7,7 +7,7 @@
 
 #include "./data.hpp"
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     template <typename TSettings>
     auto make(TSettings)
@@ -21,5 +21,4 @@ ECST_CONTEXT_NAMESPACE
         using ctx_type = decltype(make(TSettings{}));
         return std::make_unique<ctx_type>();
     }
-}
-ECST_CONTEXT_NAMESPACE_END
+} // namespace ecst::context

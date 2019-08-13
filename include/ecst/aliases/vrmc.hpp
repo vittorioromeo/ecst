@@ -10,7 +10,7 @@
 #include <vrm/core/type_aliases.hpp>
 #include <vrm/core/type_traits.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace vrmc = vrm::core;
 
@@ -26,5 +26,4 @@ ECST_NAMESPACE
     using vrmc::sz_t_;
     using vrmc::sz_v;
     using vrmc::unlikely;
-}
-ECST_NAMESPACE_END
+} // namespace ecst

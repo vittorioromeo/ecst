@@ -7,7 +7,7 @@
 
 #include "./proxy.hpp"
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -16,8 +16,7 @@ ECST_CONTEXT_NAMESPACE
             template <typename TSettings>
             proxy<TSettings>::proxy(context_type& context,
                 refresh_state_type& refresh_state) noexcept
-                : _context{context},
-                  _refresh_state{refresh_state}
+                : _context{context}, _refresh_state{refresh_state}
             {
             }
 
@@ -167,7 +166,6 @@ ECST_CONTEXT_NAMESPACE
             {
                 return _context.any_entity_in(st);
             }
-        }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+        } // namespace defer
+    }     // namespace impl
+} // namespace ecst::context

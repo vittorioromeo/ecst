@@ -32,7 +32,7 @@
 #include <mutex>
 #include <thread>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace this_thread = std::this_thread;
     namespace chrono = std::chrono;
@@ -42,5 +42,4 @@ ECST_NAMESPACE
     using std::mutex;
     using std::thread;
     using std::unique_lock;
-}
-ECST_NAMESPACE_END
+} // namespace ecst

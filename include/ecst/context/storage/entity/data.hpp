@@ -11,7 +11,7 @@
 #include <ecst/context/entity.hpp>
 #include <ecst/settings.hpp>
 
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
+namespace ecst::context::storage::entity
 {
     namespace impl
     {
@@ -140,5 +140,4 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
             container::fixed<TEntityMetadata, TCapacity> // .
             >;
     } // namespace impl
-}
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END
+} // namespace ecst::context::storage::entity

@@ -67,4 +67,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         return list::size(edges_ending_at(al, n));
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

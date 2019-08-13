@@ -27,4 +27,4 @@ ECST_MP_MAP_NAMESPACE
     // Variable template for an empty list.
     constexpr impl::empty_type_map empty_v{};
 }
-ECST_MP_MAP_NAMESPACE_END
+

@@ -43,4 +43,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         return decltype(impl::valid_impl(al)){};
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

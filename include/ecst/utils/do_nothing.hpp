@@ -7,7 +7,7 @@
 
 #include <ecst/config.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace impl
     {
@@ -24,5 +24,4 @@ ECST_NAMESPACE
         /// @brief Instance of `do_nothing_t`.
         constexpr impl::do_nothing_t do_nothing{};
     } // namespace impl
-}
-ECST_NAMESPACE_END
+} // namespace ecst

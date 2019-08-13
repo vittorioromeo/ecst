@@ -11,7 +11,7 @@
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -88,5 +88,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             decltype(auto) for_previous_outputs(TSystemTag st, TF&& f) noexcept;
         };
     } // namespace data_proxy
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

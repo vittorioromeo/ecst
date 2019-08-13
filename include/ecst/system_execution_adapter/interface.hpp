@@ -11,7 +11,7 @@
 #include <ecst/mp.hpp>
 #include <ecst/signature.hpp>
 
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
+namespace ecst::system_execution_adapter
 {
     /// @brief Prepares to execute a function only on the system types that
     /// satisfy the passed predicate.
@@ -43,5 +43,4 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
 
         return matching(p);
     }
-}
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE_END
+} // namespace ecst::system_execution_adapter

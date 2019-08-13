@@ -9,7 +9,7 @@
 #include <ecst/signature/system/valid.hpp>
 #include <ecst/tag/system.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     /// @brief Returns the tag type stored inside a system signature.
     template <typename TSystemSignature>
@@ -18,5 +18,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         ECST_S_ASSERT_DT(valid(mp::unwrapped(ss)));
         return tag_type<TSystemSignature>{};
     }
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

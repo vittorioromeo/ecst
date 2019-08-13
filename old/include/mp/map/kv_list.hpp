@@ -77,4 +77,4 @@ ECST_MP_MAP_NAMESPACE
         return bool_v<(count_values_matching(TMap{}, p) == size(TMap{}))>;
     }
 }
-ECST_MP_MAP_NAMESPACE_END
+

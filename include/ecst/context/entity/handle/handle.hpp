@@ -9,17 +9,17 @@
 #include <ecst/config.hpp>
 #include <ecst/context/types.hpp>
 
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
+namespace ecst::context::storage::entity
 {
     namespace impl
     {
         template <typename TContainer>
         class data;
     }
-}
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END
+} // namespace ecst::context::storage::entity
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+
+namespace ecst::context::entity
 {
     namespace impl
     {
@@ -62,5 +62,4 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     /// @brief Special `constexpr` value that can be passed to `handle`'s
     /// constructor to create uninitialized handles.
     constexpr impl::uninitialized_handle_init uninitialized_handle{};
-}
-ECST_CONTEXT_ENTITY_NAMESPACE_END
+} // namespace ecst::context::entity

@@ -8,7 +8,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace executor_proxy
     {
@@ -53,5 +53,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             }
         };
     } // namespace executor_proxy
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

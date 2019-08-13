@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/id.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace impl
     {
@@ -42,7 +42,7 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
 
     /// @brief Executes `f` on every system ID inside `ssl`.
     template <typename TF, typename TSystemSignatureList>
-    constexpr auto for_ids(TF && f, TSystemSignatureList ssl)
+    constexpr auto for_ids(TF&& f, TSystemSignatureList ssl)
     {
         return bh::for_each(id_list(ssl), f);
     }
@@ -77,5 +77,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         constexpr auto tl = signature::system::dependencies_as_tag_list(ss);
         return signature_list_from_tag_list(ssl, tl);
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

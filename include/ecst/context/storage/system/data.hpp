@@ -13,7 +13,7 @@
 #include <ecst/settings.hpp>
 #include <ecst/signature_list.hpp>
 
-ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
+namespace ecst::context::storage::system
 {
     namespace impl
     {
@@ -151,5 +151,4 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
 
     template <typename TSettings>
     using dispatch = impl::data<TSettings>;
-}
-ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::storage::system

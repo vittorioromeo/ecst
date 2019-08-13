@@ -7,7 +7,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace impl
     {
@@ -19,8 +19,8 @@ ECST_NAMESPACE
         template <typename TComponent>
         constexpr impl::name_type component_name{"unnamed component"};
     } // namespace impl
-}
-ECST_NAMESPACE_END
+} // namespace ecst
+
 
 #define ECST_IMPL_SPECIALIZE_NAME(type, ...)                            \
                                                                         \

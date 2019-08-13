@@ -11,7 +11,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/signature_list_from_tag_list.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace impl
     {
@@ -43,5 +43,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         return bh::size(recursive_dependents_id_list(
             ssl, signature_list_from_tag_list(ssl, sstl)));
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

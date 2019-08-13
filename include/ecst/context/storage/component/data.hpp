@@ -12,7 +12,7 @@
 #include <ecst/settings.hpp>
 #include <type_traits>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     namespace impl
     {
@@ -120,5 +120,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             }
         };
     } // namespace impl
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

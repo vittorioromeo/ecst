@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include <ecst/utils.hpp>
 #include "../defer.hpp"
 #include "./data.hpp"
+#include <ecst/utils.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -25,10 +25,9 @@ ECST_CONTEXT_NAMESPACE
                 FWD(fs_refresh)..., ecst::impl::do_nothing);
 
             // Ensure `refresh()` is called after executing `f`.
-            ECST_SCOPE_GUARD([ this, reh = std::move(refresh_event_handler) ]
-                {
-                    this->refresh(std::move(reh));
-                });
+            ECST_SCOPE_GUARD([this, reh = std::move(refresh_event_handler)] {
+                this->refresh(std::move(reh));
+            });
 
             // Clear refresh state.
             _refresh_state.clear();
@@ -63,20 +62,18 @@ ECST_CONTEXT_NAMESPACE
             ELOG(                                        // .
                 debug::lo_context_refresh()              // .
                     << "Executing deferred functions\n"; // .
-                );
+            );
 
             defer_proxy_type defer_proxy{*this, rs};
 
             // Sequentially execute every deferred function.
             this->for_stateful_instances_sequential(
-                [&defer_proxy](auto& instance)
-                {
-                    instance.for_states([&defer_proxy](auto& s)
-                        {
-                            // The execution of deferred functions fills the
-                            // refresh state and alters the context state.
-                            s.as_state()._deferred_fns.execute_all(defer_proxy);
-                        });
+                [&defer_proxy](auto& instance) {
+                    instance.for_states([&defer_proxy](auto& s) {
+                        // The execution of deferred functions fills the
+                        // refresh state and alters the context state.
+                        s.as_state()._deferred_fns.execute_all(defer_proxy);
+                    });
                 });
         }
 
@@ -88,49 +85,42 @@ ECST_CONTEXT_NAMESPACE
             ELOG(                                        // .
                 debug::lo_context_refresh()              // .
                     << "Killing marked dead entities\n"; // .
-                );
+            );
 
             // Sequentially add entities to kill in the main refresh state
             // sparse set, and clear instance subtask states.
-            this->for_stateful_instances_sequential([&rs](auto& instance)
-                {
-                    instance.for_states([&rs](auto& s)
-                        {
-                            s.as_state()._to_kill.for_each([&rs](entity_id eid)
-                                {
-                                    rs._to_kill.add(eid);
-                                });
+            this->for_stateful_instances_sequential([&rs](auto& instance) {
+                instance.for_states([&rs](auto& s) {
+                    s.as_state()._to_kill.for_each(
+                        [&rs](entity_id eid) { rs._to_kill.add(eid); });
 
-                            // Clear deferred functions and to-kill sets.
-                            s.clear();
-                        });
+                    // Clear deferred functions and to-kill sets.
+                    s.clear();
                 });
+            });
 
             // (Possibly due to data locality reasons, it is more efficient
             // to iterate over `rs` twice.)
 
             // Unsubscribe dead entities from instances, in parallel.
-            this->for_entity_instances_dispatch(
-                [&rs, &f_refresh](auto& instance)
-                {
-                    rs._to_kill.for_each([&instance, &f_refresh](entity_id eid)
-                        {
-                            if(instance.unsubscribe(eid))
-                            {
-                                // Fire an event if the unsubscription was
-                                // successful.
-                                f_refresh(refresh_event::impl::unsubscribed,
-                                    instance, eid);
-                            }
-                        });
+            this->for_entity_instances_dispatch([&rs, &f_refresh](
+                                                    auto& instance) {
+                rs._to_kill.for_each([&instance, &f_refresh](entity_id eid) {
+                    if(instance.unsubscribe(eid))
+                    {
+                        // Fire an event if the unsubscription was
+                        // successful.
+                        f_refresh(
+                            refresh_event::impl::unsubscribed, instance, eid);
+                    }
                 });
+            });
 
             // Reclaim all killed entities and fire events.
-            rs._to_kill.for_each([this, &f_refresh](entity_id eid)
-                {
-                    this->reclaim(eid);
-                    f_refresh(refresh_event::impl::reclaimed, eid);
-                });
+            rs._to_kill.for_each([this, &f_refresh](entity_id eid) {
+                this->reclaim(eid);
+                f_refresh(refresh_event::impl::reclaimed, eid);
+            });
         }
 
         template <typename TSettings>
@@ -141,15 +131,13 @@ ECST_CONTEXT_NAMESPACE
             ELOG(                                          // .
                 debug::lo_context_refresh()                // .
                     << "Matching new/modified entities\n"; // .
-                );
+            );
 
             // Match new/modified entities to instances, in parallel.
             this->for_entity_instances_dispatch(
-                [this, &rs, &f_refresh](auto& instance)
-                {
+                [this, &rs, &f_refresh](auto& instance) {
                     rs._to_match.for_each(
-                        [this, &rs, &instance, &f_refresh](entity_id eid)
-                        {
+                        [this, &rs, &instance, &f_refresh](entity_id eid) {
                             // Get entity bitset.
                             const auto& ebs(this->metadata(eid).bitset());
 
@@ -159,7 +147,7 @@ ECST_CONTEXT_NAMESPACE
                                 << "\n"                         // .
                                 << "S:\t" << sbs.str() << "\n"  // .
                                 << "E:\t" << ebs.str() << "\n"; // .
-                                );
+                            );
 
                             // Check if the bitset matches the system.
                             if(instance.matches_bitset(ebs))
@@ -170,7 +158,7 @@ ECST_CONTEXT_NAMESPACE
                                         << ") in system ("         // .
                                         << instance.system_id()    // .
                                         << ")\n";                  // .
-                                    );
+                                );
 
                                 // If the entity matches the system, subscribe
                                 // it.
@@ -197,6 +185,5 @@ ECST_CONTEXT_NAMESPACE
                         });
                 });
         }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context

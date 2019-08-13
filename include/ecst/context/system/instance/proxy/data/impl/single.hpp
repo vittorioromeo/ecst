@@ -12,7 +12,7 @@
     base<TSystemSignature, TContext, TInstance, \
         single<TSystemSignature, TContext, TInstance>>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -71,7 +71,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             constexpr auto subtask_index() const noexcept;
         };
     } // namespace data_proxy
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system
+
 
 #undef ECST_IMPL_DP_SINGLE_BASE

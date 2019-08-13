@@ -119,4 +119,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         impl::runtime_bf_traversal_impl(al, f);
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

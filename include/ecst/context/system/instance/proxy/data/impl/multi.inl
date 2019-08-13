@@ -12,7 +12,7 @@
 
 #define ECST_IMPL_DP_MULTI multi<TSystemSignature, TContext, TInstance>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -20,9 +20,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         ECST_IMPL_DP_MULTI::multi(TInstance& instance, TContext& context,
             sz_t state_idx, sz_t i_begin, sz_t i_end) noexcept
             : base_type{instance, context},
-              _state_idx{state_idx},
-              _i_begin{i_begin},
-              _i_end{i_end}
+              _state_idx{state_idx}, _i_begin{i_begin}, _i_end{i_end}
         {
         }
 
@@ -76,9 +74,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return _state_idx;
         }
-    }
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+    } // namespace data_proxy
+} // namespace ecst::context::system
+
 
 #undef ECST_IMPL_DP_MULTI
 #undef ECST_IMPL_DP_MULTI_TEMPLATE

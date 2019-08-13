@@ -8,7 +8,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_MP_NAMESPACE
+namespace ecst::mp
 {
     using ecst::sz_t;
     using ecst::sz_t_;
@@ -18,5 +18,4 @@ ECST_MP_NAMESPACE
 
     using ecst::int_;
     using ecst::int_v;
-}
-ECST_MP_NAMESPACE_END
+} // namespace ecst::mp

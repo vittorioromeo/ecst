@@ -10,7 +10,7 @@
 #include <ecst/context/types.hpp>
 #include <limits>
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+namespace ecst::context::entity
 {
     namespace impl
     {
@@ -24,5 +24,4 @@ ECST_CONTEXT_ENTITY_NAMESPACE
     {
         return eid != impl::invalid_id;
     }
-}
-ECST_CONTEXT_ENTITY_NAMESPACE_END
+} // namespace ecst::context::entity

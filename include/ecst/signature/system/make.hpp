@@ -9,10 +9,9 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     /// @brief Given a system tag `st`, creates a default system signature.
     template <typename TSystemTag>
     constexpr auto make(TSystemTag st);
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

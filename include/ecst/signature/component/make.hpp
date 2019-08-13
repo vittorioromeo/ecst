@@ -9,9 +9,8 @@
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 
-ECST_SIGNATURE_COMPONENT_NAMESPACE
+namespace ecst::signature::component
 {
     template <typename... TComponentTags>
     constexpr auto make(TComponentTags... cts) noexcept;
 }
-ECST_SIGNATURE_COMPONENT_NAMESPACE_END

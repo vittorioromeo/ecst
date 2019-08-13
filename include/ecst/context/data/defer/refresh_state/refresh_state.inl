@@ -7,7 +7,7 @@
 
 #include "./refresh_state.hpp"
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -19,7 +19,6 @@ ECST_CONTEXT_NAMESPACE
                 _to_match.clear();
                 _to_kill.clear();
             }
-        }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+        } // namespace defer
+    }     // namespace impl
+} // namespace ecst::context

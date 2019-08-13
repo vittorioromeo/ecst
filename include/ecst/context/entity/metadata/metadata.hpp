@@ -11,7 +11,7 @@
 #include <ecst/context/storage/component.hpp>
 #include <ecst/context/types.hpp>
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+namespace ecst::context::entity
 {
     namespace impl
     {
@@ -81,5 +81,4 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             }
         };
     } // namespace impl
-}
-ECST_CONTEXT_ENTITY_NAMESPACE_END
+} // namespace ecst::context::entity

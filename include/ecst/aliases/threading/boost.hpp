@@ -12,7 +12,7 @@
 #include <boost/chrono.hpp>
 #include <boost/thread.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace this_thread = boost::this_thread;
     namespace chrono = boost::chrono;
@@ -22,5 +22,4 @@ ECST_NAMESPACE
     using boost::mutex;
     using boost::thread;
     using boost::unique_lock;
-}
-ECST_NAMESPACE_END
+} // namespace ecst

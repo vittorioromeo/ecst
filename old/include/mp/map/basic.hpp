@@ -83,4 +83,4 @@ ECST_MP_MAP_NAMESPACE
         return pair::snd(p);
     }
 }
-ECST_MP_MAP_NAMESPACE_END
+

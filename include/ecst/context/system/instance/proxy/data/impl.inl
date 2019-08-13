@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./impl/base.inl"
-#include "./impl/single.inl"
 #include "./impl/multi.inl"
+#include "./impl/single.inl"

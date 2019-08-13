@@ -14,7 +14,7 @@
     sea::all().on_unsubscribe([](...){...});
 */
 
-ECST_NAMESPACE
+namespace ecst
 {
     /// @namespace Contains functions to handle events in `step` calls.
     namespace refresh_event
@@ -68,5 +68,4 @@ ECST_NAMESPACE
         template <typename TSystemTag, typename TF>
         auto on_unsubscribe(TSystemTag st, TF&& f) noexcept;
     } // namespace refresh_event
-}
-ECST_NAMESPACE_END
+} // namespace ecst

@@ -7,7 +7,7 @@
 
 #include <ecst/inner_parallelism.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     template <typename TSystemTag>
     constexpr auto make(TSystemTag)
@@ -35,5 +35,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
         return impl::data<TSystemTag, ECST_DECAY_DECLTYPE(d_opts)>{};
     }
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

@@ -7,7 +7,7 @@
 
 #include <ecst/mp/list.hpp>
 
-ECST_MP_OPTION_MAP_NAMESPACE
+namespace ecst::mp::option_map
 {
     namespace impl
     {
@@ -41,5 +41,4 @@ ECST_MP_OPTION_MAP_NAMESPACE
 
         constexpr replace_t replace{};
     } // namespace impl
-}
-ECST_MP_OPTION_MAP_NAMESPACE_END
+} // namespace ecst::mp::option_map

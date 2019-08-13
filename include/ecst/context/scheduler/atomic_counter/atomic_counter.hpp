@@ -16,7 +16,7 @@
 #include <ecst/thread_pool.hpp>
 #include <ecst/utils.hpp>
 
-ECST_SCHEDULER_NAMESPACE
+namespace ecst::scheduler
 {
     namespace impl
     {
@@ -91,8 +91,8 @@ ECST_SCHEDULER_NAMESPACE
                 });
         }
     };
-}
-ECST_SCHEDULER_NAMESPACE_END
+} // namespace ecst::scheduler
+
 
 // TODO: possible issue?
 /*

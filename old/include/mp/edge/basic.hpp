@@ -71,4 +71,4 @@ ECST_MP_EDGE_NAMESPACE
         return pair::snd_is(node_pair(e), n);
     }
 }
-ECST_MP_EDGE_NAMESPACE_END
+

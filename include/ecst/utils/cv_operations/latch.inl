@@ -8,10 +8,9 @@
 #include "./cv_operations.hpp"
 #include "./latch.hpp"
 
-ECST_NAMESPACE
+namespace ecst
 {
-    latch::latch(
-        impl::counter_inner_type initial_count) noexcept
+    latch::latch(impl::counter_inner_type initial_count) noexcept
         : _counter{initial_count}
     {
     }
@@ -27,11 +26,9 @@ ECST_NAMESPACE
     }
 
     template <typename TF>
-    void latch::execute_and_wait_until_zero(TF && f) noexcept(
-        noexcept(f()))
+    void latch::execute_and_wait_until_zero(TF&& f) noexcept(noexcept(f()))
     {
         impl::execute_and_wait_until_counter_zero(
             _mutex, _cv, _counter, FWD(f));
     }
-}
-ECST_NAMESPACE_END
+} // namespace ecst

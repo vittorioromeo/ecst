@@ -11,7 +11,7 @@
     base<TSystemSignature, TContext, TInstance, \
         multi<TSystemSignature, TContext, TInstance>>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -75,7 +75,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             auto subtask_index() const noexcept;
         };
     } // namespace data_proxy
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system
+
 
 #undef ECST_IMPL_DP_MULTI_BASE

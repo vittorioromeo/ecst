@@ -16,7 +16,7 @@
 #include <ecst/signature_list.hpp>
 #include <ecst/thread_pool.hpp>
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -103,5 +103,4 @@ ECST_CONTEXT_NAMESPACE
             };
         } // namespace defer
     }     // namespace impl
-}
-ECST_CONTEXT_NAMESPACE_END
+} // namespace ecst::context

@@ -11,7 +11,7 @@
 #include <ecst/config.hpp>
 #include <ecst/context/system/instance/proxy.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     // TODO: rename to `entity_instance` or something similar
     /// @brief System instance.
@@ -164,5 +164,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         template <typename TF>
         void for_other_entities(sz_t i_begin, sz_t i_end, TF&& f);
     };
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

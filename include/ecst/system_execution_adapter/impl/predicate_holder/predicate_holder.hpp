@@ -10,7 +10,7 @@
 #include <ecst/mp.hpp>
 #include <ecst/signature.hpp>
 
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
+namespace ecst::system_execution_adapter
 {
     namespace impl
     {
@@ -48,5 +48,4 @@ ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE
             constexpr auto for_subtasks(TF&& f) noexcept;
         };
     } // namespace impl
-}
-ECST_SYSTEM_EXECUTION_ADAPTER_NAMESPACE_END
+} // namespace ecst::system_execution_adapter

@@ -10,7 +10,7 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
+namespace ecst::scheduler::atomic_counter
 {
     /// @brief Group of tasks.
     template <typename TTaskList>
@@ -52,5 +52,4 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             task_by_id(id).run(*this, b, id, sp, f);
         }
     };
-}
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END
+} // namespace ecst::scheduler::atomic_counter

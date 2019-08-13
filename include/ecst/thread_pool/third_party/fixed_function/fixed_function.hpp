@@ -3,7 +3,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     /**
      * @brief The fixed_function<R(ARGS...), storage_size> class
@@ -154,5 +154,4 @@ ECST_NAMESPACE
             return _method_ptr(&_storage, _function_ptr, FWD(xs)...);
         }
     };
-}
-ECST_NAMESPACE_END
+} // namespace ecst

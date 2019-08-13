@@ -11,7 +11,7 @@
 #include <ecst/config.hpp>
 #include <vrm/core/experimental/sparse_set.hpp>
 
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
+namespace ecst::context::storage::entity
 {
     namespace container
     {
@@ -47,5 +47,4 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
             }
         };
     } // namespace container
-}
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END
+} // namespace ecst::context::storage::entity

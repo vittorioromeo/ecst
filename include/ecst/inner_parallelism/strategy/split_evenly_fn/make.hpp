@@ -10,7 +10,7 @@
 #include <ecst/config.hpp>
 #include <ecst/hardware.hpp>
 
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
+namespace ecst::inner_parallelism::strategy
 {
     namespace split_evenly_fn
     {
@@ -37,5 +37,4 @@ ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE
             return v(impl::v_cores_getter{});
         }
     } // namespace split_evenly_fn
-}
-ECST_INNER_PARALLELISM_STRATEGY_NAMESPACE_END
+} // namespace ecst::inner_parallelism::strategy

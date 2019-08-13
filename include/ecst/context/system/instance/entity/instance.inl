@@ -8,7 +8,7 @@
 #include "../proxy.hpp"
 #include "./instance.hpp"
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     template <typename TSettings, typename TSystemSignature>
     ECST_ALWAYS_INLINE auto& ECST_PURE_FN
@@ -39,7 +39,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TProxy>
     void instance<TSettings, TSystemSignature>::execute_deferred_fns(
-        TProxy & proxy)
+        TProxy& proxy)
     {
         this->for_states([&proxy](auto& s) {
             s.as_state()._deferred_fns.execute_all(proxy);
@@ -48,15 +48,15 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
-    decltype(auto) instance<TSettings, TSystemSignature>::for_outputs(TF && f)
+    decltype(auto) instance<TSettings, TSystemSignature>::for_outputs(TF&& f)
     {
         return this->for_states(
             [this, &f](auto& s) { f(this->system(), s.as_data()); });
     }
 
     template <typename TSettings, typename TSystemSignature>
-    auto instance<TSettings, TSystemSignature>::is_subscribed(entity_id eid)
-        const noexcept
+    auto instance<TSettings, TSystemSignature>::is_subscribed(
+        entity_id eid) const noexcept
     {
         return subscribed().has(eid);
     }
@@ -76,7 +76,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::prepare_and_wait_subtasks(
-        TContext & ctx, sz_t n, TF & f)
+        TContext& ctx, sz_t n, TF& f)
     {
         // Assert that at least one subtask is being executed.
         ECST_ASSERT_OP(n, >, 0);
@@ -115,7 +115,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_single( // .
-        TContext & ctx, TF & f                                  // .
+        TContext& ctx, TF& f                                    // .
     )
     {
         prepare_single_subtask();
@@ -128,7 +128,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute_in_parallel( // .
-        TContext & ctx, TF & f                                       // .
+        TContext& ctx, TF& f                                         // .
     )
     {
         auto st = [this, &ctx, f = FWD(f)] // .
@@ -147,7 +147,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext>
     auto instance<TSettings, TSystemSignature>::execution_dispatch(
-        TContext & ctx) noexcept
+        TContext& ctx) noexcept
     {
         return [this, &ctx](auto&& f) {
             if constexpr(settings::inner_parallelism_allowed(TSettings{}))
@@ -164,7 +164,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TContext, typename TF>
     void instance<TSettings, TSystemSignature>::execute( // .
-        TContext & ctx, TF & f                           // .
+        TContext& ctx, TF& f                             // .
     )
     {
         // Bind the dispatch function to `ctx`.
@@ -178,10 +178,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::subscribed_count()
-        const noexcept
+    auto ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::subscribed_count() const noexcept
     {
         return this->subscribed().size();
     }
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

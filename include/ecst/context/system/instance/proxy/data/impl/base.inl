@@ -13,7 +13,7 @@
 
 #define ECST_IMPL_DP_BASE base<TSystemSignature, TContext, TInstance, TDerived>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -68,17 +68,11 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         decltype(auto) ECST_IMPL_DP_BASE::get(
             TComponentTag ct, entity_id eid) noexcept
         {
-            constexpr auto can_write =
-                signature::system::can_write<TSystemSignature>(ct);
-
-            constexpr auto can_read =
-                signature::system::can_read<TSystemSignature>(ct);
-
-            if constexpr(can_write)
+            if constexpr(signature::system::can_write<TSystemSignature>(ct))
             {
                 return _context.get_component(ct, eid);
             }
-            else if constexpr(can_read)
+            else if constexpr(signature::system::can_read<TSystemSignature>(ct))
             {
                 return _context.get_component(ct, eid);
             }
@@ -136,8 +130,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             return _context.for_system_outputs(st, FWD(f));
         }
     } // namespace data_proxy
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system
+
 
 #undef ECST_IMPL_DP_BASE
 #undef ECST_IMPL_DP_BASE_TEMPLATE

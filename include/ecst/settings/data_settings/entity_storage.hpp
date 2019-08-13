@@ -10,7 +10,7 @@
 #include <ecst/mp/core.hpp>
 #include <type_traits>
 
-ECST_SETTINGS_NAMESPACE
+namespace ecst::settings
 {
     namespace impl
     {
@@ -32,5 +32,4 @@ ECST_SETTINGS_NAMESPACE
 
     template <sz_t TInitialSize>
     constexpr impl::dynamic_impl<mp::sz_t_<TInitialSize>> dynamic{};
-}
-ECST_SETTINGS_NAMESPACE_END
+} // namespace ecst::settings

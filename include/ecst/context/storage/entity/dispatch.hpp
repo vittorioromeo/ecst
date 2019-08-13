@@ -12,7 +12,7 @@
 #include <ecst/context/entity.hpp>
 #include <ecst/settings.hpp>
 
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
+namespace ecst::context::storage::entity
 {
     namespace impl
     {
@@ -42,5 +42,4 @@ ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE
     /// on the user settings.
     template <typename TSettings>
     using dispatch = mp::unwrap<decltype(impl::dispatch_tw(TSettings{}))>;
-}
-ECST_CONTEXT_STORAGE_ENTITY_NAMESPACE_END
+} // namespace ecst::context::storage::entity

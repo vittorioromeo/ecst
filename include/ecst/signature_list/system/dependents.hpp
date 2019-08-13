@@ -10,7 +10,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     /// @brief Given a list of system tags, returns a list of system signatures.
     template <typename TSystemSignatureList, typename TSystemTagList>
@@ -84,5 +84,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return decltype(impl::dependent_ids_list_impl(ssl, parent)){};
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

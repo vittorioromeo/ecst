@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature/system/data.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     namespace impl
     {
@@ -28,5 +28,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
     /// @brief Evaluates to true if all `Ts...` are system signatures.
     constexpr impl::valid_t valid{};
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

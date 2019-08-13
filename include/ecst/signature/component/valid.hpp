@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_SIGNATURE_COMPONENT_NAMESPACE
+namespace ecst::signature::component
 {
     namespace impl
     {
@@ -28,5 +28,4 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
 
     /// @brief Evaluates to true if all `Ts...` are component signatures.
     constexpr impl::valid_t valid{};
-}
-ECST_SIGNATURE_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature::component

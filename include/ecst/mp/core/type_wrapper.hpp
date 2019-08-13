@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
 
-ECST_MP_NAMESPACE
+namespace ecst::mp
 {
     // Bring hana's `type_c` into the `mp` namespace.
     using bh::type_c;
@@ -45,5 +45,4 @@ ECST_MP_NAMESPACE
 
     /// @brief Returns a `type_c` wrapping the passed parameter.
     constexpr impl::wrap_t wrap{};
-}
-ECST_MP_NAMESPACE_END
+} // namespace ecst::mp

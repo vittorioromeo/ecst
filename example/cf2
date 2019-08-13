@@ -6,7 +6,6 @@ time g++ -std=c++2a \
         -I"/home/vittorioromeo/OHWorkspace/vrm_pp/include" \
         -W -Wall -Wextra -Wpedantic \
         -Ofast -ffast-math -ftree-vectorize -DNDEBUG \
-        -pedantic \
         -lpthread \
         -lsfml-system -lsfml-graphics -lsfml-window \
         -fdiagnostics-color=always \

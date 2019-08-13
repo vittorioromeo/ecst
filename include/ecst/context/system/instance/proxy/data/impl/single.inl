@@ -12,7 +12,7 @@
 
 #define ECST_IMPL_DP_SINGLE single<TSystemSignature, TContext, TInstance>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace data_proxy
     {
@@ -66,9 +66,9 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
         {
             return sz_t(0);
         }
-    }
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+    } // namespace data_proxy
+} // namespace ecst::context::system
+
 
 #undef ECST_IMPL_DP_SINGLE
 #undef ECST_IMPL_DP_SINGLE_TEMPLATE

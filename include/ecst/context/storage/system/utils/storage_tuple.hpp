@@ -12,7 +12,7 @@
 #include <ecst/settings.hpp>
 #include <ecst/signature_list.hpp>
 
-ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
+namespace ecst::context::storage::system
 {
     template <typename TSettings, typename TSystemSignatureList>
     constexpr auto make_system_storage_tuple(TSystemSignatureList ssl) noexcept
@@ -60,5 +60,4 @@ ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignatureList>
     using system_storage_tuple_type =
         decltype(make_system_storage_tuple<TSettings>(TSystemSignatureList{}));
-}
-ECST_CONTEXT_STORAGE_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::storage::system

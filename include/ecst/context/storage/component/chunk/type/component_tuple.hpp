@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     namespace chunk
     {
@@ -21,5 +21,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                     TComponentTagList{})>;
         } // namespace impl
     }     // namespace chunk
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

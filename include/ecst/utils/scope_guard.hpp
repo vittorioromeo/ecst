@@ -10,7 +10,7 @@
 #include <type_traits>
 #include <vrm/pp/cat.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace impl
     {
@@ -39,8 +39,8 @@ ECST_NAMESPACE
             return scope_guard<ECST_DECAY_DECLTYPE(f)>{std::move(f)};
         }
     } // namespace impl
-}
-ECST_NAMESPACE_END
+} // namespace ecst
+
 
 /// @brief Given a lambda, creates a scope guard that will execute it upon
 /// exiting the current scope.

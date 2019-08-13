@@ -9,14 +9,13 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature/system.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     /// @brief Returns `true` if the passed argument is a system signature list.
     template <typename T>
-    constexpr auto valid(T && x) noexcept
+    constexpr auto valid(T&& x) noexcept
     {
         return bh::all_of(bh::transform(x, mp::unwrapped), // .
             signature::system::valid);
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

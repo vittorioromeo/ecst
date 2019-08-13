@@ -21,4 +21,4 @@ ECST_MP_PAIR_NAMESPACE
     template <typename T0, typename T1>
     constexpr impl::type_pair<T0, T1> v{};
 }
-ECST_MP_PAIR_NAMESPACE_END
+

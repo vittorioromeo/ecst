@@ -8,7 +8,7 @@
 #include "../constants.hpp"
 #include "./handle.hpp"
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+namespace ecst::context::entity
 {
     namespace impl
     {
@@ -24,6 +24,5 @@ ECST_CONTEXT_ENTITY_NAMESPACE
             : _id{id}, _ctr{ctr}
         {
         }
-    }
-}
-ECST_CONTEXT_ENTITY_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context::entity

@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/id.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace impl
     {
@@ -30,5 +30,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return decltype(impl::signature_list_from_tag_list_impl(ssl, stl)){};
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

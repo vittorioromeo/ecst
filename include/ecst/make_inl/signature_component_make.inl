@@ -10,7 +10,7 @@
 #include <ecst/mp.hpp>
 #include <ecst/signature/component/data.hpp>
 
-ECST_SIGNATURE_COMPONENT_NAMESPACE
+namespace ecst::signature::component
 {
     namespace impl
     {
@@ -107,5 +107,4 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
             return change_self(keys::storage, contiguous_buffer_maker);
         }
     } // namespace impl
-}
-ECST_SIGNATURE_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature::component

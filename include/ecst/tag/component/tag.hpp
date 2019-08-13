@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_TAG_COMPONENT_NAMESPACE
+namespace ecst::tag::component
 {
     namespace impl
     {
@@ -28,7 +28,7 @@ ECST_TAG_COMPONENT_NAMESPACE
 
     /// @brief Returns a tag from a component reference.
     template <typename TComponent>
-    constexpr auto make(TComponent &&) noexcept
+    constexpr auto make(TComponent&&) noexcept
     {
         return v<decay_t<TComponent>>;
     }
@@ -56,5 +56,4 @@ ECST_TAG_COMPONENT_NAMESPACE
     }
 
     using mp::unwrap;
-}
-ECST_TAG_COMPONENT_NAMESPACE_END
+} // namespace ecst::tag::component

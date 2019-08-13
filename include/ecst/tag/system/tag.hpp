@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_TAG_SYSTEM_NAMESPACE
+namespace ecst::tag::system
 {
     namespace impl
     {
@@ -28,7 +28,7 @@ ECST_TAG_SYSTEM_NAMESPACE
 
     /// @brief Returns a tag from a system reference.
     template <typename TSystem>
-    constexpr auto make(TSystem &&) noexcept
+    constexpr auto make(TSystem&&) noexcept
     {
         return v<decay_t<TSystem>>;
     }
@@ -56,5 +56,4 @@ ECST_TAG_SYSTEM_NAMESPACE
     }
 
     using mp::unwrap;
-}
-ECST_TAG_SYSTEM_NAMESPACE_END
+} // namespace ecst::tag::system

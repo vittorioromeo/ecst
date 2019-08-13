@@ -205,4 +205,4 @@ ECST_MP_MAP_NAMESPACE
         return bool_v<(count_by_value(m, v) > 0)>;
     }
 }
-ECST_MP_MAP_NAMESPACE_END
+

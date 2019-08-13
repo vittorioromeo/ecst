@@ -11,7 +11,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     template <typename TSettings>
     using chunk_tuple_type =                  // .
@@ -28,5 +28,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
                 make_chunk_metadata_tuple(make_chunk_tuple(TSettings{})) // .
                 )                                                        // .
             >;
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

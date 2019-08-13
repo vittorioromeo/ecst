@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     namespace chunk
     {
@@ -17,5 +17,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         template <typename TChunk>
         using metadata = typename TChunk::metadata;
     } // namespace chunk
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

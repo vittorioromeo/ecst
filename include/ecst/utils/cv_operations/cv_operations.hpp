@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <utility>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace impl
     {
@@ -88,5 +88,4 @@ ECST_NAMESPACE
                 mutex, cv, [&c] { return c == 0; }, FWD(f));
         }
     } // namespace impl
-}
-ECST_NAMESPACE_END
+} // namespace ecst

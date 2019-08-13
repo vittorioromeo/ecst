@@ -5,12 +5,12 @@
 
 #pragma once
 
-#include <ecst/tag.hpp>
+#include "./refresh_event.hpp"
 #include <ecst/context/types.hpp>
 #include <ecst/system_execution_adapter.hpp>
-#include "./refresh_event.hpp"
+#include <ecst/tag.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     namespace refresh_event
     {
@@ -22,9 +22,8 @@ ECST_NAMESPACE
         template <typename TF>
         auto on_subscribe(TF&& f) noexcept
         {
-            return [f = FWD(f)](impl::subscribed_t, auto& instance, auto eid)
-                ->decltype(f(instance, eid))
-            {
+            return [f = FWD(f)](impl::subscribed_t, auto& instance,
+                       auto eid) -> decltype(f(instance, eid)) {
                 return f(instance, eid);
             };
         }
@@ -32,9 +31,8 @@ ECST_NAMESPACE
         template <typename TF>
         auto on_unsubscribe(TF&& f) noexcept
         {
-            return [f = FWD(f)](impl::unsubscribed_t, auto& instance, auto eid)
-                ->decltype(f(instance, eid))
-            {
+            return [f = FWD(f)](impl::unsubscribed_t, auto& instance,
+                       auto eid) -> decltype(f(instance, eid)) {
                 return f(instance, eid);
             };
         }
@@ -42,11 +40,8 @@ ECST_NAMESPACE
         template <typename TF>
         auto on_reclaim(TF&& f) noexcept
         {
-            return [f = FWD(f)](impl::reclaimed_t, entity_id eid)
-                ->decltype(f(eid))
-            {
-                return f(eid);
-            };
+            return [f = FWD(f)](impl::reclaimed_t,
+                       entity_id eid) -> decltype(f(eid)) { return f(eid); };
         }
 
         namespace impl
@@ -68,27 +63,22 @@ ECST_NAMESPACE
             template <typename TInstance, typename TSystemTag>
             using enable_matching_instance =
                 std::enable_if_t<check_tag<TInstance, TSystemTag>()>;
-        }
+        } // namespace impl
 
         template <typename TSystemTag, typename TF>
         auto on_subscribe(TSystemTag, TF&& f) noexcept
         {
             return [f = FWD(f)](impl::subscribed_t, auto& instance, auto eid)
-                ->impl::enable_matching_instance<decltype(instance), TSystemTag>
-            {
-                return f(instance, eid);
-            };
+                       -> impl::enable_matching_instance<decltype(instance),
+                           TSystemTag> { return f(instance, eid); };
         }
 
         template <typename TSystemTag, typename TF>
         auto on_unsubscribe(TSystemTag, TF&& f) noexcept
         {
             return [f = FWD(f)](impl::unsubscribed_t, auto& instance, auto eid)
-                ->impl::enable_matching_instance<decltype(instance), TSystemTag>
-            {
-                return f(instance, eid);
-            };
+                       -> impl::enable_matching_instance<decltype(instance),
+                           TSystemTag> { return f(instance, eid); };
         }
-    }
-}
-ECST_NAMESPACE_END
+    } // namespace refresh_event
+} // namespace ecst

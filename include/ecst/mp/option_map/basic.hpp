@@ -8,7 +8,7 @@
 #include "./replace.hpp"
 #include <ecst/mp/list.hpp>
 
-ECST_MP_OPTION_MAP_NAMESPACE
+namespace ecst::mp::option_map
 {
     namespace impl
     {
@@ -64,5 +64,4 @@ ECST_MP_OPTION_MAP_NAMESPACE
     /// @brief Returns the type of the value stored in `TMap` at key `TKey`.
     template <typename TMap, typename TKey>
     using type_of = unwrap<decltype(TMap{}.type_at(TKey{}))>;
-}
-ECST_MP_OPTION_MAP_NAMESPACE_END
+} // namespace ecst::mp::option_map

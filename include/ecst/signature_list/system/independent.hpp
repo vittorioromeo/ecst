@@ -11,7 +11,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/signature_list_from_tag_list.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     template <typename TSystemSignatureList>
     constexpr auto independent(TSystemSignatureList ssl) noexcept
@@ -25,5 +25,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
     {
         return independent(signature_list_from_tag_list(ssl, stl));
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

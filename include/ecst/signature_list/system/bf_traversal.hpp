@@ -10,7 +10,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/dependents.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     namespace bf_traversal
     {
@@ -97,5 +97,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
             return bh::fix(step)(btfc::make(FWD(snl)));
         }
     } // namespace bf_traversal
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

@@ -44,4 +44,4 @@ ECST_MP_PAIR_NAMESPACE
         return bool_v<snd_comparer(TPair{}, x1)>;
     }
 }
-ECST_MP_PAIR_NAMESPACE_END
+

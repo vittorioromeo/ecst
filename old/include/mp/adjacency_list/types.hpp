@@ -27,4 +27,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
     // Variable template for an empty list.
     constexpr impl::empty_type_adjacency_list empty_v{};
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

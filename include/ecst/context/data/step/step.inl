@@ -5,10 +5,10 @@
 
 #pragma once
 
-#include "./step.hpp"
 #include "../data/data.hpp"
+#include "./step.hpp"
 
-ECST_CONTEXT_NAMESPACE
+namespace ecst::context
 {
     namespace impl
     {
@@ -35,7 +35,6 @@ ECST_CONTEXT_NAMESPACE
             {
                 return this->context().execute_systems(this->context());
             }
-        }
-    }
-}
-ECST_CONTEXT_NAMESPACE_END
+        } // namespace step
+    }     // namespace impl
+} // namespace ecst::context

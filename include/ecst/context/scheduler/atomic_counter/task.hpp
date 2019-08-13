@@ -10,7 +10,7 @@
 #include <ecst/config.hpp>
 #include <ecst/utils.hpp>
 
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
+namespace ecst::scheduler::atomic_counter
 {
     /// @brief Logic task, part of a group, that can be executed on a thread
     /// pool.
@@ -48,5 +48,4 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             TF& f           // .
         );
     };
-}
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END
+} // namespace ecst::scheduler::atomic_counter

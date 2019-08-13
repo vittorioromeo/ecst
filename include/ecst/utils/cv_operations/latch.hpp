@@ -7,7 +7,7 @@
 
 #include "./cv_operations.hpp"
 
-ECST_NAMESPACE
+namespace ecst
 {
     /// @brief Data structure containing synchronization primitives required for
     /// a "blocking counter" with an `std::condition_variable` and `std::mutex`.
@@ -39,5 +39,4 @@ ECST_NAMESPACE
         template <typename TF>
         void execute_and_wait_until_zero(TF&& f) noexcept(noexcept(f()));
     };
-}
-ECST_NAMESPACE_END
+} // namespace ecst

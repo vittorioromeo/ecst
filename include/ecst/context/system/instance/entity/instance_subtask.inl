@@ -7,7 +7,7 @@
 
 #include "./instance.hpp"
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     template <typename TSettings, typename TSystemSignature>
     auto ECST_PURE_FN instance<TSettings, TSystemSignature>::nth_subscribed(
@@ -24,8 +24,8 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     }
 
     template <typename TSettings, typename TSystemSignature>
-    auto ECST_PURE_FN instance<TSettings, TSystemSignature>::all_entity_count()
-        const noexcept
+    auto ECST_PURE_FN
+    instance<TSettings, TSystemSignature>::all_entity_count() const noexcept
     {
         return subscribed_count();
     }
@@ -53,7 +53,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
 
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
-    void instance<TSettings, TSystemSignature>::for_all_entities(TF && f)
+    void instance<TSettings, TSystemSignature>::for_all_entities(TF&& f)
     {
         this->_subscribed.for_each(FWD(f));
     }
@@ -61,7 +61,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
     void instance<TSettings, TSystemSignature>::for_entities(
-        sz_t i_begin, sz_t i_end, TF && f)
+        sz_t i_begin, sz_t i_end, TF&& f)
     {
         // Note: it makes sense to call this function even on empty ranges -
         // imagine a user-defined function that does some bookkeeping before
@@ -79,7 +79,7 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
     template <typename TSettings, typename TSystemSignature>
     template <typename TF>
     void instance<TSettings, TSystemSignature>::for_other_entities(
-        sz_t i_begin, sz_t i_end, TF && f)
+        sz_t i_begin, sz_t i_end, TF&& f)
     {
         // Note: it makes sense to call this function even on empty ranges -
         // imagine a user-defined function that does some bookkeeping before
@@ -98,5 +98,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             f(this->nth_subscribed(i));
         }
     }
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

@@ -9,7 +9,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/system/signature.hpp>
 
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
+namespace ecst::signature_list::system
 {
     /// @brief Given a system signature `ss`, returns its ID.
     template <typename TSystemSignatureList, typename TSystemSignature>
@@ -36,5 +36,4 @@ ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE
         ECST_S_ASSERT_DT(tag::system::valid(st));
         return id_by_signature(ssl, signature_by_tag(ssl, st));
     }
-}
-ECST_SIGNATURE_LIST_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature_list::system

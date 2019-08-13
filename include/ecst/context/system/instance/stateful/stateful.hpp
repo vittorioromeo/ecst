@@ -10,7 +10,7 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     // TODO:
     // TODO: `component_instance` ?
@@ -63,5 +63,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             return _sm;
         }
     };
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

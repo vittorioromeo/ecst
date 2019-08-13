@@ -9,9 +9,8 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     template <typename TSettings>
     using dispatch = impl::data<TSettings>;
 }
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END

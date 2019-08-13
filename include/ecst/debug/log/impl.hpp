@@ -14,7 +14,7 @@
 #include <iostream>
 #endif
 
-ECST_DEBUG_NAMESPACE
+namespace ecst::debug
 {
     namespace impl
     {
@@ -104,5 +104,4 @@ ECST_DEBUG_NAMESPACE
             }
         }
     } // namespace impl
-}
-ECST_DEBUG_NAMESPACE_END
+} // namespace ecst::debug

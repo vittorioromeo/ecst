@@ -13,13 +13,13 @@
 #include <ecst/signature.hpp>
 #include <ecst/signature_list.hpp>
 
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
+namespace ecst::scheduler::atomic_counter
 {
     /// @brief Resets a task group's dependency data.
     /// @details Given a system signature list, sets all the dependency counters
     /// to the number of original dependencies.
     template <typename TSSL, typename TTaskGroup>
-    auto reset_task_group_from_ssl(TSSL ssl, TTaskGroup & tg) noexcept
+    auto reset_task_group_from_ssl(TSSL ssl, TTaskGroup& tg) noexcept
     {
         namespace ss = signature::system;
         namespace sls = signature_list::system;
@@ -72,5 +72,4 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
                 >                                        // .
             >;
     } // namespace impl
-}
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END
+} // namespace ecst::scheduler::atomic_counter

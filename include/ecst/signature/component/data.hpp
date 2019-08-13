@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/tag/component.hpp>
 
-ECST_SIGNATURE_COMPONENT_NAMESPACE
+namespace ecst::signature::component
 {
     namespace impl
     {
@@ -62,5 +62,4 @@ ECST_SIGNATURE_COMPONENT_NAMESPACE
         // TODO: `data.set_storage_type(contiguous_buffer_maker)`
         // TODO: `data.set_storage_type(hash_map_maker)`
     } // namespace impl
-}
-ECST_SIGNATURE_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature::component

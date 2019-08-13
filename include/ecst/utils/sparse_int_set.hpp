@@ -12,7 +12,7 @@
 #include <vrm/core/experimental/sparse_set.hpp>
 #include <vrm/core/type_aliases.hpp>
 
-ECST_NAMESPACE
+namespace ecst
 {
     template <sz_t TCapacity>
     using fixed_set = vrmc::fixed_vector_sparse_set<entity_id, TCapacity>;
@@ -100,8 +100,8 @@ ECST_NAMESPACE
     } // namespace impl
 
     template <typename TSet, typename T>
-    void add_range_in_set_reverse(TSet & set, T i_begin, T i_end) noexcept( // .
-        noexcept(set.unchecked_add(std::declval<T>()))                      // .
+    void add_range_in_set_reverse(TSet& set, T i_begin, T i_end) noexcept( // .
+        noexcept(set.unchecked_add(std::declval<T>()))                     // .
     )
     {
         impl::reverse_loop(
@@ -109,8 +109,8 @@ ECST_NAMESPACE
     }
 
     template <typename TSet, typename T>
-    void add_range_in_set_forward(TSet & set, T i_begin, T i_end) noexcept( // .
-        noexcept(set.unchecked_add(std::declval<T>()))                      // .
+    void add_range_in_set_forward(TSet& set, T i_begin, T i_end) noexcept( // .
+        noexcept(set.unchecked_add(std::declval<T>()))                     // .
     )
     {
         for(T i(i_begin); i < i_end; ++i)
@@ -118,5 +118,4 @@ ECST_NAMESPACE
             set.unchecked_add(i);
         }
     }
-}
-ECST_NAMESPACE_END
+} // namespace ecst

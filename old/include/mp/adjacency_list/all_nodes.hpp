@@ -46,4 +46,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
         return list::size(all_nodes(al));
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

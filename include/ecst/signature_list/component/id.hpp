@@ -10,7 +10,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/signature_list/component/signature.hpp>
 
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
+namespace ecst::signature_list::component
 {
     template <typename TComponentSignatureList, typename TComponentSignature>
     constexpr auto id_by_signature(
@@ -29,5 +29,4 @@ ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE
     {
         return id_by_signature(csl, signature_by_tag(csl, ct));
     }
-}
-ECST_SIGNATURE_LIST_COMPONENT_NAMESPACE_END
+} // namespace ecst::signature_list::component

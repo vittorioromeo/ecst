@@ -13,12 +13,12 @@
 #include <ecst/settings.hpp>
 #include <ecst/tag.hpp>
 
-ECST_CONTEXT_BITSET_NAMESPACE
+namespace ecst::context::bitset
 {
     /// @brief Sets all the bits corresponding to the component types in `scl`
     /// to `1` in `bitset`.
     template <typename TSettings, typename TSetComponentsList>
-    void fill(dispatch<TSettings> & bitset, TSettings s,
+    void fill(dispatch<TSettings>& bitset, TSettings s,
         TSetComponentsList scl) noexcept
     {
         ECST_S_ASSERT_DT(tag::component::is_list(scl));
@@ -46,5 +46,4 @@ ECST_CONTEXT_BITSET_NAMESPACE
         constexpr auto u = mp::unwrapped(ss);
         return make(s, bh::concat(u.read_ctag_list(), u.write_ctag_list()));
     }
-}
-ECST_CONTEXT_BITSET_NAMESPACE_END
+} // namespace ecst::context::bitset

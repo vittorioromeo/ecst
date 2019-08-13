@@ -101,4 +101,4 @@ ECST_MP_ADJACENCY_LIST_NAMESPACE
                 al, n0_list, n1)){};
     }
 }
-ECST_MP_ADJACENCY_LIST_NAMESPACE_END
+

@@ -14,7 +14,7 @@
 #include <ecst/signature/system.hpp>
 #include <ecst/utils.hpp>
 
-ECST_CONTEXT_SYSTEM_NAMESPACE
+namespace ecst::context::system
 {
     namespace impl
     {
@@ -84,5 +84,4 @@ ECST_CONTEXT_SYSTEM_NAMESPACE
             };
         } // namespace state_manager
     }     // namespace impl
-}
-ECST_CONTEXT_SYSTEM_NAMESPACE_END
+} // namespace ecst::context::system

@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
 
-ECST_INNER_PARALLELISM_NAMESPACE
+namespace ecst::inner_parallelism
 {
     namespace utils
     {
@@ -65,5 +65,4 @@ ECST_INNER_PARALLELISM_NAMESPACE
             inst.prepare_and_wait_subtasks(ctx, split_count, ef);
         }
     } // namespace utils
-}
-ECST_INNER_PARALLELISM_NAMESPACE_END
+} // namespace ecst::inner_parallelism

@@ -11,7 +11,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     template <typename TSystemSignature>
     constexpr auto dependencies_as_tag_list(TSystemSignature ss)
@@ -41,5 +41,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
 
     /// @brief Returns `true` if `ss` is independent.
     constexpr impl::independent_t indepedent{};
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

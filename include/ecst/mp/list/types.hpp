@@ -8,7 +8,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
 
-ECST_MP_LIST_NAMESPACE
+namespace ecst::mp::list
 {
     namespace impl
     {
@@ -30,5 +30,4 @@ ECST_MP_LIST_NAMESPACE
 
     // Variable template for an empty list.
     constexpr impl::empty_type_list empty_v{};
-}
-ECST_MP_LIST_NAMESPACE_END
+} // namespace ecst::mp::list

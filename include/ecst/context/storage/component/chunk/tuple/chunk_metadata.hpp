@@ -11,7 +11,7 @@
 #include <ecst/context/storage/component/chunk/utils.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     template <typename TChunkTuple>
     auto make_chunk_metadata_tuple(TChunkTuple ct) noexcept
@@ -22,5 +22,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
             return mp::type_c<chunk_metadata>;
         });
     }
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

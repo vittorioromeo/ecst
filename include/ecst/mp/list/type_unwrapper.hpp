@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <ecst/mp/core.hpp>
 
-ECST_MP_LIST_NAMESPACE
+namespace ecst::mp::list
 {
     namespace impl
     {
@@ -39,5 +39,4 @@ ECST_MP_LIST_NAMESPACE
     /// @brief Unwraps a `type_list<type_c<xs>...>` into a `bh::tuple<xs...>`.
     template <typename T>
     using unwrap_bh_tuple = typename impl::list_bh_unwrapper<T>::type;
-}
-ECST_MP_LIST_NAMESPACE_END
+} // namespace ecst::mp::list

@@ -10,7 +10,7 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/utils.hpp>
 
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
+namespace ecst::scheduler::atomic_counter
 {
     /// @brief Dependency data of a task.
     /// @tparam TDependentIDList Compile-time list of dependent task IDs.
@@ -49,5 +49,4 @@ ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE
             return bh::size(TDependentIDList{});
         }
     };
-}
-ECST_SCHEDULER_ATOMIC_COUNTER_NAMESPACE_END
+} // namespace ecst::scheduler::atomic_counter

@@ -7,10 +7,9 @@
 
 #include <ecst/config.hpp>
 
-ECST_INNER_PARALLELISM_NAMESPACE
+namespace ecst::inner_parallelism
 {
     template <typename TParameters>
     using executor_type =
         typename TParameters::template executor_type<TParameters>;
 }
-ECST_INNER_PARALLELISM_NAMESPACE_END

@@ -7,7 +7,7 @@
 
 #include "./metadata.hpp"
 
-ECST_CONTEXT_ENTITY_NAMESPACE
+namespace ecst::context::entity
 {
     namespace impl
     {
@@ -87,6 +87,5 @@ ECST_CONTEXT_ENTITY_NAMESPACE
         {
             return _bitset;
         }
-    }
-}
-ECST_CONTEXT_ENTITY_NAMESPACE_END
+    } // namespace impl
+} // namespace ecst::context::entity

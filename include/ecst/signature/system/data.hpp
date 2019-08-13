@@ -12,7 +12,7 @@
 #include <ecst/mp.hpp>
 #include <ecst/tag/system.hpp>
 
-ECST_SIGNATURE_SYSTEM_NAMESPACE
+namespace ecst::signature::system
 {
     // TODO: cleanup
 
@@ -202,5 +202,4 @@ ECST_SIGNATURE_SYSTEM_NAMESPACE
         return !std::is_same<output_type<TSystemSignature>,
             impl::output_impl<impl::empty_output_type>>{};
     }
-}
-ECST_SIGNATURE_SYSTEM_NAMESPACE_END
+} // namespace ecst::signature::system

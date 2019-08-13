@@ -10,7 +10,7 @@
 #include <ecst/context/storage/component/chunk/type.hpp>
 #include <ecst/mp/list.hpp>
 
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
+namespace ecst::context::storage::component
 {
     template <typename TSettings>
     auto make_chunk_tuple(TSettings s) noexcept
@@ -19,5 +19,4 @@ ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE
         return bh::transform(csl,
             [s](auto cs) { return mp::unwrapped(cs).make_storage_type(s); });
     }
-}
-ECST_CONTEXT_STORAGE_COMPONENT_NAMESPACE_END
+} // namespace ecst::context::storage::component

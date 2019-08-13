@@ -9,7 +9,7 @@
 #include <ecst/config.hpp>
 #include <utility>
 
-ECST_NAMESPACE
+namespace ecst
 {
     /// @brief Wrapper around `std::atomic<T>` that allows move operations.
     /// @details Moves are handled by using `store(rhs.load())`.
@@ -44,5 +44,4 @@ ECST_NAMESPACE
             return *this;
         }
     };
-}
-ECST_NAMESPACE_END
+} // namespace ecst
