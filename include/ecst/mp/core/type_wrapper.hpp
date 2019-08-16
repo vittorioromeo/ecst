@@ -18,31 +18,16 @@ namespace ecst::mp
     template <typename T>
     using unwrap = typename T::type;
 
-    namespace impl
-    {
-        struct unwrapped_t
-        {
-            template <typename T>
-            constexpr auto operator()(T) const noexcept
-            {
-                return unwrap<T>{};
-            }
-        };
-
-        struct wrap_t
-        {
-            template <typename T>
-            constexpr auto operator()(T) const noexcept
-            {
-                return type_c<T>;
-            }
-        };
-    } // namespace impl
-
     /// @brief Returns a default-constructed instance of the inner type wrapped
     /// by a `type_c`.
-    constexpr impl::unwrapped_t unwrapped{};
+    inline constexpr auto unwrapped = []<typename T>(T)
+    {
+        return unwrap<T>{};
+    };
 
     /// @brief Returns a `type_c` wrapping the passed parameter.
-    constexpr impl::wrap_t wrap{};
+    inline constexpr auto wrap = []<typename T>(T)
+    {
+        return type_c<T>;
+    };
 } // namespace ecst::mp

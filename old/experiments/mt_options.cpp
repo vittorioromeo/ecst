@@ -1,8 +1,8 @@
 // global parallelism settings
-ecst::settings(inner_parallelism::allowed, inner_parallelism::disallowed)
+ecst::settings(inner_par::allowed, inner_par::disallowed)
 
     // system settings
-    sys_signature(parallelism::none,
+    sys_sig(parallelism::none,
 
         parallelism::basic(entity_threshold(sz_v<10000>),
                       entities_per_subtask(sz_v<5000>), max_subtasks(sz_v<4>)),

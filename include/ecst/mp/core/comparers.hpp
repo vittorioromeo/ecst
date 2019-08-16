@@ -11,32 +11,13 @@
 
 namespace ecst::mp
 {
-    namespace impl
+    inline constexpr auto same_type = []<typename T0, typename T1>(T0, T1)
     {
-        // `constexpr` callable returning whether or not two objects have the
-        // same type.
-        struct same_type
-        {
-            template <typename T0, typename T1>
-            constexpr auto operator()(T0&&, T1&&) const noexcept
-            {
-                return std::is_same<T0, T1>{};
-            }
-        };
+        return std::is_same<T0, T1>{};
+    };
 
-        // `constexpr` callable returning whether or not two objects have the
-        // same type, after applying `decay_t` to both of them.
-        struct same_type_decay
-        {
-            template <typename T0, typename T1>
-            constexpr auto operator()(T0&&, T1&&) const noexcept
-            {
-                return same_type{}(decay_t<T1>{}, decay_t<T0>{});
-            }
-        };
-    } // namespace impl
-
-    // Variable template aliases.
-    constexpr impl::same_type same_type{};
-    constexpr impl::same_type_decay same_type_decay{};
+    inline constexpr auto same_type_decay = []<typename T0, typename T1>(T0, T1)
+    {
+        return std::is_same<std::decay_t<T0>, std::decay_t<T1>>{};
+    };
 } // namespace ecst::mp

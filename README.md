@@ -70,7 +70,7 @@ their storage policies.
 * **Outer parallelism:** term used in ECST which defines the concept of running multiple systems that do not depend on each other in parallel. Its implementation details will be analyzed in Chapter 10 *(see thesis)*. Conceptually, an implicit directed acyclic graph is created at compile-time thanks to the knowledge of system dependencies. The execution of the implicit DAG is handled by a
 system scheduler type specified during settings definition.
 
-* **Inner parallelism:** other that running separate systems in parallel, ECST supports splitting a single system into multiple sub-tasks, which can be executed on separate threads. Many systems, such as the ones that represent functionally pure com- putations, do not contain side-effects that modify their own state or that define interactions between the subscribed entities: these are prime examples of “embarrassingly parallel” computations. 
+* **Inner parallelism:** other that running separate systems in parallel, ECST supports splitting a single system into multiple sub-tasks, which can be executed on separate threads. Many systems, such as the ones that represent functionally pure com- putations, do not contain side-effects that modify their own state or that define interactions between the subscribed entities: these are prime examples of “embarrassingly parallel” computations.
 
 ---------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ system scheduler type specified during settings definition.
 
 * *"How do control whether my system runs in parallel, or as a single thread?*"
 
-    * Context-wide *inner parallelism* must be enabled by calling [allow_inner_parallelism()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L118) in order to allow systems to be split in multiple *sub-tasks*. Inner parallelism strategies can be customized and composed at compile-time for particular systems, during *system signature* definition.
+    * Context-wide *inner parallelism* must be enabled by calling [allow_inner_par()](https://github.com/SuperV1234/ecst/blob/7f0f84a0e496d0a83ce07a41260f08528bbf79ac/include/ecst/settings/data.hpp#L118) in order to allow systems to be split in multiple *sub-tasks*. Inner parallelism strategies can be customized and composed at compile-time for particular systems, during *system signature* definition.
 
 *  *"What is the difference between making my system single-threaded vs disabling inner paralellism?"*
 

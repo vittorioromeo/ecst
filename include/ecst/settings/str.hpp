@@ -37,7 +37,7 @@ namespace ecst::settings
             std::ostringstream oss;
             oss << "multithreading: ";
 
-            if constexpr(settings::inner_parallelism_allowed(TSettings{}))
+            if constexpr(settings::inner_par_allowed(TSettings{}))
             {
                 oss << "allows inner parallelism";
             }

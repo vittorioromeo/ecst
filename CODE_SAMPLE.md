@@ -27,7 +27,7 @@ namespace c
 // Define component tags.
 namespace ct
 {
-    namespace sc = ecst::signature::component;
+    namespace sc = ecst::sig::component;
 
     constexpr auto position = ecst::tag::component::v<c::position>;
     constexpr auto velocity = ecst::tag::component::v<c::velocity>;
@@ -92,8 +92,8 @@ namespace ecst_setup
     // Builds and returns a "component signature list".
     constexpr auto make_csl()
     {
-        namespace sc = ecst::signature::component;
-        namespace slc = ecst::signature_list::component;
+        namespace sc = ecst::sig::component;
+        namespace slc = ecst::sig_list::component;
 
         // Store `c::acceleration`, `c::velocity` and `c::position` in
         // three separate contiguous buffers (SoA).
@@ -123,12 +123,12 @@ namespace ecst_setup
     constexpr auto make_ssl()
     {
         // Signature namespace aliases.
-        namespace ss = ecst::signature::system;
-        namespace sls = ecst::signature_list::system;
+        namespace ss = ecst::sig::system;
+        namespace sls = ecst::sig_list::system;
 
         // Inner parallelism aliases and definitions.
-        namespace ips = ecst::inner_parallelism::strategy;
-        namespace ipc = ecst::inner_parallelism::composer;
+        namespace ips = ecst::inner_par::strategy;
+        namespace ipc = ecst::inner_par::composer;
 
         // "Split processing evenly between cores."
         constexpr auto split_evenly_per_core =
@@ -179,15 +179,15 @@ int main()
     using namespace ecst_setup;
     namespace cs = ecst::settings;
     namespace ss = ecst::scheduler;
-    namespace sea = ecst::system_execution_adapter;
+    namespace sea = ecst::sys_exec;
 
     // Define ECST context settings.
     constexpr auto s =
         ecst::settings::make()
-            .allow_inner_parallelism()
+            .allow_inner_par()
             .fixed_entity_limit(ecst::sz_v<10000>)
-            .component_signatures(make_csl())
-            .system_signatures(make_ssl())
+            .component_sigs(make_csl())
+            .system_sigs(make_ssl())
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     // Create an ECST context.
@@ -249,7 +249,7 @@ int main()
             ecst::refresh_event::on_subscribe(st::acceleration,
                 [](auto& system, auto eid)
                 {
-                    log() << "Entity #" << eid 
+                    log() << "Entity #" << eid
                           << " subscribed to acceleration system.\n".
                 }),
             ecst::refresh_event::on_reclaim([](auto eid)

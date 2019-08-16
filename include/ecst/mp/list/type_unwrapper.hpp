@@ -14,7 +14,7 @@ namespace ecst::mp::list
 {
     namespace impl
     {
-        template <typename T>
+        template <typename>
         struct list_unwrapper;
 
         template <typename... Ts>
@@ -23,7 +23,7 @@ namespace ecst::mp::list
             using type = std::tuple<typename Ts::type...>;
         };
 
-        template <typename T>
+        template <typename>
         struct list_bh_unwrapper;
 
         template <typename... Ts>

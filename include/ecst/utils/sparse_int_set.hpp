@@ -7,7 +7,7 @@
 
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
-#include <ecst/context/types.hpp>
+#include <ecst/ctx/types.hpp>
 #include <ecst/settings.hpp>
 #include <vrm/core/experimental/sparse_set.hpp>
 #include <vrm/core/type_aliases.hpp>

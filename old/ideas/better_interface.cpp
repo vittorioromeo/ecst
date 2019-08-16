@@ -20,5 +20,5 @@ using MyManager = ecs::Manager<MySettings>;
 // new
 auto my_components =
     ecs::make_component_list(type_v<CPosition>, type_v<CVelocity>, ...);
-auto my_settings = ecs::make_settings(my_components, my_tags, my_signatures);
+auto my_settings = ecs::make_settings(my_components, my_tags, my_sigs);
 auto my_manager = ecs::make_manager(my_settings);

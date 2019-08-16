@@ -26,7 +26,7 @@ struct Game
 
     void process()
     {
-        ecs::system<some_signature>.process([](auto s, auto&, auto&, auto&)
+        ecs::system<some_sig>.process([](auto s, auto&, auto&, auto&)
             {
                 auto accessed_player_handle(s.access_handle(_player));
 

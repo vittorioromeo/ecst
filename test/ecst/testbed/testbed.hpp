@@ -114,7 +114,7 @@ namespace testbed
         constexpr auto make_csl()
         {
             namespace c = testbed::component;
-            namespace slc = ecst::signature_list::component;
+            namespace slc = ecst::sig_list::component;
 
             return slc::v<                                // .
                 c::position, c::velocity, c::acceleration // .
@@ -125,8 +125,8 @@ namespace testbed
         {
             namespace c = testbed::component;
             namespace s = testbed::system;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
             constexpr auto ssig_acceleration =      // .
                 ss::make<s::acceleration>(          // .
@@ -166,7 +166,7 @@ namespace testbed
 
             constexpr auto settings = cs::make( // .
                 cs::multithreaded(              // .
-                    cs::allow_inner_parallelism // .
+                    cs::allow_inner_par // .
                     ),                          // .
                 // cs::fixed<test_entity_count>, // .
                 cs::dynamic<test_entity_count>,
@@ -181,7 +181,7 @@ namespace testbed
 
     auto make_ecst_context()
     {
-        return ecst::context::make(ecst_setup::make_settings());
+        return ecst::ctx::make(ecst_setup::make_settings());
     }
 
     namespace c = testbed::component;

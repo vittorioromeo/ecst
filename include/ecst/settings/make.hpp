@@ -10,6 +10,6 @@
 
 namespace ecst::settings
 {
-    /// @brief Creates default settings for an `ecst::context`.
+    /// @brief Creates default settings for an `ecst::ctx`.
     constexpr auto make();
 } // namespace ecst::settings

@@ -20,9 +20,9 @@ TEST_MAIN()
 {
     using namespace ecst::mp;
 
-    namespace ss = signature::system;
-    namespace sls = signature_list::system;
-    namespace ips = inner_parallelism::strategy;
+    namespace ss = sig::system;
+    namespace sls = sig_list::system;
+    namespace ips = inner_par::strategy;
 
     // Define system tags
     constexpr auto st_a = tag::system::v<s_a>;
@@ -56,7 +56,7 @@ TEST_MAIN()
     SA_SDT(                                                         // .
         (sls::recursive_dependency_id_list(ssl, mp::wrap(ssig_a))), // .
         (mp::list::empty_v)                                         // .
-        );
+    );
 
 
 // TODO: BUG: crashes clang++
@@ -67,7 +67,7 @@ TEST_MAIN()
     SA_SDT(                                                         // .
         (sls::recursive_dependency_id_list(ssl, mp::wrap(ssig_b))), // .
         (mp::list::v<bh::size_t<0>>)                                // .
-        );
+    );
 
 
 
@@ -77,6 +77,6 @@ TEST_MAIN()
     SA_SDT(                                                         // .
         (sls::recursive_dependency_id_list(ssl, mp::wrap(ssig_c))), // .
         (mp::list::v<bh::size_t<0>, bh::size_t<1>>)                 // .
-        );
+    );
 #endif
 }

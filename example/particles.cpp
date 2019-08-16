@@ -272,8 +272,8 @@ namespace example
     {
         constexpr auto make_csl()
         {
-            namespace cs = ecst::signature::component;
-            namespace csl = ecst::signature_list::component;
+            namespace cs = ecst::sig::component;
+            namespace csl = ecst::sig_list::component;
 
             return csl::make(               // .
                 cs::make(ct::position),     // .
@@ -292,11 +292,11 @@ namespace example
 
             namespace c = example::component;
             namespace s = example::system;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
 
 
             constexpr auto test_p2 = ips::none::v();
@@ -426,7 +426,7 @@ namespace example
             // SSVU_BENCHMARK_INIT_GROUP_SCOPE_EXIT("execution");
             // SSVU_BENCHMARK_RUN_GROUP_SCOPE_EXIT("execution");
 
-            namespace sea = ::ecst::system_execution_adapter;
+            namespace sea = ::ecst::sys_exec;
 
             _ctx.step([this, dt](auto& proxy) {
                 proxy.system(st::render_colored_circle).prepare();

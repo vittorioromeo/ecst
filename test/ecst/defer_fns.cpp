@@ -3,16 +3,16 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <random>
-#include <iostream>
+#include "./settings_generator.hpp"
 #include <chrono>
 #include <ecst.hpp>
-#include "./settings_generator.hpp"
+#include <iostream>
+#include <random>
 
 namespace example
 {
-    using vrm::core::uint;
     using vrm::core::sz_t;
+    using vrm::core::uint;
 
     namespace c
     {
@@ -25,13 +25,13 @@ namespace example
         {
             int _v = 0;
         };
-    }
+    } // namespace c
 
     namespace ct
     {
         constexpr auto c0 = ecst::tag::component::v<c::c0>;
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
-    }
+    } // namespace ct
 
     namespace s
     {
@@ -40,18 +40,16 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc0 = data.get(ct::c0, eid)._v;
-                        ++cc0;
+                data.for_entities([&](auto eid) {
+                    auto& cc0 = data.get(ct::c0, eid)._v;
+                    ++cc0;
 
-                        data.defer([eid](auto& proxy)
-                            {
-                                // std::cout << "sub c0\n";
-                                auto& val = proxy.get_component(ct::c0, eid)._v;
-                                --val;
-                            });
+                    data.defer([eid](auto& proxy) {
+                        // std::cout << "sub c0\n";
+                        auto& val = proxy.get_component(ct::c0, eid)._v;
+                        --val;
                     });
+                });
             }
         };
 
@@ -60,21 +58,19 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc1 = data.get(ct::c1, eid)._v;
-                        ++cc1;
+                data.for_entities([&](auto eid) {
+                    auto& cc1 = data.get(ct::c1, eid)._v;
+                    ++cc1;
 
-                        data.defer([eid](auto& proxy)
-                            {
-                                // std::cout << "sub c1\n";
-                                auto& val = proxy.get_component(ct::c1, eid)._v;
-                                --val;
-                            });
+                    data.defer([eid](auto& proxy) {
+                        // std::cout << "sub c1\n";
+                        auto& val = proxy.get_component(ct::c1, eid)._v;
+                        --val;
                     });
+                });
             }
         };
-    }
+    } // namespace s
 
 #define SYS_TAG(x)                                     \
     namespace s                                        \
@@ -94,8 +90,8 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::c;
-            namespace sc = ecst::signature::component;
-            namespace slc = ecst::signature_list::component;
+            namespace sc = ecst::sig::component;
+            namespace slc = ecst::sig_list::component;
 
             return slc::make(sc::make(ct::c0), sc::make(ct::c1));
         }
@@ -108,9 +104,9 @@ namespace example
 
             namespace c = example::c;
             namespace s = example::s;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
-            namespace ips = ecst::inner_parallelism::strategy;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
+            namespace ips = ecst::inner_par::strategy;
 
             constexpr auto test_p = // .
                 ips::split_every_n::v(sz_v<entity_count / 8>);
@@ -127,53 +123,47 @@ namespace example
 
             return sls::make(ssig_s0, ssig_s1);
         }
-    }
+    } // namespace ecst_setup
 
     constexpr sz_t cycles = 100;
 
-    namespace sea = ::ecst::system_execution_adapter;
+    namespace sea = ::ecst::sys_exec;
 
 
-    auto test_impl_f = [](auto& ctx)
-    {
-        ctx.step([&ctx](auto& proxy)
+    auto test_impl_f = [](auto& ctx) {
+        ctx.step([&ctx](auto& proxy) {
+            for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
             {
-                for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
-                {
-                    auto e = proxy.create_entity();
-                    proxy.add_component(ct::c0, e);
-                    proxy.add_component(ct::c1, e);
-                }
-            });
+                auto e = proxy.create_entity();
+                proxy.add_component(ct::c0, e);
+                proxy.add_component(ct::c1, e);
+            }
+        });
 
         for(sz_t ic = 0; ic < cycles; ++ic)
         {
-            ctx.step([&ctx](auto& proxy)
-                {
-                    proxy.execute_systems_from(st::s0, st::s1)( // .
-                        sea::all().for_subtasks([](auto& s, auto& data)
-                            {
-                                s.process(data);
-                            }));
-                });
+            ctx.step([&ctx](auto& proxy) {
+                proxy.execute_systems_from(st::s0, st::s1)( // .
+                    sea::all().for_subtasks(
+                        [](auto& s, auto& data) { s.process(data); }));
+            });
         }
 
-        ctx.step([&ctx](auto& proxy)
+        ctx.step([&ctx](auto& proxy) {
+            for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
             {
-                for(sz_t ie = 0; ie < example::ecst_setup::entity_count; ++ie)
-                {
-                    const auto& cc0 =
-                        proxy.get_component(ct::c0, ecst::entity_id(ie))._v;
+                const auto& cc0 =
+                    proxy.get_component(ct::c0, ecst::entity_id(ie))._v;
 
-                    const auto& cc1 =
-                        proxy.get_component(ct::c1, ecst::entity_id(ie))._v;
+                const auto& cc1 =
+                    proxy.get_component(ct::c1, ecst::entity_id(ie))._v;
 
-                    TEST_ASSERT_OP(cc0, ==, 0);
-                    TEST_ASSERT_OP(cc1, ==, 0);
-                }
-            });
+                TEST_ASSERT_OP(cc0, ==, 0);
+                TEST_ASSERT_OP(cc1, ==, 0);
+            }
+        });
     };
-}
+} // namespace example
 
 int main()
 {

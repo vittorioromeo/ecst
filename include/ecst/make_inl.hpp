@@ -6,5 +6,5 @@
 #pragma once
 
 #include "./make_inl/settings_make.inl"
-#include "./make_inl/signature_component_make.inl"
-#include "./make_inl/signature_system_make.inl"
+#include "./make_inl/sig_component_make.inl"
+#include "./make_inl/sig_system_make.inl"

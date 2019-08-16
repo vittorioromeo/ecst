@@ -1,11 +1,11 @@
 #pragma once
 
-#include <exception>
-#include <string>
-#include <sstream>
-#include <iostream>
 #include <cassert>
 #include <ecst.hpp>
+#include <exception>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 #define TEST_CONST __attribute__((const))
 #define TEST_MAIN(...) int TEST_CONST main(__VA_ARGS__)
@@ -84,53 +84,49 @@ namespace test_impl
             f(error);
             impl::fail();
         }
-    }
+    } // namespace impl
 
     template <typename T>
     inline auto test_expr(
         int line, bool x, T&& lhs_result, const char* expr) noexcept
     {
-        return impl::do_test(x, [&](auto& s)
-            {
-                impl::output_line(s, line);
-                impl::output_expr(s, expr);
-                impl::output_result(s, lhs_result);
-            });
+        return impl::do_test(x, [&](auto& s) {
+            impl::output_line(s, line);
+            impl::output_expr(s, expr);
+            impl::output_result(s, lhs_result);
+        });
     }
 
     template <typename TLhs, typename TRhs>
     inline auto test_op(int line, bool x, TLhs&& lhs_result, TRhs&& rhs_result,
         const char* expr, const char* expected)
     {
-        return impl::do_test(x, [&](auto& s)
-            {
-                impl::output_line(s, line);
-                impl::output_expr(s, expr);
-                impl::output_result(s, lhs_result);
-                impl::output_expected(s, expected, rhs_result);
-            });
+        return impl::do_test(x, [&](auto& s) {
+            impl::output_line(s, line);
+            impl::output_expr(s, expr);
+            impl::output_result(s, lhs_result);
+            impl::output_expected(s, expected, rhs_result);
+        });
     }
 
     inline auto test_expr_ns(int line, bool x, const char* expr) noexcept
     {
-        return impl::do_test(x, [&](auto& s)
-            {
-                impl::output_line(s, line);
-                impl::output_expr(s, expr);
-            });
+        return impl::do_test(x, [&](auto& s) {
+            impl::output_line(s, line);
+            impl::output_expr(s, expr);
+        });
     }
 
     inline auto test_op_ns(
         int line, bool x, const char* expr, const char* expected)
     {
-        return impl::do_test(x, [&](auto& s)
-            {
-                impl::output_line(s, line);
-                impl::output_expr(s, expr);
-                impl::output_expected(s, expected);
-            });
+        return impl::do_test(x, [&](auto& s) {
+            impl::output_line(s, line);
+            impl::output_expr(s, expr);
+            impl::output_expected(s, expected);
+        });
     }
-}
+} // namespace test_impl
 
 #define TEST_ASSERT(expr)                                  \
     do                                                     \

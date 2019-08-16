@@ -1,0 +1,18 @@
+#!/bin/bash
+
+time g++ -std=c++2a \
+        -I"/c/pers/ecst/include" \
+        -I"/c/pers/vrm_core/include" \
+        -I"/c/pers/vrm_pp/include" \
+        -W -Wall -Wextra -Wpedantic \
+        -Ofast -ffast-math -ftree-vectorize -DNDEBUG \
+        -lpthread -Wa,-mbig-obj \
+        $1 -lsfml-graphics -lsfml-window -lsfml-system \
+        -fdiagnostics-color=always \
+        -o /tmp/x.x
+
+if [ $? == 0 ]; then
+    echo "Compiled." && /tmp/x.x "${@:2}"
+else
+    echo "Failed."
+fi

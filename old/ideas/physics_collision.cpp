@@ -5,7 +5,7 @@ struct TaskGroup
     {
         for(auto& t : my_tasks)
         {
-            apply(f, unwrap_signature<my_signature>(t));
+            apply(f, unwrap_sig<my_sig>(t));
         }
     }
 };
@@ -36,7 +36,7 @@ struct SPhysics
     void process(TManager& m)
     {
         // TODO: SIMD?
-        m.get_matching(*this, physics_signature)
+        m.get_matching(*this, physics_sig)
             .process([](auto& c_pos, auto& c_vel, auto& c_acc) {
                 c_vel += c_acc;
                 c_pos += c_vel;
@@ -55,13 +55,13 @@ struct SCollision
     void process(TManager& m)
     {
         // Get entities divided in subtasks
-        m.get_matching(*this, collision_signature)
+        m.get_matching(*this, collision_sig)
             .process_task<collision_task_data>([](auto& data, auto& xc_pos,
                                                    auto& xc_hitbox) {
                 data.contacts.clear();
 
                 // Get all entities in a single task
-                m.get_matching(*this, collision_signature)
+                m.get_matching(*this, collision_sig)
                     .process_unsubdivided([](auto& yc_pos, auto& yc_hitbox) {
                         if(collision(xc_pos, yc_pos, xc_hitbox, yc_hitbox))
                         {

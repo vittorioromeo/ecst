@@ -638,8 +638,8 @@ namespace example
         // Builds and returns a "component signature list".
         constexpr auto make_csl()
         {
-            namespace cs = ecst::signature::component;
-            namespace csl = ecst::signature_list::component;
+            namespace cs = ecst::sig::component;
+            namespace csl = ecst::sig_list::component;
 
             // Store `c::acceleration`, `c::velocity` and `c::position` in three
             // separate contiguous buffers (SoA).
@@ -674,12 +674,12 @@ namespace example
         constexpr auto make_ssl()
         {
             // Signature namespace aliases.
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
             // Inner parallelism aliases and definitions.
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
             constexpr auto none = ips::none::v();
             constexpr auto split_evenly_per_core =
                 ipc::none_below_threshold::v(ecst::sz_v<100>, // .
@@ -824,7 +824,7 @@ namespace example
     template <typename TContext, typename TRenderTarget>
     void update_ctx(TContext& ctx, TRenderTarget& rt, ft dt)
     {
-        namespace sea = ::ecst::system_execution_adapter;
+        namespace sea = ::ecst::sys_exec;
 
         auto ft_tags =
             sea::t(st::acceleration, st::velocity, st::cycle_color, st::life);
@@ -880,14 +880,14 @@ int main()
     // Define ECST context settings.
     constexpr auto s =                        // .
         ecst::settings::make()                // .
-            .allow_inner_parallelism()        // .
+            .allow_inner_par()        // .
             .fixed_entity_limit(entity_limit) // .
-            .component_signatures(make_csl()) // .
-            .system_signatures(make_ssl())    // .
+            .component_sigs(make_csl()) // .
+            .system_sigs(make_ssl())    // .
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     // Create an ECST context.
-    auto ctx = ecst::context::make_uptr(s);
+    auto ctx = ecst::ctx::make_uptr(s);
 
     // Run the simulation.
     run_simulation(*ctx);

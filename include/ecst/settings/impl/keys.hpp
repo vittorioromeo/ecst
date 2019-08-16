@@ -16,8 +16,8 @@ namespace ecst::settings
         {
             constexpr auto threading = sz_v<0>;
             constexpr auto entity_storage = sz_v<1>;
-            constexpr auto component_signature_list = sz_v<2>;
-            constexpr auto system_signature_list = sz_v<3>;
+            constexpr auto component_sig_list = sz_v<2>;
+            constexpr auto system_sig_list = sz_v<3>;
             constexpr auto scheduler = sz_v<4>;
             constexpr auto refresh_parallelism = sz_v<5>;
         } // namespace keys

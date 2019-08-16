@@ -14,7 +14,7 @@ namespace ecst::mp
     using ecst::sz_t_;
 
     template <std::size_t TX>
-    constexpr bh::size_t<TX> sz_v{};
+    inline constexpr bh::size_t<TX> sz_v{};
 
     using ecst::int_;
     using ecst::int_v;

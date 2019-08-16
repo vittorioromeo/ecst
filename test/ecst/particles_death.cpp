@@ -17,7 +17,7 @@
         namespace ct                                          \
         {                                                     \
             constexpr auto x = ecst::tag::component::v<c::x>; \
-            [[maybe_unused]] void VRM_PP_CAT(   \
+            [[maybe_unused]] void VRM_PP_CAT(                 \
                 x, __LINE__, warning_suppressor)()            \
             {                                                 \
                 (void)x;                                      \
@@ -26,24 +26,24 @@
     }                                                         \
     ECST_SPECIALIZE_COMPONENT_NAME(example::c::x)
 
-#define EXAMPLE_SYSTEM_TAG(x)                               \
-                                                            \
-    namespace example                                       \
-    {                                                       \
-        namespace s                                         \
-        {                                                   \
-            struct x;                                       \
-        }                                                   \
-        namespace st                                        \
-        {                                                   \
-            constexpr auto x = ecst::tag::system::v<s::x>;  \
-            [[maybe_unused]] void VRM_PP_CAT( \
-                x, __LINE__, warning_suppressor)()          \
-            {                                               \
-                (void)x;                                    \
-            }                                               \
-        }                                                   \
-    }                                                       \
+#define EXAMPLE_SYSTEM_TAG(x)                              \
+                                                           \
+    namespace example                                      \
+    {                                                      \
+        namespace s                                        \
+        {                                                  \
+            struct x;                                      \
+        }                                                  \
+        namespace st                                       \
+        {                                                  \
+            constexpr auto x = ecst::tag::system::v<s::x>; \
+            [[maybe_unused]] void VRM_PP_CAT(              \
+                x, __LINE__, warning_suppressor)()         \
+            {                                              \
+                (void)x;                                   \
+            }                                              \
+        }                                                  \
+    }                                                      \
     ECST_SPECIALIZE_SYSTEM_NAME(example::s::x)
 
 using ecst::sz_t;
@@ -353,8 +353,8 @@ namespace example
         // Builds and returns a "component signature list".
         constexpr auto make_csl()
         {
-            namespace cs = ecst::signature::component;
-            namespace csl = ecst::signature_list::component;
+            namespace cs = ecst::sig::component;
+            namespace csl = ecst::sig_list::component;
 
             // Store `c::acceleration`, `c::velocity` and `c::position` in three
             // separate contiguous buffers (SoA).
@@ -389,12 +389,12 @@ namespace example
         constexpr auto make_ssl()
         {
             // Signature namespace aliases.
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
             // Inner parallelism aliases and definitions.
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
             constexpr auto none = ips::none::v();
 
             // TODO:
@@ -541,7 +541,7 @@ namespace example
     template <typename TContext>
     void update_ctx(TContext& ctx, ft dt)
     {
-        namespace sea = ::ecst::system_execution_adapter;
+        namespace sea = ::ecst::sys_exec;
 
         auto ft_tags =
             sea::t(st::acceleration, st::velocity, st::cycle_color, st::life);

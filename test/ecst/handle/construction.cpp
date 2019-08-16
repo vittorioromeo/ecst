@@ -18,11 +18,11 @@ TEST_MAIN()
     constexpr auto ct0 = ecst::tag::component::v<c0>;
     constexpr auto st0 = ecst::tag::system::v<s0>;
 
-    constexpr auto cs0 = ecst::signature::component::make(ct0);
-    constexpr auto ss0 = ecst::signature::system::make(st0);
+    constexpr auto cs0 = ecst::sig::component::make(ct0);
+    constexpr auto ss0 = ecst::sig::system::make(st0);
 
-    constexpr auto csl = ecst::signature_list::component::make(cs0);
-    constexpr auto ssl = ecst::signature_list::system::make(ss0);
+    constexpr auto csl = ecst::sig_list::component::make(cs0);
+    constexpr auto ssl = ecst::sig_list::system::make(ss0);
 
     auto test_impl = [](auto& ctx)
     {
@@ -35,7 +35,7 @@ TEST_MAIN()
         }
 
         {
-            ct_handle h{ecst::context::entity::uninitialized_handle};
+            ct_handle h{ecst::ctx::entity::uninitialized_handle};
             (void)h;
         }
 

@@ -3,16 +3,16 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <random>
-#include <iostream>
+#include "./settings_generator.hpp"
 #include <chrono>
 #include <ecst.hpp>
-#include "./settings_generator.hpp"
+#include <iostream>
+#include <random>
 
 namespace example
 {
-    using vrm::core::uint;
     using vrm::core::sz_t;
+    using vrm::core::uint;
 
     namespace c
     {
@@ -25,13 +25,13 @@ namespace example
         {
             int _v = 0;
         };
-    }
+    } // namespace c
 
     namespace ct
     {
         constexpr auto c0 = ecst::tag::component::v<c::c0>;
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
-    }
+    } // namespace ct
 
     namespace s
     {
@@ -40,11 +40,10 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc0 = data.get(ct::c0, eid)._v;
-                        ++cc0;
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& cc0 = data.get(ct::c0, eid)._v;
+                    ++cc0;
+                });
             }
         };
 
@@ -53,14 +52,13 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc1 = data.get(ct::c1, eid)._v;
-                        ++cc1;
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& cc1 = data.get(ct::c1, eid)._v;
+                    ++cc1;
+                });
             }
         };
-    }
+    } // namespace s
 
 #define SYS_TAG(x)                                     \
     namespace s                                        \
@@ -80,8 +78,8 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::c;
-            namespace sc = ecst::signature::component;
-            namespace slc = ecst::signature_list::component;
+            namespace sc = ecst::sig::component;
+            namespace slc = ecst::sig_list::component;
 
             return slc::make(sc::make(ct::c0), sc::make(ct::c1));
         }
@@ -94,9 +92,9 @@ namespace example
 
             namespace c = example::c;
             namespace s = example::s;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
-            namespace ips = ecst::inner_parallelism::strategy;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
+            namespace ips = ecst::inner_par::strategy;
 
             constexpr auto test_p = // .
                 ips::split_every_n::v(sz_v<entity_count / 8>);
@@ -113,9 +111,9 @@ namespace example
 
             return sls::make(ssig_s0, ssig_s1);
         }
-    }
+    } // namespace ecst_setup
 
-    namespace sea = ::ecst::system_execution_adapter;
+    namespace sea = ::ecst::sys_exec;
 
     std::atomic<sz_t> subs_0{0};
     std::atomic<sz_t> subs_1{0};
@@ -123,8 +121,7 @@ namespace example
     std::atomic<sz_t> unsubs_1{0};
     std::atomic<sz_t> reclaims{0};
 
-    auto test_impl_f = [](auto& ctx)
-    {
+    auto test_impl_f = [](auto& ctx) {
         subs_0 = 0;
         subs_1 = 0;
         unsubs_0 = 0;
@@ -132,8 +129,7 @@ namespace example
         reclaims = 0;
 
         ctx.step(
-            [&ctx](auto& proxy)
-            {
+            [&ctx](auto& proxy) {
                 for(sz_t ie = 0; ie < 1000; ++ie)
                 {
                     auto e0 = proxy.create_entity();
@@ -147,47 +143,32 @@ namespace example
                     proxy.add_component(ct::c1, e01);
                 }
             },
-            ecst::refresh_event::on_subscribe(st::s0,
-                [](auto&, auto)
-                {
-                    ++subs_0;
-                }),
-            ecst::refresh_event::on_subscribe(st::s1, [](auto&, auto)
-                {
-                    ++subs_1;
-                }));
+            ecst::refresh_event::on_subscribe(
+                st::s0, [](auto&, auto) { ++subs_0; }),
+            ecst::refresh_event::on_subscribe(
+                st::s1, [](auto&, auto) { ++subs_1; }));
 
         TEST_ASSERT_OP(subs_0.load(), ==, 2000);
         TEST_ASSERT_OP(subs_1.load(), ==, 2000);
 
         ctx.step(
-            [&ctx](auto& proxy)
-            {
+            [&ctx](auto& proxy) {
                 for(sz_t ie = 0; ie < 3000; ++ie)
                 {
                     proxy.kill_entity(ecst::entity_id{ie});
                 }
             },
-            ecst::refresh_event::on_unsubscribe(st::s0,
-                [](auto&, auto)
-                {
-                    ++unsubs_0;
-                }),
-            ecst::refresh_event::on_unsubscribe(st::s1,
-                [](auto&, auto)
-                {
-                    ++unsubs_1;
-                }),
-            ecst::refresh_event::on_reclaim([](auto)
-                {
-                    ++reclaims;
-                }));
+            ecst::refresh_event::on_unsubscribe(
+                st::s0, [](auto&, auto) { ++unsubs_0; }),
+            ecst::refresh_event::on_unsubscribe(
+                st::s1, [](auto&, auto) { ++unsubs_1; }),
+            ecst::refresh_event::on_reclaim([](auto) { ++reclaims; }));
 
         TEST_ASSERT_OP(unsubs_0.load(), ==, subs_0.load());
         TEST_ASSERT_OP(unsubs_1.load(), ==, subs_1.load());
         TEST_ASSERT_OP(reclaims.load(), ==, 3000);
     };
-}
+} // namespace example
 
 int main()
 {

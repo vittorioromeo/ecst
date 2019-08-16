@@ -3,7 +3,7 @@
     {
         "vrm::core": "vrmc",
         "ecst": "",
-        "system_execution_adapter": "sea",
+        "sys_exec": "sea",
         "context": "ctx",
         "tag::system": "tag_s",
         "tag::component": "tag_c",

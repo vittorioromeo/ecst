@@ -9,8 +9,8 @@
 #include "./impl/keys.hpp"
 #include <ecst/config.hpp>
 #include <ecst/mp.hpp>
-#include <ecst/signature_list/component/is_signature_list.hpp>
-#include <ecst/signature_list/system/is_signature_list.hpp>
+#include <ecst/sig_list/component/is_sig_list.hpp>
+#include <ecst/sig_list/system/is_sig_list.hpp>
 
 namespace ecst::settings
 {
@@ -26,7 +26,7 @@ namespace ecst::settings
 
         public:
 // TODO:
-#define TEMP(x) mp::option_map::type_of<TOptions, decltype(x)>
+#define TEMP(x) mp::opt_map::type_of<TOptions, decltype(x)>
 
             using scheduler_type = TEMP(keys::scheduler);
             using refresh_parallelism = TEMP(keys::refresh_parallelism);
@@ -73,15 +73,15 @@ namespace ecst::settings
 
             constexpr auto get_csl() const noexcept
             {
-                auto result = _map.at(keys::component_signature_list);
-                ECST_S_ASSERT_DT(signature_list::component::valid(result));
+                auto result = _map.at(keys::component_sig_list);
+                ECST_S_ASSERT_DT(sig_list::component::valid(result));
                 return decltype(result){};
             }
 
             constexpr auto get_ssl() const noexcept
             {
-                auto result = _map.at(keys::system_signature_list);
-                ECST_S_ASSERT_DT(signature_list::system::valid(result));
+                auto result = _map.at(keys::system_sig_list);
+                ECST_S_ASSERT_DT(sig_list::system::valid(result));
                 return decltype(result){};
             }
 
@@ -115,14 +115,14 @@ namespace ecst::settings
 
 
 
-            constexpr auto allow_inner_parallelism() const noexcept
+            constexpr auto allow_inner_par() const noexcept
             {
-                return set_threading(impl::v_allow_inner_parallelism);
+                return set_threading(impl::v_allow_inner_par);
             }
 
-            constexpr auto disallow_inner_parallelism() const noexcept
+            constexpr auto disallow_inner_par() const noexcept
             {
-                return set_threading(impl::v_disallow_inner_parallelism);
+                return set_threading(impl::v_disallow_inner_par);
             }
 
             constexpr auto singlethreaded() const noexcept
@@ -143,17 +143,17 @@ namespace ecst::settings
             }
 
             template <typename TNewComponentSignatureList>
-            constexpr auto component_signatures(
+            constexpr auto component_sigs(
                 TNewComponentSignatureList new_csl) const noexcept
             {
-                return change_self(keys::component_signature_list, new_csl);
+                return change_self(keys::component_sig_list, new_csl);
             }
 
             template <typename TNewSystemSignatureList>
-            constexpr auto system_signatures(
+            constexpr auto system_sigs(
                 TNewSystemSignatureList new_ssl) const noexcept
             {
-                return change_self(keys::system_signature_list, new_ssl);
+                return change_self(keys::system_sig_list, new_ssl);
             }
 
             template <typename TNewScheduler>
@@ -185,13 +185,13 @@ namespace ecst::settings
     }
 
     template <typename TSettings>
-    constexpr auto system_signature_list(TSettings s)
+    constexpr auto system_sig_list(TSettings s)
     {
         return s.get_ssl();
     }
 
     template <typename TSettings>
-    constexpr auto component_signature_list(TSettings s)
+    constexpr auto component_sig_list(TSettings s)
     {
         return s.get_csl();
     }
@@ -203,13 +203,13 @@ namespace ecst::settings
     template <typename TSettings>
     constexpr auto system_count()
     {
-        return bh::size(system_signature_list(TSettings{}));
+        return bh::size(system_sig_list(TSettings{}));
     }
 
     template <typename TSettings>
-    constexpr auto inner_parallelism_allowed(TSettings s)
+    constexpr auto inner_par_allowed(TSettings s)
     {
-        return bh::equal(s.get_threading(), impl::v_allow_inner_parallelism);
+        return bh::equal(s.get_threading(), impl::v_allow_inner_par);
     }
 
     template <typename TSettings>

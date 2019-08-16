@@ -310,7 +310,7 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::component;
-            namespace slc = ecst::signature_list::component;
+            namespace slc = ecst::sig_list::component;
 
             return slc::v<                                 // .
                 c::position, c::velocity, c::acceleration, // .
@@ -325,11 +325,11 @@ namespace example
 
             namespace c = example::component;
             namespace s = example::system;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
 
 
             constexpr auto test_p =                       // .

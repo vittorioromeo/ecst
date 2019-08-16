@@ -3,20 +3,20 @@
 // AFL License page: http://opensource.org/licenses/AFL-3.0
 // http://vittorioromeo.info | vittorio.romeo@outlook.com
 
-#include <random>
-#include <iostream>
-#include <map>
-#include <chrono>
-#include <ecst.hpp>
 #include "../utils/test_utils.hpp"
 #include "./settings_generator.hpp"
+#include <chrono>
+#include <ecst.hpp>
+#include <iostream>
+#include <map>
+#include <random>
 
 namespace example
 {
     using ft = float;
 
-    using vrm::core::uint;
     using vrm::core::sz_t;
+    using vrm::core::uint;
 
     namespace component
     {
@@ -29,33 +29,33 @@ namespace example
         {
             int _v;
         };
-    }
+    } // namespace component
 
     namespace c = example::component;
 
     namespace ct
     {
-        namespace sct = ecst::signature::component;
+        namespace sct = ecst::sig::component;
 
         constexpr auto c0 = ecst::tag::component::v<c::c0>;
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
-    }
+    } // namespace ct
 
     namespace system
     {
         struct s0;
         struct s1;
         struct s01;
-    }
+    } // namespace system
 
     namespace st
     {
-        namespace sct = ecst::signature::system;
+        namespace sct = ecst::sig::system;
 
         constexpr auto s0 = ecst::tag::system::v<system::s0>;
         constexpr auto s1 = ecst::tag::system::v<system::s1>;
         constexpr auto s01 = ecst::tag::system::v<system::s01>;
-    }
+    } // namespace st
 
     namespace system
     {
@@ -64,11 +64,10 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc0 = data.get(ct::c0, eid);
-                        ++cc0._v;
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& cc0 = data.get(ct::c0, eid);
+                    ++cc0._v;
+                });
             }
         };
 
@@ -77,11 +76,10 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc1 = data.get(ct::c1, eid);
-                        ++cc1._v;
-                    });
+                data.for_entities([&](auto eid) {
+                    auto& cc1 = data.get(ct::c1, eid);
+                    ++cc1._v;
+                });
             }
         };
 
@@ -90,17 +88,16 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        auto& cc0 = data.get(ct::c0, eid);
-                        auto& cc1 = data.get(ct::c1, eid);
+                data.for_entities([&](auto eid) {
+                    auto& cc0 = data.get(ct::c0, eid);
+                    auto& cc1 = data.get(ct::c1, eid);
 
-                        (void)cc0;
-                        (void)cc1;
-                    });
+                    (void)cc0;
+                    (void)cc1;
+                });
             }
         };
-    }
+    } // namespace system
 
     constexpr auto entity_count = ecst::sz_v<200>;
 
@@ -109,8 +106,8 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::component;
-            namespace sc = ecst::signature::component;
-            namespace slc = ecst::signature_list::component;
+            namespace sc = ecst::sig::component;
+            namespace slc = ecst::sig_list::component;
 
             return slc::make(sc::make(ct::c0), sc::make(ct::c1));
         }
@@ -121,16 +118,16 @@ namespace example
 
             namespace c = example::component;
             namespace s = example::system;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
 
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
 
             constexpr auto test_p =                     // .
                 ipc::none_below_threshold::v(sz_v<100>, // .
                     ips::split_evenly::v(sz_v<8>)       // .
-                    );
+                );
 
             constexpr auto ssig_s0 =     // .
                 ss::make(st::s0)         // .
@@ -149,7 +146,7 @@ namespace example
 
             return sls::make(ssig_s0, ssig_s1, ssig_s01);
         }
-    }
+    } // namespace ecst_setup
 
     namespace c = example::component;
     namespace s = example::system;
@@ -157,8 +154,7 @@ namespace example
     std::random_device rnd_device;
     std::default_random_engine rnd_gen{rnd_device()};
 
-    auto rndi = [](int min, int max)
-    {
+    auto rndi = [](int min, int max) {
         using dist_t = std::uniform_int_distribution<int>;
         return dist_t(min, max)(rnd_gen);
     };
@@ -211,46 +207,42 @@ namespace example
                 TEST_ASSERT(!_ctx.alive(h));
             }
 
-            namespace sea = ::ecst::system_execution_adapter;
+            namespace sea = ::ecst::sys_exec;
 
-            _ctx.step([this](auto& proxy)
+            _ctx.step([this](auto& proxy) {
+                int to_kill;
+                handle h;
+
+                if(!_ctx.any_entity_in(st::s0))
                 {
-                    int to_kill;
-                    handle h;
+                    std::cout << "finished\n";
 
-                    if(!_ctx.any_entity_in(st::s0))
+                    --times;
+
+                    if(times == 0)
                     {
-                        std::cout << "finished\n";
-
-                        --times;
-
-                        if(times == 0)
-                        {
-                            _running = false;
-                        }
-                        else
-                        {
-                            this->refill(proxy);
-                        }
+                        _running = false;
                     }
                     else
                     {
-                        do
-                        {
-                            to_kill = rndi(0, entity_count);
-                            h = _hs[to_kill];
-                        } while(!proxy.valid_handle(h) || !_ctx.alive(h));
-
-                        proxy.kill_entity(proxy.access(h));
-                        _hs_killed.emplace_back(h);
-                        proxy.execute_systems_from(
-                            st::s0, st::s1, st::s01)( // .
-                            sea::all().for_subtasks([](auto& s, auto& data)
-                                {
-                                    s.process(data);
-                                }));
+                        this->refill(proxy);
                     }
-                });
+                }
+                else
+                {
+                    do
+                    {
+                        to_kill = rndi(0, entity_count);
+                        h = _hs[to_kill];
+                    } while(!proxy.valid_handle(h) || !_ctx.alive(h));
+
+                    proxy.kill_entity(proxy.access(h));
+                    _hs_killed.emplace_back(h);
+                    proxy.execute_systems_from(st::s0, st::s1, st::s01)( // .
+                        sea::all().for_subtasks(
+                            [](auto& s, auto& data) { s.process(data); }));
+                }
+            });
         }
 
         template <typename TProxy>
@@ -274,10 +266,7 @@ namespace example
         void init()
         {
 
-            _ctx.step([this](auto& proxy)
-                {
-                    this->refill(proxy);
-                });
+            _ctx.step([this](auto& proxy) { this->refill(proxy); });
 
             init_loops();
         }
@@ -288,15 +277,14 @@ namespace example
             init();
         }
     };
-}
+} // namespace example
 
 int main()
 {
     using namespace example;
     using namespace example::ecst_setup;
 
-    auto test_impl = [&](auto& ctx)
-    {
+    auto test_impl = [&](auto& ctx) {
         using ct = ECST_DECAY_DECLTYPE(ctx);
         game_app<ct> a{ctx};
         (void)a;

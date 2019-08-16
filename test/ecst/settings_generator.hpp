@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <random>
-#include <iostream>
+#include "../utils/test_utils.hpp"
 #include <chrono>
+#include <ecst/ctx.hpp>
 #include <ecst/mp.hpp>
 #include <ecst/settings.hpp>
-#include <ecst/context.hpp>
-#include "../utils/test_utils.hpp"
+#include <iostream>
+#include <random>
 
 namespace test
 {
@@ -30,8 +30,8 @@ namespace test
 
             // List of threading policies.
             auto l_threading = mp::list::make( // .
-                ecst::settings::impl::v_allow_inner_parallelism,
-                ecst::settings::impl::v_disallow_inner_parallelism);
+                ecst::settings::impl::v_allow_inner_par,
+                ecst::settings::impl::v_disallow_inner_par);
 
             // List of storage policies.
             auto l_storage = mp::list::make( // .
@@ -39,17 +39,15 @@ namespace test
                 ecst::settings::dynamic<500>);
 
             return bh::fold_right(l_threading, mp::list::empty_v,
-                [=](auto x_threading, auto xacc)
-                {
+                [=](auto x_threading, auto xacc) {
                     auto fold2 = bh::fold_right(l_storage, mp::list::empty_v,
-                        [=](auto y_storage, auto yacc)
-                        {
+                        [=](auto y_storage, auto yacc) {
                             auto zsettings =                    // .
                                 cs::make()                      // .
                                     .set_threading(x_threading) // .
                                     .set_storage(y_storage)     // .
-                                    .component_signatures(csl)  // .
-                                    .system_signatures(ssl)     // .
+                                    .component_sigs(csl)        // .
+                                    .system_sigs(ssl)           // .
                                     .scheduler(
                                         cs::scheduler<ss::s_atomic_counter>);
 
@@ -64,7 +62,7 @@ namespace test
         template <typename TSettings>
         auto make_ecst_context(TSettings)
         {
-            return ecst::context::make(TSettings{});
+            return ecst::ctx::make(TSettings{});
         }
 
         template <typename TSettings, typename TF>
@@ -77,7 +75,7 @@ namespace test
 
             f(ctx);
         }
-    }
+    } // namespace impl
 
     template <typename TF, typename TEntityCount, typename TCSL, typename TSSL>
     void run_tests(
@@ -92,9 +90,8 @@ namespace test
 
         for(sz_t t = 0; t < times; ++t)
         {
-            ecst::bh::for_each(impl::make_settings_list(ec, csl, ssl),
-                [f, &silent](auto s)
-                {
+            ecst::bh::for_each(
+                impl::make_settings_list(ec, csl, ssl), [f, &silent](auto s) {
                     if(!silent)
                     {
                         std::cout
@@ -120,4 +117,4 @@ namespace test
                 });
         }
     }
-}
+} // namespace test

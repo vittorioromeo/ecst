@@ -1,22 +1,26 @@
-#include <ecst.hpp>
 #include "./settings_generator.hpp"
+#include <ecst.hpp>
 
 namespace example
 {
-    using vrm::core::uint;
     using vrm::core::sz_t;
+    using vrm::core::uint;
 
     namespace c
     {
-        struct c0 { };
-        struct c1 { };
-    }
+        struct c0
+        {
+        };
+        struct c1
+        {
+        };
+    } // namespace c
 
     namespace ct
     {
         constexpr auto c0 = ecst::tag::component::v<c::c0>;
         constexpr auto c1 = ecst::tag::component::v<c::c1>;
-    }
+    } // namespace ct
 
     namespace s
     {
@@ -25,17 +29,15 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        TEST_ASSERT(data.has(ct::c0, eid));
-                        TEST_ASSERT(!data.has(ct::c1, eid));
+                data.for_entities([&](auto eid) {
+                    TEST_ASSERT(data.has(ct::c0, eid));
+                    TEST_ASSERT(!data.has(ct::c1, eid));
 
-                        data.defer([eid](auto& proxy)
-                            {
-                                proxy.remove_component(ct::c0, eid);
-                                proxy.add_component(ct::c1, eid);
-                            });
+                    data.defer([eid](auto& proxy) {
+                        proxy.remove_component(ct::c0, eid);
+                        proxy.add_component(ct::c1, eid);
                     });
+                });
             }
         };
 
@@ -44,20 +46,18 @@ namespace example
             template <typename TData>
             void process(TData& data)
             {
-                data.for_entities([&](auto eid)
-                    {
-                        TEST_ASSERT(!data.has(ct::c0, eid));
-                        TEST_ASSERT(data.has(ct::c1, eid));
+                data.for_entities([&](auto eid) {
+                    TEST_ASSERT(!data.has(ct::c0, eid));
+                    TEST_ASSERT(data.has(ct::c1, eid));
 
-                        data.defer([eid](auto& proxy)
-                            {
-                                proxy.remove_component(ct::c1, eid);
-                                proxy.add_component(ct::c0, eid);
-                            });
+                    data.defer([eid](auto& proxy) {
+                        proxy.remove_component(ct::c1, eid);
+                        proxy.add_component(ct::c0, eid);
                     });
+                });
             }
         };
-    }
+    } // namespace s
 
 #define SYS_TAG(x)                                     \
     namespace s                                        \
@@ -77,11 +77,10 @@ namespace example
         constexpr auto make_csl()
         {
             namespace c = example::c;
-            namespace sc = ecst::signature::component;
-            namespace slc = ecst::signature_list::component;
+            namespace sc = ecst::sig::component;
+            namespace slc = ecst::sig_list::component;
 
-            return slc::make(
-                sc::make(ct::c0).contiguous_buffer(),
+            return slc::make(sc::make(ct::c0).contiguous_buffer(),
                 sc::make(ct::c1).contiguous_buffer());
         }
 
@@ -93,14 +92,13 @@ namespace example
 
             namespace c = example::c;
             namespace s = example::s;
-            namespace ss = ecst::signature::system;
-            namespace sls = ecst::signature_list::system;
-            namespace ips = ecst::inner_parallelism::strategy;
-            namespace ipc = ecst::inner_parallelism::composer;
+            namespace ss = ecst::sig::system;
+            namespace sls = ecst::sig_list::system;
+            namespace ips = ecst::inner_par::strategy;
+            namespace ipc = ecst::inner_par::composer;
 
-            constexpr auto test_p =
-                ipc::none_below_threshold::v(ecst::sz_v<10>,
-                    ips::split_evenly_fn::v_cores());
+            constexpr auto test_p = ipc::none_below_threshold::v(
+                ecst::sz_v<10>, ips::split_evenly_fn::v_cores());
 
             constexpr auto ssig_s0 =     // .
                 ss::make(st::s0)         // .
@@ -108,51 +106,43 @@ namespace example
                     .write(ct::c0);      // .
 
             constexpr auto ssig_s1 =
-                ss::make(st::s1)
-                    .parallelism(test_p)
-                    .write(ct::c1);
+                ss::make(st::s1).parallelism(test_p).write(ct::c1);
 
             return sls::make(ssig_s0, ssig_s1);
         }
-    }
+    } // namespace ecst_setup
 
-    namespace sea = ::ecst::system_execution_adapter;
+    namespace sea = ::ecst::sys_exec;
 
-    auto execute_systems = [](auto& proxy)
-    {
+    auto execute_systems = [](auto& proxy) {
         proxy.execute_systems_from(st::s0, st::s1)( // .
-            sea::all().for_subtasks([](auto& s, auto& data)
-                {
-                    s.process(data);
-                }));
+            sea::all().for_subtasks(
+                [](auto& s, auto& data) { s.process(data); }));
     };
 
-    auto test_impl_f = [](auto& ctx)
-    {
-        ctx.step([&](auto& proxy)
+    auto test_impl_f = [](auto& ctx) {
+        ctx.step([&](auto& proxy) {
+            for(sz_t ie = 0; ie < ecst_setup::entity_count; ++ie)
             {
-                for(sz_t ie = 0; ie < ecst_setup::entity_count; ++ie)
-                {
-                    auto e = proxy.create_entity();
-                    TEST_ASSERT(!proxy.has_component(ct::c0, ecst::entity_id(ie)));
-                    TEST_ASSERT(!proxy.has_component(ct::c1, ecst::entity_id(ie)));
-                    proxy.add_component(ct::c0, e);
-                }
-            });
+                auto e = proxy.create_entity();
+                TEST_ASSERT(!proxy.has_component(ct::c0, ecst::entity_id(ie)));
+                TEST_ASSERT(!proxy.has_component(ct::c1, ecst::entity_id(ie)));
+                proxy.add_component(ct::c0, e);
+            }
+        });
 
         ctx.step(execute_systems);
         ctx.step(execute_systems);
 
-        ctx.step([&](auto& proxy)
+        ctx.step([&](auto& proxy) {
+            for(sz_t ie = 0; ie < ecst_setup::entity_count; ++ie)
             {
-                for(sz_t ie = 0; ie < ecst_setup::entity_count; ++ie)
-                {
-                    TEST_ASSERT(proxy.has_component(ct::c0, ecst::entity_id(ie)));
-                    TEST_ASSERT(!proxy.has_component(ct::c1, ecst::entity_id(ie)));
-                }
-            });
+                TEST_ASSERT(proxy.has_component(ct::c0, ecst::entity_id(ie)));
+                TEST_ASSERT(!proxy.has_component(ct::c1, ecst::entity_id(ie)));
+            }
+        });
     };
-}
+} // namespace example
 
 int main()
 {

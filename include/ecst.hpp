@@ -24,19 +24,19 @@
 #include "./ecst/hardware.hpp"
 
 // Inner parallelism strategies.
-#include "./ecst/inner_parallelism.hpp"
+#include "./ecst/inner_par.hpp"
 
 // Component and system signatures.
 #include "./ecst/tag.hpp"
 
 // Component and system signatures.
-#include "./ecst/signature.hpp"
+#include "./ecst/sig.hpp"
 
 // Component and system signature lists.
-#include "./ecst/signature_list.hpp"
+#include "./ecst/sig_list.hpp"
 
 // System execution function adapters.
-#include "./ecst/system_execution_adapter.hpp"
+#include "./ecst/sys_exec.hpp"
 
 // Thread pool utility class.
 #include "./ecst/thread_pool.hpp"
@@ -45,7 +45,7 @@
 #include "./ecst/settings.hpp"
 
 // Context/manager class.
-#include "./ecst/context.hpp"
+#include "./ecst/ctx.hpp"
 
 // Implementation of make functions (default settings).
 #include "./ecst/make_inl.hpp"
