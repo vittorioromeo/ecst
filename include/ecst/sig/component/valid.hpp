@@ -13,15 +13,15 @@ namespace ecst::sig::component
 {
     namespace impl
     {
-        template <typename T>
-        using valid_impl = std::is_base_of<impl::base_data, T>;
-
         struct valid_t
         {
             template <typename... Ts>
             constexpr auto operator()(Ts...) const noexcept
             {
-                return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
+                // TODO: why doesn't it work?
+                // return std::conjunction_v<std::is_base_of<impl::base_data, Ts>...>;
+                // return (std::is_base_of_v<impl::base_data, Ts> && ...);
+                return mp::list::all_variadic(std::is_base_of<impl::base_data, Ts>{}...);
             }
         };
     } // namespace impl

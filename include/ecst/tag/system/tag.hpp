@@ -40,7 +40,7 @@ namespace ecst::tag::system
             template <typename... Ts>
             constexpr auto operator()(Ts...) const noexcept
             {
-                return mp::list::all_variadic(is_tag_impl<Ts>...);
+                return (is_tag_impl<Ts> && ...);
             }
         };
     } // namespace impl

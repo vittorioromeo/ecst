@@ -13,15 +13,13 @@ namespace ecst::sig::system
 {
     namespace impl
     {
-        template <typename T>
-        using valid_impl = is_specialization_of_t<T, impl::data>;
-
         struct valid_t
         {
             template <typename... Ts>
             constexpr auto operator()(Ts...) const noexcept
             {
-                return mp::list::all_variadic(impl::valid_impl<Ts>{}...);
+                return mp::list::all_variadic(
+                    is_specialization_of_t<Ts, impl::data>{}...);
             }
         };
     } // namespace impl

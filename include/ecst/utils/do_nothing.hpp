@@ -20,5 +20,5 @@ namespace ecst::impl
     };
 
     /// @brief Instance of `do_nothing_t`.
-    constexpr impl::do_nothing_t do_nothing{};
+    inline constexpr impl::do_nothing_t do_nothing{};
 } // namespace ecst::impl

@@ -10,40 +10,37 @@
 #include <ecst/mp/list.hpp>
 #include <ecst/tag/system.hpp>
 
-namespace ecst::sig::system
+namespace ecst::sig::system::impl
 {
-    namespace impl
+    namespace keys
     {
-        namespace keys
+        constexpr auto parallelism = sz_v<0>;
+        constexpr auto dependencies = sz_v<1>;
+        constexpr auto read_components = sz_v<2>;
+        constexpr auto write_components = sz_v<3>;
+        constexpr auto output = sz_v<4>;
+
+        // TODO: rename?
+        constexpr auto kind = sz_v<5>;
+    } // namespace keys
+
+    // TODO: move, docs, rename
+    namespace kind
+    {
+        struct stateless_t
         {
-            constexpr auto parallelism = sz_v<0>;
-            constexpr auto dependencies = sz_v<1>;
-            constexpr auto read_components = sz_v<2>;
-            constexpr auto write_components = sz_v<3>;
-            constexpr auto output = sz_v<4>;
+        };
 
-            // TODO: rename?
-            constexpr auto kind = sz_v<5>;
-        } // namespace keys
-
-        // TODO: move, docs, rename
-        namespace kind
+        struct stateful_t
         {
-            struct stateless_t
-            {
-            };
+        };
 
-            struct stateful_t
-            {
-            };
+        struct entity_t
+        {
+        };
 
-            struct entity_t
-            {
-            };
-
-            constexpr stateless_t stateless{};
-            constexpr stateful_t stateful{};
-            constexpr entity_t entity{};
-        } // namespace kind
-    }     // namespace impl
-} // namespace ecst::sig::system
+        constexpr stateless_t stateless{};
+        constexpr stateful_t stateful{};
+        constexpr entity_t entity{};
+    } // namespace kind
+} // namespace ecst::sig::system::impl

@@ -40,13 +40,13 @@ namespace ecst::tag::component
             template <typename... Ts>
             constexpr auto operator()(Ts...) const noexcept
             {
-                return mp::list::all_variadic(is_tag_impl<Ts>...);
+                return (is_tag_impl<Ts> && ...);
             }
         };
     } // namespace impl
 
     /// @brief Evaluates to true if all `xs...` are component tags.
-    constexpr impl::valid_t valid{};
+    inline constexpr impl::valid_t valid{};
 
     /// @brief Evaluates to true if `T` is a list of component tags.
     template <typename T>

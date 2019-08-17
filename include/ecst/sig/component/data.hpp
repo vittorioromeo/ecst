@@ -9,57 +9,53 @@
 #include <ecst/config.hpp>
 #include <ecst/tag/component.hpp>
 
-namespace ecst::sig::component
+namespace ecst::sig::component::impl
 {
-    namespace impl
+    namespace keys
     {
-        namespace keys
+        constexpr auto storage = sz_v<0>;
+    }
+
+    struct base_data
+    {
+    };
+
+    template <typename TComponentTagList, typename TOptions>
+    class data : base_data
+    {
+        ECST_S_ASSERT_DT(tag::component::is_list(TComponentTagList{}));
+
+    private:
+        template <typename TKey, typename T>
+        constexpr auto change_self(const TKey& key, T&& x) const noexcept
         {
-            constexpr auto storage = sz_v<0>;
+            auto new_options = TOptions{}.set(key, FWD(x));
+            return data<TComponentTagList, ECST_DECAY_DECLTYPE(new_options)>{};
         }
 
-        struct base_data
+    public:
+        constexpr auto contiguous_buffer() const noexcept;
+
+        template <typename TSettings>
+        constexpr auto make_storage_type(TSettings s) const noexcept
         {
-        };
+            return TOptions{}
+                .at(keys::storage)
+                .make_type(s, TComponentTagList{});
+        }
 
-        template <typename TComponentTagList, typename TOptions>
-        class data : base_data
+        template <typename TComponentTag>
+        constexpr auto has(TComponentTag ct) const noexcept
         {
-            ECST_S_ASSERT_DT(tag::component::is_list(TComponentTagList{}));
+            return bh::contains(TComponentTagList{}, ct);
+        }
 
-        private:
-            template <typename TKey, typename T>
-            constexpr auto change_self(const TKey& key, T&& x) const noexcept
-            {
-                auto new_options = TOptions{}.set(key, FWD(x));
-                return data<TComponentTagList,
-                    ECST_DECAY_DECLTYPE(new_options)>{};
-            }
+        constexpr auto tag_list() const noexcept
+        {
+            return TComponentTagList{};
+        }
+    };
 
-        public:
-            constexpr auto contiguous_buffer() const noexcept;
-
-            template <typename TSettings>
-            constexpr auto make_storage_type(TSettings s) const noexcept
-            {
-                return TOptions{}
-                    .at(keys::storage)
-                    .make_type(s, TComponentTagList{});
-            }
-
-            template <typename TComponentTag>
-            constexpr auto has(TComponentTag ct) const noexcept
-            {
-                return bh::contains(TComponentTagList{}, ct);
-            }
-
-            constexpr auto tag_list() const noexcept
-            {
-                return TComponentTagList{};
-            }
-        };
-
-        // TODO: `data.set_storage_type(contiguous_buffer_maker)`
-        // TODO: `data.set_storage_type(hash_map_maker)`
-    } // namespace impl
-} // namespace ecst::sig::component
+    // TODO: `data.set_storage_type(contiguous_buffer_maker)`
+    // TODO: `data.set_storage_type(hash_map_maker)`
+} // namespace ecst::sig::component::impl

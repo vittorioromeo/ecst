@@ -10,12 +10,9 @@
 #include <ecst/mp/core.hpp>
 #include <type_traits>
 
-namespace ecst::settings
+namespace ecst::settings::impl
 {
-    namespace impl
-    {
-        constexpr auto v_singlethreaded = sz_v<0>;
-        constexpr auto v_allow_inner_par = sz_v<1>;
-        constexpr auto v_disallow_inner_par = sz_v<2>;
-    } // namespace impl
-} // namespace ecst::settings
+    constexpr auto v_singlethreaded = sz_v<0>;
+    constexpr auto v_allow_inner_par = sz_v<1>;
+    constexpr auto v_disallow_inner_par = sz_v<2>;
+} // namespace ecst::settings::impl

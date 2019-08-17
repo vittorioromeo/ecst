@@ -88,8 +88,9 @@ namespace ecst
     {
         // TODO: other usage opportunities? to vrm_core?
         template <typename T, typename TF>
-        auto reverse_loop(T i_begin, T i_end, TF&& f) noexcept( // .
-            noexcept(f(std::declval<T>()))                      // .
+        ECST_ALWAYS_INLINE auto reverse_loop(
+            T i_begin, T i_end, TF&& f) noexcept( // .
+            noexcept(f(std::declval<T>()))        // .
         )
         {
             for(T i = i_end; i-- > i_begin;)

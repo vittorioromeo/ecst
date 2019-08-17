@@ -25,11 +25,11 @@ namespace ecst::impl
     /// @brief Accesses `cv` and `c` through a `lock_guard` on `mutex`, and
     /// calls `f(cv, c)`.
     template <typename TF>
-    inline void access_cv_counter(
+    ECST_ALWAYS_INLINE void access_cv_counter(
         mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
     {
         lock_guard_type l(mutex);
-        f(cv, c);
+        FWD(f)(cv, c);
 
         // Prevent warnings.
         (void)l;
@@ -37,7 +37,7 @@ namespace ecst::impl
 
     /// @brief Decrements `c` through `mutex`, and calls `f(cv)`.
     template <typename TF>
-    inline void decrement_cv_counter_then(
+    ECST_ALWAYS_INLINE void decrement_cv_counter_then(
         mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
     {
         access_cv_counter(mutex, cv, c, [&f](auto& y_cv, auto& x_c) {
@@ -49,7 +49,7 @@ namespace ecst::impl
     }
 
     /// @brief Decrements `c` through `mutex`, and calls `cv.notify_one()`.
-    inline void decrement_cv_counter_and_notify_one(
+    ECST_ALWAYS_INLINE void decrement_cv_counter_and_notify_one(
         mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
     {
         decrement_cv_counter_then(
@@ -57,7 +57,7 @@ namespace ecst::impl
     }
 
     /// @brief Decrements `c` through `mutex`, and calls `cv.notify_all()`.
-    inline void decrement_cv_counter_and_notify_all(
+    ECST_ALWAYS_INLINE void decrement_cv_counter_and_notify_all(
         mutex_type& mutex, cv_type& cv, counter_type& c) noexcept
     {
         decrement_cv_counter_then(
@@ -67,10 +67,10 @@ namespace ecst::impl
     /// @brief Executes `f`, locks `mutex`, and waits until `predicate`
     /// is `true` through `cv`.
     template <typename TPredicate, typename TF>
-    inline void execute_and_wait_until(
+    ECST_ALWAYS_INLINE void execute_and_wait_until(
         mutex_type& mutex, cv_type& cv, TPredicate&& predicate, TF&& f) noexcept
     {
-        f();
+        FWD(f)();
 
         unique_lock_type l(mutex);
         cv.wait(l, FWD(predicate));
@@ -79,7 +79,7 @@ namespace ecst::impl
     /// @brief Locks `mutex`, executes `f` and waits until `c` is zero
     /// through `cv`.
     template <typename TF>
-    inline void execute_and_wait_until_counter_zero(
+    ECST_ALWAYS_INLINE void execute_and_wait_until_counter_zero(
         mutex_type& mutex, cv_type& cv, counter_type& c, TF&& f) noexcept
     {
         execute_and_wait_until(
