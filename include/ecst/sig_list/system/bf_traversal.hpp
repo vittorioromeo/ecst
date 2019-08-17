@@ -63,8 +63,7 @@ namespace ecst::sig_list::system
         {
             auto node = top_node(c);
             auto popped_queue = bh::remove_at(queue(c), mp::sz_v<0>);
-            auto neighbors =
-                dependent_ids_list(ssl, sig_by_id(ssl, node));
+            auto neighbors = dependent_ids_list(ssl, sig_by_id(ssl, node));
 
             auto unvisited_neighbors = bh::remove_if(
                 neighbors, [=](auto x_nbr) { return is_visited(c, x_nbr); });
@@ -82,7 +81,7 @@ namespace ecst::sig_list::system
             namespace btfc = bf_traversal;
 
             auto step = [=](auto self, auto&& ctx) {
-                (void) self; // TODO: gcc bug 81676
+                (void)self; // TODO: gcc bug 81676
 
                 if constexpr(btfc::is_queue_empty(
                                  std::decay_t<decltype(ctx)>{}))

@@ -885,10 +885,10 @@ int main()
     // Define ECST context settings.
     constexpr auto s =                        // .
         ecst::settings::make()                // .
-            .allow_inner_par()        // .
+            .allow_inner_par()                // .
             .fixed_entity_limit(entity_limit) // .
-            .component_sigs(make_csl()) // .
-            .system_sigs(make_ssl())    // .
+            .component_sigs(make_csl())       // .
+            .system_sigs(make_ssl())          // .
             .scheduler(cs::scheduler<ss::s_atomic_counter>);
 
     using ssss = decltype(s);

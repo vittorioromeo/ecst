@@ -18,8 +18,8 @@ namespace ecst::sig_list::system
         auto id_list_impl(
             TSystemSignatureList ssl, TPickedSystemSignatureList pssl)
         {
-            return bh::transform(pssl,
-                [ssl](auto x_sig) { return id_by_sig(ssl, x_sig); });
+            return bh::transform(
+                pssl, [ssl](auto x_sig) { return id_by_sig(ssl, x_sig); });
         }
     } // namespace impl
 

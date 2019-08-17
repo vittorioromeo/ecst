@@ -13,8 +13,7 @@ namespace ecst::sig_list::system
 {
     /// @brief Given a system signature `ss`, returns its ID.
     template <typename TSystemSignatureList, typename TSystemSignature>
-    constexpr auto id_by_sig(
-        TSystemSignatureList ssl, TSystemSignature ss)
+    constexpr auto id_by_sig(TSystemSignatureList ssl, TSystemSignature ss)
     {
         ECST_S_ASSERT_DT(valid(ssl));
         ECST_S_ASSERT_DT(sig::system::valid(mp::unwrapped(ss)));

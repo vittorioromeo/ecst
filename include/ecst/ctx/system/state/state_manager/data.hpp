@@ -42,10 +42,10 @@ namespace ecst::ctx::system::impl::state_manager
         // Number of currently prepared (in use) states.
         sz_t _prepared = 0;
 
-        TInstance &_instance;
+        TInstance& _instance;
 
     public:
-        data(TInstance &instance) noexcept : _instance{instance}
+        data(TInstance& instance) noexcept : _instance{instance}
         {
         }
 
@@ -63,7 +63,7 @@ namespace ecst::ctx::system::impl::state_manager
         }
 
         template <typename TF>
-        void for_states(TF &&f) noexcept
+        void for_states(TF&& f) noexcept
         {
             for(sz_t i = 0; i < _prepared; ++i)
             {
@@ -71,7 +71,7 @@ namespace ecst::ctx::system::impl::state_manager
             }
         }
 
-        auto &get(sz_t i) noexcept
+        auto& get(sz_t i) noexcept
         {
             ECST_ASSERT_OP(i, <, _ss_arr.size());
             ECST_ASSERT_OP(i, <, _prepared);

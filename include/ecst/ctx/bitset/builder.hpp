@@ -19,7 +19,7 @@ namespace ecst::ctx::bitset
     /// @brief Sets all the bits corresponding to the component types in `scl`
     /// to `1` in `bitset`.
     template <typename TSettings, typename TSetComponentsList>
-    void fill(dispatch<TSettings> &bitset, TSettings s,
+    void fill(dispatch<TSettings>& bitset, TSettings s,
         TSetComponentsList scl) noexcept
     {
         ECST_S_ASSERT_DT(tag::component::is_list(scl));

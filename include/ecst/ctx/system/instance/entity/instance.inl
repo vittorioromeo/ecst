@@ -26,8 +26,7 @@ namespace ecst::ctx::system
 
     template <typename TSettings, typename TSystemSignature>
     instance<TSettings, TSystemSignature>::instance()
-        : _bitset{bitset::make_from_system_sig(
-              TSystemSignature{}, TSettings{})}
+        : _bitset{bitset::make_from_system_sig(TSystemSignature{}, TSettings{})}
     {
         ELOG(                                                          // .
             debug::lo_system_bitset() << "(" << system_id()            // .

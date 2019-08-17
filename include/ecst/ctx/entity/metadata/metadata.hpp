@@ -8,8 +8,8 @@
 #include <ecst/aliases.hpp>
 #include <ecst/config.hpp>
 #include <ecst/ctx/bitset.hpp>
-#include <ecst/ctx/storage/entity.hpp>
 #include <ecst/ctx/storage/component.hpp>
+#include <ecst/ctx/storage/entity.hpp>
 #include <ecst/ctx/types.hpp>
 
 namespace ecst::ctx::entity::impl

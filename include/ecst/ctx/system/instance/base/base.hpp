@@ -15,8 +15,7 @@ namespace ecst::ctx::system::impl
     /// @brief Type of the system tag used by an instance with `TSettings`
     /// and `TSystemSignature` template parameters.
     template <typename TSettings, typename TSystemSignature>
-    using instance_system_tag_type =
-        sig::system::tag_type<TSystemSignature>;
+    using instance_system_tag_type = sig::system::tag_type<TSystemSignature>;
 
     /// @brief Type of the system used by an instance with `TSettings` and
     /// `TSystemSignature` template parameters.

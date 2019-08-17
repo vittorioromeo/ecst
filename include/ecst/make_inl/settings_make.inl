@@ -14,13 +14,13 @@ namespace ecst::settings
         using namespace mp;
         using namespace settings::impl;
 
-        constexpr auto d_opts =                                  // .
-            mp::opt_map::make()                               // .
+        constexpr auto d_opts =                          // .
+            mp::opt_map::make()                          // .
                 .add(keys::threading, v_allow_inner_par) // .
                 .add(
                     keys::entity_storage, dynamic_impl<bh::size_t<1000>>{}) // .
-                .add(keys::component_sig_list, mp::list::empty_v)     // .
-                .add(keys::system_sig_list, mp::list::empty_v)        // .
+                .add(keys::component_sig_list, mp::list::empty_v)           // .
+                .add(keys::system_sig_list, mp::list::empty_v)              // .
                 .add(keys::scheduler,
                     impl::scheduler_wrapper<scheduler::s_atomic_counter>{}) // .
                 .add(keys::refresh_parallelism,

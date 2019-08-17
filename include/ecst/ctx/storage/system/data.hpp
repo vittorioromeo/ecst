@@ -29,12 +29,11 @@ namespace ecst::ctx::storage::system::impl
             ctx::system::instance<TSettings, TSystem>;
 
         template <typename TSystem>
-        using system_sig_for = decltype(
-            sig_list::system::sig_by_type<TSystem>(ssl_type{}));
+        using system_sig_for =
+            decltype(sig_list::system::sig_by_type<TSystem>(ssl_type{}));
 
         template <typename TSystem>
-        using system_tag_for =
-            sig::system::tag_type<system_sig_for<TSystem>>;
+        using system_tag_for = sig::system::tag_type<system_sig_for<TSystem>>;
 
         template <typename TSystemTag>
         using tag_to_system = tag::system::unwrap<TSystemTag>;
@@ -94,8 +93,7 @@ namespace ecst::ctx::storage::system::impl
         template <typename TSystemSignature>
         auto& system_by_sig(TSystemSignature) noexcept
         {
-            return instance_by_tag(
-                sig::system::tag_type<TSystemSignature>{});
+            return instance_by_tag(sig::system::tag_type<TSystemSignature>{});
         }
 
     private:

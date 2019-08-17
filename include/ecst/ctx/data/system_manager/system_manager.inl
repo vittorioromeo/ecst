@@ -138,8 +138,8 @@ namespace ecst::ctx::impl
 
         auto independent_ssl = bh::filter(ssl, sig::system::indepedent);
 
-        auto independent_stl = bh::transform(independent_ssl,
-            [](auto ss) { return sig::system::tag_of(ss); });
+        auto independent_stl = bh::transform(
+            independent_ssl, [](auto ss) { return sig::system::tag_of(ss); });
 
         return [this, &context, independent_stl](auto&&... fns) {
             this->execute_systems_impl(context, independent_stl, FWD(fns)...);
@@ -208,8 +208,7 @@ namespace ecst::ctx::impl
     }
 
     template <typename TSettings>
-    constexpr auto system_manager<TSettings>::inner_par_allowed() const
-        noexcept
+    constexpr auto system_manager<TSettings>::inner_par_allowed() const noexcept
     {
         return settings::inner_par_allowed(TSettings{});
     }

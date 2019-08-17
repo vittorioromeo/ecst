@@ -9,21 +9,18 @@
 #include <ecst/config.hpp>
 #include <vrm/core/config.hpp>
 
-namespace ecst::hardware
+namespace ecst::hardware::status
 {
-    namespace status
+    /// @brief Returns the CPU's core count.
+    /// @details Returns `0` if the count is unknown.
+    ECST_ALWAYS_INLINE auto core_count() noexcept
     {
-        /// @brief Returns the CPU's core count.
-        /// @details Returns `0` if the count is unknown.
-        ECST_ALWAYS_INLINE auto core_count() noexcept
-        {
-            return ecst::thread::hardware_concurrency();
-        }
+        return ecst::thread::hardware_concurrency();
+    }
 
-        /// @brief Returns true if the CPU's core count is known.
-        ECST_ALWAYS_INLINE auto core_count_known() noexcept
-        {
-            return core_count() > 0;
-        }
-    } // namespace status
-} // namespace ecst::hardware
+    /// @brief Returns true if the CPU's core count is known.
+    ECST_ALWAYS_INLINE auto core_count_known() noexcept
+    {
+        return core_count() > 0;
+    }
+} // namespace ecst::hardware::status

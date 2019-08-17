@@ -88,7 +88,7 @@ namespace ecst::sig::component
     {
         auto ct_list = mp::list::make(cts...);
 
-        constexpr auto d_opts =    // .
+        constexpr auto d_opts = // .
             mp::opt_map::make() // .
                 .add(impl::keys::storage, impl::default_maker);
 

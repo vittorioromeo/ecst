@@ -25,7 +25,7 @@ namespace ecst::sig::system
         // * Is an "entity" system.
 
         constexpr auto d_opts =                                 // .
-            mp::opt_map::make()                              // .
+            mp::opt_map::make()                                 // .
                 .add(keys::parallelism, ips::none::v())         // .
                 .add(keys::dependencies, mp::list::empty_v)     // .
                 .add(keys::read_components, mp::list::empty_v)  // .

@@ -27,8 +27,7 @@ namespace ecst::sig_list::component
     } // namespace impl
 
     template <typename TComponentSignatureList, typename TComponentTag>
-    constexpr auto sig_by_tag(
-        TComponentSignatureList csl, TComponentTag ct)
+    constexpr auto sig_by_tag(TComponentSignatureList csl, TComponentTag ct)
     {
         return decltype(impl::sig_by_tag_impl(csl, ct)){};
     }

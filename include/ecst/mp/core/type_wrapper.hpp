@@ -20,14 +20,10 @@ namespace ecst::mp
 
     /// @brief Returns a default-constructed instance of the inner type wrapped
     /// by a `type_c`.
-    inline constexpr auto unwrapped = []<typename T>(T)
-    {
-        return unwrap<T>{};
+    inline constexpr auto unwrapped = [](auto x) {
+        return unwrap<decltype(x)>{};
     };
 
     /// @brief Returns a `type_c` wrapping the passed parameter.
-    inline constexpr auto wrap = []<typename T>(T)
-    {
-        return type_c<T>;
-    };
+    inline constexpr auto wrap = [](auto x) { return type_c<decltype(x)>; };
 } // namespace ecst::mp

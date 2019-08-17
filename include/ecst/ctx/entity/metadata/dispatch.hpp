@@ -10,7 +10,7 @@
 namespace ecst::ctx::entity
 {
     template <typename TSettings>
-    using dispatch = impl::metadata<                                      // .
+    using dispatch = impl::metadata<                                  // .
         ctx::bitset::dispatch<TSettings>,                             // .
         ctx::storage::component::chunk_metadata_tuple_type<TSettings> // .
         >;

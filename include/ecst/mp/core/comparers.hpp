@@ -11,13 +11,12 @@
 
 namespace ecst::mp
 {
-    inline constexpr auto same_type = []<typename T0, typename T1>(T0, T1)
-    {
-        return std::is_same<T0, T1>{};
+    inline constexpr auto same_type = [](auto a, auto b) {
+        return std::is_same<decltype(a), decltype(b)>{};
     };
 
-    inline constexpr auto same_type_decay = []<typename T0, typename T1>(T0, T1)
-    {
-        return std::is_same<std::decay_t<T0>, std::decay_t<T1>>{};
+    inline constexpr auto same_type_decay = [](auto a, auto b) {
+        return std::is_same<std::decay_t<decltype(a)>,
+            std::decay_t<decltype(b)>>{};
     };
 } // namespace ecst::mp

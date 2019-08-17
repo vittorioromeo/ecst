@@ -16,15 +16,13 @@ namespace ecst::sig_list::system
     namespace impl
     {
         template <typename TSystemSignatureList, typename TSystemTag>
-        constexpr auto sig_by_tag_impl(
-            TSystemSignatureList ssl, TSystemTag st)
+        constexpr auto sig_by_tag_impl(TSystemSignatureList ssl, TSystemTag st)
         {
             ECST_S_ASSERT_DT(valid(ssl));
             ECST_S_ASSERT_DT(tag::system::valid(st));
 
             return *bh::find_if(ssl, [st](auto x_ssig) {
-                return mp::same_type_decay(
-                    sig::system::tag_of(x_ssig), st);
+                return mp::same_type_decay(sig::system::tag_of(x_ssig), st);
             });
         }
     } // namespace impl

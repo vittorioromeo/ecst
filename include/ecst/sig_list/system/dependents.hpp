@@ -19,9 +19,8 @@ namespace ecst::sig_list::system
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return bh::transform(stl, [ssl](auto x) {
-            return sig_list::system::sig_by_tag(ssl, x);
-        });
+        return bh::transform(stl,
+            [ssl](auto x) { return sig_list::system::sig_by_tag(ssl, x); });
     }
 
     /// @brief Given a list of system tags, returns a list of system IDs.
@@ -31,9 +30,8 @@ namespace ecst::sig_list::system
     {
         ECST_S_ASSERT_DT(tag::system::is_list(stl));
 
-        return bh::transform(stl, [ssl](auto x) {
-            return sig_list::system::id_by_tag(ssl, x);
-        });
+        return bh::transform(
+            stl, [ssl](auto x) { return sig_list::system::id_by_tag(ssl, x); });
     }
 
     /// @brief Returns the set of IDs `parent` depends on.

@@ -150,8 +150,8 @@ namespace ecst::settings
             }
 
             template <typename TNewSystemSignatureList>
-            constexpr auto system_sigs(
-                TNewSystemSignatureList new_ssl) const noexcept
+            constexpr auto system_sigs(TNewSystemSignatureList new_ssl) const
+                noexcept
             {
                 return change_self(keys::system_sig_list, new_ssl);
             }

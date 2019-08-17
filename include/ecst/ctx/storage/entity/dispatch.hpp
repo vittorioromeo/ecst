@@ -22,17 +22,17 @@ namespace ecst::ctx::storage::entity
             return settings::dispatch_on_storage_type(
                 s,
                 [](auto fixed_capacity) {
-                    return mp::type_c<                            // .
-                        impl::fixed_entity_storage<               // .
+                    return mp::type_c<                        // .
+                        impl::fixed_entity_storage<           // .
                             ctx::entity::dispatch<TSettings>, // .
-                            fixed_capacity>                       // .
+                            fixed_capacity>                   // .
                         >;
                 },
                 [](auto) {
-                    return mp::type_c<                           // .
-                        impl::dynamic_entity_storage<TSettings,  // .
-                            ctx::entity::dispatch<TSettings> // .
-                            >                                    // .
+                    return mp::type_c<                          // .
+                        impl::dynamic_entity_storage<TSettings, // .
+                            ctx::entity::dispatch<TSettings>    // .
+                            >                                   // .
                         >;
                 });
         }

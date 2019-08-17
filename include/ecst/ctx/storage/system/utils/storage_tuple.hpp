@@ -33,16 +33,14 @@ namespace ecst::ctx::storage::system
                         decltype(mp::wrap(uws))> // .
                     >;
             }
-            else if constexpr(uws.is_kind(
-                                  sig::system::impl::kind::stateful))
+            else if constexpr(uws.is_kind(sig::system::impl::kind::stateful))
             {
                 return mp::type_c< // .
                     ctx::system::stateful_instance<TSettings,
                         decltype(mp::wrap(uws))> // .
                     >;
             }
-            else if constexpr(uws.is_kind(
-                                  sig::system::impl::kind::entity))
+            else if constexpr(uws.is_kind(sig::system::impl::kind::entity))
             {
                 return mp::type_c< // .
                     ctx::system::instance<TSettings,

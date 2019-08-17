@@ -42,8 +42,7 @@ namespace ecst::ctx::system::data_proxy
 
         constexpr auto my_ss = TSystemSignature{};
 
-        constexpr auto target_ss =
-            sig_list::system::sig_by_tag(ssl, st);
+        constexpr auto target_ss = sig_list::system::sig_by_tag(ssl, st);
 
         return sig_list::system::has_dependency_recursive(
             ssl, my_ss, target_ss);
@@ -103,8 +102,7 @@ namespace ecst::ctx::system::data_proxy
     ECST_IMPL_DP_BASE_TEMPLATE
     auto& ECST_IMPL_DP_BASE::output() noexcept
     {
-        static_assert(
-            sig::system::has_subtask_state_data<system_sig_type>());
+        static_assert(sig::system::has_subtask_state_data<system_sig_type>());
 
         return subtask_state_data();
     }
