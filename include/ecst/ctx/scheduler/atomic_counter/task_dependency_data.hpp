@@ -43,10 +43,5 @@ namespace ecst::scheduler::atomic_counter
         {
             bh::for_each(TDependentIDList{}, f);
         }
-
-        auto dependent_tasks_count() const noexcept
-        {
-            return bh::size(TDependentIDList{});
-        }
     };
 } // namespace ecst::scheduler::atomic_counter

@@ -13,25 +13,25 @@ namespace ecst::ctx::impl
 {
     template <typename TSettings>
     class data;
+}
 
-    namespace step
+namespace ecst::ctx::impl::step
+{
+    template <typename TSettings>
+    class proxy : public defer::proxy<TSettings>
     {
-        template <typename TSettings>
-        class proxy : public defer::proxy<TSettings>
-        {
-        private:
-            using settings_type = TSettings;
-            using base_type = defer::proxy<settings_type>;
-            using context_type = data<settings_type>;
-            using refresh_state_type = defer::refresh_state<settings_type>;
+    private:
+        using settings_type = TSettings;
+        using base_type = defer::proxy<settings_type>;
+        using context_type = data<settings_type>;
+        using refresh_state_type = defer::refresh_state<settings_type>;
 
-        public:
-            proxy(context_type&, refresh_state_type&) noexcept;
+    public:
+        proxy(context_type&, refresh_state_type&) noexcept;
 
-            template <typename... TStartSystemTags>
-            auto execute_systems_from(TStartSystemTags... sts) noexcept;
+        template <typename... TStartSystemTags>
+        auto execute_systems_from(TStartSystemTags... sts) noexcept;
 
-            auto execute_systems() noexcept;
-        };
-    } // namespace step
-} // namespace ecst::ctx::impl
+        auto execute_systems() noexcept;
+    };
+} // namespace ecst::ctx::impl::step

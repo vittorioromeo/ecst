@@ -54,8 +54,8 @@ namespace ecst::refresh_event
             constexpr auto system_tag = tag::system::v<system_type>;
             static_assert(tag::system::valid(system_tag));
 
-            return std::is_same<ECST_DECAY_DECLTYPE(system_tag),
-                decay_t<TSystemTagToCheck>>{};
+            return std::is_same_v<ECST_DECAY_DECLTYPE(system_tag),
+                decay_t<TSystemTagToCheck>>;
         }
 
         template <typename TInstance, typename TSystemTag>

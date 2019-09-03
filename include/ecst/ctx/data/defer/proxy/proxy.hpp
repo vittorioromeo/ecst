@@ -20,84 +20,84 @@ namespace ecst::ctx::impl
 {
     template <typename TSettings>
     class data;
+}
 
-    namespace defer
+namespace ecst::ctx::impl::defer
+{
+    using handle = ecst::ctx::entity::impl::handle;
+
+    template <typename TSettings>
+    class refresh_state;
+
+    template <typename TSettings>
+    class proxy
     {
-        using handle = ecst::ctx::entity::impl::handle;
+    private:
+        using settings_type = TSettings;
+        using context_type = data<settings_type>;
+        using refresh_state_type = refresh_state<settings_type>;
 
-        template <typename TSettings>
-        class refresh_state;
+        context_type& _context;
+        refresh_state_type& _refresh_state;
 
-        template <typename TSettings>
-        class proxy
-        {
-        private:
-            using settings_type = TSettings;
-            using context_type = data<settings_type>;
-            using refresh_state_type = refresh_state<settings_type>;
+        template <typename T>
+        using component_from_tag = tag::component::unwrap<T>;
 
-            context_type& _context;
-            refresh_state_type& _refresh_state;
+        template <typename T>
+        using system_from_tag = tag::system::unwrap<T>;
 
-            template <typename T>
-            using component_from_tag = tag::component::unwrap<T>;
+    protected:
+        auto& context() noexcept;
 
-            template <typename T>
-            using system_from_tag = tag::system::unwrap<T>;
+    public:
+        proxy(context_type&, refresh_state_type&) noexcept;
 
-        protected:
-            auto& context() noexcept;
+        proxy(const proxy&) = delete;
+        proxy& operator=(const proxy&) = delete;
 
-        public:
-            proxy(context_type&, refresh_state_type&) noexcept;
+        proxy(proxy&&) = delete;
+        proxy& operator=(proxy&&) = delete;
 
-            proxy(const proxy&) = delete;
-            proxy& operator=(const proxy&) = delete;
+        entity_id create_entity();
+        handle create_handle(entity_id) noexcept;
+        handle create_entity_and_handle();
 
-            proxy(proxy&&) = delete;
-            proxy& operator=(proxy&&) = delete;
+        auto valid_handle(const handle& h) const noexcept;
+        auto access(const handle&) const noexcept;
 
-            entity_id create_entity();
-            handle create_handle(entity_id) noexcept;
-            handle create_entity_and_handle();
+        auto alive(entity_id) const noexcept;
+        auto alive(const handle&) const noexcept;
 
-            auto valid_handle(const handle& h) const noexcept;
-            auto access(const handle&) const noexcept;
+        void kill_entity(entity_id) noexcept;
 
-            auto alive(entity_id) const noexcept;
-            auto alive(const handle&) const noexcept;
+        template <typename TComponentTag>
+        decltype(auto) add_component(TComponentTag, entity_id);
 
-            void kill_entity(entity_id) noexcept;
+        template <typename TComponentTag>
+        decltype(auto) get_component(TComponentTag, entity_id) noexcept;
 
-            template <typename TComponentTag>
-            decltype(auto) add_component(TComponentTag, entity_id);
+        template <typename TComponentTag>
+        auto has_component(TComponentTag, entity_id) const noexcept;
 
-            template <typename TComponentTag>
-            decltype(auto) get_component(TComponentTag, entity_id) noexcept;
+        template <typename TComponentTag>
+        void remove_component(TComponentTag, entity_id) noexcept;
 
-            template <typename TComponentTag>
-            auto has_component(TComponentTag, entity_id) const noexcept;
+        template <typename TSystemTag>
+        auto& instance(TSystemTag) noexcept;
 
-            template <typename TComponentTag>
-            void remove_component(TComponentTag, entity_id) noexcept;
+        template <typename TSystemTag>
+        auto& system(TSystemTag) noexcept;
 
-            template <typename TSystemTag>
-            auto& instance(TSystemTag) noexcept;
+        template <typename TSystemTag, typename TF>
+        decltype(auto) for_system_outputs(TSystemTag, TF&& f);
 
-            template <typename TSystemTag>
-            auto& system(TSystemTag) noexcept;
+        template <typename TSystemTag>
+        auto is_in_system(TSystemTag, entity_id) const noexcept;
 
-            template <typename TSystemTag, typename TF>
-            decltype(auto) for_system_outputs(TSystemTag, TF&& f);
+        template <typename TSystemTag>
+        auto count_entities_in(TSystemTag) const noexcept;
 
-            template <typename TSystemTag>
-            auto is_in_system(TSystemTag, entity_id) const noexcept;
-
-            template <typename TSystemTag>
-            auto count_entities_in(TSystemTag) const noexcept;
-
-            template <typename TSystemTag>
-            auto any_entity_in(TSystemTag) const noexcept;
-        };
-    } // namespace defer
-} // namespace ecst::ctx::impl
+        template <typename TSystemTag>
+        auto any_entity_in(TSystemTag) const noexcept;
+    };
+} // namespace ecst::ctx::impl::defer
